@@ -5,8 +5,9 @@ require 'rainbow'
 module Memo
   class Docs
     Entry = Data.define(:full_path, :dir)
-    def initialize(exe_dir)
-      @docs_dir = File.join(File.expand_path("..", exe_dir), 'docs')
+    def initialize(memo_dir)
+      # @memo_dir = File.join(File.expand_path("..", memo_dir), 'docs')
+      @memo_dir = memo_dir
       @entries = load_entries
       @dir_set = Set.new(@entries.map(&:dir).uniq)
     end
@@ -80,11 +81,11 @@ module Memo
 
     # docs 以下をDir.glob で探索して、docs 以下のファイルのフルパスと所属するdir 名を返す
     def load_entries
-      Dir.glob("**/*.md", base: @docs_dir).filter_map do |rel_path|
+      Dir.glob("**/*.md", base: @memo_dir).filter_map do |rel_path|
         next if File.basename(rel_path) == 'README.md'
 
         Entry.new(
-          full_path: File.join(@docs_dir, rel_path),
+          full_path: File.join(@memo_dir, rel_path),
           dir: File.dirname(rel_path)
         )
       end

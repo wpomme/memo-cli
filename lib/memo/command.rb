@@ -3,12 +3,12 @@ require 'memo/docs'
 
 module Memo
   class Command
-    def self.run(exe_dir, argv)
-      new(exe_dir, argv).execute
+    def self.run(memo_dir, argv)
+      new(memo_dir, argv).execute
     end
 
-    def initialize(exe_dir, argv)
-      @exe_dir = exe_dir
+    def initialize(memo_dir, argv)
+      @memo_dir = memo_dir
       @argv = argv
     end
 
@@ -18,14 +18,14 @@ module Memo
       case parsed_options.argv.first
       when 'list'
         if parsed_options.argv[1]
-          Docs.new(@exe_dir).print_files_by_dir(parsed_options.argv[1])
+          Docs.new(@memo_dir).print_files_by_dir(parsed_options.argv[1])
         else
-          Docs.new(@exe_dir).print_files
+          Docs.new(@memo_dir).print_files
         end
       when 'dirs'
-        Docs.new(@exe_dir).print_dirs
+        Docs.new(@memo_dir).print_dirs
       when 'read'
-        Docs.new(@exe_dir).read_and_print_content(parsed_options.argv[1])
+        Docs.new(@memo_dir).read_and_print_content(parsed_options.argv[1])
       end
     end
   end

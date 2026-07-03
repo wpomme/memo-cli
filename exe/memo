@@ -1,7 +1,10 @@
 #!/usr/bin/env ruby
 
 require "memo"
+require_relative "memo_env"
 
-exe_dir = __dir__
+# 絶対パスでもOK
+# ホームディレクトリからでもOK (先頭のスラッシュを抜いても動いた)
+memo_dir = File.join(Dir.home, MemoEnv.new.set_memo_dir)
 
-Memo::Command.run(exe_dir, ARGV)
+Memo::Command.run(memo_dir, ARGV)

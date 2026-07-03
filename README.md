@@ -44,6 +44,8 @@ bundle install
 
 # ローカルでgem をビルドする
 bundle exec rake install:local
+# rake からでも実行可能
+rake install:local
 
 # どのフォルダからでもmemo を実行できる
 memo list
