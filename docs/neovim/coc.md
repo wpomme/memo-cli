@@ -1,3 +1,0 @@
-- coc.nvim
-    - `.vim/coc-settings.json`が勝手に生成されてしまう
-    -> neovim の起動時に設定ファイルが存在しない場合、`.vim/coc-settings.json`を自動で作成してしまう

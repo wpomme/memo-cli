@@ -1,4 +1,0 @@
-- editorconfig
-    - リポジトリのトップに.editorconfigを作成しておけばファイルのフォーマットが簡単にできる
-    - サイトURL: https://editorconfig.org/
-    - VimとNeovimは標準でサポートされている
