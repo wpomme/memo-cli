@@ -15,14 +15,12 @@ end
 
 task default: :test
 
-# 次のようにして引数を渡す
-# rake "memo[read, tmux]"
-desc "Execute memo CLI. memo CLI takes some arguments as sub commands"
-task :memo, [:sub_command, :sub_command_arg] do |_, args|
-  args.with_defaults(sub_command: 'list')
+desc '開発中のmemo list を実行する'
+task :list do
+  sh 'bundle exec ruby exe/memo list'
+end
 
-  cmd = ["bundle", "exec", "ruby", "exe/memo", args.sub_command]
-  cmd << args.sub_command_arg if args.sub_command_arg
-
-  sh(*cmd)
+desc '開発中のmemo dirs を実行する'
+task :dirs do
+  sh 'bundle exec ruby exe/memo dirs'
 end

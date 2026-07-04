@@ -1,0 +1,11 @@
+[tools]
+ruby = "4.0.2"
+
+[tasks.read]
+description = "memo read を実行する"
+usage = '''
+arg "<word>" help="memorandum の中にあるファイル名を指定する"
+'''
+run = '''
+bundle exec ruby exe/memo read {{ usage.word }}
+'''
