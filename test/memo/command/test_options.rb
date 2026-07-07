@@ -1,46 +1,37 @@
 require_relative "../../test_helper"
 
 class TestOptions < Minitest::Test
-  # #parse_v2_auxのテスト
+  # #parse_auxのテスト
   # 引数が三つ以上の場合は:too_many_argsを返す
   def test_too_many_args
     argv = %(foo bar baz)
-    expected = Memo::Command::Options.parse_v2_aux(argv)
+    expected = Memo::MemoOptionParser.parse_aux(argv)
     assert_equal expected, :too_many_args
   end
 
   # 引数が0のときは:how_to_useを返す
   def test_empty_args
     argv = []
-    expected = Memo::Command::Options.parse_v2_aux(argv)
+    expected = Memo::MemoOptionParser.parse_aux(argv)
     assert_equal expected, :how_to_use
   end
 
   # 引数が1のときで、"help", "-h", "--help"なら:how_to_useを返す
   def test_help_success
-    expected = Memo::Command::Options.parse_v2_aux(['help'])
-    assert_equal :how_to_use, expected
-
-    expected = Memo::Command::Options.parse_v2_aux(['-h'])
-    assert_equal :how_to_use, expected
-
-    expected = Memo::Command::Options.parse_v2_aux(['--help'])
-    assert_equal :how_to_use, expected
+    argv_arr = [['help'], ['-h'], ['--help']]
+    argv_arr.each do |argv|
+      expected = Memo::MemoOptionParser.parse_aux(argv)
+      assert_equal :how_to_use, expected
+    end
   end
 
   # 引数が1のときで、"version", "-v", "-V", "--version"なら:versionを返す
   def test_version_success
-    expected = Memo::Command::Options.parse_v2_aux(['version'])
-    assert_equal :version, expected
-
-    expected = Memo::Command::Options.parse_v2_aux(['-v'])
-    assert_equal :version, expected
-
-    expected = Memo::Command::Options.parse_v2_aux(['-V'])
-    assert_equal :version, expected
-
-    expected = Memo::Command::Options.parse_v2_aux(['--version'])
-    assert_equal :version, expected
+    argv_arr = [['version'], ['-v'], ['-V'], ['--version']]
+    argv_arr.each do |argv|
+      expected = Memo::MemoOptionParser.parse_aux(argv)
+      assert_equal :version, expected
+    end
   end
 
   # memo CLIの使い方が表示され、
@@ -48,7 +39,7 @@ class TestOptions < Minitest::Test
   def test_print_help
     _, err = capture_io do
       exception = assert_raises(SystemExit) do
-        Memo::Command::Options.to_user_message(:how_to_use)
+        Memo::MemoOptionParser.to_user_message(:how_to_use)
       end
 
       assert_equal 0, exception.status
@@ -63,7 +54,7 @@ class TestOptions < Minitest::Test
   def test_print_version
     out, = capture_io do
       exception = assert_raises(SystemExit) do
-        Memo::Command::Options.to_user_message(:version)
+        Memo::MemoOptionParser.to_user_message(:version)
       end
 
       assert_equal 0, exception.status
@@ -77,7 +68,7 @@ class TestOptions < Minitest::Test
   def test_print_too_many_args
     _, err = capture_io do
       exception = assert_raises(SystemExit) do
-        Memo::Command::Options.to_user_message(:too_many_args)
+        Memo::MemoOptionParser.to_user_message(:too_many_args)
       end
 
       assert_equal 2, exception.status
