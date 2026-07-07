@@ -2,27 +2,24 @@ require 'optparse'
 
 module Memo
   class MemoOptionParser
-    ## TODO: parseを作成する
     HELP_COMMANDS = %w[help -h --help].freeze
     VERSION_COMMANDS = %w[version -v -V --version].freeze
-    SUB_COMMANDS = %w[list read dirs].freeze
+    SUB_COMMANDS = %w[dirs list read].freeze
 
-    # シンボルか文字列の配列のどちらかを返す
-    # シンボルを返す場合、ユーザーにメッセージを表示してコマンドを終了する意図
-    # 文字列の配列を返す場合は、この文字列により、docsで処理を実行する
-    def self.parse(argv)
-      symbol_or_commands = parse_aux(argv)
-      return unless symbol_or_commands.is_a(Symbol)
+    def initialize(argv)
+      @argv = argv
+    end
 
-      to_user_message(symbol_or_commands)
+    def self.word?(word)
+      r = /^\w[\w-]{,30}\w?$/
+      r.match?(word)
     end
 
     # CLIからユーザーにメッセージを表示して終了する
-    # メッセージはヘルプコマンドかバージョンコマンドか、エラーメッセージ
-    # メッセージを動的に生成するためにargsをnewに渡してクラスインスタンス変数とした方がいいかも
+    # ユーザーメッセージかエラーメッセージでexitのステータスが変わる
     def self.to_user_message(symbol)
-      too_many_args_message = "引数の数が多すぎます。"
-      how_to_use_message = <<~HELP
+      too_many_argv_message = "引数の数が多すぎます。"
+      help_message = <<~HELP
         Usage:
         # メモの一覧を表示する
         memo list
@@ -37,41 +34,96 @@ module Memo
         memo dirs
       HELP
 
-      message_map = {
-        too_many_args: too_many_args_message,
-        how_to_use: how_to_use_message,
+      # 例: dirsは引数を取りません。readの後には調べたいキーワードを入れてください。
+      redundant_argv_message = "余分な引数があります。"
+      requires_argv_message = "引数が必要です。"
+      unknown_message = "想定されていない引数です。引数は32文字以内です。"
+
+      user_message_map = {
+        help: help_message,
         version: Memo::VERSION
       }
 
-      exit_status = Set.new(%i[how_to_use version]).include?(symbol) || 2
-      puts message_map[symbol]
+      error_message_map = {
+        too_many_argv: too_many_argv_message,
+        redundant_argv: redundant_argv_message,
+        requires_argv: requires_argv_message,
+        unknown: unknown_message
+      }
+
+      # true or 2
+      exit_status = Set.new(user_message_map.keys).include?(symbol) || 2
+
+      if exit_status
+        puts user_message_map[symbol]
+      else
+        puts error_message_map[symbol]
+      end
+
       exit exit_status
     end
 
-    def self.parse_aux(argv)
-      return :too_many_args if argv.length > 3
-
-      case argv.length
-      when 0
-        :how_to_use
-      when 1
-        first = argv.first
-        return :how_to_use if HELP_COMMANDS.to_set.include?(first)
-
-        :version if VERSION_COMMANDS.to_set.include?(first)
-
-        # if SUB_COMMANDS.to_set.include?(first)
-        #   when
-        #   case 'dirs'
-        #     :dirs
-        # end
-      when 2
-        default
-        raise OptionParser::ParseError, "There is wrong with the arguments."
-      end
+    # とりあえず
+    def continue_command(symbol)
+      symbol
     end
 
-    ## end parse
+    # parse_sub_commandから値を受け取って、to_user_messageか、commandの処理を続けるかを判断する
+    def self.option_visitor(_command_symbol, _rest_argc)
+      {
+        help: {
+          0 => to_user_message(:help),
+          1 => to_user_message(:redundant_argv)
+        },
+        version: {
+          0 => to_user_message(:version),
+          1 => to_user_message(:redundant_argv)
+        },
+        dirs: {
+          0 => continue_command(:dirs),
+          1 => to_user_message(:redundant_argv)
+        },
+        list: {
+          0 => continue_command(:list),
+          1 => continue_command(:list_with_argv),
+          2 => to_user_message(:redundant_argv)
+        },
+        read: {
+          0 => to_user_message(:requires_argv),
+          1 => continue_command(:read),
+          2 => continue_command(:redundant_argv)
+        },
+        word: {
+          0 => continue_command(:read),
+          1 => to_user_message(:redundant_argv)
+        },
+        unknown: {
+          0 => to_user_message(:unknown)
+        }
+      }
+    end
+
+    # コマンドの種別と残りの引数の数を返す
+    def self.parse_sub_command(argv)
+      new(argv)
+      ## 引数が多すぎる場合はエラーを返す。
+      ## 残りの引数の数に意味がないためnilを返す
+      return :too_many_argv, nil if argv.length > 4
+
+      return :help, 0 if argv.empty?
+
+      first = argv.first
+      rest_argc = argv.length - 1
+
+      return :help, rest_argc if HELP_COMMANDS.to_set.include?(first)
+      return :version, rest_argc if VERSION_COMMANDS.to_set.include?(first)
+
+      return first.intern, rest_argc if SUB_COMMANDS.include?(first)
+
+      return first, rest_argc if word?(first)
+
+      [:unknown, nil]
+    end
   end
 
   class Command

@@ -1,45 +1,128 @@
 require_relative "../../test_helper"
 
+class TestMemoOptionParser < Minitest::Test
+  describe('#word?') do
+    it '正常系' do
+      words = %w[foo a A 0 9 aa aA a0 a9 0a a_ a- _a _A _0 _9 _-a _-0 _-9 _-A]
+      words.each do |word|
+        # テストに失敗した場合、どのwordが失敗したわからないのでexpectedをwordにする
+        expected = Memo::MemoOptionParser.word?(word) && word
+
+        assert_equal expected, word
+      end
+    end
+
+    it '正常系: 文字数' do
+      word1 = "a" * 32
+      word2 = "_#{'-' * 30}_"
+
+      words = [word1, word2]
+
+      words.each do |word|
+        expected = Memo::MemoOptionParser.word?(word) && word
+
+        assert_equal expected, word
+      end
+    end
+
+    it '異常系: 文字数' do
+      word = "a" * 33
+
+      expected = Memo::MemoOptionParser.word?(word) || word
+
+      assert_equal expected, word
+    end
+
+    it '異常系: 不審な文字列１' do
+      words = %w[file.exe touch; / | /etc/password `whoami` $(whoami) && || & > file\ncat $IFS$()]
+      words.each do |word|
+        expected = Memo::MemoOptionParser.word?(word) || word
+
+        assert_equal expected, word
+      end
+    end
+
+    it '異常系: 不審な文字列２' do
+      words = %w[../../../etc/passwd ..%2F..%2F..%2Fetc%2Fpasswd ../../../etc/passwd%00.jpg symlink_to_root/../../etc/passwd]
+      words.each do |word|
+        expected = Memo::MemoOptionParser.word?(word) || word
+
+        assert_equal expected, word
+      end
+    end
+  end
+
+  describe '"parse_sub_command' do
+    it '引数が４つ以上の場合は、:too_many_argvとnilを返す' do
+      argv = %(foo bar baz qux)
+      command_symbol, rest_argc = Memo::MemoOptionParser.parse_sub_command(argv)
+
+      assert_equal command_symbol, :too_many_argv
+      assert_nil rest_argc
+    end
+
+    it '引数が0のときは、:helpと0を返す' do
+      argv = []
+      command_symbol, rest_argc = Memo::MemoOptionParser.parse_sub_command(argv)
+
+      assert_equal command_symbol, :help
+      assert_equal rest_argc, 0
+    end
+
+    it '引数が1つ以上で、最初の引数がhelp, -h, --helpなら:helpと残りの引数の数を返す' do
+      rest_argv = [[], ['foo'], %w[foo bar]]
+      sub_commands = [['help'], ['-h'], ['--help']]
+
+      sub_commands.each do |sub_command|
+        rest_argv.each do |rest|
+          argv = sub_command + rest
+          command_symbol, rest_argc = Memo::MemoOptionParser.parse_sub_command(argv)
+
+          assert_equal command_symbol, :help
+          assert_equal rest_argc, argv.length - 1
+        end
+      end
+    end
+
+    it '引数が1つ以上で、最初の引数がversion, -v, -V, --versionなら:versionと残りの引数の数を返す' do
+      rest_argv = [[], ['foo'], %w[foo bar]]
+      sub_commands = [['version'], ['-v'], ['-V'], ['--version']]
+
+      sub_commands.each do |sub_command|
+        rest_argv.each do |rest|
+          argv = sub_command + rest
+          command_symbol, rest_argc = Memo::MemoOptionParser.parse_sub_command(argv)
+
+          assert_equal command_symbol, :version
+          assert_equal rest_argc, argv.length - 1
+        end
+      end
+    end
+
+    it '引数が1つ以上で、最初の引数がread, list, dirsなら:<sub_command_symbol>と残りの引数の数を返す' do
+      rest_argv = [[], ['foo'], %w[foo bar]]
+      sub_commands = [['read'], ['list'], ['dirs']]
+
+      sub_commands.each do |sub_command|
+        rest_argv.each do |rest|
+          argv = sub_command + rest
+          command_symbol, rest_argc = Memo::MemoOptionParser.parse_sub_command(argv)
+
+          assert_equal command_symbol, command_symbol.intern
+          assert_equal rest_argc, argv.length - 1
+        end
+      end
+    end
+  end
+end
+
 class TestOptions < Minitest::Test
-  # #parse_auxのテスト
-  # 引数が三つ以上の場合は:too_many_argsを返す
-  def test_too_many_args
-    argv = %(foo bar baz)
-    expected = Memo::MemoOptionParser.parse_aux(argv)
-    assert_equal expected, :too_many_args
-  end
-
-  # 引数が0のときは:how_to_useを返す
-  def test_empty_args
-    argv = []
-    expected = Memo::MemoOptionParser.parse_aux(argv)
-    assert_equal expected, :how_to_use
-  end
-
-  # 引数が1のときで、"help", "-h", "--help"なら:how_to_useを返す
-  def test_help_success
-    argv_arr = [['help'], ['-h'], ['--help']]
-    argv_arr.each do |argv|
-      expected = Memo::MemoOptionParser.parse_aux(argv)
-      assert_equal :how_to_use, expected
-    end
-  end
-
-  # 引数が1のときで、"version", "-v", "-V", "--version"なら:versionを返す
-  def test_version_success
-    argv_arr = [['version'], ['-v'], ['-V'], ['--version']]
-    argv_arr.each do |argv|
-      expected = Memo::MemoOptionParser.parse_aux(argv)
-      assert_equal :version, expected
-    end
-  end
-
   # memo CLIの使い方が表示され、
   # その後、SystemExitを送出して終了することを確認する
   def test_print_help
     _, err = capture_io do
       exception = assert_raises(SystemExit) do
-        Memo::MemoOptionParser.to_user_message(:how_to_use)
+        Memo::MemoOptionParser.to_user_message(:help)
       end
 
       assert_equal 0, exception.status
@@ -65,10 +148,10 @@ class TestOptions < Minitest::Test
 
   # 引数が多すぎる場合は、その旨のメッセージを表示し、
   # その後、SystemExitを送出して終了することを確認する
-  def test_print_too_many_args
+  def test_print_too_many_argv
     _, err = capture_io do
       exception = assert_raises(SystemExit) do
-        Memo::MemoOptionParser.to_user_message(:too_many_args)
+        Memo::MemoOptionParser.to_user_message(:too_many_argv)
       end
 
       assert_equal 2, exception.status
@@ -78,57 +161,3 @@ class TestOptions < Minitest::Test
     assert_equal "", err
   end
 end
-# ありうる引数のパターンを作成して、それぞれについてテストを作成する
-# 引数よりコマンドのごとに考えたほうが良さそう
-#
-# 全体
-# 引数が1 -> 引数によって各コマンドへ分岐し、<word>ならmemo read、それ以外の文字列ならエラー
-# 引数が2 -> 最初の引数で各コマンドへ分岐し、登録されていない文字列ならそこでエラーを出す
-#            二番目の引数は、各コマンドごとの指定に従う
-# <word> -> 先頭と最後はa-zA-Z、文中はそれにハイフンを追加した文字列のみ受け付ける。32文字以上はエラーにする。
-# <dirs> -> word と同じ条件にしたい。memo直下にmemoがあると面倒なので、それ以外のものはetcとかmiscに入れよう
-#
-# memo help
-# 正常系
-# OK
-#
-# 異常系
-# memo -h <args>
-# memo help <args>
-# memo --help <args>
-# -> 余分な引数がついているというエラーを出す
-#
-# memo version
-# OK
-#
-# 異常系
-# memo -v <args>
-# memo -V <args>
-# memo --version <args>
-# memo version <args>
-# -> memo versionと同じにする
-#
-# memo dirs
-# 正常系
-# memo dirs
-# 異常系
-# memo dirs <args>
-#
-# memo list
-# 正常系
-# memo list
-# memo list <dir>
-# dir によって正常か異常かが変化する
-# 異常系
-# memo list <arg2>
-# arg2は二つ以上の引数の場合
-#
-# memo read
-# 正常系
-# memo <word>
-# memo read <word>
-# word によって正常か異常かが変化する
-# 異常系
-# memo <arg2>
-# memo read <arg2>
-# -> memo <arg2>ほ判定が厄介そう
