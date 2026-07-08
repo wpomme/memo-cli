@@ -5,6 +5,35 @@ module Memo
     HELP_COMMANDS = %w[help -h --help].freeze
     VERSION_COMMANDS = %w[version -v -V --version].freeze
     SUB_COMMANDS = %w[dirs list read].freeze
+    TOO_MANY_ARGV_MESSAGE = "引数の数が多すぎます。"
+    HELP_MESSAGE = <<~HELP
+      Usage:
+      # メモの一覧を表示する
+      memo list
+
+      # そのディレクトリの中になるメモの一覧を表示する
+      memo list <dirs>
+
+      # 該当のメモを全文表示する
+      memo read <word>
+
+      # メモのフォルダ一覧を表示する
+      memo dirs
+    HELP
+    REDUNDANT_ARGV_MESSAGE = "余分な引数があります。"
+    REQUIRES_ARGV_MESSAGE = "引数が必要です。"
+    UNKNOWN_MESSAGE = "想定されていない引数です。引数は32文字以内です。"
+    USER_MESSAGE_MAP = {
+      help: HELP_MESSAGE,
+      version: Memo::VERSION
+    }.freeze
+
+    ERROR_MESSAGE_MAP = {
+      too_many_argv: TOO_MANY_ARGV_MESSAGE,
+      redundant_argv: REDUNDANT_ARGV_MESSAGE,
+      requires_argv: REQUIRES_ARGV_MESSAGE,
+      unknown: UNKNOWN_MESSAGE
+    }.freeze
 
     def initialize(argv)
       @argv = argv
@@ -18,46 +47,13 @@ module Memo
     # CLIからユーザーにメッセージを表示して終了する
     # ユーザーメッセージかエラーメッセージでexitのステータスが変わる
     def self.to_user_message(symbol)
-      too_many_argv_message = "引数の数が多すぎます。"
-      help_message = <<~HELP
-        Usage:
-        # メモの一覧を表示する
-        memo list
-
-        # そのディレクトリの中になるメモの一覧を表示する
-        memo list <dirs>
-
-        # 該当のメモを全文表示する
-        memo read <word>
-
-        # メモのフォルダ一覧を表示する
-        memo dirs
-      HELP
-
-      # 例: dirsは引数を取りません。readの後には調べたいキーワードを入れてください。
-      redundant_argv_message = "余分な引数があります。"
-      requires_argv_message = "引数が必要です。"
-      unknown_message = "想定されていない引数です。引数は32文字以内です。"
-
-      user_message_map = {
-        help: help_message,
-        version: Memo::VERSION
-      }
-
-      error_message_map = {
-        too_many_argv: too_many_argv_message,
-        redundant_argv: redundant_argv_message,
-        requires_argv: requires_argv_message,
-        unknown: unknown_message
-      }
-
       # true or 2
-      exit_status = Set.new(user_message_map.keys).include?(symbol) || 2
+      exit_status = Set.new(USER_MESSAGE_MAP.keys).include?(symbol) || 2
 
       if exit_status
-        puts user_message_map[symbol]
+        puts USER_MESSAGE_MAP[symbol]
       else
-        puts error_message_map[symbol]
+        puts ERROR_MESSAGE_MAP[symbol]
       end
 
       exit exit_status
