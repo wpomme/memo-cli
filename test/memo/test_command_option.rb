@@ -1,12 +1,12 @@
-require_relative "../../test_helper"
+require_relative "../test_helper"
 
-class TestMemoOptionParser < Minitest::Test
+class TestCommandOption < Minitest::Test
   describe('#word?') do
     it '正常系' do
       words = %w[foo a A 0 9 aa aA a0 a9 0a a_ a- _a _A _0 _9 _-a _-0 _-9 _-A]
       words.each do |word|
         # テストに失敗した場合、どのwordが失敗したわからないのでexpectedをwordにする
-        expected = Memo::MemoOptionParser.word?(word) && word
+        expected = Memo::CommandOption.word?(word) && word
 
         assert_equal expected, word
       end
@@ -19,7 +19,7 @@ class TestMemoOptionParser < Minitest::Test
       words = [word1, word2]
 
       words.each do |word|
-        expected = Memo::MemoOptionParser.word?(word) && word
+        expected = Memo::CommandOption.word?(word) && word
 
         assert_equal expected, word
       end
@@ -28,7 +28,7 @@ class TestMemoOptionParser < Minitest::Test
     it '異常系: 文字数' do
       word = "a" * 33
 
-      expected = Memo::MemoOptionParser.word?(word) || word
+      expected = Memo::CommandOption.word?(word) || word
 
       assert_equal expected, word
     end
@@ -36,7 +36,7 @@ class TestMemoOptionParser < Minitest::Test
     it '異常系: 不審な文字列１' do
       words = %w[file.exe touch; / | /etc/password `whoami` $(whoami) && || & > file\ncat $IFS$()]
       words.each do |word|
-        expected = Memo::MemoOptionParser.word?(word) || word
+        expected = Memo::CommandOption.word?(word) || word
 
         assert_equal expected, word
       end
@@ -45,7 +45,7 @@ class TestMemoOptionParser < Minitest::Test
     it '異常系: 不審な文字列２' do
       words = %w[../../../etc/passwd ..%2F..%2F..%2Fetc%2Fpasswd ../../../etc/passwd%00.jpg symlink_to_root/../../etc/passwd]
       words.each do |word|
-        expected = Memo::MemoOptionParser.word?(word) || word
+        expected = Memo::CommandOption.word?(word) || word
 
         assert_equal expected, word
       end
@@ -55,7 +55,7 @@ class TestMemoOptionParser < Minitest::Test
   describe '"parse_sub_command' do
     it '引数が４つ以上の場合は、:too_many_argvとnilを返す' do
       argv = %(foo bar baz qux)
-      command_symbol, rest_argc = Memo::MemoOptionParser.parse_sub_command(argv)
+      command_symbol, rest_argc = Memo::CommandOption.parse_sub_command(argv)
 
       assert_equal command_symbol, :too_many_argv
       assert_nil rest_argc
@@ -63,7 +63,7 @@ class TestMemoOptionParser < Minitest::Test
 
     it '引数が0のときは、:helpと0を返す' do
       argv = []
-      command_symbol, rest_argc = Memo::MemoOptionParser.parse_sub_command(argv)
+      command_symbol, rest_argc = Memo::CommandOption.parse_sub_command(argv)
 
       assert_equal command_symbol, :help
       assert_equal rest_argc, 0
@@ -76,7 +76,7 @@ class TestMemoOptionParser < Minitest::Test
       sub_commands.each do |sub_command|
         rest_argv.each do |rest|
           argv = sub_command + rest
-          command_symbol, rest_argc = Memo::MemoOptionParser.parse_sub_command(argv)
+          command_symbol, rest_argc = Memo::CommandOption.parse_sub_command(argv)
 
           assert_equal command_symbol, :help
           assert_equal rest_argc, argv.length - 1
@@ -91,7 +91,7 @@ class TestMemoOptionParser < Minitest::Test
       sub_commands.each do |sub_command|
         rest_argv.each do |rest|
           argv = sub_command + rest
-          command_symbol, rest_argc = Memo::MemoOptionParser.parse_sub_command(argv)
+          command_symbol, rest_argc = Memo::CommandOption.parse_sub_command(argv)
 
           assert_equal command_symbol, :version
           assert_equal rest_argc, argv.length - 1
@@ -106,7 +106,7 @@ class TestMemoOptionParser < Minitest::Test
       sub_commands.each do |sub_command|
         rest_argv.each do |rest|
           argv = sub_command + rest
-          command_symbol, rest_argc = Memo::MemoOptionParser.parse_sub_command(argv)
+          command_symbol, rest_argc = Memo::CommandOption.parse_sub_command(argv)
 
           assert_equal command_symbol, command_symbol.intern
           assert_equal rest_argc, argv.length - 1
@@ -122,7 +122,7 @@ class TestOptions < Minitest::Test
   def test_print_help
     _, err = capture_io do
       exception = assert_raises(SystemExit) do
-        Memo::MemoOptionParser.to_user_message(:help)
+        Memo::CommandOption.to_user_message(:help)
       end
 
       assert_equal 0, exception.status
@@ -137,7 +137,7 @@ class TestOptions < Minitest::Test
   def test_print_version
     out, = capture_io do
       exception = assert_raises(SystemExit) do
-        Memo::MemoOptionParser.to_user_message(:version)
+        Memo::CommandOption.to_user_message(:version)
       end
 
       assert_equal 0, exception.status
@@ -151,7 +151,7 @@ class TestOptions < Minitest::Test
   def test_print_too_many_argv
     _, err = capture_io do
       exception = assert_raises(SystemExit) do
-        Memo::MemoOptionParser.to_user_message(:too_many_argv)
+        Memo::CommandOption.to_user_message(:too_many_argv)
       end
 
       assert_equal 2, exception.status
