@@ -14,7 +14,6 @@ module Memo
     end
 
     def execute(argv)
-      # parsed_options = Options.parse!(@argv)
       parsed_options = Memo::Command::Options::SubCommand.parse!(argv)
 
       case parsed_options.first

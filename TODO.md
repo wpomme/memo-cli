@@ -1,13 +1,15 @@
 ## TODO
 ```
-memo <word> でそのまま全文表示できる機能 # -> 文字列のサニタイズが必要
+# 内部
+Memo::Commandのテストコード
+Memo::Docs -> Memo::Memorandumにリネーム
+
+# CLI
 memo read <word> で表示したmdファイルに色をつける機能
-memo help / -h コマンド
 memo grep   # docs 以下について、そのキーワードで全文検索をかける
-memo edit <word> <word> の編集をする
+memo edit <word> # <word> の編集をする
 memo init memorandum とCLI で連携できたら楽 -> /exe 以下に.env を作成してMEMO_DIR=<VAR> <- このVAR に値を設定するなど
 memo check memorandum と連携できているかどうか -> memorandum の方にファイルを入れておいて、それがあるかどうかで判断する？
-memo format 対象メモのフォーマット # memorandum の方でフォーマットすればいい気がする
 
 ### その他
 ## 集計情報
