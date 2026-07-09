@@ -41,34 +41,47 @@ module Memo
               exit
             end
             opts.on('-r', '--read WORD', String, '対象のmemoを全文表示する') do |word|
-              return [:read, word]
+              return [:read, word?(word)]
             end
             opts.on('-l', '--list [DIRS]', String, 'memoの一覧を表示する') do |dirs|
-              return dirs ? [:list, dirs] : [:list]
+              return dirs ? [:list, word?(dirs)] : [:list]
             end
-            opts.on('-d', '--dirs', 'memoの中のディレクトリの一覧を表示する') do |_dirs|
+            opts.on('-d', '--dirs', 'memoの中のディレクトリの一覧を表示する') do
               return [:dirs]
             end
           end
 
-          # help -> -h として渡す
           return opts.parse!(['-h'] + argv) if HELP_COMMANDS.to_set.include?(first)
 
           if SUB_COMMAND_MAP.key?(first)
-            return :requires_argv if SUB_COMMAND_REQUIRED_ARGC[first] > argv.length
+            return to_error_message(:requires_argv) if SUB_COMMAND_REQUIRED_ARGC[first] > argv.length
 
             opts.parse!([SUB_COMMAND_MAP[first]] + argv)
           end
 
           # first がどのサブコマンドにも当てはまらなかった場合、memo <word>として処理する
-          # TODO: OptionParserか自作のword?を使いたい
-          # parser.send(:read, [first])
-          [:read, [first]]
+          # TODO: OptionParserを使いたい
+          [:read, word?(first)]
         end
 
+        # とりあえず作成
         def self.word?(word)
           r = /^\w[\w-]{,30}\w?$/
-          r.match?(word)
+          if r.match?(word)
+            word
+          else
+            to_error_message(:invalid_word)
+          end
+        end
+
+        # とりあえず作成
+        def self.to_error_message(symbol)
+          error_message_map = {
+            requires_argv: "引数が足りません。",
+            invalid_word: "不正な文字列です。"
+          }
+          puts error_message_map[symbol]
+          exit 2
         end
       end
     end

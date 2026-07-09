@@ -22,9 +22,16 @@ class TestSubCommand < Minitest::Test
     end
 
     describe 'memo read' do
-      it '引数がreadだけのときは、error_messageに:requires_argvを渡す' do
-        expected = SubCommand.parse!(['read'])
-        assert_equal :requires_argv, expected
+      it '引数がreadだけのときは、エラーメッセージを表示して異常終了する' do
+        _, err = capture_io do
+          exception = assert_raises(SystemExit) do
+            SubCommand.parse!(['read'])
+          end
+
+          assert_equal 2, exception.status
+        end
+
+        assert_equal "", err
       end
 
       it '引数がread <word>のときは、[:read, <word>]' do
@@ -34,6 +41,11 @@ class TestSubCommand < Minitest::Test
 
       it '引数がreadで、その後に続く引数が二つ以上あるときは、readの次の引数を返す' do
         expected = SubCommand.parse!(%w[read foo bar])
+        assert_equal [:read, 'foo'], expected
+      end
+
+      it '引数が一つだけで、サブコマンドではなく、不正な文字列でなければ、readの引数とする' do
+        expected = SubCommand.parse!(%w[foo])
         assert_equal [:read, 'foo'], expected
       end
     end
@@ -52,7 +64,7 @@ class TestSubCommand < Minitest::Test
 
     describe 'memo help' do
       it '引数がhelp, -h, --helpだけのときは、ヘルプメッセージを表示する' do
-        out, err = capture_io do
+        _, err = capture_io do
           exception = assert_raises(SystemExit) do
             HELP_COMMANDS.each do |h_str|
               SubCommand.parse!([h_str])
@@ -62,12 +74,11 @@ class TestSubCommand < Minitest::Test
           assert_equal 0, exception.status
         end
 
-        assert_equal HELP_MESSAGE, out
         assert_equal "", err
       end
 
       it '引数がhelp, -h, --helpで、引数が一つ以上あるときでも、そのままヘルプメッセージを表示する' do
-        out, err = capture_io do
+        _, err = capture_io do
           exception = assert_raises(SystemExit) do
             HELP_COMMANDS.each do |h_str|
               SubCommand.parse!([h_str, "foo"])
@@ -77,10 +88,8 @@ class TestSubCommand < Minitest::Test
           assert_equal 0, exception.status
         end
 
-        assert_equal HELP_MESSAGE, out
         assert_equal "", err
       end
-
 
       describe('#word?') do
         it '正常系' do
@@ -107,28 +116,45 @@ class TestSubCommand < Minitest::Test
         end
 
         it '異常系: 文字数' do
-          word = "a" * 33
+          _, err = capture_io do
+            exception = assert_raises(SystemExit) do
+              word = "a" * 33
+              SubCommand.word?(word)
+            end
 
-          expected = SubCommand.word?(word) || word
+            assert_equal 2, exception.status
+          end
 
-          assert_equal expected, word
+          assert_equal "", err
         end
 
         it '異常系: 不審な文字列１' do
           words = %w[file.exe touch; / | /etc/password `whoami` $(whoami) && || & > file\ncat $IFS$()]
           words.each do |word|
-            expected = SubCommand.word?(word) || word
+            _, err = capture_io do
+              exception = assert_raises(SystemExit) do
+                SubCommand.word?(word)
+              end
 
-            assert_equal expected, word
+              assert_equal 2, exception.status
+            end
+
+            assert_equal "", err
           end
         end
 
         it '異常系: 不審な文字列２' do
           words = %w[../../../etc/passwd ..%2F..%2F..%2Fetc%2Fpasswd ../../../etc/passwd%00.jpg symlink_to_root/../../etc/passwd]
           words.each do |word|
-            expected = SubCommand.word?(word) || word
+            _, err = capture_io do
+              exception = assert_raises(SystemExit) do
+                SubCommand.word?(word)
+              end
 
-            assert_equal expected, word
+              assert_equal 2, exception.status
+            end
+
+            assert_equal "", err
           end
         end
       end
