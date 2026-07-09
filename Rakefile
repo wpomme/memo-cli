@@ -15,12 +15,22 @@ end
 
 task default: :test
 
-desc '開発中のmemo list を実行する'
+desc 'rake rubocop -aを実行する'
+task :format do
+  sh 'rake rubocop:autocorrect_all'
+end
+
+desc 'rake rubocop -Aを実行する'
+task :fix do
+  sh 'rake rubocop:autocorrect_all'
+end
+
+desc '開発中のmemo listを実行する'
 task :list do
   sh 'bundle exec ruby exe/memo list'
 end
 
-desc '開発中のmemo dirs を実行する'
+desc '開発中のmemo dirsを実行する'
 task :dirs do
   sh 'bundle exec ruby exe/memo dirs'
 end
