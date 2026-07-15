@@ -3,6 +3,7 @@
 # 内部
 Memo::Commandのテストコード
 Memo::Docs -> Memo::Memorandumにリネーム
+Memo::Docs -> printと出力を分離する
 
 # CLI
 memo read <word> で表示したmdファイルに色をつける機能

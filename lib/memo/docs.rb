@@ -5,6 +5,11 @@ require 'rainbow'
 module Memo
   class Docs
     Entry = Data.define(:full_path, :dir)
+
+    def self.dirs(memo_dir)
+      new(memo_dir).to_dirs.each { |d| puts d }
+    end
+
     def initialize(memo_dir)
       # @memo_dir = File.join(File.expand_path("..", memo_dir), 'docs')
       @memo_dir = memo_dir
@@ -33,9 +38,8 @@ module Memo
         .map { |line| puts(line) }
     end
 
-    # メモのディレクトリの一覧を出力する
-    def print_dirs
-      @dir_set.each { |dir| puts dir }
+    def to_dirs
+      @dir_set.to_a
     end
 
     # メモのディレクトリを赤字で表示し、そのディレクトリごとのファイル名を出力する

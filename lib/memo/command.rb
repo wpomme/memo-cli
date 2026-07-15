@@ -24,7 +24,7 @@ module Memo
           Docs.new(@memo_dir).print_files
         end
       when :dirs
-        Docs.new(@memo_dir).print_dirs
+        Docs.dirs(@memo_dir)
       when :read
         Docs.new(@memo_dir).read_and_print_content(parsed_options.pop)
       end
