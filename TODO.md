@@ -1,9 +1,6 @@
 ## TODO
 ```
 # 内部
-Rdocか型検査を導入してみたい
-## テストコード
-beforeでsetupするテストデータの共通化
 
 ## フォルダ構成や命名規則の変更
 Memo -> MemoCliにしてMemoCli::Memoのようにした方が良さそう

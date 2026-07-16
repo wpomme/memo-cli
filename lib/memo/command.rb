@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-require 'find'
+# require 'find'
 require_relative 'docs'
 
 module Memo

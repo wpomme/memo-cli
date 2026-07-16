@@ -89,9 +89,3 @@ module Memo
     end
   end
 end
-
-# Memo::Command::Options::SubCommand.parse!(['list', 'foo'])
-# Memo::Command::Options::SubCommand.parse!(['read', 'foo'])
-# Memo::Command::Options::SubCommand.parse!(['foo'])
-# Memo::Command::Options::SubCommand.parse!(['help'])
-# Memo::Command::Options::SubCommand.parse!(['-v'])

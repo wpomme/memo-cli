@@ -6,68 +6,8 @@ require "fileutils"
 require_relative "../test_helper"
 
 class TestDocs < Minitest::Test
-  # TODO: @memo_dir と @memo_dir が同階層であること
-  # TODO: @entries.full_path と@entries.dir のテストコード
-  # TODO: @dir_set のテストコード
-  TEST_FIND_FILE_CONTENT = <<~FIND_FILE
-    ## find: ファイルの階層を巡回する
-
-    - 例
-    ```bash
-    # 名前に"foo"を含むファイルを検索する
-    find . -type f -name "*foo*"
-
-    # 実行可能なファイルを検索して、中身の文字数などを確認する
-    find . -perm -a+x -type f -exec wc {} ;
-    ```
-
-    - オプション
-        - `-print0`: 改行の代わりにヌル文字を使って入力文字列を区切る
-  FIND_FILE
-
   describe 'Docs' do
-    before do
-      @dir_set = Set.new(['cli', 'git', 'setting', 'shell/bash'])
-
-      @tmpdir = Dir.mktmpdir
-      @memo_dir = File.join(@tmpdir, "docs")
-      @memo_dir = File.join(@tmpdir, "exe")
-
-      @test_files = %w[grep.md find.md log.mg test.md]
-
-      FileUtils.mkdir_p(File.join(@memo_dir, "cli"))
-      FileUtils.mkdir_p(File.join(@memo_dir, "git"))
-      FileUtils.mkdir_p(File.join(@memo_dir, "setting"))
-      shell_dir = FileUtils.mkdir_p(File.join(@memo_dir, "shell"))
-      FileUtils.mkdir_p(File.join(shell_dir, "bash"))
-
-      File.write(File.join(@memo_dir, "README.md"), "# Top README\n")
-      File.write(File.join(@memo_dir, "cli", "grep.md"), "grep command\n")
-      File.write(File.join(@memo_dir, "cli", "find.md"), TEST_FIND_FILE_CONTENT)
-      File.write(File.join(@memo_dir, "git", "log.md"), "git log\n")
-      File.write(File.join(@memo_dir, "setting", "grep.md"), "grep setting\n")
-      File.write(File.join(shell_dir, "bash", "test.md"), "bash test command\n")
-
-      @test_read_entry_arr = [
-        Memo::Docs::Entry.new(full_path: File.join(@memo_dir, "cli", "find.md"), dir: "cli")
-      ]
-
-      @test_entries = [
-        Memo::Docs::Entry.new(full_path: File.join(@memo_dir, "cli", "grep.md"), dir: "cli"),
-        Memo::Docs::Entry.new(full_path: File.join(@memo_dir, "cli", "find.md"), dir: "cli"),
-        Memo::Docs::Entry.new(full_path: File.join(@memo_dir, "git", "log.md"), dir: "git"),
-        Memo::Docs::Entry.new(full_path: File.join(@memo_dir, "setting", "grep.md"), dir: "setting"),
-        Memo::Docs::Entry.new(full_path: File.join(@memo_dir, "shell", "bash", "test.md"), dir: "shell/bash")
-      ]
-
-      @original_dir = Dir.pwd
-      Dir.chdir(@tmpdir)
-    end
-
-    after do
-      Dir.chdir(@original_dir)
-      FileUtils.remove_entry_secure(@tmpdir)
-    end
+    include MemoTestLifecycleHooks
 
     describe '#initialize' do
       describe '@entries' do
@@ -154,7 +94,7 @@ class TestDocs < Minitest::Test
       it "entryが空でない場合は、" do
         expected = Memo::Docs.new(@memo_dir).find_a_file('find').read_a_file
 
-        actual = TEST_FIND_FILE_CONTENT.split("\n")
+        actual = MemoTestLifecycleHooks::TEST_FIND_FILE_CONTENT.split("\n")
 
         assert_equal actual, expected
       end
@@ -174,7 +114,7 @@ class TestDocs < Minitest::Test
           Memo::Docs.read(@memo_dir, "find")
         end
 
-        assert_equal TEST_FIND_FILE_CONTENT, out
+        assert_equal MemoTestLifecycleHooks::TEST_FIND_FILE_CONTENT, out
       end
     end
 
