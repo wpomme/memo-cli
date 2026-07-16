@@ -14,15 +14,15 @@ module Memo
     end
 
     def execute(argv)
-      parsed_options = Memo::Command::Options::SubCommand.parse!(argv)
+      options = Memo::Command::Options::SubCommand.parse!(argv)
 
-      case parsed_options.first
+      case options.shift
       when :list
-        Docs.list(@memo_dir, parsed_options[1])
+        Docs.list(@memo_dir, options.shift)
       when :dirs
         Docs.dirs(@memo_dir)
       when :read
-        Docs.new(@memo_dir).read_and_print_content(parsed_options.pop)
+        Docs.read(@memo_dir, options.shift)
       end
     end
   end

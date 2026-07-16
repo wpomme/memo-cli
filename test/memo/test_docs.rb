@@ -7,9 +7,26 @@ class TestDocs < Minitest::Test
   # TODO: @memo_dir と @memo_dir が同階層であること
   # TODO: @entries.full_path と@entries.dir のテストコード
   # TODO: @dir_set のテストコード
+  TEST_FIND_FILE_CONTENT = <<~FIND_FILE.freeze
+    ## find: ファイルの階層を巡回する
+
+    - 例
+    ```bash
+    # 名前に"foo"を含むファイルを検索する
+    find . -type f -name "*foo*"
+
+    # 実行可能なファイルを検索して、中身の文字数などを確認する
+    find . -perm -a+x -type f -exec wc {} ;
+    ```
+
+    - オプション
+        - `-print0`: 改行の代わりにヌル文字を使って入力文字列を区切る
+  FIND_FILE
 
   describe 'Docs' do
     before do
+      @dir_set = Set.new(['cli', 'git', 'setting', 'shell/bash'])
+
       @tmpdir = Dir.mktmpdir
       @memo_dir = File.join(@tmpdir, "docs")
       @memo_dir = File.join(@tmpdir, "exe")
@@ -18,19 +35,26 @@ class TestDocs < Minitest::Test
 
       FileUtils.mkdir_p(File.join(@memo_dir, "cli"))
       FileUtils.mkdir_p(File.join(@memo_dir, "git"))
+      FileUtils.mkdir_p(File.join(@memo_dir, "setting"))
       shell_dir = FileUtils.mkdir_p(File.join(@memo_dir, "shell"))
       FileUtils.mkdir_p(File.join(shell_dir, "bash"))
 
       File.write(File.join(@memo_dir, "README.md"), "# Top README\n")
       File.write(File.join(@memo_dir, "cli", "grep.md"), "grep command\n")
-      File.write(File.join(@memo_dir, "cli", "find.md"), "find command\n")
+      File.write(File.join(@memo_dir, "cli", "find.md"), TEST_FIND_FILE_CONTENT)
       File.write(File.join(@memo_dir, "git", "log.md"), "git log\n")
+      File.write(File.join(@memo_dir, "setting", "grep.md"), "grep setting\n")
       File.write(File.join(shell_dir, "bash", "test.md"), "bash test command\n")
+
+      @test_read_entry_arr = [
+        Memo::Docs::Entry.new(full_path: File.join(@memo_dir, "cli", "find.md"), dir: "cli")
+      ]
 
       @test_entries = [
         Memo::Docs::Entry.new(full_path: File.join(@memo_dir, "cli", "grep.md"), dir: "cli"),
         Memo::Docs::Entry.new(full_path: File.join(@memo_dir, "cli", "find.md"), dir: "cli"),
         Memo::Docs::Entry.new(full_path: File.join(@memo_dir, "git", "log.md"), dir: "git"),
+        Memo::Docs::Entry.new(full_path: File.join(@memo_dir, "setting", "grep.md"), dir: "setting"),
         Memo::Docs::Entry.new(full_path: File.join(@memo_dir, "shell", "bash", "test.md"), dir: "shell/bash")
       ]
 
@@ -98,14 +122,69 @@ class TestDocs < Minitest::Test
       end
     end
 
+    # describe '#find_a_file' do
+    #   it "memoの中に存在するファイルが見つかった場合は、そのファイルのEntryの配列を返す" do
+    #     word = 'find'
+    #     expected = Memo::Docs.new(@memo_dir).find_a_file(word)
+    #     actual = [Memo::Docs::Entry.new(full_path: File.join(@memo_dir, "cli", "find.md"), dir: "cli")]
+
+    #     assert_equal actual, expected
+    #   end
+
+    #   it "memoの中に存在するファイルが複数見つかった場合は、複数のファイルのEntryの配列を返す" do
+    #     word = 'grep'
+    #     expected = Memo::Docs.new(@memo_dir).find_a_file(word)
+    #     actual = [Memo::Docs::Entry.new(full_path: File.join(@memo_dir, "cli", "grep.md"), dir: "cli"),
+    #               Memo::Docs::Entry.new(full_path: File.join(@memo_dir, "setting", "grep.md"), dir: "setting")]
+
+    #     assert_equal actual, expected
+    #   end
+
+    #   it "memoの中に存在しないwordが入力された場合は、空の配列を返す" do
+    #     word = 'invalid_word'
+    #     expected = Memo::Docs.new(@memo_dir).find_a_file(word)
+
+    #     assert_equal [], expected
+    #   end
+    # end
+
+    describe '#find_a_file -> #read_a_file' do
+      it "entryが空でない場合は、" do
+        expected = Memo::Docs.new(@memo_dir).find_a_file('find').read_a_file
+
+        actual = TEST_FIND_FILE_CONTENT.split("\n")
+
+        assert_equal actual, expected
+      end
+
+      #   it "entryが複数の場合" do
+      #     skip "TODO"
+      #   end
+
+      #   it "entryがからの場合" do
+      #     skip "TODO"
+      #   end
+    end
+
+    describe '#read' do
+      it 'memoディレクトリの中に存在するwordを受け取った場合は、そのファイルを全文表示する' do
+        out, = capture_io do
+          Memo::Docs.read(@memo_dir, "find")
+        end
+
+        assert_equal TEST_FIND_FILE_CONTENT, out
+      end
+    end
+
     describe '#dirs' do
       it "['dirs']を受け取ったときは、memo_dirの中のディレクトリの一覧を標準出力に表示する" do
-        out, err = capture_io do
+        out, = capture_io do
           Memo::Docs.dirs(@memo_dir)
         end
 
-        assert_equal "", err
-        assert_equal "cli\ngit\nshell/bash\n", out
+        actual = @dir_set.to_a.sort.join("\n") << "\n"
+
+        assert_equal actual, out
       end
     end
 
@@ -130,7 +209,7 @@ class TestDocs < Minitest::Test
       it "memo_dirの中に存在するdirを受け取った場合は、そのディレクトリの中にあるメモの配列を返す" do
         exist_dir = 'cli'
 
-        out, err = capture_io do
+        out, = capture_io do
           Memo::Docs.files_by_dir(@memo_dir, exist_dir)
         end
 
@@ -139,14 +218,13 @@ class TestDocs < Minitest::Test
                    .sort
                    .join("\n") << "\n"
 
-        assert_equal "", err
         assert_equal expected, out
       end
 
       it "memo_dirの中に存在しないdirを受け取った場合は、ディレクトリが見当たらない旨のメッセージを表示する" do
         invalid_dir = 'invalid'
 
-        out, err = capture_io do
+        out, = capture_io do
           exception = assert_raises(SystemExit) do
             Memo::Docs.files_by_dir(@memo_dir, invalid_dir)
           end
@@ -154,7 +232,6 @@ class TestDocs < Minitest::Test
           assert_equal 2, exception.status
         end
 
-        assert_equal "", err
         assert_equal "#{invalid_dir}というディレクトリはありません。\n", out
       end
     end
