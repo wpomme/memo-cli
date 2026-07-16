@@ -7,7 +7,7 @@ module Memo
     Entry = Data.define(:full_path, :dir)
 
     def self.dirs(memo_dir)
-      new(memo_dir).to_dirs.each { |d| puts d }
+      puts new(memo_dir).to_dirs
     end
 
     def initialize(memo_dir)
@@ -38,10 +38,6 @@ module Memo
         .map { |line| puts(line) }
     end
 
-    def to_dirs
-      @dir_set.to_a
-    end
-
     # メモのディレクトリを赤字で表示し、そのディレクトリごとのファイル名を出力する
     def print_files
       grouped_by_dir.each_key do |key|
@@ -62,6 +58,12 @@ module Memo
       files.each do |entry|
         puts filename(entry.full_path)
       end
+    end
+
+    # ディレクトリの集合を配列に変換する
+    # TODO: private methodにしたい
+    def to_dirs
+      @dir_set.to_a
     end
 
     private

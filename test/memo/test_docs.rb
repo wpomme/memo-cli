@@ -86,13 +86,14 @@ class TestDocs < Minitest::Test
       end
     end
 
-    # #to_dirs から self.dirsのテストコードに切り替える
-    # その後、to_dirsをprivateにする
-    describe '#to_dirs' do
-      it '@memo_dirの中にあるディレクトリの配列を返す' do
-        expected = Memo::Docs.new(@memo_dir).to_dirs
+    describe '#dirs' do
+      it "['dirs']を受け取ったときは、memo_dirの中のディレクトリの一覧を標準出力に表示する" do
+        out, err = capture_io do
+          Memo::Docs.dirs(@memo_dir)
+        end
 
-        assert_equal ["cli", "git", "shell/bash"], expected
+        assert_equal "", err
+        assert_equal "cli\ngit\nshell/bash\n", out
       end
     end
   end

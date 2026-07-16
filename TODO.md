@@ -1,6 +1,7 @@
 ## TODO
 ```
 # 内部
+Rdocか型検査を導入してみたい
 Memo::Commandのテストコード
 Memo::Docs -> Memo::Memorandumにリネーム
 Memo::Docs -> printと出力を分離する
