@@ -5,6 +5,7 @@ Rdocか型検査を導入してみたい
 Memo::Commandのテストコード
 Memo::Docs -> Memo::Memorandumにリネーム
 Memo::Docs -> printと出力を分離する
+word? の文字列チェックを廃止する
 
 # CLI
 memo read <word> で表示したmdファイルに色をつける機能

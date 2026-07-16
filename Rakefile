@@ -2,7 +2,6 @@
 
 require "bundler/gem_tasks"
 require "minitest/test_task"
-require "rubocop/rake_task"
 
 Minitest::TestTask.create
 
@@ -10,12 +9,12 @@ task default: :test
 
 desc 'rake rubocop -aを実行する'
 task :format do
-  sh 'rake rubocop:autocorrect_all'
+  sh 'bundle exec rubocop -a lib/ test/'
 end
 
 desc 'rake rubocop -Aを実行する'
 task :fix do
-  sh 'rake rubocop:autocorrect_all'
+  sh 'bundle exec rubocop -A lib/ test/'
 end
 
 desc '開発中のmemo listを実行する'

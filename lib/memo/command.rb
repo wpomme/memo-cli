@@ -18,11 +18,7 @@ module Memo
 
       case parsed_options.first
       when :list
-        if parsed_options[1]
-          Docs.new(@memo_dir).print_files_by_dir(parsed_options.pop)
-        else
-          Docs.new(@memo_dir).print_files
-        end
+        Docs.list(@memo_dir, parsed_options[1])
       when :dirs
         Docs.dirs(@memo_dir)
       when :read

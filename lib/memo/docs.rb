@@ -6,12 +6,34 @@ module Memo
   class Docs
     Entry = Data.define(:full_path, :dir)
 
-    def self.dirs(memo_dir)
-      puts new(memo_dir).to_dirs
+    class << self
+      def dirs(memo_dir)
+        puts new(memo_dir).to_dirs
+      end
+
+      def list(memo_dir, dir = nil)
+        if dir
+          files_by_dir(memo_dir, dir)
+        else
+          files(memo_dir)
+        end
+      end
+
+      def files(memo_dir)
+        puts new(memo_dir).to_files
+      end
+
+      def files_by_dir(memo_dir, dir)
+        files = new(memo_dir).to_files_by_dir(dir)
+        unless files
+          puts "#{dir}というディレクトリはありません。"
+          exit(2)
+        end
+        puts files
+      end
     end
 
     def initialize(memo_dir)
-      # @memo_dir = File.join(File.expand_path("..", memo_dir), 'docs')
       @memo_dir = memo_dir
       @entries = load_entries
       @dir_set = Set.new(@entries.map(&:dir).uniq)
@@ -38,42 +60,38 @@ module Memo
         .map { |line| puts(line) }
     end
 
-    # メモのディレクトリを赤字で表示し、そのディレクトリごとのファイル名を出力する
-    def print_files
-      grouped_by_dir.each_key do |key|
-        puts Rainbow(key).green
-        grouped_by_dir[key].each do |entry|
-          puts filename(entry.full_path)
-        end
-      end
-    end
-
     def print_files_by_dir(dir)
-      files = files_by_dir(dir)
-      unless files
+      unless grouped_by_dir.key?(dir)
         puts "#{dir} というディレクトリはありません。"
         exit!(1)
       end
+
+      files = grouped_by_dir[dir]
 
       files.each do |entry|
         puts filename(entry.full_path)
       end
     end
 
+    def to_files_by_dir(dir)
+      return unless grouped_by_dir.key?(dir)
+
+      grouped_by_dir[dir].map { |entry| filename(entry.full_path) }
+    end
+
+    # ディレクトリとその中に入っているメモファイルの配列を返す
+    def to_files
+      grouped_by_dir.map do |key, entries|
+        [Rainbow(key).green, entries.map { |entry| filename(entry.full_path) }]
+      end
+    end
+
     # ディレクトリの集合を配列に変換する
-    # TODO: private methodにしたい
     def to_dirs
       @dir_set.to_a
     end
 
     private
-
-    # nil か dir ごとのfiles を返す
-    def files_by_dir(dir)
-      return unless grouped_by_dir.key?(dir)
-
-      grouped_by_dir[dir]
-    end
 
     # dir をkey としてentry をHash 化したもの
     def grouped_by_dir

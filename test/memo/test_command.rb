@@ -1,7 +1,7 @@
 require_relative "../test_helper"
 
 class TestCommand < Minitest::Test
-  # TODO #executeから#runのテストコードへ切り替えていく
+  # TODO: #executeから#runのテストコードへ切り替えていく
   # その後、#executeをprivateにする
   describe 'Command' do
     before do
@@ -22,6 +22,20 @@ class TestCommand < Minitest::Test
       File.write(File.join(@memo_dir, "git", "log.md"), "git log\n")
       File.write(File.join(shell_dir, "bash", "test.md"), "bash test command\n")
 
+      @test_entries = [
+        Memo::Docs::Entry.new(full_path: File.join(@memo_dir, "cli", "grep.md"), dir: "cli"),
+        Memo::Docs::Entry.new(full_path: File.join(@memo_dir, "cli", "find.md"), dir: "cli"),
+        Memo::Docs::Entry.new(full_path: File.join(@memo_dir, "git", "log.md"), dir: "git"),
+        Memo::Docs::Entry.new(full_path: File.join(@memo_dir, "shell", "bash", "test.md"), dir: "shell/bash")
+      ]
+
+      @test_memo_list = @test_entries
+                        .group_by(&:dir)
+                        .map do |dir, entries|
+                          filenames = entries.map { |entry| File.basename(entry.full_path, '.md') }.sort
+                          [Rainbow(dir).green, filenames]
+                        end
+
       @original_dir = Dir.pwd
       Dir.chdir(@tmpdir)
     end
@@ -39,6 +53,29 @@ class TestCommand < Minitest::Test
 
         assert_equal "", err
         assert_equal "cli\ngit\nshell/bash\n", out
+      end
+
+      it "['list']を受け取ったときは、memo_dirの中のディレクトリとその中にあるメモファイルを全て表示する" do
+        out, err = capture_io do
+          Memo::Command.new(@memo_dir).execute(['list'])
+        end
+
+        assert_equal "", err
+        assert_equal @test_memo_list.flatten.join("\n") << "\n", out
+      end
+
+      it "['list', 'cli']を受け取ったときは、memo_dirの中のcliディレクトリの中にあるメモファイルを全て表示する" do
+        out, err = capture_io do
+          Memo::Command.new(@memo_dir).execute(%w[list cli])
+        end
+
+        expected = @test_entries
+                   .filter_map { |entry| File.basename(entry.full_path, '.md') if entry.dir == 'cli' }
+                   .sort
+                   .join("\n") << "\n"
+
+        assert_equal "", err
+        assert_equal expected, out
       end
     end
   end

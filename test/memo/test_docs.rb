@@ -27,6 +27,13 @@ class TestDocs < Minitest::Test
       File.write(File.join(@memo_dir, "git", "log.md"), "git log\n")
       File.write(File.join(shell_dir, "bash", "test.md"), "bash test command\n")
 
+      @test_entries = [
+        Memo::Docs::Entry.new(full_path: File.join(@memo_dir, "cli", "grep.md"), dir: "cli"),
+        Memo::Docs::Entry.new(full_path: File.join(@memo_dir, "cli", "find.md"), dir: "cli"),
+        Memo::Docs::Entry.new(full_path: File.join(@memo_dir, "git", "log.md"), dir: "git"),
+        Memo::Docs::Entry.new(full_path: File.join(@memo_dir, "shell", "bash", "test.md"), dir: "shell/bash")
+      ]
+
       @original_dir = Dir.pwd
       Dir.chdir(@tmpdir)
     end
@@ -47,14 +54,19 @@ class TestDocs < Minitest::Test
         end
 
         it '@entriesはMemo::Docs::Entryの配列を返す' do
-          def test_load_entries_returns_entry_structs
-            docs = Memo::Docs.new(@memo_dir)
-            entries = docs.instance_variable_get(:@entries)
+          docs = Memo::Docs.new(@memo_dir)
+          entries = docs.instance_variable_get(:@entries)
 
-            entries.each do |entry|
-              assert_instance_of Memo::Docs::Entry, entry
-            end
+          entries.each do |entry|
+            assert_instance_of Memo::Docs::Entry, entry
           end
+        end
+
+        it '@entriesは期待するEntryの一覧と一致する' do
+          docs = Memo::Docs.new(@memo_dir)
+          entries = docs.instance_variable_get(:@entries)
+
+          assert_equal @test_entries.sort_by(&:full_path), entries.sort_by(&:full_path)
         end
 
         it '@entries.full_pathはREADME(.md) を含まない' do
@@ -94,6 +106,66 @@ class TestDocs < Minitest::Test
 
         assert_equal "", err
         assert_equal "cli\ngit\nshell/bash\n", out
+      end
+    end
+
+    # TODO: to_filesからfilesのテストコードにする
+    describe '#to_files' do
+      it "memo_dirのファイルの一覧とそのファイルが属しているディレクトリを表示する" do
+        expected = @test_entries
+                   .group_by(&:dir)
+                   .map do |dir, entries|
+                     filenames = entries.map { |entry| File.basename(entry.full_path, '.md') }.sort
+                     [Rainbow(dir).green, filenames]
+                   end
+
+        actual = Memo::Docs.new(@memo_dir).to_files
+                           .map { |dir, filenames| [dir, filenames.sort] }
+
+        assert_equal expected.sort, actual.sort
+      end
+    end
+
+    describe '#files_by_dir' do
+      it "memo_dirの中に存在するdirを受け取った場合は、そのディレクトリの中にあるメモの配列を返す" do
+        exist_dir = 'cli'
+
+        out, err = capture_io do
+          Memo::Docs.files_by_dir(@memo_dir, exist_dir)
+        end
+
+        expected = @test_entries
+                   .filter_map { |entry| File.basename(entry.full_path, '.md') if entry.dir == exist_dir }
+                   .sort
+                   .join("\n") << "\n"
+
+        assert_equal "", err
+        assert_equal expected, out
+      end
+
+      it "memo_dirの中に存在しないdirを受け取った場合は、ディレクトリが見当たらない旨のメッセージを表示する" do
+        invalid_dir = 'invalid'
+
+        out, err = capture_io do
+          exception = assert_raises(SystemExit) do
+            Memo::Docs.files_by_dir(@memo_dir, invalid_dir)
+          end
+
+          assert_equal 2, exception.status
+        end
+
+        assert_equal "", err
+        assert_equal "#{invalid_dir}というディレクトリはありません。\n", out
+      end
+    end
+
+    describe '#list' do
+      it "引数が一つの場合は#filesを呼び出す" do
+        skip "TODO"
+      end
+
+      it "引数が二つの場合は#files_by_dirを呼び出す" do
+        skip "TODO"
       end
     end
   end
