@@ -1,9 +1,11 @@
+# frozen_string_literal: true
+
 require_relative "../test_helper"
 
 class TestCommand < Minitest::Test
   # TODO: #executeから#runのテストコードへ切り替えていく
   # その後、#executeをprivateにする
-  TEST_FIND_FILE_CONTENT = <<~FIND_FILE.freeze
+  TEST_FIND_FILE_CONTENT = <<~FIND_FILE
     ## find: ファイルの階層を巡回する
 
     - 例
@@ -47,11 +49,11 @@ class TestCommand < Minitest::Test
       ]
 
       @test_memo_list = @test_entries
-                        .group_by(&:dir)
-                        .map do |dir, entries|
-                          filenames = entries.map { |entry| File.basename(entry.full_path, '.md') }.sort
-                          [Rainbow(dir).green, filenames]
-                        end
+        .group_by(&:dir)
+        .map do |dir, entries|
+          filenames = entries.map { |entry| File.basename(entry.full_path, '.md') }.sort
+          [Rainbow(dir).green, filenames]
+        end
 
       @original_dir = Dir.pwd
       Dir.chdir(@tmpdir)
@@ -85,9 +87,9 @@ class TestCommand < Minitest::Test
         end
 
         expected = @test_entries
-                   .filter_map { |entry| File.basename(entry.full_path, '.md') if entry.dir == 'cli' }
-                   .sort
-                   .join("\n") << "\n"
+          .filter_map { |entry| File.basename(entry.full_path, '.md') if entry.dir == 'cli' }
+          .sort
+          .join("\n") << "\n"
 
         assert_equal expected, out
       end

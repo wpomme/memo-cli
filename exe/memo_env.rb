@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class MemoEnv
   # TODO: memo init でmemo フォルダを上手く配置できるようにする
   def initialize

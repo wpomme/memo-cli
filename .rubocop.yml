@@ -22,6 +22,10 @@ Layout/FirstArgumentIndentation:
 Layout/ArgumentAlignment:
   EnforcedStyle: with_fixed_indentation
 
+# メソッドチェーンは直前の行頭からインデントする
+Layout/MultilineMethodCallIndentation:
+  EnforcedStyle: indented
+
 # メトリクスに関するフォーマットは無効にする
 Metrics:
   Enabled: false
@@ -32,7 +36,7 @@ Style/Documentation:
 
 # frozen_string_literalのコメント必須を無効化
 Style/FrozenStringLiteralComment:
-  Enabled: false
+  Enabled: true
 
 # 文字列についてシングルクオート強制を無効化
 Style/StringLiterals:

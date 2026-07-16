@@ -1,10 +1,12 @@
+# frozen_string_literal: true
+
 require "optparse"
 
 module Memo
   class Command
     module Options
       HELP_COMMANDS = %w[-h --help help].freeze
-      HELP_MESSAGE = <<~HELP.freeze
+      HELP_MESSAGE = <<~HELP
         Usage:
         # メモの一覧を表示する
         memo list

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require "tmpdir"
 require "fileutils"
 
@@ -7,7 +9,7 @@ class TestDocs < Minitest::Test
   # TODO: @memo_dir と @memo_dir が同階層であること
   # TODO: @entries.full_path と@entries.dir のテストコード
   # TODO: @dir_set のテストコード
-  TEST_FIND_FILE_CONTENT = <<~FIND_FILE.freeze
+  TEST_FIND_FILE_CONTENT = <<~FIND_FILE
     ## find: ファイルの階層を巡回する
 
     - 例
@@ -192,14 +194,14 @@ class TestDocs < Minitest::Test
     describe '#to_files' do
       it "memo_dirのファイルの一覧とそのファイルが属しているディレクトリを表示する" do
         expected = @test_entries
-                   .group_by(&:dir)
-                   .map do |dir, entries|
-                     filenames = entries.map { |entry| File.basename(entry.full_path, '.md') }.sort
-                     [Rainbow(dir).green, filenames]
-                   end
+          .group_by(&:dir)
+          .map do |dir, entries|
+            filenames = entries.map { |entry| File.basename(entry.full_path, '.md') }.sort
+            [Rainbow(dir).green, filenames]
+          end
 
         actual = Memo::Docs.new(@memo_dir).to_files
-                           .map { |dir, filenames| [dir, filenames.sort] }
+          .map { |dir, filenames| [dir, filenames.sort] }
 
         assert_equal expected.sort, actual.sort
       end
@@ -214,9 +216,9 @@ class TestDocs < Minitest::Test
         end
 
         expected = @test_entries
-                   .filter_map { |entry| File.basename(entry.full_path, '.md') if entry.dir == exist_dir }
-                   .sort
-                   .join("\n") << "\n"
+          .filter_map { |entry| File.basename(entry.full_path, '.md') if entry.dir == exist_dir }
+          .sort
+          .join("\n") << "\n"
 
         assert_equal expected, out
       end
