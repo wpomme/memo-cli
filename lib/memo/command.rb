@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 require 'find'
-require 'memo/docs'
+require_relative 'docs'
 
 module Memo
   class Command

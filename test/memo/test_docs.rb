@@ -86,6 +86,8 @@ class TestDocs < Minitest::Test
       end
     end
 
+    # #to_dirs から self.dirsのテストコードに切り替える
+    # その後、to_dirsをprivateにする
     describe '#to_dirs' do
       it '@memo_dirの中にあるディレクトリの配列を返す' do
         expected = Memo::Docs.new(@memo_dir).to_dirs

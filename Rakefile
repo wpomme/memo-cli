@@ -2,16 +2,9 @@
 
 require "bundler/gem_tasks"
 require "minitest/test_task"
-require "rake/TestTask"
 require "rubocop/rake_task"
 
 Minitest::TestTask.create
-
-RuboCop::RakeTask.new
-
-Rake::TestTask.new do |t|
-  t.pattern = 'test/**/test_*.rb'
-end
 
 task default: :test
 
