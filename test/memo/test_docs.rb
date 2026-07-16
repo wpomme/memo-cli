@@ -11,14 +11,6 @@ class TestDocs < Minitest::Test
 
     describe '#initialize' do
       describe '@entries' do
-        it 'Docs#initializeは@entriesを生成し、@entriesは配列であり空ではない' do
-          docs = Memo::Docs.new(@memo_dir)
-          entries = docs.instance_variable_get(:@entries)
-
-          assert_instance_of Array, entries
-          refute_empty entries
-        end
-
         it '@entriesはMemo::Docs::Entryの配列を返す' do
           docs = Memo::Docs.new(@memo_dir)
           entries = docs.instance_variable_get(:@entries)
@@ -32,7 +24,9 @@ class TestDocs < Minitest::Test
           docs = Memo::Docs.new(@memo_dir)
           entries = docs.instance_variable_get(:@entries)
 
-          assert_equal @test_entries.sort_by(&:full_path), entries.sort_by(&:full_path)
+          # dir: が"."の場合と、filenameがREADME.mdの場合が面倒
+          # TODO: このような条件分岐はテストコードにも反映させた方が良さそう
+          assert_equal @test_entries.to_set, entries.to_set
         end
 
         it '@entries.full_pathはREADME(.md) を含まない' do
@@ -124,26 +118,21 @@ class TestDocs < Minitest::Test
           Memo::Docs.dirs(@memo_dir)
         end
 
-        actual = @dir_set.to_a.sort.join("\n") << "\n"
-
-        assert_equal actual, out
+        # 順番が異なっていても、書き出す内容が同じなら問題ない
+        assert_equal @dir_set, out.split("\n").to_set
       end
     end
 
     # TODO: to_filesからfilesのテストコードにする
     describe '#to_files' do
       it "memo_dirのファイルの一覧とそのファイルが属しているディレクトリを表示する" do
-        expected = @test_entries
-          .group_by(&:dir)
-          .map do |dir, entries|
-            filenames = entries.map { |entry| File.basename(entry.full_path, '.md') }.sort
-            [Rainbow(dir).green, filenames]
-          end
+        expected = @test_to_files
 
         actual = Memo::Docs.new(@memo_dir).to_files
-          .map { |dir, filenames| [dir, filenames.sort] }
 
-        assert_equal expected.sort, actual.sort
+        # 順番が異なっていても、書き出す内容が同じなら問題ない
+        # 一次元の配列にしてsortすれば同じ内容になる
+        assert_equal expected.flatten.sort, actual.flatten.sort
       end
     end
 

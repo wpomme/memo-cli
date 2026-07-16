@@ -88,6 +88,7 @@ module Memo
     end
 
     # ディレクトリとその中に入っているメモファイルの配列を返す
+    # dirをkeyにして、ファイルの配列を集合にしたもののハッシュを返却してもいいかも
     def to_files
       grouped_by_dir.map do |key, entries|
         [Rainbow(key).green, entries.map { |entry| filename(entry.full_path) }]

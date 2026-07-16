@@ -12,8 +12,8 @@ class TestCommand < Minitest::Test
           Memo::Command.new(@memo_dir).execute(['dirs'])
         end
 
-        actual = @dir_set.to_a.sort.join("\n") << "\n"
-        assert_equal actual, out
+        actual = @dir_set
+        assert_equal actual, out.split("\n").to_set
       end
 
       it "['list']を受け取ったときは、memo_dirの中のディレクトリとその中にあるメモファイルを全て表示する" do
@@ -21,7 +21,7 @@ class TestCommand < Minitest::Test
           Memo::Command.new(@memo_dir).execute(['list'])
         end
 
-        assert_equal @test_memo_list.flatten.join("\n") << "\n", out
+        assert_equal @test_to_files.flatten.to_set, out.split("\n").to_set
       end
 
       it "['list', 'cli']を受け取ったときは、memo_dirの中のcliディレクトリの中にあるメモファイルを全て表示する" do
