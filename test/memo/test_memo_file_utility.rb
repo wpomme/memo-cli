@@ -3,33 +3,55 @@
 require_relative "../test_helper"
 
 class TestMemoFileUtility < Minitest::Test
-  describe '#filename' do
-    it "絶対パスを取ったら、そのファイルの.mdをとったファイル名を返す" do
-      expected = Memo::MemoFileUtility.filename(File.join(Dir.home, "/repo/memorandum/memo/", "foo.md"))
+  describe '#MemoTestLifecycleHooks' do
+    describe '#filename' do
+      include Memo::MemoFileUtility
 
-      _(expected).must_equal("foo")
+      it "絶対パスを取ったら、そのファイルの.mdをとったファイル名を返す" do
+        expected = filename(File.join(Dir.home, "/repo/memorandum/memo/", "foo.md"))
+
+        _(expected).must_equal("foo")
+      end
+
+      it "半端なパスでも、そのファイルの.mdをとったファイル名を返す" do
+        expected = filename(File.join("/repo/memorandum/memo/", "foo.md"))
+
+        _(expected).must_equal("foo")
+      end
+
+      it "相対パスでも、そのファイルの.mdをとったファイル名を返す" do
+        expected = filename(File.join("./memorandum/memo/", "foo.md"))
+
+        _(expected).must_equal("foo")
+      end
     end
 
-    it "半端なパスでも、そのファイルの.mdをとったファイル名を返す" do
-      expected = Memo::MemoFileUtility.filename(File.join("/repo/memorandum/memo/", "foo.md"))
+    describe '#grouped_by_dir' do
+      include Memo::MemoFileUtility
+      include MemoTestLifecycleHooks
 
-      _(expected).must_equal("foo")
-    end
+      it "Entryの配列をとったら、そのキーがディレクトリの一覧となるハッシュを返す" do
+        expected = grouped_by_dir(@test_entries)
 
-    it "相対パスでも、そのファイルの.mdをとったファイル名を返す" do
-      expected = Memo::MemoFileUtility.filename(File.join("./memorandum/memo/", "foo.md"))
+        _(expected.keys.to_set).must_equal(@dir_set)
+      end
 
-      _(expected).must_equal("foo")
-    end
-  end
+      # とりあえず、ファイル名だけが入っていることを確かめれば良い
+      # 実装の方のgrouped_by_dir()はREADME.mdが除外されるようにしてある
+      it "ディレクトリごとのキーの値は、値データのEntryで絶対パスやファイル名などの情報が入っている" do
+        actual = MemoTestLifecycleHooks::TEST_MEMO_DATA_SEED
+          .filter { |elem| elem[:filename] != "README.md" }
+          .group_by { |elem| elem[:dir] }
+          .to_set do |k, v|
+            { k => v.to_set { |elem| filename(elem[:filename]) } }
+          end
 
-  describe '#to_dirs' do
-    include MemoTestLifecycleHooks
+        expected = grouped_by_dir(@test_entries).to_set do |k, v|
+          { k => v.to_set(&:filename) }
+        end
 
-    it "集合を引数にとったら、その配列を返すだけ" do
-      expected = Memo::MemoFileUtility.to_dirs(@dir_set)
-
-      _(expected).must_equal(@dir_set.to_a)
+        _(expected).must_equal(actual)
+      end
     end
   end
 end

@@ -1,8 +1,6 @@
 # frozen_string_literal: true
 
 require 'rainbow'
-# TODO: forwardable で メソッドをオブジェクトに渡せるかも
-# require 'forwardable'
 require_relative 'memo_file_utility'
 
 module Memo
@@ -88,15 +86,15 @@ module Memo
     end
 
     def to_files_by_dir(dir)
-      return unless grouped_by_dir.key?(dir)
+      return unless grouped_by_dir(@entries).key?(dir)
 
-      grouped_by_dir[dir].map(&:filename)
+      grouped_by_dir(@entries)[dir].map(&:filename)
     end
 
     # ディレクトリとその中に入っているメモファイルの配列を返す
     # dirをkeyにして、ファイルの配列を集合にしたもののハッシュを返却してもいいかも
     def to_files
-      grouped_by_dir.map do |key, entries|
+      grouped_by_dir(@entries).map do |key, entries|
         [Rainbow(key).green, entries.map(&:filename)]
       end
     end
@@ -110,11 +108,6 @@ module Memo
 
     private
 
-    # dir をkey としてentry をHash 化したもの
-    def grouped_by_dir
-      @entries.group_by(&:dir)
-    end
-
     # memoディレクトリをDir.glob で探索して、その中のファイルを読み取るための情報を取得して、Entryに保存する
     #
     # @return [Array<Entry>] 絶対パスなど、メモの中のファイルを読み取るための情報の値データオブジェクト
@@ -124,10 +117,13 @@ module Memo
 
         full_path = File.join(@memo_dir, rel_path)
 
+        # トップディレクトリにあるメモのdirは"."となってしまうため、引数として受け取ったディレクトリの末尾を使う
+        dir = File.dirname(rel_path) == "." ? File.basename(@memo_dir) : File.dirname(rel_path)
+
         Entry.new(
           full_path: full_path,
-          filename: MemoFileUtility.filename(full_path),
-          dir: File.dirname(rel_path)
+          filename: filename(full_path),
+          dir: dir
         )
       end
     end

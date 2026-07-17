@@ -1,8 +1,16 @@
-## TODO
+## TODO・IDEA
 ```
 # 内部
 ## テストコード
 private methodからクラスメソッドのテストに移行する
+load_entriesの処理を分けてもいいかも。重要な処理だから。
+- load_entriesをデータよりの処理にして、今のDocsをコマンドよりの処理にする感じ
+    - Repository -> データ加工(ViewModel?) -> データを表示用にする(Presenter?) -> Command
+
+## 分岐対応
+README.mdの処理を明確にする
+トップレベルのmdファイルの所属ディレクトリが.になってしまうのでmemoとかにしたい
+-> @memo_dirの末尾のディレクトリがmemoになるから、それを使いたい
 
 ## フォルダ構成や命名規則の変更
 Memo -> MemoCliにしてMemoCli::Memoのようにした方が良さそう
