@@ -19,5 +19,39 @@ class TestRepository < Minitest::Test
         _(expected).must_equal(@test_repository_entries.to_set)
       end
     end
+
+    describe '#find' do
+      it "memoの中に存在するファイルが見つかった場合は、そのファイルのEntryの配列を返す" do
+        word = 'find'
+        expected = Memo::Repository.new(@memo_dir).find(word)
+        actual = Memo::Repository::Entry.new(full_path: File.join(@memo_dir, "cli", "find.md"), filename: "find", dir: "cli")
+
+        assert_equal actual, expected
+      end
+
+      it "memoの中に存在しないwordが入力された場合は、nilを返す" do
+        word = 'invalid_word'
+        expected = Memo::Repository.new(@memo_dir).find(word)
+
+        assert_nil expected
+      end
+    end
+
+    describe '#read' do
+      it "entryが存在すれば、そのファイルを全文表示する。、" do
+        expected_entry = @test_repository_entries.find{|entry| entry.filename == "find" }
+        expected = Memo::Repository.new(@memo_dir).read(expected_entry)
+
+        actual = MemoTestLifecycleHooks::TEST_FIND_FILE_CONTENT.split("\n")
+
+        assert_equal actual, expected
+      end
+
+      it "nilが与えられたら、そのままnilを返す" do
+        expected = Memo::Repository.new(@memo_dir).read(nil)
+
+        assert_nil expected
+      end
+    end
   end
 end

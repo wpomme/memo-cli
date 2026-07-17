@@ -5,7 +5,14 @@
 private methodからクラスメソッドのテストに移行する
 load_entriesの処理を分けてもいいかも。重要な処理だから。
 - load_entriesをデータよりの処理にして、今のDocsをコマンドよりの処理にする感じ
-    - Repository -> データ加工(ViewModel?) -> データを表示用にする(Presenter?) -> Command
+
+Memo
+Memo::MemoFileUtility -> FileUtility にする
+Memo::Repository -> 元データ
+Memo::ViewModel -> データ加工?
+Memo::Presenter -> 色付けやputs
+Memo::Command -> CLI
+Memo::Command::Options::CommandParser -> これにリネームする
 
 ## 分岐対応
 README.mdの処理を明確にする

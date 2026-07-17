@@ -7,7 +7,8 @@ module Memo
 
     # dir をkey としてentry をHash 化したもの
     #
-    # ?? @param [Array<Entry>]
+    # @param [Array<Entry>]
+    # @return [Hash] キーが文字列で、値がEntryの配列
     def grouped_by_dir(entries)
       entries.group_by(&:dir)
     end

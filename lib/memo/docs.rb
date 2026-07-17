@@ -7,9 +7,6 @@ module Memo
   class Docs
     include Memo::MemoFileUtility
 
-    ## TODO: Entryをnotesかmemoにリネームする
-    ## TODO: Entry をMemoクラスのどこに配置するべきか
-
     #  memoディレクトリの中にあるファイルを操作するための情報を保存した値オブジェクト
     #  ファイルの読み取りに絶対パスを使ったり、ファイルの判定にファイル名を使用したりする。
     #
