@@ -5,6 +5,10 @@ require "memo"
 
 require "minitest/autorun"
 require "minitest/spec"
+require "minitest/expectations"
+
+require "tmpdir"
+require "fileutils"
 
 module MemoTestLifecycleHooks
   include Minitest::Test::LifecycleHooks
@@ -63,7 +67,8 @@ module MemoTestLifecycleHooks
   ].freeze
 
   def to_entry(base_dir, join_dir, filename)
-    Memo::Docs::Entry.new(full_path: File.join(base_dir, join_dir, filename), dir: join_dir)
+    full_path = File.join(base_dir, join_dir, filename)
+    Memo::Docs::Entry.new(full_path: full_path, filename: File.basename(full_path, '.md'), dir: join_dir)
   end
 
   def before_setup
@@ -87,7 +92,8 @@ module MemoTestLifecycleHooks
       if elem[:filename] == "README.md"
         next
       elsif elem[:dir] == "."
-        @test_entries << Memo::Docs::Entry.new(full_path: File.join(@memo_dir, elem[:filename]), dir: elem[:dir])
+        full_path = File.join(@memo_dir, elem[:filename])
+        @test_entries << Memo::Docs::Entry.new(full_path: full_path, filename: File.basename(full_path, '.md'), dir: elem[:dir])
       else
         @test_entries << to_entry(@memo_dir, elem[:dir], elem[:filename])
       end
@@ -97,7 +103,7 @@ module MemoTestLifecycleHooks
     @test_to_files = @test_entries
       .group_by(&:dir)
       .map do |dir, entries|
-        [Rainbow(dir).green, entries.map { |entry| File.basename(entry.full_path, ".md") }]
+        [Rainbow(dir).green, entries.map(&:filename)]
       end
 
     @original_dir = Dir.pwd

@@ -1,8 +1,5 @@
 # frozen_string_literal: true
 
-require "tmpdir"
-require "fileutils"
-
 require_relative "../test_helper"
 
 class TestDocs < Minitest::Test
@@ -145,7 +142,7 @@ class TestDocs < Minitest::Test
         end
 
         expected = @test_entries
-          .filter_map { |entry| File.basename(entry.full_path, '.md') if entry.dir == exist_dir }
+          .filter_map { |entry| entry.filename if entry.dir == exist_dir }
           .sort
           .join("\n") << "\n"
 

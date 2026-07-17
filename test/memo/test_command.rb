@@ -30,7 +30,7 @@ class TestCommand < Minitest::Test
         end
 
         expected = @test_entries
-          .filter_map { |entry| File.basename(entry.full_path, '.md') if entry.dir == 'cli' }
+          .filter_map { |entry| entry.filename if entry.dir == 'cli' }
           .sort
           .join("\n") << "\n"
 

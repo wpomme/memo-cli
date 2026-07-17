@@ -1,21 +1,27 @@
 # frozen_string_literal: true
 
 require 'rainbow'
+# TODO: forwardable で メソッドをオブジェクトに渡せるかも
+# require 'forwardable'
+require_relative 'memo_file_utility'
 
 module Memo
   class Docs
-    ## TODO: { |entry| filename(entry.full_path) }やfilename(entry.full_path)のパターンが多い
-    ## Entryにfilenameの情報を持たせた方がいい
-    ## Entryをnotesかmemoにリネームする
+    include Memo::MemoFileUtility
 
-    # memoディレクトリの中にあるファイルについての値オブジェクト
-    # 絶対パスなど、そのファイルを読み取ったり、探したりするのに使う
+    ## TODO: Entryをnotesかmemoにリネームする
+    ## TODO: Entry をMemoクラスのどこに配置するべきか
+
+    #  memoディレクトリの中にあるファイルを操作するための情報を保存した値オブジェクト
+    #  ファイルの読み取りに絶対パスを使ったり、ファイルの判定にファイル名を使用したりする。
     #
     # @!attribute [rw] full_path
     #   @return [String] memoディレクトリの中にあるファイルの絶対パス。メモを読み取るために使う
+    # @!attribute [rw] filename
+    #   @return [String] 対象のファイルのファイル名
     # @!attribute [rw] dir
     #   @return [String] そのファイルが格納されているディレクトリ
-    Entry = Data.define(:full_path, :dir)
+    Entry = Data.define(:full_path, :filename, :dir)
 
     class << self
       def dirs(memo_dir)
@@ -56,7 +62,7 @@ module Memo
     def initialize(memo_dir)
       @memo_dir = memo_dir
       @entries = load_entries
-      @dir_set = Set.new(@entries.map(&:dir).uniq)
+      @dir_set = Set.new(@entries.map(&:dir).uniq).freeze
     end
 
     # entryが空ならユーザーにメッセージを出してコマンドを終了する
@@ -77,21 +83,21 @@ module Memo
     # やめた方がいいかもしれない
     def find_a_file(word)
       @word = word
-      @read_entry = @entries.find { |entry| filename(entry.full_path) == word }
+      @read_entry = @entries.find { |entry| entry.filename == word }
       self
     end
 
     def to_files_by_dir(dir)
       return unless grouped_by_dir.key?(dir)
 
-      grouped_by_dir[dir].map { |entry| filename(entry.full_path) }
+      grouped_by_dir[dir].map(&:filename)
     end
 
     # ディレクトリとその中に入っているメモファイルの配列を返す
     # dirをkeyにして、ファイルの配列を集合にしたもののハッシュを返却してもいいかも
     def to_files
       grouped_by_dir.map do |key, entries|
-        [Rainbow(key).green, entries.map { |entry| filename(entry.full_path) }]
+        [Rainbow(key).green, entries.map(&:filename)]
       end
     end
 
@@ -99,7 +105,7 @@ module Memo
     #
     # @return [String] memoフォルダの配下にあるディレクトリの一覧を配列で返す
     def to_dirs
-      @dir_set.to_a
+      @dir_set.to_a.freeze
     end
 
     private
@@ -109,11 +115,6 @@ module Memo
       @entries.group_by(&:dir)
     end
 
-    # メモのファイル名を返す
-    def filename(file_path)
-      File.basename(file_path, '.md')
-    end
-
     # memoディレクトリをDir.glob で探索して、その中のファイルを読み取るための情報を取得して、Entryに保存する
     #
     # @return [Array<Entry>] 絶対パスなど、メモの中のファイルを読み取るための情報の値データオブジェクト
@@ -121,8 +122,11 @@ module Memo
       Dir.glob("**/*.md", base: @memo_dir).filter_map do |rel_path|
         next if File.basename(rel_path) == 'README.md'
 
+        full_path = File.join(@memo_dir, rel_path)
+
         Entry.new(
-          full_path: File.join(@memo_dir, rel_path),
+          full_path: full_path,
+          filename: MemoFileUtility.filename(full_path),
           dir: File.dirname(rel_path)
         )
       end
