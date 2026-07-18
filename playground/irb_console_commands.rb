@@ -75,6 +75,22 @@ repo.entries_grouped_by_dir(entries)["git"].map(&:filename)
 repo.entries_grouped_by_dir(entries)["git"].map(&:filename).to_set
 ```
 
+```irb
+## dirでグループ化したデータ構造をStructに持たせる
+## まず、グループ化したデータ構造を調べる
+grouped = repo.entries_grouped_by_dir(entries)
+
+## 次のようなものが良さそう
+def new_grouped_files(grouped)
+  grouped.map do |dir, entry|
+    Memo::FilesGroupedByDir.new(
+      dir: dir,
+      file_hash: entry.map{ |entry| {entry.filename => entry.full_path} }
+    )
+  end
+end
+```
+
 # ディレクトリをキーとして、そのディレクトリに所属するファイルのEntryを保存する
 # Memo::MemoFileUtility.grouped_by_dir と同じ実装
 entries.group_by(&:dir)

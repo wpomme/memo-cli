@@ -13,7 +13,7 @@ class TestRepository < Minitest::Test
     # ---
     # >  #<data Memo::Repository::Entry full_path="/var/folders/lg/wtp42wtx66nf0d87br2jwzf00000gn/T/d20260718-56814-5cqnm3/memo/cli/find.md"
     describe '#initialize' do
-      it 'Repository.new()は、ハッシュの配列を返す' do
+      it 'Repository.new()' do
         expected = Memo::Repository.new(@memo_dir).to_set
 
         _(expected).must_equal(@test_repository_entries.to_set)
@@ -68,6 +68,22 @@ class TestRepository < Minitest::Test
         expected = Memo::Repository.new(@memo_dir).files_grouped_by_dir
 
         _(expected).must_equal(@test_repository_grouped_files)
+      end
+    end
+
+    describe '#grouped_file_list' do
+      it "Structを返す" do
+        expected = Memo::Repository.new(@memo_dir).grouped_file_list
+
+        # entries.group_by(&:dir)はMemoFileUtility.entries_grouped_by_dirと同じ
+        actual = @test_repository_entries.group_by(&:dir).map do |dir, entry|
+          Memo::GroupedFileList.new(
+            dir: dir,
+            file_hash: entry.to_set { |entry| { entry.filename => entry.full_path } }
+          )
+        end
+
+        _(actual).must_equal(expected)
       end
     end
   end

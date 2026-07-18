@@ -5,6 +5,7 @@ require_relative "memo/command"
 require_relative "memo/docs"
 require_relative "memo/Repository"
 require_relative "memo/Presenter"
+require_relative "memo/Struct"
 
 # memoディレクトリのトップモジュール
 # MemoCliにすればよかったかも...

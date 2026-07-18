@@ -1,16 +1,20 @@
 ## TODO・IDEA
 ```
 # 内部
-## テストコード
-private methodからクラスメソッドのテストに移行する
-
+## Memoモジュール再編
 Memo
-Memo::MemoFileUtility -> FileUtility にする
+## Repository -> ViewModel -> Presenter -> Command
 Memo::Repository -> 元データ
-Memo::ViewModel -> データ加工?
-Memo::Presenter -> 色付けやputs
+Memo::ViewModel -> ユーザー向けのデータ加工。色付けなど。また、RepositoryをPrivateにできるかも。
+Memo::Presenter -> データの表示とユーザーメッセージ
 Memo::Command -> CLI
-Memo::Command::Options::CommandParser -> これにリネームする
+Memo::Command::Options::CommandParser -> Memo::CommandParserにする
+## 新設
+Memo::UserMessageというモジュールを作成する。ユーザーメッセージを補完する場所
+-> PresenterとCommandParserにインクルードして使う
+## リネーム
+Memo::MemoFileUtility -> FileUtilityなどにする。テストコードも使うから欲しい。実装上はrepositoryだけでしか使わないかも。
+Memo::Repository::Entry -> Memo::MemoFileEntryとか？
 
 ## 分岐対応
 README.mdの処理を明確にする

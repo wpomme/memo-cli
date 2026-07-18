@@ -19,14 +19,6 @@ module Memo
     Entry = Data.define(:full_path, :filename, :dir)
 
     class << self
-      def dirs(memo_dir)
-        puts new(memo_dir).to_dirs
-      end
-
-      def read(memo_dir, word)
-        puts new(memo_dir).find_a_file(word).read_a_file
-      end
-
       def list(memo_dir, dir = nil)
         if dir
           files_by_dir(memo_dir, dir)
@@ -74,14 +66,6 @@ module Memo
       File.readlines(@read_entry.full_path, chomp: true)
     end
 
-    # チェーンメソッドにするためにselfを返している
-    # やめた方がいいかもしれない
-    def find_a_file(word)
-      @word = word
-      @read_entry = @entries.find { |entry| entry.filename == word }
-      self
-    end
-
     def to_files_by_dir(dir)
       return unless grouped_by_dir(@entries).key?(dir)
 
@@ -94,13 +78,6 @@ module Memo
       grouped_by_dir(@entries).map do |key, entries|
         [Rainbow(key).green, entries.map(&:filename)]
       end
-    end
-
-    # ディレクトリの集合を配列に変換する
-    #
-    # @return [String] memoフォルダの配下にあるディレクトリの一覧を配列で返す
-    def to_dirs
-      @dir_set.to_a.freeze
     end
 
     private

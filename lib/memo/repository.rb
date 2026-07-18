@@ -45,6 +45,22 @@ module Memo
       @entries.find { |entry| entry.filename == word }
     end
 
+    # Structを返す新しいデータ
+    # grouped = repo.grouped_file_list
+    # grouped.class => Array
+    # その中身はMemo::GroupedFileListとなる
+    #
+    # @return [Array<Memo::GroupedFileList>]
+    #
+    def grouped_file_list
+      entries_grouped_by_dir(@entries).map do |dir, entry|
+        Memo::GroupedFileList.new(
+          dir: dir,
+          file_hash: entry.to_set { |entry| { entry.filename => entry.full_path } }
+        )
+      end
+    end
+
     # ディレクトリとその中に入っているメモファイルの配列を返す
     # dirをkeyにして、ファイルの配列を集合にしたもののハッシュを返却してもいいかも
     # 返す値は、キーがディレクトリの文字列で、値がそのディレクトリに所属するファイル名の配列
@@ -58,10 +74,6 @@ module Memo
       grouped_files
     end
 
-    def test_grouped
-      @entries.group_by(&:dir)
-    end
-
     # ディレクトリの集合を配列に変換する
     #
     # @return [Array<String>] フォルダの配下にあるディレクトリの一覧を配列で返す
@@ -69,14 +81,14 @@ module Memo
       dir_set.to_a.freeze
     end
 
+    private
+
     # フォルダの中のディレクトリの集合
     #
     # @return [Set<String>]
     def dir_set
       Set.new(@entries.map(&:dir).uniq).freeze
     end
-
-    private
 
     # ディレクトリ内をglobで捜索して、ファイルの読み取りや検索に必要な情報を取得する
     #

@@ -19,6 +19,7 @@ namespace :format do
   end
 end
 
+# ここら辺をひとまとめにしてtest:cliかtest:e2eにする
 namespace :cli do
   desc '開発中のmemo listを実行する'
   task :list do
@@ -28,5 +29,23 @@ namespace :cli do
   desc '開発中のmemo dirsを実行する'
   task :dirs do
     sh 'bundle exec ruby exe/memo dirs'
+  end
+
+  desc '開発中のmemo readを実行する'
+  namespace :read do
+    desc 'memo read grepを実行'
+    task :positive1 do
+      sh 'bundle exec ruby exe/memo read grep'
+    end
+
+    desc 'memo grepを実行。'
+    task :positive2 do
+      sh 'bundle exec ruby exe/memo grep'
+    end
+
+    desc 'memo readを実行する。失敗するはず。'
+    task :negative do
+      sh 'bundle exec ruby exe/memo read'
+    end
   end
 end
