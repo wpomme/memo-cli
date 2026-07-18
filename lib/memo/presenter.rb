@@ -13,5 +13,10 @@ module Memo
       puts "#{word} というメモは見つかりませんでした。"
       exit(2)
     end
+
+    # WIP: listにdirが与えられた時も一応作る
+    def self.list(memo_dir)
+      puts Memo::ViewModel.file_list_to_presenter(memo_dir)
+    end
   end
 end

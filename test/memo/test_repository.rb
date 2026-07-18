@@ -75,11 +75,10 @@ class TestRepository < Minitest::Test
       it "Structを返す" do
         expected = Memo::Repository.new(@memo_dir).grouped_file_list
 
-        # entries.group_by(&:dir)はMemoFileUtility.entries_grouped_by_dirと同じ
         actual = @test_repository_entries.group_by(&:dir).map do |dir, entry|
           Memo::GroupedFileList.new(
             dir: dir,
-            file_hash: entry.to_set { |entry| { entry.filename => entry.full_path } }
+            filenames: entry.map(&:filename).sort
           )
         end
 

@@ -49,14 +49,14 @@ module Memo
     # grouped = repo.grouped_file_list
     # grouped.class => Array
     # その中身はMemo::GroupedFileListとなる
-    #
+    # 値はSet<Hash>
     # @return [Array<Memo::GroupedFileList>]
-    #
     def grouped_file_list
       entries_grouped_by_dir(@entries).map do |dir, entry|
         Memo::GroupedFileList.new(
           dir: dir,
-          file_hash: entry.to_set { |entry| { entry.filename => entry.full_path } }
+          # NOTE: テストコードのためsortする。別にソートする必要はない
+          filenames: entry.map(&:filename).sort
         )
       end
     end
