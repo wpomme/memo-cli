@@ -18,7 +18,7 @@ module Memo
 
       case options.shift
       when :list
-        Docs.list(@memo_dir, options.shift)
+        Presenter.list(@memo_dir, options.shift)
       when :dirs
         Presenter.dirs(@memo_dir)
       when :read

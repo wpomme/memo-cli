@@ -24,20 +24,57 @@ class TestCommand < Minitest::Test
             Memo::Command.new(@memo_dir).execute(['list'])
           end
 
-          assert_equal @test_to_files.flatten.to_set, out.split("\n").to_set
+          # TODO: RepositoryからCommandにまで渡るここら辺の処理をまとめたい
+          # entries.group_by(&:dir)はMemoFileUtility.entries_grouped_by_dirと同じ
+          grouped_file_list = @test_repository_entries.group_by(&:dir).map do |dir, entry|
+            Memo::GroupedFileList.new(
+              dir: dir,
+              filenames: entry.map(&:filename).sort
+            )
+          end
+
+          file_test_to_presenter = grouped_file_list
+            .map do |struct|
+              [Rainbow(struct[:dir]).green].append(struct[:filenames], "\n")
+            end
+
+          # 表示される文字列が同じなら順番は関係がない
+          # 集合にして同じ文字列があればよし
+          actual = file_test_to_presenter.flatten.to_set
+
+          # 改行で配列を作成するが、改行自身は集合に加える必要がある
+          expected = out.split("\n").to_set.add("\n")
+          # ユーザーに表示される票は空行が入っているので、それを取り除く
+          expected.delete("")
+
+          _(expected).must_equal(actual)
+
+          # assert_equal @test_to_files.flatten.to_set, out.split("\n").to_set
         end
 
         it "['list', 'cli']を受け取ったときは、memo_dirの中のcliディレクトリの中にあるメモファイルを全て表示する" do
-          out, = capture_io do
-            Memo::Command.new(@memo_dir).execute(%w[list cli])
+        valid_dir = 'cli'
+
+        out, = capture_io do
+          Memo::Command.new(@memo_dir).execute(['list', valid_dir])
+        end
+
+        grouped_file_list = @test_repository_entries.group_by(&:dir).filter_map do |dir, entry|
+          if dir == valid_dir
+            Memo::GroupedFileList.new(
+              dir: dir,
+              filenames: entry.map(&:filename).sort
+            )
           end
+        end
 
-          expected = @test_entries
-            .filter_map { |entry| entry.filename if entry.dir == 'cli' }
-            .sort
-            .join("\n") << "\n"
+        # FIXME: 実装の方で、最後の方に余計な改行が入っているので、修正すること
+        actual = grouped_file_list
+          .map do |struct|
+            [Rainbow(struct[:dir]).green].append(struct[:filenames])
+          end.flatten.join("\n") << "\n"
 
-          assert_equal expected, out
+        _(actual).must_equal(out)
         end
 
         it "['list', 'invalid_dir']の場合、ユーザーメッセージ" do

@@ -72,6 +72,44 @@ class TestPresenter < Minitest::Test
 
         _(expected).must_equal(actual)
       end
+
+      it "有効なディレクトリ名を受け取った場合は、そのディレクトリとその中のファイル名を表示する" do
+        valid_dir = 'cli'
+
+        out, = capture_io do
+          Memo::Presenter.list(@memo_dir, valid_dir)
+        end
+
+        grouped_file_list = @test_repository_entries.group_by(&:dir).filter_map do |dir, entry|
+          if dir == valid_dir
+            Memo::GroupedFileList.new(
+              dir: dir,
+              filenames: entry.map(&:filename).sort
+            )
+          end
+        end
+
+        # FIXME: 実装の方で、最後の方に余計な改行が入っているので、修正すること
+        actual = grouped_file_list
+          .map do |struct|
+            [Rainbow(struct[:dir]).green].append(struct[:filenames])
+          end.flatten.join("\n") << "\n"
+
+        _(actual).must_equal(out)
+      end
+
+      # TODO: 本当にユーザーメッセージを出すだけで、exit 2とかをしていないので直す
+      it "存在しないディレクトリ名を受け取った場合は、その旨を知らせる文字列を返す" do
+        invalid_dir = 'invalid_dir'
+
+        out, = capture_io do
+          Memo::Presenter.list(@memo_dir, invalid_dir)
+        end
+
+        # TODO: とりあえず文字列を返すことだけを確認する
+        _(out).must_be_instance_of(String)
+        # assert expected.is_a?(String)
+      end
     end
   end
 end

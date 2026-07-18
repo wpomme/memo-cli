@@ -4,6 +4,10 @@ require 'rainbow'
 
 module Memo
   class ViewModel
+    # ファイル名の一覧をPresenterに渡す前に加工するための関数
+    # ディレクトリ名に色を付けるのは、GroupedFileListのStructのブロックで定義するのもありかもしれない
+    #
+    # @return [Array | String] NOTE: ユーザーメッセージの方はもう少しなんとかしたい
     def self.file_list_to_presenter(memo_dir, dir = nil)
       ## REVIEW: コードの書きっぷりが情けないほどダブってるので描き直したい
       if dir

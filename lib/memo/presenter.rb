@@ -14,9 +14,8 @@ module Memo
       exit(2)
     end
 
-    # WIP: listにdirが与えられた時も一応作る
-    def self.list(memo_dir)
-      puts Memo::ViewModel.file_list_to_presenter(memo_dir)
+    def self.list(memo_dir, word = nil)
+      puts Memo::ViewModel.file_list_to_presenter(memo_dir, word)
     end
   end
 end
