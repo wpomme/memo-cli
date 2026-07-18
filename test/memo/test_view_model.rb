@@ -52,13 +52,9 @@ class TestViewModel < Minitest::Test
         _(actual).must_equal(expected)
       end
 
-
       it "存在しないディレクトリ名を受け取った場合は、その旨を知らせる文字列を返す" do
         invalid_dir = 'invalid_dir'
         expected = Memo::ViewModel.file_list_to_presenter(@memo_dir, invalid_dir)
-
-        pp "デバッグ"
-        pp expected
 
         # TODO: とりあえず文字列を返すことだけを確認する
         assert expected.is_a?(String)

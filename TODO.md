@@ -10,11 +10,14 @@ Memo::Presenter -> データの表示とユーザーメッセージ
 Memo::Command -> CLI
 Memo::Command::Options::CommandParser -> Memo::CommandParserにする
 ## 新設
+Memo::GroupedFileListを作成した
 Memo::UserMessageというモジュールを作成する。ユーザーメッセージを補完する場所
 -> PresenterとCommandParserにインクルードして使う
 ## リネーム
+memo/struct.rb -> memo/data_object.rbとかだろうか
+Memo::Repository::Entry -> Memo::Seedにする
 Memo::MemoFileUtility -> FileUtilityなどにする。テストコードも使うから欲しい。実装上はrepositoryだけでしか使わないかも。
-Memo::Repository::Entry -> Memo::MemoFileEntryとか？
+できればMemo -> MemoCliにしたい...
 
 ## 分岐対応
 README.mdの処理を明確にする
@@ -22,17 +25,10 @@ README.mdの処理を明確にする
 -> @memo_dirの末尾のディレクトリがmemoになるから、それを使いたい
 
 ## フォルダ構成や命名規則の変更
-Memo -> MemoCliにしてMemoCli::Memoのようにした方が良さそう
 word? の文字列チェックを廃止する
 
 # CLI
-memo list デフォルトの処理とは別に、ただメモの一覧を出力するだけのオプションがあるといいかも
-memo read <word> で表示したmdファイルに色をつける機能
 memo grep # docs 以下について、そのキーワードで全文検索をかける
-memo edit <word> # <word> の編集をする
-# いらないかも
-# memo init memorandum とCLI で連携できたら楽 -> /exe 以下に.env を作成してMEMO_DIR=<VAR> <- このVAR に値を設定するなど
-# memo check memorandum と連携できているかどうか -> memorandum の方にファイルを入れておいて、それがあるかどうかで判断する？
 
 ### その他
 ## 集計情報

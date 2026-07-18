@@ -7,37 +7,45 @@ class TestCommand < Minitest::Test
     include MemoTestLifecycleHooks
 
     describe '#execute' do
-      it "['dirs']を受け取ったときは、memo_dirの中のディレクトリの一覧を標準出力に表示する" do
-        out, = capture_io do
-          Memo::Command.new(@memo_dir).execute(['dirs'])
-        end
+      describe 'args: dirs' do
+        it "['dirs']を受け取ったときは、memo_dirの中のディレクトリの一覧を標準出力に表示する" do
+          out, = capture_io do
+            Memo::Command.new(@memo_dir).execute(['dirs'])
+          end
 
-        actual = @dir_set
-        assert_equal actual, out.split("\n").to_set
+          actual = @dir_set
+          assert_equal actual, out.split("\n").to_set
+        end
       end
 
-      it "['list']を受け取ったときは、memo_dirの中のディレクトリとその中にあるメモファイルを全て表示する" do
-        out, = capture_io do
-          Memo::Command.new(@memo_dir).execute(['list'])
+      describe 'args: list' do
+        it "['list']を受け取ったときは、memo_dirの中のディレクトリとその中にあるメモファイルを全て表示する" do
+          out, = capture_io do
+            Memo::Command.new(@memo_dir).execute(['list'])
+          end
+
+          assert_equal @test_to_files.flatten.to_set, out.split("\n").to_set
         end
 
-        assert_equal @test_to_files.flatten.to_set, out.split("\n").to_set
-      end
+        it "['list', 'cli']を受け取ったときは、memo_dirの中のcliディレクトリの中にあるメモファイルを全て表示する" do
+          out, = capture_io do
+            Memo::Command.new(@memo_dir).execute(%w[list cli])
+          end
 
-      it "['list', 'cli']を受け取ったときは、memo_dirの中のcliディレクトリの中にあるメモファイルを全て表示する" do
-        out, = capture_io do
-          Memo::Command.new(@memo_dir).execute(%w[list cli])
+          expected = @test_entries
+            .filter_map { |entry| entry.filename if entry.dir == 'cli' }
+            .sort
+            .join("\n") << "\n"
+
+          assert_equal expected, out
         end
 
-        expected = @test_entries
-          .filter_map { |entry| entry.filename if entry.dir == 'cli' }
-          .sort
-          .join("\n") << "\n"
-
-        assert_equal expected, out
+        it "['list', 'invalid_dir']の場合、ユーザーメッセージ" do
+          skip "TODO"
+        end
       end
 
-      describe '#execute -> read' do
+      describe 'args: read' do
         it "['read', 'find']を受け取ったときは、find.mdを全文表示する" do
           out, = capture_io do
             Memo::Command.new(@memo_dir).execute(%w[read find])

@@ -4,6 +4,7 @@ require 'rainbow'
 require_relative 'memo_file_utility'
 
 module Memo
+  # Docsは廃止予定
   class Docs
     include Memo::MemoFileUtility
 

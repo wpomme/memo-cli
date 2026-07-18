@@ -1,15 +1,21 @@
 # memo
 ## 使い方
 - [自分のメモ帳](https://github.com/wpomme/memorandum) と連動させて使う
-- `/memo-cli/exe/memo_env.rb` に`/memorandum/memo` フォルダを指定すれば動く
+- `/memo-cli/lib/memo.rb` に`/memorandum/memo` フォルダを指定すれば動く
 
 ## コマンド集
 ```bash
 # 作成したメモとそのフォルダの一覧を表示する
 memo list
 
+# 存在するディレクトリだけ指定すると、その中のファイルだけが表示される
+memo list <dirs>
+
 # 作成したメモを表示する
 memo read <word>
+
+# readを省略するとreadと同じ動作になる
+memo <word>
 
 # メモ帳のディレクトリの一覧を表示する
 memo dirs
@@ -33,20 +39,4 @@ mise trus
 
 # Result: どこからでもmemo が実行できるはず
 memo list
-```
-
-### 開発コマンド
-```bash
-# コマンドの確認
-rake -T
-
-# memo list の実行
-rake list
-
-# memo read の実行
-# * Rakefile で引数の取り方が分からずmise を使っている
-mise read <word>
-
-# テストの実行
-rake
 ```

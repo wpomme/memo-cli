@@ -97,15 +97,5 @@ class TestDocs < Minitest::Test
         assert_equal "#{invalid_dir}というディレクトリはありません。\n", out
       end
     end
-
-    describe '#list' do
-      it "引数が一つの場合は#filesを呼び出す" do
-        skip "TODO"
-      end
-
-      it "引数が二つの場合は#files_by_dirを呼び出す" do
-        skip "TODO"
-      end
-    end
   end
 end
