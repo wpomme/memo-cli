@@ -6,6 +6,10 @@ require_relative "memo/docs"
 require_relative "memo/Repository"
 require_relative "memo/Presenter"
 
+# memoディレクトリのトップモジュール
+# MemoCliにすればよかったかも...
+#
+# VERSIONとMemoの環境変数Memo::Envはこちらに記載している
 module Memo
   class Error < StandardError; end
   VERSION = "0.1.0"

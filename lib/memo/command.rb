@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
-# require 'find'
 require_relative 'docs'
+require_relative 'presenter'
 
 module Memo
   class Command
@@ -20,7 +20,7 @@ module Memo
       when :list
         Docs.list(@memo_dir, options.shift)
       when :dirs
-        Docs.dirs(@memo_dir)
+        Presenter.dirs(@memo_dir)
       when :read
         Docs.read(@memo_dir, options.shift)
       end

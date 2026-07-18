@@ -62,6 +62,10 @@ module Memo
 
     # ディレクトリ内をglobで捜索して、ファイルの読み取りや検索に必要な情報を取得する
     #
+    # 1. EXCLUDE_FILESに記載されているファイルは読み飛ば（例: README.mdなど）
+    # 2. フォルダの最上位に存在するファイルは、globだけだと所属するディレクトリが"."になってしまう
+    #    そのため、その親のディレクトリがdirに入るように実装している。
+    #
     # @return [Array<Entry>]
     def load(memo_dir)
       Dir.glob("**/*.md", base: memo_dir).filter_map do |rel_path|
