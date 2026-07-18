@@ -54,17 +54,12 @@ module MemoTestLifecycleHooks
     }
   ].freeze
 
-  ## そのうち廃止する
-  def to_entry(base_dir, join_dir, filename)
-    full_path = join_dir == "memo" ? File.join(base_dir, filename) : File.join(base_dir, join_dir, filename)
-    Memo::Docs::Entry.new(full_path: full_path, filename: File.basename(full_path, '.md'), dir: join_dir)
-  end
-
   def to_repository_entry(base_dir, join_dir, filename)
     full_path = join_dir == "memo" ? File.join(base_dir, filename) : File.join(base_dir, join_dir, filename)
     Memo::Repository::Entry.new(full_path: full_path, filename: File.basename(full_path, '.md'), dir: join_dir)
   end
 
+  # TODO: tmpdirなどを使って、実際に実装のloadを使ってEntryを生成した方がいいかも
   def before_setup
     super
     @tmpdir = Dir.mktmpdir
@@ -72,7 +67,6 @@ module MemoTestLifecycleHooks
 
     @dir_set = TEST_MEMO_DATA_SEED.to_set { |e| e[:dir] }
 
-    @test_entries = []
     @test_repository_entries = []
 
     TEST_MEMO_DATA_SEED.each do |elem|
@@ -83,15 +77,8 @@ module MemoTestLifecycleHooks
 
       File.write(File.join(@memo_dir, elem[:dir], elem[:filename]), content)
 
-      @test_entries << to_entry(@memo_dir, elem[:dir], elem[:filename])
       @test_repository_entries << to_repository_entry(@memo_dir, elem[:dir], elem[:filename])
     end
-
-    # to_filesと生成ロジックが同じで、あんまりテストの意味がない
-    @test_to_files = grouped_by_dir(@test_entries)
-      .map do |key, entries|
-        [Rainbow(key).green, entries.map(&:filename)]
-      end
 
     @test_repository_grouped_files = {}
     MemoTestLifecycleHooks::TEST_MEMO_DATA_SEED

@@ -1,16 +1,16 @@
 # frozen_string_literal: true
 
 # TODO: importの命名規則を調べておきたい
+# TODO: import順でテストが動かなくなる時がある
+require_relative "memo/memo_file_utility"
 require_relative "memo/options/parser"
-require_relative "memo/command"
-require_relative "memo/docs"
-require_relative "memo/Presenter"
 require_relative "memo/Struct"
 require_relative "memo/Repository"
 require_relative "memo/view_model"
+require_relative "memo/Presenter"
+require_relative "memo/command"
 
 # memoディレクトリのトップモジュール
-# MemoCliにすればよかったかも...
 #
 # VERSIONとMemoの環境変数Memo::Envはこちらに記載している
 module Memo

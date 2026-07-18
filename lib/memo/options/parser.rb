@@ -68,7 +68,7 @@ module Memo
 
         # とりあえず作成
         def self.word?(word)
-          r = /^\w[\w-]{,30}\w?$/
+          r = %r@^\w[\w/-]{,30}\w?$@
           if r.match?(word)
             word
           else

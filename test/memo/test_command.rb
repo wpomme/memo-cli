@@ -48,33 +48,31 @@ class TestCommand < Minitest::Test
           expected.delete("")
 
           _(expected).must_equal(actual)
-
-          # assert_equal @test_to_files.flatten.to_set, out.split("\n").to_set
         end
 
         it "['list', 'cli']を受け取ったときは、memo_dirの中のcliディレクトリの中にあるメモファイルを全て表示する" do
-        valid_dir = 'cli'
+          valid_dir = 'cli'
 
-        out, = capture_io do
-          Memo::Command.new(@memo_dir).execute(['list', valid_dir])
-        end
-
-        grouped_file_list = @test_repository_entries.group_by(&:dir).filter_map do |dir, entry|
-          if dir == valid_dir
-            Memo::GroupedFileList.new(
-              dir: dir,
-              filenames: entry.map(&:filename).sort
-            )
+          out, = capture_io do
+            Memo::Command.new(@memo_dir).execute(['list', valid_dir])
           end
-        end
 
-        # FIXME: 実装の方で、最後の方に余計な改行が入っているので、修正すること
-        actual = grouped_file_list
-          .map do |struct|
-            [Rainbow(struct[:dir]).green].append(struct[:filenames])
-          end.flatten.join("\n") << "\n"
+          grouped_file_list = @test_repository_entries.group_by(&:dir).filter_map do |dir, entry|
+            if dir == valid_dir
+              Memo::GroupedFileList.new(
+                dir: dir,
+                filenames: entry.map(&:filename).sort
+              )
+            end
+          end
 
-        _(actual).must_equal(out)
+          # FIXME: 実装の方で、最後の方に余計な改行が入っているので、修正すること
+          actual = grouped_file_list
+            .map do |struct|
+              [Rainbow(struct[:dir]).green].append(struct[:filenames])
+            end.flatten.join("\n") << "\n"
+
+          _(actual).must_equal(out)
         end
 
         it "['list', 'invalid_dir']の場合、ユーザーメッセージ" do

@@ -6,17 +6,41 @@ class TestRepository < Minitest::Test
   describe 'Repository' do
     include MemoTestLifecycleHooks
 
-    ###
-    # テストデータだとDocsの方でデータを作成してしまうため、テストに失敗してしまう。
-    # 1c1
-    # <  #<data Memo::Docs::Entry full_path="/var/folders/lg/wtp42wtx66nf0d87br2jwzf00000gn/T/d20260718-56814-5cqnm3/memo/cli/find.md"
-    # ---
-    # >  #<data Memo::Repository::Entry full_path="/var/folders/lg/wtp42wtx66nf0d87br2jwzf00000gn/T/d20260718-56814-5cqnm3/memo/cli/find.md"
     describe '#initialize' do
-      it 'Repository.new()' do
+      it '@entriesはEnumerableなEntryを返す' do
         expected = Memo::Repository.new(@memo_dir).to_set
 
         _(expected).must_equal(@test_repository_entries.to_set)
+      end
+
+      it '@entriesはMemo::Repository::EntryのEnumerableを返す' do
+        repo = Memo::Repository.new(@memo_dir)
+        entries = repo.instance_variable_get(:@entries)
+
+        entries.each do |entry|
+          assert_instance_of Memo::Repository::Entry, entry
+        end
+      end
+
+      it '@entries.full_pathはREADME(.md) を含まない' do
+        repo = Memo::Repository.new(@memo_dir)
+        entries = repo.instance_variable_get(:@entries)
+        full_path = entries.map(&:full_path)
+
+        refute_includes full_path, "README"
+        refute_includes full_path, "README.md"
+      end
+
+      # これが成り立たないとmemo readが出来ない
+      # ただ、どちらかといえば、memoフォルダの設定ミスのために生じる不具合のような
+      it '@entries:full_path は絶対パスである' do
+        repo = Memo::Repository.new(@memo_dir)
+        entries = repo.instance_variable_get(:@entries)
+        full_paths = entries.map(&:full_path)
+
+        full_paths.each do |full_path|
+          assert File.absolute_path?(full_path)
+        end
       end
     end
 

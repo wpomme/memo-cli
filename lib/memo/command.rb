@@ -1,8 +1,5 @@
 # frozen_string_literal: true
 
-require_relative 'docs'
-require_relative 'presenter'
-
 module Memo
   class Command
     def self.run(memo_dir, argv)

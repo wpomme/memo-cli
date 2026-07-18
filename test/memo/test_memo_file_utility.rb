@@ -31,7 +31,7 @@ class TestMemoFileUtility < Minitest::Test
       include MemoTestLifecycleHooks
 
       it "Entryの配列をとったら、そのキーがディレクトリの一覧となるハッシュを返す" do
-        expected = grouped_by_dir(@test_entries)
+        expected = grouped_by_dir(@test_repository_entries)
 
         _(expected.keys.to_set).must_equal(@dir_set)
       end
@@ -46,7 +46,7 @@ class TestMemoFileUtility < Minitest::Test
             { k => v.to_set { |elem| filename(elem[:filename]) } }
           end
 
-        expected = grouped_by_dir(@test_entries).to_set do |k, v|
+        expected = grouped_by_dir(@test_repository_entries).to_set do |k, v|
           { k => v.to_set(&:filename) }
         end
 
