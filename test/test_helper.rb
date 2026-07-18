@@ -93,6 +93,14 @@ module MemoTestLifecycleHooks
         [Rainbow(key).green, entries.map(&:filename)]
       end
 
+    @test_repository_grouped_files = {}
+    MemoTestLifecycleHooks::TEST_MEMO_DATA_SEED
+      .filter { |elem| elem[:filename] != "README.md" }
+      .group_by { |elem| elem[:dir] }
+      .map do |k, v|
+        @test_repository_grouped_files[k] = v.map.to_set { |elem| filename(elem[:filename]) }
+      end
+
     @original_dir = Dir.pwd
     Dir.chdir(@tmpdir)
   end

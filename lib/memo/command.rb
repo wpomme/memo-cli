@@ -22,7 +22,7 @@ module Memo
       when :dirs
         Presenter.dirs(@memo_dir)
       when :read
-        Docs.read(@memo_dir, options.shift)
+        Presenter.read(@memo_dir, options.shift)
       end
     end
   end

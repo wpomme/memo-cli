@@ -3,8 +3,6 @@
 # 内部
 ## テストコード
 private methodからクラスメソッドのテストに移行する
-load_entriesの処理を分けてもいいかも。重要な処理だから。
-- load_entriesをデータよりの処理にして、今のDocsをコマンドよりの処理にする感じ
 
 Memo
 Memo::MemoFileUtility -> FileUtility にする
@@ -24,6 +22,7 @@ Memo -> MemoCliにしてMemoCli::Memoのようにした方が良さそう
 word? の文字列チェックを廃止する
 
 # CLI
+memo list デフォルトの処理とは別に、ただメモの一覧を出力するだけのオプションがあるといいかも
 memo read <word> で表示したmdファイルに色をつける機能
 memo grep # docs 以下について、そのキーワードで全文検索をかける
 memo edit <word> # <word> の編集をする

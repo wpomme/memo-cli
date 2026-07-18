@@ -18,22 +18,23 @@ module Memo
     #   @return [String] そのファイルが格納されているディレクトリ
     Entry = Data.define(:full_path, :filename, :dir)
 
-    def initialize(memo_dir)
-      @entries = load(memo_dir)
-    end
-
-    def each(&)
-      @entries.each(&)
-    end
-
     # entryが存在すれば、そのファイルを全文表示する。
     # nilを受け取った場合は、そのままpresenterにnilを返す
     # @param [Entry, void]
     # @return [<Array<String>>] 読み取ったメモが行ごとに保存されていて、さらに配列で包まれている。仕様上、複数のファイルを読み取る場合があるため。
-    def read(entry)
+    def self.read(entry)
       return if entry.nil?
 
       File.readlines(entry.full_path, chomp: true)
+    end
+
+    def initialize(memo_dir)
+      @entries = load(memo_dir)
+    end
+
+    # @deprecate
+    def each(&)
+      @entries.each(&)
     end
 
     # ファイル名と一致する文字列があれば、そのentryを返す。
@@ -42,6 +43,23 @@ module Memo
     # @return [Entry, void]
     def find(word)
       @entries.find { |entry| entry.filename == word }
+    end
+
+    # ディレクトリとその中に入っているメモファイルの配列を返す
+    # dirをkeyにして、ファイルの配列を集合にしたもののハッシュを返却してもいいかも
+    # 返す値は、キーがディレクトリの文字列で、値がそのディレクトリに所属するファイル名の配列
+    # NOTE: 値の配列はfreezeした方がいいのかな？一応freezeしておくか
+    # @return [Hash<String, Set<String>>]
+    def files_grouped_by_dir
+      grouped_files = {}
+      to_dirs.each do |key|
+        grouped_files[key] = entries_grouped_by_dir(@entries)[key].to_set(&:filename).freeze
+      end
+      grouped_files
+    end
+
+    def test_grouped
+      @entries.group_by(&:dir)
     end
 
     # ディレクトリの集合を配列に変換する

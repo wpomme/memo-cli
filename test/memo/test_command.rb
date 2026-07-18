@@ -37,12 +37,41 @@ class TestCommand < Minitest::Test
         assert_equal expected, out
       end
 
-      it "['read', 'find']を受け取ったときは、find.mdを全文表示する" do
-        out, = capture_io do
-          Memo::Command.new(@memo_dir).execute(%w[read find])
+      describe '#execute -> read' do
+        it "['read', 'find']を受け取ったときは、find.mdを全文表示する" do
+          out, = capture_io do
+            Memo::Command.new(@memo_dir).execute(%w[read find])
+          end
+
+          assert_equal MemoTestLifecycleHooks::TEST_FIND_FILE_CONTENT, out
         end
 
-        assert_equal MemoTestLifecycleHooks::TEST_FIND_FILE_CONTENT, out
+        it "['read', 'invalid_memo']を受け取ったときは、そのようなメモがないことを表示する" do
+          word = 'invalid_memo'
+
+          out, = capture_io do
+            exception = assert_raises(SystemExit) do
+              Memo::Command.new(@memo_dir).execute(%w[read invalid_memo])
+            end
+
+            assert_equal 2, exception.status
+          end
+
+          assert_equal "#{word} というメモは見つかりませんでした。\n", out
+        end
+
+        # Memo::Command::Options以下のParserの動作みたい
+        it "['read', nil]を受け取ったときは、例外を送出する" do
+          word = nil
+
+          capture_io do
+            exception = assert_raises(OptionParser::InvalidArgument) do
+              Memo::Command.new(@memo_dir).execute(['read', word])
+            end
+
+            assert_equal "invalid argument: -r ", exception.message
+          end
+        end
       end
     end
   end

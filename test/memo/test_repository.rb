@@ -35,12 +35,20 @@ class TestRepository < Minitest::Test
 
         assert_nil expected
       end
+
+      it "wordがnilの場合も、nilを返す" do
+        word = nil
+        expected = Memo::Repository.new(@memo_dir).find(word)
+
+        assert_nil expected
+      end
     end
 
     describe '#read' do
       it "entryが存在すれば、そのファイルを全文表示する。、" do
-        expected_entry = @test_repository_entries.find{|entry| entry.filename == "find" }
-        expected = Memo::Repository.new(@memo_dir).read(expected_entry)
+        expected_entry = @test_repository_entries.find { |entry| entry.filename == "find" }
+        Memo::Repository.new(@memo_dir)
+        expected = Memo::Repository.read(expected_entry)
 
         actual = MemoTestLifecycleHooks::TEST_FIND_FILE_CONTENT.split("\n")
 
@@ -48,9 +56,18 @@ class TestRepository < Minitest::Test
       end
 
       it "nilが与えられたら、そのままnilを返す" do
-        expected = Memo::Repository.new(@memo_dir).read(nil)
+        Memo::Repository.new(@memo_dir)
+        expected = Memo::Repository.read(nil)
 
         assert_nil expected
+      end
+    end
+
+    describe '#files_grouped_by_dir' do
+      it "ディレクトリの文字列をキーで、値がそのディレクトリに所属するファイル名の配列であるHashを返す" do
+        expected = Memo::Repository.new(@memo_dir).files_grouped_by_dir
+
+        _(expected).must_equal(@test_repository_grouped_files)
       end
     end
   end
