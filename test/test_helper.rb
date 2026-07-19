@@ -59,9 +59,16 @@ module MemoTestLifecycleHooks
     Memo::Repository::Entry.new(full_path: full_path, filename: File.basename(full_path, '.md'), dir: join_dir)
   end
 
+  # テストコード用のmemo_dirとその中身を作成する処理を行っている
   # TODO: tmpdirなどを使って、実際に実装のloadを使ってEntryを生成した方がいいかも
   def before_setup
     super
+
+    unless ENV.fetch('MEMO_CLI_RUNTIME_ENV') == 'test'
+      puts 'Do not set MEMO_CLI_RUNTIME_ENV "test". Abort to execute test.'
+      exit 1
+    end
+
     @tmpdir = Dir.mktmpdir
     @memo_dir = File.join(@tmpdir, "memo").freeze
 
@@ -92,6 +99,7 @@ module MemoTestLifecycleHooks
     Dir.chdir(@tmpdir)
   end
 
+  # テストコード用のmemo_dirとその中身を削除する処理
   def after_teardown
     super
     Dir.chdir(@original_dir)

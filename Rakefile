@@ -3,7 +3,9 @@
 require "bundler/gem_tasks"
 require "minitest/test_task"
 
-Minitest::TestTask.create
+Minitest::TestTask.create :test do |t|
+  ENV['MEMO_CLI_RUNTIME_ENV'] = 'test'
+end
 
 task default: :test
 

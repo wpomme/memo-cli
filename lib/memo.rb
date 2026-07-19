@@ -17,6 +17,9 @@ module Memo
   class Error < StandardError; end
   VERSION = "0.1.0"
 
+  # テストの実行か、exe/memoの実行かで環境変数を設定する
+  # MEMO_CLI_RUNTIME_ENV = 'test' | 'exe'
+  # この値に従って、memo_dirの場所を変える
   module Env
     # HOMEディレクトリからの相対パスを使う
     # TODO: 隠しファイルかRakefileあたりからパスを読み込めたらいいと思う
