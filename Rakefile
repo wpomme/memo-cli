@@ -49,7 +49,7 @@ namespace :mock do
     end
 
     # test/でなくlib/に入れておく
-    output = "lib/memo/mock_seed.rb"
+    output = "test/mock_seeds.rb"
 
     File.open(output, "w") do |file|
       file.puts(["module Memo", "module MockSeed"])

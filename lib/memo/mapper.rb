@@ -9,9 +9,11 @@ module Memo
     #
     # @return [Array | String] NOTE: ユーザーメッセージの方はもう少しなんとかしたい
     def self.file_list_to_view(memo_dir, dir = nil)
-      ## REVIEW: コードの書きっぷりが情けないほどダブってるので描き直したい
+      ## REVIEW: コードの重複を避けたい
+      seeds = Memo::Repository.new(memo_dir).seeds
+
       if dir
-        ret = Memo::Repository.new(memo_dir).grouped_file_list.filter_map do |struct|
+        ret = Memo::Model.new.grouped_file_list(seeds).filter_map do |struct|
           [Rainbow(struct[:dir]).green].append(struct[:filenames], "\n") if struct[:dir] == dir
         end.flatten
         ret.pop
@@ -28,7 +30,7 @@ module Memo
         NOT_DIR
       end
 
-      ret = Memo::Repository.new(memo_dir).grouped_file_list.map do |struct|
+      ret = Memo::Model.new.grouped_file_list(seeds).map do |struct|
         [Rainbow(struct[:dir]).green].append(struct[:filenames], "\n")
       end.flatten
       ret.pop
