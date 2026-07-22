@@ -4,6 +4,7 @@ module Memo
   class Model
     #  対象ディレクトリのファイル情報を保存するための値オブジェクト
     #  Repositoryの内部で使用するため、Memo::Model::Seedとして使用する
+    #  TODO: 読み取り専用にする
     #
     # @!attribute [rw] full_path
     #   @return [String] memoディレクトリの中にあるファイルの絶対パス。メモを読み取るために使う

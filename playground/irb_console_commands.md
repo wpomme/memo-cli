@@ -13,6 +13,7 @@ dir = Memo::Env.to_memo_dir
 # Repositoryのオブジェクトも作成しておく
 repo = Memo::Repository.new(dir)
 
+# モックデータ取得のためにattr_reader :seedsとしてある
 # モックデータ作成のためにseedsを取得する
 seeds = repo.seeds
 ```
@@ -68,7 +69,7 @@ end
 ## Data, Structオブジェクトの使い方に慣れてテストデータを新しく作り直したい
 ```ruby
 ## 実データからサンプルデータを取得(四の倍数のデータのみ取得)
-seeds = repo.filter.each_with_index{|e, i| (i).modulo(4).zero? }
+seeds = repo.seeds.filter.each_with_index{|e, i| (i).modulo(4).zero? }
 
 ## contentをヒアドキュメント形式にして出力したい
 ### 試しにgrepで作成
@@ -79,12 +80,37 @@ puts ["TEST_GREP_FILE_CONTENT = <<~GREP_FILE"].append(grep_content).append("GREP
 ### TODO: grepのヒアドキュメントを元に、実データの1/4くらいのモックデータを作成する
 
 ## モックデータ作成用のコマンド
-mock_seeds = seeds.map { |seed| { dir: seed.dir, filename: seed.filename, content: Memo::Repository.read(seed)} }
-
-## 出力場所はOK。これだとcontentが長くなってしまう
-## ヒアドキュメントにして、変数として引き継ぐのが良さそう
-File.open("test/test_mock_seeds.rb", "w") do |file|
-  file.puts(mock_seeds)
+mock_seeds = seeds.map do |seed|
+  content = Memo::Repository.read(seed)
+  filename = seed.filename.upcase.tr("-", "_")
+  val_name = "TEST_#{filename}_FILE_CONTENT"
+  label = "#{filename}_FILE"
+  heredoc = ["#{val_name} = <<~#{label}"] + content + [label] + ["\n"]
+  {
+    mock_seed: { dir: seed.dir, filename: seed.filename, content: val_name},
+    heredoc: heredoc
+  }
 end
+
+# モックデータ作成: Fakerを使えば良さそう
+# https://github.com/faker-ruby/faker
+# それかRakefileでファイルを生成すると良さそう
+# contentが引数に取るヒアドキュメント
+# ヒアドキュメントの方は正確に出力できている
+File.open("test/test_mock_seeds.rb", "w") do |file|
+  mock_seeds.each do |seed|
+    file.puts(seed[:heredoc])
+  end
+
+  mock_seeds.each do |seed|
+    file.print(seed[:mock_seed])
+  end
+end
+
+# 今のTEST_MEMO_DATA_SEEDに対応
+# contentのval_nameは引用符を抜いてファイルに出力してほしい
+# 他、TEST_MEMO_DATA_SEED = ... の形で出力してほしいなど
+mock_seeds.map{|seed| seed[:mock_seed]}
+
 ```
 

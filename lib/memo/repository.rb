@@ -2,7 +2,6 @@
 
 module Memo
   class Repository
-    # include Enumerable
     include FileUtility
 
     EXCLUDE_FILES = ['README.md'].to_set.freeze
@@ -27,12 +26,12 @@ module Memo
     # ファイル名と一致する文字列があれば、そのseedを返す。
     # 見つからなければ、nilを返す
     # TODO: 一度、ファイルが見つかったらそこで探索が終了してしまう
-    # FIXME: Enumerableのfindと名前が衝突しているはず
     # @return [Seed, void]
     def find(word)
       @seeds.find { |seed| seed.filename == word }
     end
 
+    # TODO: Modelに移動
     # Structを返す新しいデータ
     # grouped = repo.grouped_file_list
     # grouped.class => Array
@@ -49,11 +48,11 @@ module Memo
       end
     end
 
+    # TODO: Modelに移動
     # ディレクトリとその中に入っているメモファイルの配列を返す
     # dirをkeyにして、ファイルの配列を集合にしたもののハッシュを返却してもいいかも
     # 返す値は、キーがディレクトリの文字列で、値がそのディレクトリに所属するファイル名の配列
     # NOTE: 値の配列はfreezeした方がいいのかな？一応freezeしておくか
-    # TODO: Modelに移動
     # @return [Hash<String, Set<String>>]
     def files_grouped_by_dir
       grouped_files = {}
@@ -70,14 +69,14 @@ module Memo
       dir_set.to_a.freeze
     end
 
-    private
-
     # フォルダの中のディレクトリの集合
     #
     # @return [Set<String>]
     def dir_set
       Set.new(@seeds.map(&:dir).uniq).freeze
     end
+
+    private
 
     # ディレクトリ内をglobで捜索して、ファイルの読み取りや検索に必要な情報を取得する
     #
