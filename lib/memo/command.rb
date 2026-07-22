@@ -11,15 +11,15 @@ module Memo
     end
 
     def execute(argv)
-      options = Memo::Command::Options::SubCommand.parse!(argv)
+      options = Memo::SubCommandParser.parse!(argv)
 
       case options.shift
       when :list
-        Presenter.list(@memo_dir, options.shift)
+        View.list(@memo_dir, options.shift)
       when :dirs
-        Presenter.dirs(@memo_dir)
+        View.dirs(@memo_dir)
       when :read
-        Presenter.read(@memo_dir, options.shift)
+        View.read(@memo_dir, options.shift)
       end
     end
   end

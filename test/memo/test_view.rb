@@ -2,14 +2,14 @@
 
 require_relative "../test_helper"
 
-class TestPresenter < Minitest::Test
-  describe 'Presenter' do
+class TestView < Minitest::Test
+  describe 'View' do
     include MemoTestLifecycleHooks
 
     describe '#dirs' do
       it "memoの中のディレクトリの一覧を標準出力に表示する" do
         out, = capture_io do
-          Memo::Presenter.dirs(@memo_dir)
+          Memo::View.dirs(@memo_dir)
         end
 
         # 順番が異なっていても、書き出す内容が同じなら問題ない
@@ -20,7 +20,7 @@ class TestPresenter < Minitest::Test
     describe '#read' do
       it 'wordが存在するファイルと一致するとき、そのファイルを全文表示する' do
         out, = capture_io do
-          Memo::Presenter.read(@memo_dir, "find")
+          Memo::View.read(@memo_dir, "find")
         end
 
         assert_equal MemoTestLifecycleHooks::TEST_FIND_FILE_CONTENT, out
@@ -31,7 +31,7 @@ class TestPresenter < Minitest::Test
 
         out, = capture_io do
           exception = assert_raises(SystemExit) do
-            Memo::Presenter.read(@memo_dir, word)
+            Memo::View.read(@memo_dir, word)
           end
 
           assert_equal 2, exception.status
@@ -44,26 +44,26 @@ class TestPresenter < Minitest::Test
     describe '#list' do
       it '引数がlistだけのときは、色のついたディレクトリと、そのディレクトリの中のファイルの一覧を表示する' do
         out, = capture_io do
-          Memo::Presenter.list(@memo_dir)
+          Memo::View.list(@memo_dir)
         end
 
-        # TODO: RepositoryからPresenterにまで渡るここら辺の処理をまとめたい
-        # entries.group_by(&:dir)はMemoFileUtility.entries_grouped_by_dirと同じ
-        grouped_file_list = @test_repository_entries.group_by(&:dir).map do |dir, entry|
-          Memo::GroupedFileList.new(
+        # TODO: RepositoryからViewにまで渡るここら辺の処理をまとめたい
+        # entries.group_by(&:dir)はFileUtility.entries_grouped_by_dirと同じ
+        grouped_file_list = @test_repository_entries.group_by(&:dir).map do |dir, seed|
+          Memo::Model::GroupedFileList.new(
             dir: dir,
-            filenames: entry.map(&:filename).sort
+            filenames: seed.map(&:filename).sort
           )
         end
 
-        file_test_to_presenter = grouped_file_list
+        file_test_to_view = grouped_file_list
           .map do |struct|
             [Rainbow(struct[:dir]).green].append(struct[:filenames], "\n")
           end
 
         # 表示される文字列が同じなら順番は関係がない
         # 集合にして同じ文字列があればよし
-        actual = file_test_to_presenter.flatten.to_set
+        actual = file_test_to_view.flatten.to_set
 
         # 改行で配列を作成するが、改行自身は集合に加える必要がある
         expected = out.split("\n").to_set.add("\n")
@@ -77,14 +77,14 @@ class TestPresenter < Minitest::Test
         valid_dir = 'cli'
 
         out, = capture_io do
-          Memo::Presenter.list(@memo_dir, valid_dir)
+          Memo::View.list(@memo_dir, valid_dir)
         end
 
-        grouped_file_list = @test_repository_entries.group_by(&:dir).filter_map do |dir, entry|
+        grouped_file_list = @test_repository_entries.group_by(&:dir).filter_map do |dir, seed|
           if dir == valid_dir
-            Memo::GroupedFileList.new(
+            Memo::Model::GroupedFileList.new(
               dir: dir,
-              filenames: entry.map(&:filename).sort
+              filenames: seed.map(&:filename).sort
             )
           end
         end
@@ -103,7 +103,7 @@ class TestPresenter < Minitest::Test
         invalid_dir = 'invalid_dir'
 
         out, = capture_io do
-          Memo::Presenter.list(@memo_dir, invalid_dir)
+          Memo::View.list(@memo_dir, invalid_dir)
         end
 
         # TODO: とりあえず文字列を返すことだけを確認する

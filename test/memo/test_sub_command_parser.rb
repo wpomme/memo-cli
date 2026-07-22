@@ -1,24 +1,24 @@
 # frozen_string_literal: true
 
-require_relative "../../test_helper"
+require_relative "../test_helper"
 
-class TestSubCommand < Minitest::Test
-  include Memo::Command::Options
+class TestSubCommandParser < Minitest::Test
+  include Memo::Message
 
   describe '"#parse!' do
     describe 'memo list' do
       it '引数がlistだけのときは、[:list]を返す' do
-        expected = SubCommand.parse!(['list'])
+        expected = Memo::SubCommandParser.parse!(['list'])
         assert_equal [:list], expected
       end
 
       it '引数がlist <word>のときは、[:list, <word>]を返す' do
-        expected = SubCommand.parse!(%w[list foo])
+        expected = Memo::SubCommandParser.parse!(%w[list foo])
         assert_equal [:list, 'foo'], expected
       end
 
       it '引数がlistで、その後に続く引数が二つ以上あるときは、listの次の引数を返す' do
-        expected = SubCommand.parse!(%w[list foo bar])
+        expected = Memo::SubCommandParser.parse!(%w[list foo bar])
         assert_equal [:list, 'foo'], expected
       end
     end
@@ -27,7 +27,7 @@ class TestSubCommand < Minitest::Test
       it '引数がreadだけのときは、エラーメッセージを表示して異常終了する' do
         _, err = capture_io do
           exception = assert_raises(SystemExit) do
-            SubCommand.parse!(['read'])
+            Memo::SubCommandParser.parse!(['read'])
           end
 
           assert_equal 2, exception.status
@@ -37,29 +37,29 @@ class TestSubCommand < Minitest::Test
       end
 
       it '引数がread <word>のときは、[:read, <word>]' do
-        expected = SubCommand.parse!(%w[read foo])
+        expected = Memo::SubCommandParser.parse!(%w[read foo])
         assert_equal [:read, 'foo'], expected
       end
 
       it '引数がreadで、その後に続く引数が二つ以上あるときは、readの次の引数を返す' do
-        expected = SubCommand.parse!(%w[read foo bar])
+        expected = Memo::SubCommandParser.parse!(%w[read foo bar])
         assert_equal [:read, 'foo'], expected
       end
 
       it '引数が一つだけで、サブコマンドではなく、不正な文字列でなければ、readの引数とする' do
-        expected = SubCommand.parse!(%w[foo])
+        expected = Memo::SubCommandParser.parse!(%w[foo])
         assert_equal [:read, 'foo'], expected
       end
     end
 
     describe 'memo dirs' do
       it '引数がdirsだけのときは、:dirsを返す' do
-        expected = SubCommand.parse!(['dirs'])
+        expected = Memo::SubCommandParser.parse!(['dirs'])
         assert_equal [:dirs], expected
       end
 
       it '引数がdirsで、その後に続く引数があってもそのまま:dirsを返す' do
-        expected = SubCommand.parse!(%w[dirs foo])
+        expected = Memo::SubCommandParser.parse!(%w[dirs foo])
         assert_equal [:dirs], expected
       end
     end
@@ -69,7 +69,7 @@ class TestSubCommand < Minitest::Test
         _, err = capture_io do
           exception = assert_raises(SystemExit) do
             HELP_COMMANDS.each do |h_str|
-              SubCommand.parse!([h_str])
+              Memo::SubCommandParser.parse!([h_str])
             end
           end
 
@@ -83,7 +83,7 @@ class TestSubCommand < Minitest::Test
         _, err = capture_io do
           exception = assert_raises(SystemExit) do
             HELP_COMMANDS.each do |h_str|
-              SubCommand.parse!([h_str, "foo"])
+              Memo::SubCommandParser.parse!([h_str, "foo"])
             end
           end
 
@@ -98,7 +98,7 @@ class TestSubCommand < Minitest::Test
           words = %w[foo a A 0 9 aa aA a0 a9 0a a_ a- _a _A _0 _9 _-a _-0 _-9 _-A]
           words.each do |word|
             # テストに失敗した場合、どのwordが失敗したわからないのでexpectedをwordにする
-            expected = SubCommand.word?(word) && word
+            expected = Memo::SubCommandParser.word?(word) && word
 
             assert_equal expected, word
           end
@@ -111,7 +111,7 @@ class TestSubCommand < Minitest::Test
           words = [word1, word2]
 
           words.each do |word|
-            expected = SubCommand.word?(word) && word
+            expected = Memo::SubCommandParser.word?(word) && word
 
             assert_equal expected, word
           end
@@ -121,7 +121,7 @@ class TestSubCommand < Minitest::Test
           _, err = capture_io do
             exception = assert_raises(SystemExit) do
               word = "a" * 33
-              SubCommand.word?(word)
+              Memo::SubCommandParser.word?(word)
             end
 
             assert_equal 2, exception.status
@@ -135,7 +135,7 @@ class TestSubCommand < Minitest::Test
           words.each do |word|
             _, err = capture_io do
               exception = assert_raises(SystemExit) do
-                SubCommand.word?(word)
+                Memo::SubCommandParser.word?(word)
               end
 
               assert_equal 2, exception.status
@@ -150,7 +150,7 @@ class TestSubCommand < Minitest::Test
           words.each do |word|
             _, err = capture_io do
               exception = assert_raises(SystemExit) do
-                SubCommand.word?(word)
+                Memo::SubCommandParser.word?(word)
               end
 
               assert_equal 2, exception.status

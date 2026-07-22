@@ -1,18 +1,7 @@
 ## TODO・IDEA
 ```
-## Memoのフォルダ構成・命名規則変更
-- Memo::Command::Options::CommandParser -> Memo::CommandParserにする
-    - 必要になったらOptionsモジュールを作成する
-
-## 新設
-Memo::GroupedFileListを作成した
-Memo::UserMessageというモジュールを作成する。ユーザーメッセージを補完する場所
--> PresenterとCommandParserにインクルードして使う
-## リネーム
-memo/struct.rb -> memo/data_object.rbとかだろうか
-Memo::Repository::Entry -> Memo::Seedにする。現行のmemo/struct.rbに移動する
-Memo::MemoFileUtility -> FileUtilityなどにする。テストコードにも使うから欲しい。実装上はrepositoryだけでしか使わないかも。
-できればMemo -> MemoCliにしたい...
+## テストデータ刷新・値オブジェクトの理解
+- MemoTestMockのようなモジュールを作成してもいいかも
 
 ## Rakefileとe2eテスト
 Rakefileで各種コマンドを発行させてe2eテストを作成したい
@@ -24,12 +13,17 @@ Rakefileで各種コマンドを発行させてe2eテストを作成したい
 4. 最終的にはmemo-settings.jsonとかにmemoのディレクトリを記載しておいて、このsettings.jsonを読み取るようにする
 
 ## 分岐対応
-README.mdの処理を明確にする
-トップレベルのmdファイルの所属ディレクトリが.になってしまうのでmemoとかにしたい
--> @memo_dirの末尾のディレクトリがmemoになるから、それを使いたい
+- README.md除外対応
+- トップディレクトリ -> 対象のディレクトリの末尾
+    -テストコードで明確にしたい
 
-# 新規CLI作成
+# CLI作成・改修
 memo grep # docs 以下について、そのキーワードで全文検索をかける
+memo dirs # dirsの末尾のディレクトリで検索できるようにしたい、しかし名前が重複しそう
+          # トップレベルのディレクトリをmemoにしているように、重複していたら通称を付けるとか
+
+#CLIの自動補完
+- どうやるんだろう。zsh限定でいい
 
 ## 情報の集計
 - DBとの連携とは別に、ファイル名の重複などを調べておきたい

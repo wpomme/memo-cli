@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module Memo
-  class Presenter
+  class View
     def self.dirs(memo_dir)
       puts Memo::Repository.new(memo_dir).to_dirs
     end
@@ -15,7 +15,7 @@ module Memo
     end
 
     def self.list(memo_dir, word = nil)
-      puts Memo::ViewModel.file_list_to_presenter(memo_dir, word)
+      puts Memo::Mapper.file_list_to_view(memo_dir, word)
     end
   end
 end

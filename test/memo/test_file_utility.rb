@@ -2,10 +2,10 @@
 
 require_relative "../test_helper"
 
-class TestMemoFileUtility < Minitest::Test
+class TestFileUtility < Minitest::Test
   describe '#MemoTestLifecycleHooks' do
     describe '#filename' do
-      include Memo::MemoFileUtility
+      include Memo::FileUtility
 
       it "絶対パスを取ったら、そのファイルの.mdをとったファイル名を返す" do
         expected = filename(File.join(Dir.home, "/repo/memorandum/memo/", "foo.md"))
@@ -27,10 +27,10 @@ class TestMemoFileUtility < Minitest::Test
     end
 
     describe '#grouped_by_dir' do
-      include Memo::MemoFileUtility
+      include Memo::FileUtility
       include MemoTestLifecycleHooks
 
-      it "Entryの配列をとったら、そのキーがディレクトリの一覧となるハッシュを返す" do
+      it "Seedの配列をとったら、そのキーがディレクトリの一覧となるハッシュを返す" do
         expected = grouped_by_dir(@test_repository_entries)
 
         _(expected.keys.to_set).must_equal(@dir_set)
@@ -38,7 +38,7 @@ class TestMemoFileUtility < Minitest::Test
 
       # とりあえず、ファイル名だけが入っていることを確かめれば良い
       # 実装の方のgrouped_by_dir()はREADME.mdが除外されるようにしてある
-      it "ディレクトリごとのキーの値は、値データのEntryで絶対パスやファイル名などの情報が入っている" do
+      it "ディレクトリごとのキーの値は、値データのSeedで絶対パスやファイル名などの情報が入っている" do
         actual = MemoTestLifecycleHooks::TEST_MEMO_DATA_SEED
           .filter { |elem| elem[:filename] != "README.md" }
           .group_by { |elem| elem[:dir] }

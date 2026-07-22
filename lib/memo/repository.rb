@@ -3,29 +3,18 @@
 module Memo
   class Repository
     include Enumerable
-    include MemoFileUtility
+    include FileUtility
 
     EXCLUDE_FILES = ['README.md'].to_set.freeze
 
-    #  memoディレクトリの中のファイルの情報を保存するための値オブジェクト
-    #  もしかしたらEntryはMemoの外に出した方がいいかも
-    #
-    # @!attribute [rw] full_path
-    #   @return [String] memoディレクトリの中にあるファイルの絶対パス。メモを読み取るために使う
-    # @!attribute [rw] filename
-    #   @return [String] 対象のファイルのファイル名
-    # @!attribute [rw] dir
-    #   @return [String] そのファイルが格納されているディレクトリ
-    Entry = Data.define(:full_path, :filename, :dir)
-
-    # entryが存在すれば、そのファイルを全文表示する。
-    # nilを受け取った場合は、そのままpresenterにnilを返す
-    # @param [Entry, void]
+    # seedが存在すれば、そのファイルを全文表示する。
+    # nilを受け取った場合は、そのままviewにnilを返す
+    # @param [Seed, void]
     # @return [<Array<String>>] 読み取ったメモが行ごとに保存されていて、さらに配列で包まれている。仕様上、複数のファイルを読み取る場合があるため。
-    def self.read(entry)
-      return if entry.nil?
+    def self.read(seed)
+      return if seed.nil?
 
-      File.readlines(entry.full_path, chomp: true)
+      File.readlines(seed.full_path, chomp: true)
     end
 
     def initialize(memo_dir)
@@ -37,26 +26,28 @@ module Memo
       @entries.each(&)
     end
 
-    # ファイル名と一致する文字列があれば、そのentryを返す。
+    # ファイル名と一致する文字列があれば、そのseedを返す。
     # 見つからなければ、nilを返す
     # TODO: 一度、ファイルが見つかったらそこで探索が終了してしまう
-    # @return [Entry, void]
+    # @return [Seed, void]
     def find(word)
-      @entries.find { |entry| entry.filename == word }
+      @entries.find { |seed| seed.filename == word }
     end
 
     # Structを返す新しいデータ
     # grouped = repo.grouped_file_list
     # grouped.class => Array
-    # その中身はMemo::GroupedFileListとなる
+    # その中身はMemo::Model::GroupedFileListとなる
+    # その中身はMemo::Model::GroupedFileListとなる
     # 値はSet<Hash>
-    # @return [Array<Memo::GroupedFileList>]
+    # @return [Array<Memo::Model::GroupedFileList>]
+    # @return [Array<Memo::Model::GroupedFileList>]
     def grouped_file_list
-      entries_grouped_by_dir(@entries).map do |dir, entry|
-        Memo::GroupedFileList.new(
+      entries_grouped_by_dir(@entries).map do |dir, seed|
+        Memo::Model::GroupedFileList.new(
           dir: dir,
           # NOTE: テストコードのためsortする。別にソートする必要はない
-          filenames: entry.map(&:filename).sort
+          filenames: seed.map(&:filename).sort
         )
       end
     end
@@ -96,7 +87,7 @@ module Memo
     # 2. フォルダの最上位に存在するファイルは、globだけだと所属するディレクトリが"."になってしまう
     #    そのため、その親のディレクトリがdirに入るように実装している。
     #
-    # @return [Array<Entry>]
+    # @return [Array<Seed>]
     def load(memo_dir)
       Dir.glob("**/*.md", base: memo_dir).filter_map do |rel_path|
         # README.mdは読み飛ばす
@@ -107,7 +98,7 @@ module Memo
         # トップディレクトリにあるメモのdirは"."となってしまうため、引数として受け取ったディレクトリの末尾を使う
         dir = File.dirname(rel_path) == "." ? File.basename(memo_dir) : File.dirname(rel_path)
 
-        Entry.new(
+        Memo::Model::Seed.new(
           full_path: full_path,
           filename: filename(full_path),
           dir: dir

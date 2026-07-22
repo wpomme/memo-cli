@@ -5,7 +5,7 @@
 ## モジュール
 ## モジュールはインスタンスを生成できないことに注意！
 ## Module#instance_methodsで、そのモジュールのインスタンスメソッドを調べられる
-Memo::MemoFileUtility.instance_methods
+Memo::FileUtility.instance_methods
 
 ## モジュールからミックスインされているメソッドを探して使用する方法
 ## 経緯: モジュールから直接メソッドを取り出すのが面倒だった

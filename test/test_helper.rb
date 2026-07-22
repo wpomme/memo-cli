@@ -12,7 +12,7 @@ require "fileutils"
 
 module MemoTestLifecycleHooks
   include Minitest::Test::LifecycleHooks
-  include Memo::MemoFileUtility
+  include Memo::FileUtility
 
   TEST_FIND_FILE_CONTENT = <<~FIND_FILE
     ## find: ファイルの階層を巡回する
@@ -54,13 +54,13 @@ module MemoTestLifecycleHooks
     }
   ].freeze
 
-  def to_repository_entry(base_dir, join_dir, filename)
+  def to_repository_seed(base_dir, join_dir, filename)
     full_path = join_dir == "memo" ? File.join(base_dir, filename) : File.join(base_dir, join_dir, filename)
-    Memo::Repository::Entry.new(full_path: full_path, filename: File.basename(full_path, '.md'), dir: join_dir)
+    Memo::Model::Seed.new(full_path: full_path, filename: File.basename(full_path, '.md'), dir: join_dir)
   end
 
   # テストコード用のmemo_dirとその中身を作成する処理を行っている
-  # TODO: tmpdirなどを使って、実際に実装のloadを使ってEntryを生成した方がいいかも
+  # TODO: tmpdirなどを使って、実際に実装のloadを使ってSeedを生成した方がいいかも
   def before_setup
     super
 
@@ -84,7 +84,7 @@ module MemoTestLifecycleHooks
 
       File.write(File.join(@memo_dir, elem[:dir], elem[:filename]), content)
 
-      @test_repository_entries << to_repository_entry(@memo_dir, elem[:dir], elem[:filename])
+      @test_repository_entries << to_repository_seed(@memo_dir, elem[:dir], elem[:filename])
     end
 
     @test_repository_grouped_files = {}

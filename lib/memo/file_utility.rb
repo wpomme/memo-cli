@@ -2,22 +2,22 @@
 
 module Memo
   # ファイルやディレクトリパスの操作に関するユーティリティモジュール
-  module MemoFileUtility
-    # dir をkey としてentry をHashとしたもの
+  module FileUtility
+    # dir をkey としてseed をHashとしたもの
     # 返り値がHashであることは検証済み
     #
-    # @param [Array<Entry>]
-    # @return [Hash<String, Entry>] <= yardの書き方が分からない。 キーがディレクトリで、値がEntryの配列
+    # @param [Array<Seed>]
+    # @return [Hash<String, Seed>] <= yardの書き方が分からない。 キーがディレクトリで、値がSeedの配列
     def entries_grouped_by_dir(entries)
       entries.group_by(&:dir)
     end
 
-    # dir をkey としてentry をHashとしたもの
+    # dir をkey としてseed をHashとしたもの
     # 返り値がHashであることは検証済み
     #
     # @deprecate entries_grouped_by_dirを使う
-    # @param [Array<Entry>]
-    # @return [Hash] キーが文字列で、値がEntryの配列
+    # @param [Array<Seed>]
+    # @return [Hash] キーが文字列で、値がSeedの配列
     def grouped_by_dir(entries)
       entries.group_by(&:dir)
     end

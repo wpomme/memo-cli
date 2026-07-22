@@ -25,22 +25,22 @@ class TestCommand < Minitest::Test
           end
 
           # TODO: RepositoryからCommandにまで渡るここら辺の処理をまとめたい
-          # entries.group_by(&:dir)はMemoFileUtility.entries_grouped_by_dirと同じ
-          grouped_file_list = @test_repository_entries.group_by(&:dir).map do |dir, entry|
-            Memo::GroupedFileList.new(
+          # entries.group_by(&:dir)はFileUtility.entries_grouped_by_dirと同じ
+          grouped_file_list = @test_repository_entries.group_by(&:dir).map do |dir, seed|
+            Memo::Model::GroupedFileList.new(
               dir: dir,
-              filenames: entry.map(&:filename).sort
+              filenames: seed.map(&:filename).sort
             )
           end
 
-          file_test_to_presenter = grouped_file_list
+          file_test_to_view = grouped_file_list
             .map do |struct|
               [Rainbow(struct[:dir]).green].append(struct[:filenames], "\n")
             end
 
           # 表示される文字列が同じなら順番は関係がない
           # 集合にして同じ文字列があればよし
-          actual = file_test_to_presenter.flatten.to_set
+          actual = file_test_to_view.flatten.to_set
 
           # 改行で配列を作成するが、改行自身は集合に加える必要がある
           expected = out.split("\n").to_set.add("\n")
@@ -57,11 +57,11 @@ class TestCommand < Minitest::Test
             Memo::Command.new(@memo_dir).execute(['list', valid_dir])
           end
 
-          grouped_file_list = @test_repository_entries.group_by(&:dir).filter_map do |dir, entry|
+          grouped_file_list = @test_repository_entries.group_by(&:dir).filter_map do |dir, seed|
             if dir == valid_dir
-              Memo::GroupedFileList.new(
+              Memo::Model::GroupedFileList.new(
                 dir: dir,
-                filenames: entry.map(&:filename).sort
+                filenames: seed.map(&:filename).sort
               )
             end
           end
@@ -103,7 +103,7 @@ class TestCommand < Minitest::Test
           assert_equal "#{word} というメモは見つかりませんでした。\n", out
         end
 
-        # Memo::Command::Options以下のParserの動作みたい
+        # Memo::Command以下のParserの動作みたい
         it "['read', nil]を受け取ったときは、例外を送出する" do
           word = nil
 
