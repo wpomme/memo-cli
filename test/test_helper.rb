@@ -74,7 +74,7 @@ module MemoTestLifecycleHooks
 
     @dir_set = TEST_MEMO_DATA_SEED.to_set { |e| e[:dir] }
 
-    @test_repository_entries = []
+    @test_repository_seeds = []
 
     TEST_MEMO_DATA_SEED.each do |elem|
       dir_for_file = File.join(@memo_dir, elem[:dir])
@@ -84,7 +84,7 @@ module MemoTestLifecycleHooks
 
       File.write(File.join(@memo_dir, elem[:dir], elem[:filename]), content)
 
-      @test_repository_entries << to_repository_seed(@memo_dir, elem[:dir], elem[:filename])
+      @test_repository_seeds << to_repository_seed(@memo_dir, elem[:dir], elem[:filename])
     end
 
     @test_repository_grouped_files = {}

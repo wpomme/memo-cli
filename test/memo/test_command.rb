@@ -25,8 +25,8 @@ class TestCommand < Minitest::Test
           end
 
           # TODO: RepositoryからCommandにまで渡るここら辺の処理をまとめたい
-          # entries.group_by(&:dir)はFileUtility.entries_grouped_by_dirと同じ
-          grouped_file_list = @test_repository_entries.group_by(&:dir).map do |dir, seed|
+          # seeds.group_by(&:dir)はFileUtility.seeds_grouped_by_dirと同じ
+          grouped_file_list = @test_repository_seeds.group_by(&:dir).map do |dir, seed|
             Memo::Model::GroupedFileList.new(
               dir: dir,
               filenames: seed.map(&:filename).sort
@@ -57,7 +57,7 @@ class TestCommand < Minitest::Test
             Memo::Command.new(@memo_dir).execute(['list', valid_dir])
           end
 
-          grouped_file_list = @test_repository_entries.group_by(&:dir).filter_map do |dir, seed|
+          grouped_file_list = @test_repository_seeds.group_by(&:dir).filter_map do |dir, seed|
             if dir == valid_dir
               Memo::Model::GroupedFileList.new(
                 dir: dir,

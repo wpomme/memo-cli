@@ -10,56 +10,49 @@ bundle exec irb
 # メモフォルダへの絶対パスを返す
 dir = Memo::Env.to_memo_dir
 
-# Seedの配列を取得
-# TODO: Memo::Model::Seedでもいい気がする
-seeds = Memo::Repository.new(dir)
-
 # Repositoryのオブジェクトも作成しておく
 repo = Memo::Repository.new(dir)
+
+# モックデータ作成のためにseedsを取得する
+seeds = repo.seeds
 ```
 
-## `seeds = Memo::Repository.new(dir)`についての調査
+## `seeds`についての調査
 ```irb
 ## このseedsは配列ではないが、Enumerableではある
-repo.is_a?(Array)
-=> false
-repo.is_a?(Object)
+seeds.is_a?(Array)
 => true
-repo.is_a?(Class)
-=> false
-repo.is_a?(Enumerable)
+seeds.is_a?(Object)
 => true
+seeds.is_a?(Class)
+=> false
 
-repo.class
-=> Memo::Repository
+seeds.class
+=> Array
 
-## seedsはMemo::Repositoryクラスのインスタンスである
-repo.instance_of?(Memo::Repository)
+## seedはMemo::Model::Seedクラスのインスタンスである
+seeds.first.instance_of?(Memo::Model::Seed)
 
 ## オブジェクトのインスタンス変数(例: @foo)はinstance_variablesで調べられる
 ## 現状、
-1.
+```ruby
 repo.instance_variables
-=> [:@entries]
-
-2.
-repo.instance_variables
-=> [:@entries]
+=> [:@seeds]
 ```
 
-## `entries_grouped_by_dir`についての調査
+## `seeds_grouped_by_dir`についての調査
 ```irb
 ## filesをdir名でgroupかしたものの調査
 ## 返り値をHashにして、値をファイル名の配列か集合にしたかったので
 ## 次のコマンドだと値が配列になっているものが帰ってくる
-repo.entries_grouped_by_dir(repo)["git"].map(&:filename)
+repo.seeds_grouped_by_dir(repo)["git"].map(&:filename)
 
 ## 最後にto_setを付ければ、値が集合になる
-repo.entries_grouped_by_dir(repo)["git"].map(&:filename).to_set
+repo.seeds_grouped_by_dir(repo)["git"].map(&:filename).to_set
 
 ## dirでグループ化したデータ構造をStructに持たせる
 ## まず、グループ化したデータ構造を調べる
-grouped = repo.entries_grouped_by_dir(repo)
+grouped = repo.seeds_grouped_by_dir(repo)
 
 ## 次のようなものが良さそう
 def new_grouped_files(grouped)
@@ -74,9 +67,24 @@ end
 
 ## Data, Structオブジェクトの使い方に慣れてテストデータを新しく作り直したい
 ```ruby
-## 実データからサンプルデータを取得(三の倍数のデータのみ取得)
-repo.filter.each_with_index{|e, i| (i).modulo(3).zero? }
-## -> filename, dir, その他ファイルに書き込む内容contentがあればOK
-## 今のテストデータの作成法とあんまり変わらない...
+## 実データからサンプルデータを取得(四の倍数のデータのみ取得)
+seeds = repo.filter.each_with_index{|e, i| (i).modulo(4).zero? }
+
+## contentをヒアドキュメント形式にして出力したい
+### 試しにgrepで作成
+grep_seed = repo.find("grep")
+grep_content = Memo::Repository.read(grep_seed)
+puts ["TEST_GREP_FILE_CONTENT = <<~GREP_FILE"].append(grep_content).append("GREP_FILE")
+
+### TODO: grepのヒアドキュメントを元に、実データの1/4くらいのモックデータを作成する
+
+## モックデータ作成用のコマンド
+mock_seeds = seeds.map { |seed| { dir: seed.dir, filename: seed.filename, content: Memo::Repository.read(seed)} }
+
+## 出力場所はOK。これだとcontentが長くなってしまう
+## ヒアドキュメントにして、変数として引き継ぐのが良さそう
+File.open("test/test_mock_seeds.rb", "w") do |file|
+  file.puts(mock_seeds)
+end
 ```
 

@@ -8,18 +8,18 @@ module Memo
     #
     # @param [Array<Seed>]
     # @return [Hash<String, Seed>] <= yardの書き方が分からない。 キーがディレクトリで、値がSeedの配列
-    def entries_grouped_by_dir(entries)
-      entries.group_by(&:dir)
+    def seeds_grouped_by_dir(seeds)
+      seeds.group_by(&:dir)
     end
 
     # dir をkey としてseed をHashとしたもの
     # 返り値がHashであることは検証済み
     #
-    # @deprecate entries_grouped_by_dirを使う
+    # @deprecate seeds_grouped_by_dirを使う
     # @param [Array<Seed>]
     # @return [Hash] キーが文字列で、値がSeedの配列
-    def grouped_by_dir(entries)
-      entries.group_by(&:dir)
+    def grouped_by_dir(seeds)
+      seeds.group_by(&:dir)
     end
 
     # ファイルパスから、そのファイルのファイル名を返す

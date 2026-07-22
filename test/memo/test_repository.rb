@@ -7,25 +7,20 @@ class TestRepository < Minitest::Test
     include MemoTestLifecycleHooks
 
     describe '#initialize' do
-      it '@entriesはEnumerableなSeedを返す' do
-        expected = Memo::Repository.new(@memo_dir).to_set
-
-        _(expected).must_equal(@test_repository_entries.to_set)
-      end
-
-      it '@entriesはMemo::Model::SeedのEnumerableを返す' do
+      it '@seedsはMemo::Model::SeedのArrayである' do
         repo = Memo::Repository.new(@memo_dir)
-        entries = repo.instance_variable_get(:@entries)
+        seeds = repo.instance_variable_get(:@seeds)
 
-        entries.each do |seed|
+        assert_instance_of Array, seeds
+        seeds.each do |seed|
           assert_instance_of Memo::Model::Seed, seed
         end
       end
 
-      it '@entries.full_pathはREADME(.md) を含まない' do
+      it '@seeds.full_pathはREADME(.md) を含まない' do
         repo = Memo::Repository.new(@memo_dir)
-        entries = repo.instance_variable_get(:@entries)
-        full_path = entries.map(&:full_path)
+        seeds = repo.instance_variable_get(:@seeds)
+        full_path = seeds.map(&:full_path)
 
         refute_includes full_path, "README"
         refute_includes full_path, "README.md"
@@ -33,10 +28,10 @@ class TestRepository < Minitest::Test
 
       # これが成り立たないとmemo readが出来ない
       # ただ、どちらかといえば、memoフォルダの設定ミスのために生じる不具合のような
-      it '@entries:full_path は絶対パスである' do
+      it '@seeds:full_path は絶対パスである' do
         repo = Memo::Repository.new(@memo_dir)
-        entries = repo.instance_variable_get(:@entries)
-        full_paths = entries.map(&:full_path)
+        seeds = repo.instance_variable_get(:@seeds)
+        full_paths = seeds.map(&:full_path)
 
         full_paths.each do |full_path|
           assert File.absolute_path?(full_path)
@@ -70,7 +65,7 @@ class TestRepository < Minitest::Test
 
     describe '#read' do
       it "seedが存在すれば、そのファイルを全文表示する。、" do
-        expected_seed = @test_repository_entries.find { |seed| seed.filename == "find" }
+        expected_seed = @test_repository_seeds.find { |seed| seed.filename == "find" }
         Memo::Repository.new(@memo_dir)
         expected = Memo::Repository.read(expected_seed)
 
@@ -99,7 +94,7 @@ class TestRepository < Minitest::Test
       it "Structを返す" do
         expected = Memo::Repository.new(@memo_dir).grouped_file_list
 
-        actual = @test_repository_entries.group_by(&:dir).map do |dir, seed|
+        actual = @test_repository_seeds.group_by(&:dir).map do |dir, seed|
           Memo::Model::GroupedFileList.new(
             dir: dir,
             filenames: seed.map(&:filename).sort
