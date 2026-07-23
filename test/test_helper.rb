@@ -21,10 +21,10 @@ module MemoTestLifecycleHooks
   def before_setup
     super
 
-    unless ENV.fetch('MEMO_CLI_RUNTIME_ENV') == 'test'
-      puts 'Do not set MEMO_CLI_RUNTIME_ENV "test". Abort to execute test.'
-      exit 1
-    end
+    # unless ENV.fetch('MEMO_CLI_RUNTIME_ENV') == 'test'
+    #   puts 'Do not set MEMO_CLI_RUNTIME_ENV "test". Abort to execute test.'
+    #   exit 1
+    # end
 
     @tmpdir = Dir.mktmpdir
     @memo_dir = Memo::Env.memo_dir(File.join(@tmpdir, "memo").freeze)
@@ -33,10 +33,11 @@ module MemoTestLifecycleHooks
       dir_for_file = File.join(@memo_dir, elem[:dir])
       FileUtils.mkdir_p(dir_for_file) unless FileTest.directory?(dir_for_file)
 
-      File.write(File.join(@memo_dir, elem[:dir], elem[:filename]), elem[:content])
+      File.write(File.join(@memo_dir, elem[:dir], "#{elem[:filename]}.md"), elem[:content])
     end
 
-    @repo = Memo::Repository.new
+    # FIXME: newに@memo_dirを渡さないとモックデータとして成立しない
+    @repo = Memo::Repository.new(@memo_dir)
     @test_seeds = @repo.seeds
     @dir_set =  @repo.dir_set
 

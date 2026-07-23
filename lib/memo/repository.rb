@@ -17,8 +17,8 @@ module Memo
     end
 
     # TODO: Repository.new(dir)としてディレクトリは引数として取るように変更する
-    def initialize
-      @seeds = load(Memo::Env.memo_dir)
+    def initialize(dir = Memo::Env.memo_dir)
+      @seeds = load(dir)
     end
 
     # モックデータ作成のため@seedsを読み取り可能にしておく

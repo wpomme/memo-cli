@@ -7,6 +7,18 @@ class TestRepository < Minitest::Test
     include MemoTestLifecycleHooks
 
     describe '#initialize' do
+      it 'テスト環境のとき、memo_dirは一時的に作成されたテスト用のディレクトリになる' do
+        memo_file_set = @test_seeds.first.full_path.split("/").to_set
+        memo_dir_set = @memo_dir.split("/").to_set
+
+        # パスでsplitして集合にして、ディレクトリの方がファイルの方の部分集合であることを確かめれば良い
+        assert memo_dir_set.subset?(memo_file_set)
+      end
+
+      it 'テスト環境の以外のとき、memo_dirはMemo::Env::MEMO_DIRとなる' do
+        skip "TODO"
+      end
+
       it '@seedsはMemo::Model::SeedのArrayである' do
         seeds = @repo.instance_variable_get(:@seeds)
 
@@ -33,6 +45,24 @@ class TestRepository < Minitest::Test
         full_paths.each do |full_path|
           assert File.absolute_path?(full_path)
         end
+      end
+    end
+
+    describe '#dir_set' do
+      it "モックデータと実際のdir_setが同じであること" do
+        expected = @repo.dir_set
+        actual = @dir_set
+
+        _(actual).must_equal(expected)
+      end
+    end
+
+    describe '#to_dirs' do
+      it "モックデータと実際のto_dirsが同じであること" do
+        expected = @repo.to_dirs.sort
+        actual = @dir_set.to_a.sort
+
+        _(actual).must_equal(expected)
       end
     end
 

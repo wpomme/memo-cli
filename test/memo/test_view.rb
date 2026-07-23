@@ -6,10 +6,30 @@ class TestView < Minitest::Test
   describe 'View' do
     include MemoTestLifecycleHooks
 
+    describe '@memo_dir' do
+      it 'テスト環境のときに、memo_dirにテスト用のmemo_dirを渡すと、tmpで作成されたディレクトリになる' do
+        view = Memo::View.new(@memo_dir)
+        expected = view.instance_variable_get(:@memo_dir)
+        actual = @memo_dir
+
+        _(actual).must_equal(expected)
+      end
+
+      it 'テスト環境以外の場合は、Memo::Env::MEMO_DIRとホームディレクトリを結合したディレクトリとなる' do
+        ENV['MEMO_CLI_RUNTIME_ENV'] = 'exe'
+
+        view = Memo::View.new
+        expected = view.instance_variable_get(:@memo_dir)
+        actual = File.join(Dir.home, Memo::Env::MEMO_DIR)
+
+        _(actual).must_equal(expected)
+      end
+    end
+
     describe '#dirs' do
       it "memoの中のディレクトリの一覧を標準出力に表示する" do
         out, = capture_io do
-          Memo::View.dirs
+          Memo::View.dirs(@memo_dir)
         end
 
         # 順番が異なっていても、書き出す内容が同じなら問題ない
@@ -20,7 +40,7 @@ class TestView < Minitest::Test
     describe '#read' do
       it 'wordが存在するファイルと一致するとき、そのファイルを全文表示する' do
         out, = capture_io do
-          Memo::View.read("push")
+          Memo::View.read("push", @memo_dir)
         end
 
         assert_equal Memo::MockSeed::TEST_PUSH_FILE_CONTENT, out
@@ -31,7 +51,7 @@ class TestView < Minitest::Test
 
         out, = capture_io do
           exception = assert_raises(SystemExit) do
-            Memo::View.read(word)
+            Memo::View.read(word, @memo_dir)
           end
 
           assert_equal 2, exception.status
@@ -44,7 +64,7 @@ class TestView < Minitest::Test
     describe '#list' do
       it '引数がlistだけのときは、色のついたディレクトリと、そのディレクトリの中のファイルの一覧を表示する' do
         out, = capture_io do
-          Memo::View.list
+          Memo::View.list(nil, @memo_dir)
         end
 
         # TODO: RepositoryからViewにまで渡るここら辺の処理をまとめたい
@@ -76,7 +96,7 @@ class TestView < Minitest::Test
         valid_dir = 'cli'
 
         out, = capture_io do
-          Memo::View.list(valid_dir)
+          Memo::View.list(valid_dir, @memo_dir)
         end
 
         grouped_file_list = @test_seeds.group_by(&:dir).filter_map do |dir, seed|
@@ -102,7 +122,7 @@ class TestView < Minitest::Test
         invalid_dir = 'invalid_dir'
 
         out, = capture_io do
-          Memo::View.list(invalid_dir)
+          Memo::View.list(invalid_dir, @memo_dir)
         end
 
         # TODO: とりあえず文字列を返すことだけを確認する

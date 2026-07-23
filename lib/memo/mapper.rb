@@ -4,13 +4,18 @@ require 'rainbow'
 
 module Memo
   class Mapper
+    def initialize(dir = Memo::Env.memo_dir)
+      @memo_dir = dir
+    end
+
     # ファイル名の一覧をViewに渡す前に加工するための関数
     # ディレクトリ名に色を付けるのは、GroupedFileListのStructのブロックで定義するのもありかもしれない
     #
     # @return [Array | String] NOTE: ユーザーメッセージの方はもう少しなんとかしたい
-    def self.file_list_to_view(dir = nil)
+    def file_list_to_view(dir = nil)
       ## REVIEW: コードの重複を避けたい
-      seeds = Memo::Repository.new.seeds
+      repo = Memo::Repository.new(@memo_dir)
+      seeds = repo.seeds
 
       if dir
         ret = Memo::Model.new.grouped_file_list(seeds).filter_map do |struct|
@@ -22,7 +27,7 @@ module Memo
         return ret unless ret.empty?
 
         ## dir が存在しない場合は、ユーザーに表示するメッセージを返す
-        colored_dirs = Memo::Repository.new.to_dirs.map { |dir| Rainbow(dir).green }
+        colored_dirs = repo.to_dirs.map { |dir| Rainbow(dir).green }
         return <<~NOT_DIR
           #{dir}というディレクトリはありませんでした。
           ディレクトリの一覧は次の通りです。

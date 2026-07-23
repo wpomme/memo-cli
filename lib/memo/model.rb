@@ -20,7 +20,7 @@ module Memo
     GroupedFileList = Struct.new("GroupedFileList", :dir, :filenames)
 
     # TODO: Modelに移動
-    # Structを返す新しいデータ
+    # Seeds -> GroupedFileListに変換する関数
     # grouped = repo.grouped_file_list
     # grouped.class => Array
     # その中身はMemo::Model::GroupedFileListとなる

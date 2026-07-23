@@ -1,8 +1,13 @@
 ## TODO・IDEA
 ```
 ## TODO
-## テスト環境とそれ以外でmemo_dirの読み取りを分岐させる
-## Repository.newはmemo_dirを受け取るようにする
+## memo_dir問題
+## dir依存とそうでないオブジェクトに分けてみる
+## dir依存
+## repository, mapper, view, command 
+##
+## dirに依存しない
+## model, command_parser
 
 ## Rakefileとe2eテスト
 Rakefileで各種コマンドを発行させてe2eテストを作成したい

@@ -2,20 +2,26 @@
 
 module Memo
   class View
-    def self.dirs
-      puts Memo::Repository.new.to_dirs
+    def initialize(dir = Memo::Env.memo_dir)
+      @memo_dir = dir
     end
 
-    def self.read(word)
-      found = Memo::Repository.new.find(word)
-      return puts Memo::Repository.new.read(found) if found
+    def self.dirs(dir = Memo::Env.memo_dir)
+      new(dir)
+      puts Memo::Repository.new(dir).to_dirs
+    end
+
+    def self.read(word, dir = Memo::Env.memo_dir)
+      repo = Memo::Repository.new(dir)
+      found = repo.find(word)
+      return puts repo.read(found) if found
 
       puts "#{word} というメモは見つかりませんでした。"
       exit(2)
     end
 
-    def self.list(word = nil)
-      puts Memo::Mapper.file_list_to_view(word)
+    def self.list(word = nil, dir = Memo::Env.memo_dir)
+      puts Memo::Mapper.new(dir).file_list_to_view(word)
     end
   end
 end

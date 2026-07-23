@@ -9,6 +9,20 @@ end
 
 task default: :test
 
+namespace :test do
+  desc 'ファイルごとにテストする'
+  task :file do
+    sh 'MEMO_CLI_RUNTIME_ENV=test bundle exec ruby -Itest "test/memo/test_env.rb"'
+    sh 'MEMO_CLI_RUNTIME_ENV=test bundle exec ruby -Itest "test/memo/test_mapper.rb"'
+    sh 'MEMO_CLI_RUNTIME_ENV=test bundle exec ruby -Itest "test/memo/test_repository.rb"'
+    sh 'MEMO_CLI_RUNTIME_ENV=test bundle exec ruby -Itest "test/memo/test_file_utility.rb"'
+    sh 'MEMO_CLI_RUNTIME_ENV=test bundle exec ruby -Itest "test/memo/test_model.rb"'
+    ## FIXME: viewとcommandがテストに失敗する
+    sh 'MEMO_CLI_RUNTIME_ENV=test bundle exec ruby -Itest "test/memo/test_view.rb"'
+    sh 'MEMO_CLI_RUNTIME_ENV=test bundle exec ruby -Itest "test/memo/test_command.rb"'
+  end
+end
+
 namespace :format do
   desc 'rake rubocop -aを実行する'
   task :lint do
