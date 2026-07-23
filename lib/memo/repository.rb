@@ -16,6 +16,7 @@ module Memo
       File.readlines(seed.full_path, chomp: true)
     end
 
+    # TODO: Repository.new(dir)としてディレクトリは引数として取るように変更する
     def initialize
       @seeds = load(Memo::Env.memo_dir)
     end
@@ -29,23 +30,6 @@ module Memo
     # @return [Seed, void]
     def find(word)
       @seeds.find { |seed| seed.filename == word }
-    end
-
-    # TODO: Modelに移動
-    # Structを返す新しいデータ
-    # grouped = repo.grouped_file_list
-    # grouped.class => Array
-    # その中身はMemo::Model::GroupedFileListとなる
-    # 値はSet<Hash>
-    # @return [Array<Memo::Model::GroupedFileList>]
-    def grouped_file_list
-      seeds_grouped_by_dir(@seeds).map do |dir, seed|
-        Memo::Model::GroupedFileList.new(
-          dir: dir,
-          # NOTE: テストコードのためsortする。別にソートする必要はない
-          filenames: seed.map(&:filename).sort
-        )
-      end
     end
 
     # ディレクトリの集合を配列に変換する

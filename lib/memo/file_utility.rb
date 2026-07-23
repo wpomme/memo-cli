@@ -3,25 +3,6 @@
 module Memo
   # ファイルやディレクトリパスの操作に関するユーティリティモジュール
   module FileUtility
-    # dir をkey としてseed をHashとしたもの
-    # 返り値がHashであることは検証済み
-    #
-    # @param [Array<Seed>]
-    # @return [Hash<String, Seed>] <= yardの書き方が分からない。 キーがディレクトリで、値がSeedの配列
-    def seeds_grouped_by_dir(seeds)
-      seeds.group_by(&:dir)
-    end
-
-    # dir をkey としてseed をHashとしたもの
-    # 返り値がHashであることは検証済み
-    #
-    # @deprecate seeds_grouped_by_dirを使う
-    # @param [Array<Seed>]
-    # @return [Hash] キーが文字列で、値がSeedの配列
-    def grouped_by_dir(seeds)
-      seeds.group_by(&:dir)
-    end
-
     # ファイルパスから、そのファイルのファイル名を返す
     #
     # @param [String] file_path 対象のファイルのファイルパス

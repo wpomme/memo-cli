@@ -4,34 +4,7 @@ require_relative "../test_helper"
 
 class TestCommand < Minitest::Test
   describe 'Command' do
-    before do
-      def to_seed(base_dir, join_dir, filename)
-        full_path = join_dir == "memo" ? File.join(base_dir, filename) : File.join(base_dir, join_dir, filename)
-        Memo::Model::Seed.new(full_path: full_path, filename: File.basename(full_path, '.md'), dir: join_dir)
-      end
-
-      @tmpdir = Dir.mktmpdir
-      @memo_dir = Memo::Env.memo_dir(File.join(@tmpdir, "memo").freeze)
-
-      Memo::MockSeed::TEST_MEMO_DATA_SEED.each do |elem|
-        dir_for_file = File.join(@memo_dir, elem[:dir])
-        FileUtils.mkdir_p(dir_for_file) unless FileTest.directory?(dir_for_file)
-
-        File.write(File.join(@memo_dir, elem[:dir], elem[:filename]), elem[:content])
-      end
-
-      repo = Memo::Repository.new
-      @test_seeds = repo.seeds
-      @dir_set =  repo.dir_set
-
-      @original_dir = Dir.pwd
-      Dir.chdir(@tmpdir)
-    end
-
-    after do
-      Dir.chdir(@original_dir)
-      FileUtils.remove_entry_secure(@tmpdir)
-    end
+    include MemoTestLifecycleHooks
 
     describe '#execute' do
       describe 'args: dirs' do
@@ -51,14 +24,7 @@ class TestCommand < Minitest::Test
             Memo::Command.new.execute(['list'])
           end
 
-          # TODO: RepositoryからCommandにまで渡るここら辺の処理をまとめたい
-          # seeds.group_by(&:dir)はFileUtility.seeds_grouped_by_dirと同じ
-          grouped_file_list = @test_seeds.group_by(&:dir).map do |dir, seed|
-            Memo::Model::GroupedFileList.new(
-              dir: dir,
-              filenames: seed.map(&:filename).sort
-            )
-          end
+          grouped_file_list = Memo::Model.new.grouped_file_list(@test_seeds)
 
           file_test_to_view = grouped_file_list
             .map do |struct|
@@ -84,7 +50,7 @@ class TestCommand < Minitest::Test
             Memo::Command.new.execute(['list', valid_dir])
           end
 
-          grouped_file_list = @test_seeds.group_by(&:dir).filter_map do |dir, seed|
+          grouped_file_list_by_dir = @test_seeds.group_by(&:dir).filter_map do |dir, seed|
             if dir == valid_dir
               Memo::Model::GroupedFileList.new(
                 dir: dir,
@@ -94,7 +60,7 @@ class TestCommand < Minitest::Test
           end
 
           # FIXME: 実装の方で、最後の方に余計な改行が入っているので、修正すること
-          actual = grouped_file_list
+          actual = grouped_file_list_by_dir
             .map do |struct|
               [Rainbow(struct[:dir]).green].append(struct[:filenames])
             end.flatten.join("\n") << "\n"

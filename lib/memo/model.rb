@@ -14,6 +14,11 @@ module Memo
     #   @return [String] そのファイルが格納されているディレクトリ
     Seed = Data.define(:full_path, :filename, :dir)
 
+    # 対象のディレクトリの中にあるファイル名の配列を保存する
+    # TODO: Struct.newの第一引数に文字列を渡してクラスに名前を付ける
+    # :dirは文字列、:filenamesは文字列の配列が入る
+    GroupedFileList = Struct.new("GroupedFileList", :dir, :filenames)
+
     # TODO: Modelに移動
     # Structを返す新しいデータ
     # grouped = repo.grouped_file_list
@@ -30,10 +35,5 @@ module Memo
         )
       end
     end
-
-    # 対象のディレクトリの中にあるファイル名の配列を保存する
-    # TODO: Struct.newの第一引数に文字列を渡してクラスに名前を付ける
-    # :dirは文字列、:filenamesは文字列の配列が入る
-    GroupedFileList = Struct.new("GroupedFileList", :dir, :filenames)
   end
 end

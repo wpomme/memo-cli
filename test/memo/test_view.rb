@@ -4,35 +4,7 @@ require_relative "../test_helper"
 
 class TestView < Minitest::Test
   describe 'View' do
-    # include MemoTestLifecycleHooks
-    before do
-      def to_seed(base_dir, join_dir, filename)
-        full_path = join_dir == "memo" ? File.join(base_dir, filename) : File.join(base_dir, join_dir, filename)
-        Memo::Model::Seed.new(full_path: full_path, filename: File.basename(full_path, '.md'), dir: join_dir)
-      end
-
-      @tmpdir = Dir.mktmpdir
-      @memo_dir = Memo::Env.memo_dir(File.join(@tmpdir, "memo").freeze)
-
-      Memo::MockSeed::TEST_MEMO_DATA_SEED.each do |elem|
-        dir_for_file = File.join(@memo_dir, elem[:dir])
-        FileUtils.mkdir_p(dir_for_file) unless FileTest.directory?(dir_for_file)
-
-        File.write(File.join(@memo_dir, elem[:dir], elem[:filename]), elem[:content])
-      end
-
-      repo = Memo::Repository.new
-      @test_seeds = repo.seeds
-      @dir_set =  repo.dir_set
-
-      @original_dir = Dir.pwd
-      Dir.chdir(@tmpdir)
-    end
-
-    after do
-      Dir.chdir(@original_dir)
-      FileUtils.remove_entry_secure(@tmpdir)
-    end
+    include MemoTestLifecycleHooks
 
     describe '#dirs' do
       it "memoの中のディレクトリの一覧を標準出力に表示する" do
@@ -76,7 +48,6 @@ class TestView < Minitest::Test
         end
 
         # TODO: RepositoryからViewにまで渡るここら辺の処理をまとめたい
-        # seeds.group_by(&:dir)はFileUtility.seeds_grouped_by_dirと同じ
         grouped_file_list = @test_seeds.group_by(&:dir).map do |dir, seed|
           Memo::Model::GroupedFileList.new(
             dir: dir,
