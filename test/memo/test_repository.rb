@@ -4,12 +4,40 @@ require_relative "../test_helper"
 
 class TestRepository < Minitest::Test
   describe 'Repository' do
-    include MemoTestLifecycleHooks
+    # include MemoTestLifecycleHooks
+    before do
+      def to_seed(base_dir, join_dir, filename)
+        full_path = join_dir == "memo" ? File.join(base_dir, filename) : File.join(base_dir, join_dir, filename)
+        Memo::Model::Seed.new(full_path: full_path, filename: File.basename(full_path, '.md'), dir: join_dir)
+      end
+
+      @tmpdir = Dir.mktmpdir
+      @memo_dir = Memo::Env.memo_dir(File.join(@tmpdir, "memo").freeze)
+
+      Memo::MockSeed::TEST_MEMO_DATA_SEED.each do |elem|
+        dir_for_file = File.join(@memo_dir, elem[:dir])
+        FileUtils.mkdir_p(dir_for_file) unless FileTest.directory?(dir_for_file)
+
+        File.write(File.join(@memo_dir, elem[:dir], elem[:filename]), elem[:content])
+      end
+
+      @repo = Memo::Repository.new
+      @test_seeds = @repo.seeds
+      @dir_set =  @repo.dir_set
+
+      @original_dir = Dir.pwd
+      Dir.chdir(@tmpdir)
+    end
+
+    after do
+      Dir.chdir(@original_dir)
+      FileUtils.remove_entry_secure(@tmpdir)
+    end
 
     describe '#initialize' do
       it '@seedsはMemo::Model::SeedのArrayである' do
-        repo = Memo::Repository.new(@memo_dir)
-        seeds = repo.instance_variable_get(:@seeds)
+        # repo = Memo::Repository.new
+        seeds = @repo.instance_variable_get(:@seeds)
 
         assert_instance_of Array, seeds
         seeds.each do |seed|
@@ -18,8 +46,8 @@ class TestRepository < Minitest::Test
       end
 
       it '@seeds.full_pathはREADME(.md) を含まない' do
-        repo = Memo::Repository.new(@memo_dir)
-        seeds = repo.instance_variable_get(:@seeds)
+        # repo = Memo::Repository.new
+        seeds = @repo.instance_variable_get(:@seeds)
         full_path = seeds.map(&:full_path)
 
         refute_includes full_path, "README"
@@ -29,8 +57,8 @@ class TestRepository < Minitest::Test
       # これが成り立たないとmemo readが出来ない
       # ただ、どちらかといえば、memoフォルダの設定ミスのために生じる不具合のような
       it '@seeds:full_path は絶対パスである' do
-        repo = Memo::Repository.new(@memo_dir)
-        seeds = repo.instance_variable_get(:@seeds)
+        # repo = Memo::Repository.new
+        seeds = @repo.instance_variable_get(:@seeds)
         full_paths = seeds.map(&:full_path)
 
         full_paths.each do |full_path|
@@ -41,23 +69,25 @@ class TestRepository < Minitest::Test
 
     describe '#find' do
       it "memoの中に存在するファイルが見つかった場合は、そのファイルのSeedの配列を返す" do
-        word = 'find'
-        expected = Memo::Repository.new(@memo_dir).find(word)
-        actual = Memo::Model::Seed.new(full_path: File.join(@memo_dir, "cli", "find.md"), filename: "find", dir: "cli")
+        word = 'push'
+        # repo = Memo::Repository.new
+        expected = @repo.find(word)
+        actual = @test_seeds.find { |seed| seed.filename == word }
+        # actual = Memo::Model::Seed.new(full_path: File.join(@memo_dir, "git", "push.md"), filename: "push", dir: "git")
 
-        assert_equal actual, expected
+        assert_equal expected, actual
       end
 
       it "memoの中に存在しないwordが入力された場合は、nilを返す" do
         word = 'invalid_word'
-        expected = Memo::Repository.new(@memo_dir).find(word)
+        expected = @repo.find(word)
 
         assert_nil expected
       end
 
       it "wordがnilの場合も、nilを返す" do
         word = nil
-        expected = Memo::Repository.new(@memo_dir).find(word)
+        expected = @repo.find(word)
 
         assert_nil expected
       end
@@ -65,36 +95,26 @@ class TestRepository < Minitest::Test
 
     describe '#read' do
       it "seedが存在すれば、そのファイルを全文表示する。、" do
-        expected_seed = @test_repository_seeds.find { |seed| seed.filename == "find" }
-        Memo::Repository.new(@memo_dir)
-        expected = Memo::Repository.read(expected_seed)
+        expected_seed = @test_seeds.find { |seed| seed.filename == "push" }
+        expected = @repo.read(expected_seed)
 
-        actual = MemoTestLifecycleHooks::TEST_FIND_FILE_CONTENT.split("\n")
+        actual = Memo::MockSeed::TEST_PUSH_FILE_CONTENT
 
-        assert_equal actual, expected
+        assert_equal expected, actual.split("\n") << ""
       end
 
       it "nilが与えられたら、そのままnilを返す" do
-        Memo::Repository.new(@memo_dir)
-        expected = Memo::Repository.read(nil)
+        expected = @repo.read(nil)
 
         assert_nil expected
       end
     end
 
-    describe '#files_grouped_by_dir' do
-      it "ディレクトリの文字列をキーで、値がそのディレクトリに所属するファイル名の配列であるHashを返す" do
-        expected = Memo::Repository.new(@memo_dir).files_grouped_by_dir
-
-        _(expected).must_equal(@test_repository_grouped_files)
-      end
-    end
-
     describe '#grouped_file_list' do
       it "Structを返す" do
-        expected = Memo::Repository.new(@memo_dir).grouped_file_list
+        expected = @repo.grouped_file_list
 
-        actual = @test_repository_seeds.group_by(&:dir).map do |dir, seed|
+        actual = @test_seeds.group_by(&:dir).map do |dir, seed|
           Memo::Model::GroupedFileList.new(
             dir: dir,
             filenames: seed.map(&:filename).sort

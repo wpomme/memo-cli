@@ -70,7 +70,7 @@ module MemoTestLifecycleHooks
     end
 
     @tmpdir = Dir.mktmpdir
-    @memo_dir = File.join(@tmpdir, "memo").freeze
+    @memo_dir = Memo::Env.memo_dir(File.join(@tmpdir, "memo").freeze)
 
     @dir_set = TEST_MEMO_DATA_SEED.to_set { |e| e[:dir] }
 

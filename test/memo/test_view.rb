@@ -4,12 +4,40 @@ require_relative "../test_helper"
 
 class TestView < Minitest::Test
   describe 'View' do
-    include MemoTestLifecycleHooks
+    # include MemoTestLifecycleHooks
+    before do
+      def to_seed(base_dir, join_dir, filename)
+        full_path = join_dir == "memo" ? File.join(base_dir, filename) : File.join(base_dir, join_dir, filename)
+        Memo::Model::Seed.new(full_path: full_path, filename: File.basename(full_path, '.md'), dir: join_dir)
+      end
+
+      @tmpdir = Dir.mktmpdir
+      @memo_dir = Memo::Env.memo_dir(File.join(@tmpdir, "memo").freeze)
+
+      Memo::MockSeed::TEST_MEMO_DATA_SEED.each do |elem|
+        dir_for_file = File.join(@memo_dir, elem[:dir])
+        FileUtils.mkdir_p(dir_for_file) unless FileTest.directory?(dir_for_file)
+
+        File.write(File.join(@memo_dir, elem[:dir], elem[:filename]), elem[:content])
+      end
+
+      repo = Memo::Repository.new
+      @test_seeds = repo.seeds
+      @dir_set =  repo.dir_set
+
+      @original_dir = Dir.pwd
+      Dir.chdir(@tmpdir)
+    end
+
+    after do
+      Dir.chdir(@original_dir)
+      FileUtils.remove_entry_secure(@tmpdir)
+    end
 
     describe '#dirs' do
       it "memoの中のディレクトリの一覧を標準出力に表示する" do
         out, = capture_io do
-          Memo::View.dirs(@memo_dir)
+          Memo::View.dirs
         end
 
         # 順番が異なっていても、書き出す内容が同じなら問題ない
@@ -20,10 +48,10 @@ class TestView < Minitest::Test
     describe '#read' do
       it 'wordが存在するファイルと一致するとき、そのファイルを全文表示する' do
         out, = capture_io do
-          Memo::View.read(@memo_dir, "find")
+          Memo::View.read("push")
         end
 
-        assert_equal MemoTestLifecycleHooks::TEST_FIND_FILE_CONTENT, out
+        assert_equal Memo::MockSeed::TEST_PUSH_FILE_CONTENT, out
       end
 
       it 'wordが存在しないファイルの場合は、そのwordにあたるメモはないことを表示する' do
@@ -31,7 +59,7 @@ class TestView < Minitest::Test
 
         out, = capture_io do
           exception = assert_raises(SystemExit) do
-            Memo::View.read(@memo_dir, word)
+            Memo::View.read(word)
           end
 
           assert_equal 2, exception.status
@@ -44,12 +72,12 @@ class TestView < Minitest::Test
     describe '#list' do
       it '引数がlistだけのときは、色のついたディレクトリと、そのディレクトリの中のファイルの一覧を表示する' do
         out, = capture_io do
-          Memo::View.list(@memo_dir)
+          Memo::View.list
         end
 
         # TODO: RepositoryからViewにまで渡るここら辺の処理をまとめたい
         # seeds.group_by(&:dir)はFileUtility.seeds_grouped_by_dirと同じ
-        grouped_file_list = @test_repository_seeds.group_by(&:dir).map do |dir, seed|
+        grouped_file_list = @test_seeds.group_by(&:dir).map do |dir, seed|
           Memo::Model::GroupedFileList.new(
             dir: dir,
             filenames: seed.map(&:filename).sort
@@ -77,10 +105,10 @@ class TestView < Minitest::Test
         valid_dir = 'cli'
 
         out, = capture_io do
-          Memo::View.list(@memo_dir, valid_dir)
+          Memo::View.list(valid_dir)
         end
 
-        grouped_file_list = @test_repository_seeds.group_by(&:dir).filter_map do |dir, seed|
+        grouped_file_list = @test_seeds.group_by(&:dir).filter_map do |dir, seed|
           if dir == valid_dir
             Memo::Model::GroupedFileList.new(
               dir: dir,
@@ -103,12 +131,11 @@ class TestView < Minitest::Test
         invalid_dir = 'invalid_dir'
 
         out, = capture_io do
-          Memo::View.list(@memo_dir, invalid_dir)
+          Memo::View.list(invalid_dir)
         end
 
         # TODO: とりあえず文字列を返すことだけを確認する
         _(out).must_be_instance_of(String)
-        # assert expected.is_a?(String)
       end
     end
   end

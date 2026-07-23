@@ -37,7 +37,7 @@ namespace :mock do
     ## モックデータ作成用のコマンド
     ## TEST_MEMO_DATA_SEEDの元となるRubyのArray<Hash>とヒアドキュメントを返す
     mock_seeds = seeds.map do |seed|
-      content = Memo::Repository.read(seed)
+      content = Memo::Repository.new.read(seed)
       filename = seed.filename.upcase.tr("-", "_")
       val_name = "TEST_#{filename}_FILE_CONTENT"
       label = "#{filename}_FILE"

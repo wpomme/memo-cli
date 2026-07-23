@@ -4,13 +4,40 @@ require_relative "../test_helper"
 
 class TestCommand < Minitest::Test
   describe 'Command' do
-    include MemoTestLifecycleHooks
+    before do
+      def to_seed(base_dir, join_dir, filename)
+        full_path = join_dir == "memo" ? File.join(base_dir, filename) : File.join(base_dir, join_dir, filename)
+        Memo::Model::Seed.new(full_path: full_path, filename: File.basename(full_path, '.md'), dir: join_dir)
+      end
+
+      @tmpdir = Dir.mktmpdir
+      @memo_dir = Memo::Env.memo_dir(File.join(@tmpdir, "memo").freeze)
+
+      Memo::MockSeed::TEST_MEMO_DATA_SEED.each do |elem|
+        dir_for_file = File.join(@memo_dir, elem[:dir])
+        FileUtils.mkdir_p(dir_for_file) unless FileTest.directory?(dir_for_file)
+
+        File.write(File.join(@memo_dir, elem[:dir], elem[:filename]), elem[:content])
+      end
+
+      repo = Memo::Repository.new
+      @test_seeds = repo.seeds
+      @dir_set =  repo.dir_set
+
+      @original_dir = Dir.pwd
+      Dir.chdir(@tmpdir)
+    end
+
+    after do
+      Dir.chdir(@original_dir)
+      FileUtils.remove_entry_secure(@tmpdir)
+    end
 
     describe '#execute' do
       describe 'args: dirs' do
         it "['dirs']を受け取ったときは、memo_dirの中のディレクトリの一覧を標準出力に表示する" do
           out, = capture_io do
-            Memo::Command.new(@memo_dir).execute(['dirs'])
+            Memo::Command.new.execute(['dirs'])
           end
 
           actual = @dir_set
@@ -21,12 +48,12 @@ class TestCommand < Minitest::Test
       describe 'args: list' do
         it "['list']を受け取ったときは、memo_dirの中のディレクトリとその中にあるメモファイルを全て表示する" do
           out, = capture_io do
-            Memo::Command.new(@memo_dir).execute(['list'])
+            Memo::Command.new.execute(['list'])
           end
 
           # TODO: RepositoryからCommandにまで渡るここら辺の処理をまとめたい
           # seeds.group_by(&:dir)はFileUtility.seeds_grouped_by_dirと同じ
-          grouped_file_list = @test_repository_seeds.group_by(&:dir).map do |dir, seed|
+          grouped_file_list = @test_seeds.group_by(&:dir).map do |dir, seed|
             Memo::Model::GroupedFileList.new(
               dir: dir,
               filenames: seed.map(&:filename).sort
@@ -54,10 +81,10 @@ class TestCommand < Minitest::Test
           valid_dir = 'cli'
 
           out, = capture_io do
-            Memo::Command.new(@memo_dir).execute(['list', valid_dir])
+            Memo::Command.new.execute(['list', valid_dir])
           end
 
-          grouped_file_list = @test_repository_seeds.group_by(&:dir).filter_map do |dir, seed|
+          grouped_file_list = @test_seeds.group_by(&:dir).filter_map do |dir, seed|
             if dir == valid_dir
               Memo::Model::GroupedFileList.new(
                 dir: dir,
@@ -81,12 +108,12 @@ class TestCommand < Minitest::Test
       end
 
       describe 'args: read' do
-        it "['read', 'find']を受け取ったときは、find.mdを全文表示する" do
+        it "['read', 'push']を受け取ったときは、push.mdを全文表示する" do
           out, = capture_io do
-            Memo::Command.new(@memo_dir).execute(%w[read find])
+            Memo::Command.new.execute(%w[read push])
           end
 
-          assert_equal MemoTestLifecycleHooks::TEST_FIND_FILE_CONTENT, out
+          assert_equal Memo::MockSeed::TEST_PUSH_FILE_CONTENT, out
         end
 
         it "['read', 'invalid_memo']を受け取ったときは、そのようなメモがないことを表示する" do
@@ -94,7 +121,7 @@ class TestCommand < Minitest::Test
 
           out, = capture_io do
             exception = assert_raises(SystemExit) do
-              Memo::Command.new(@memo_dir).execute(%w[read invalid_memo])
+              Memo::Command.new.execute(%w[read invalid_memo])
             end
 
             assert_equal 2, exception.status
@@ -109,7 +136,7 @@ class TestCommand < Minitest::Test
 
           capture_io do
             exception = assert_raises(OptionParser::InvalidArgument) do
-              Memo::Command.new(@memo_dir).execute(['read', word])
+              Memo::Command.new.execute(['read', word])
             end
 
             assert_equal "invalid argument: -r ", exception.message

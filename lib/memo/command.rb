@@ -2,12 +2,8 @@
 
 module Memo
   class Command
-    def self.run(memo_dir, argv)
-      new(memo_dir).execute(argv)
-    end
-
-    def initialize(memo_dir)
-      @memo_dir = memo_dir
+    def self.run(argv)
+      new.execute(argv)
     end
 
     def execute(argv)
@@ -15,11 +11,11 @@ module Memo
 
       case options.shift
       when :list
-        View.list(@memo_dir, options.shift)
+        View.list(options.shift)
       when :dirs
-        View.dirs(@memo_dir)
+        View.dirs
       when :read
-        View.read(@memo_dir, options.shift)
+        View.read(options.shift)
       end
     end
   end

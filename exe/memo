@@ -5,9 +5,4 @@ require "memo"
 
 ENV['MEMO_CLI_RUNTIME_ENV'] = 'exe'
 
-# 絶対パスでもOK
-# ホームディレクトリからでもOK (先頭のスラッシュを抜いても動いた)
-# memo_dir = File.join(Dir.home, MemoEnv.new.set_memo_dir)
-memo_dir = Memo::Env.to_memo_dir
-
-Memo::Command.run(memo_dir, ARGV)
+Memo::Command.run(ARGV)

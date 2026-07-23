@@ -10,14 +10,14 @@ module Memo
     # nilを受け取った場合は、そのままviewにnilを返す
     # @param [Seed, void]
     # @return [<Array<String>>] 読み取ったメモが行ごとに保存されていて、さらに配列で包まれている。仕様上、複数のファイルを読み取る場合があるため。
-    def self.read(seed)
+    def read(seed)
       return if seed.nil?
 
       File.readlines(seed.full_path, chomp: true)
     end
 
-    def initialize(memo_dir)
-      @seeds = load(memo_dir)
+    def initialize
+      @seeds = load(Memo::Env.memo_dir)
     end
 
     # モックデータ作成のため@seedsを読み取り可能にしておく
@@ -46,20 +46,6 @@ module Memo
           filenames: seed.map(&:filename).sort
         )
       end
-    end
-
-    # TODO: Modelに移動
-    # ディレクトリとその中に入っているメモファイルの配列を返す
-    # dirをkeyにして、ファイルの配列を集合にしたもののハッシュを返却してもいいかも
-    # 返す値は、キーがディレクトリの文字列で、値がそのディレクトリに所属するファイル名の配列
-    # NOTE: 値の配列はfreezeした方がいいのかな？一応freezeしておくか
-    # @return [Hash<String, Set<String>>]
-    def files_grouped_by_dir
-      grouped_files = {}
-      to_dirs.each do |key|
-        grouped_files[key] = seeds_grouped_by_dir(@seeds)[key].to_set(&:filename).freeze
-      end
-      grouped_files
     end
 
     # ディレクトリの集合を配列に変換する

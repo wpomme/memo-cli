@@ -6,6 +6,7 @@ require_relative "../mock_seeds"
 class TestModel < Minitest::Test
   describe 'Model' do
     include Memo::MockSeed
+    include Memo::Env
 
     before do
       def to_seed(base_dir, join_dir, filename)
@@ -14,7 +15,7 @@ class TestModel < Minitest::Test
       end
 
       @tmpdir = Dir.mktmpdir
-      @memo_dir = File.join(@tmpdir, "memo").freeze
+      @memo_dir = Memo::Env.memo_dir(File.join(@tmpdir, "memo").freeze)
 
       Memo::MockSeed::TEST_MEMO_DATA_SEED.each do |elem|
         dir_for_file = File.join(@memo_dir, elem[:dir])
@@ -23,7 +24,7 @@ class TestModel < Minitest::Test
         File.write(File.join(@memo_dir, elem[:dir], elem[:filename]), elem[:content])
       end
 
-      @test_seeds = Memo::Repository.new(@memo_dir).seeds
+      @test_seeds = Memo::Repository.new.seeds
 
       @original_dir = Dir.pwd
       Dir.chdir(@tmpdir)

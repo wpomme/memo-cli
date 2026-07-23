@@ -8,9 +8,9 @@ module Memo
     # ディレクトリ名に色を付けるのは、GroupedFileListのStructのブロックで定義するのもありかもしれない
     #
     # @return [Array | String] NOTE: ユーザーメッセージの方はもう少しなんとかしたい
-    def self.file_list_to_view(memo_dir, dir = nil)
+    def self.file_list_to_view(dir = nil)
       ## REVIEW: コードの重複を避けたい
-      seeds = Memo::Repository.new(memo_dir).seeds
+      seeds = Memo::Repository.new.seeds
 
       if dir
         ret = Memo::Model.new.grouped_file_list(seeds).filter_map do |struct|
@@ -22,7 +22,7 @@ module Memo
         return ret unless ret.empty?
 
         ## dir が存在しない場合は、ユーザーに表示するメッセージを返す
-        colored_dirs = Memo::Repository.new(memo_dir).to_dirs.map { |dir| Rainbow(dir).green }
+        colored_dirs = Memo::Repository.new.to_dirs.map { |dir| Rainbow(dir).green }
         return <<~NOT_DIR
           #{dir}というディレクトリはありませんでした。
           ディレクトリの一覧は次の通りです。
