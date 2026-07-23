@@ -1,14 +1,6 @@
 ## TODO・IDEA
 ```
 ## TODO
-## memo_dir問題
-## dir依存とそうでないオブジェクトに分けてみる
-## dir依存
-## repository, mapper, view, command 
-##
-## dirに依存しない
-## model, command_parser
-
 ## Rakefileとe2eテスト
 Rakefileで各種コマンドを発行させてe2eテストを作成したい
 
@@ -24,6 +16,15 @@ memo dirs # dirsの末尾のディレクトリで検索できるようにした�
 
 #CLIの自動補完
 - どうやるんだろう。zsh限定でいい
+
+## memo_dir問題
+## dir依存とそうでないオブジェクトに分けてみる
+## dir依存
+## repository, mapper, view, command
+##
+## dirに依存しない
+## model, command_parser
+
 
 ## 情報の集計
 - DBとの連携とは別に、ファイル名の重複などを調べておきたい

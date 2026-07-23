@@ -17,7 +17,6 @@ namespace :test do
     sh 'MEMO_CLI_RUNTIME_ENV=test bundle exec ruby -Itest "test/memo/test_repository.rb"'
     sh 'MEMO_CLI_RUNTIME_ENV=test bundle exec ruby -Itest "test/memo/test_file_utility.rb"'
     sh 'MEMO_CLI_RUNTIME_ENV=test bundle exec ruby -Itest "test/memo/test_model.rb"'
-    ## FIXME: viewとcommandがテストに失敗する
     sh 'MEMO_CLI_RUNTIME_ENV=test bundle exec ruby -Itest "test/memo/test_view.rb"'
     sh 'MEMO_CLI_RUNTIME_ENV=test bundle exec ruby -Itest "test/memo/test_command.rb"'
   end

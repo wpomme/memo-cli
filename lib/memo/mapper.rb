@@ -27,6 +27,7 @@ module Memo
         return ret unless ret.empty?
 
         ## dir が存在しない場合は、ユーザーに表示するメッセージを返す
+        ## TODO: Mapper#colored_dirsを作成する
         colored_dirs = repo.to_dirs.map { |dir| Rainbow(dir).green }
         return <<~NOT_DIR
           #{dir}というディレクトリはありませんでした。

@@ -27,9 +27,7 @@ class TestMapper < Minitest::Test
     end
 
     describe '#file_list_to_view' do
-      # ディレクトリを緑色にするなど
       it "グループ化されたファイル名の一覧をViewで表示しやすくする" do
-        # 空で返ってくる
         expected = Memo::Mapper.new(@memo_dir).file_list_to_view
 
         grouped_file_list = Memo::Model.new.grouped_file_list(@test_seeds)

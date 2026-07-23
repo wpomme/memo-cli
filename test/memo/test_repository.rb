@@ -36,8 +36,6 @@ class TestRepository < Minitest::Test
         refute_includes full_path, "README.md"
       end
 
-      # これが成り立たないとmemo readが出来ない
-      # ただ、どちらかといえば、memoフォルダの設定ミスのために生じる不具合のような
       it '@seeds:full_path は絶対パスである' do
         seeds = @repo.instance_variable_get(:@seeds)
         full_paths = seeds.map(&:full_path)
@@ -67,7 +65,7 @@ class TestRepository < Minitest::Test
     end
 
     describe '#find' do
-      it "memoの中に存在するファイルが見つかった場合は、そのファイルのSeedの配列を返す" do
+      it "memoの中に存在するファイルが見つかった場合は、最初に見つかったSeedを返す" do
         word = 'push'
         expected = @repo.find(word)
         actual = @test_seeds.find { |seed| seed.filename == word }

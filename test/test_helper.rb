@@ -36,7 +36,6 @@ module MemoTestLifecycleHooks
       File.write(File.join(@memo_dir, elem[:dir], "#{elem[:filename]}.md"), elem[:content])
     end
 
-    # FIXME: newに@memo_dirを渡さないとモックデータとして成立しない
     @repo = Memo::Repository.new(@memo_dir)
     @test_seeds = @repo.seeds
     @dir_set =  @repo.dir_set
