@@ -5,6 +5,7 @@ require_relative "../helper"
 class TestCommand < Minitest::Test
   describe 'Command' do
     include MemoTestLifecycleHooks
+    include Memo::Model
 
     describe '#execute' do
       describe 'args: dirs' do
@@ -24,9 +25,7 @@ class TestCommand < Minitest::Test
             Memo::Command.new(@repo).execute(['list'])
           end
 
-          grouped_file_list = Memo::Model.new.grouped_file_list(@test_seeds)
-
-          file_test_to_view = grouped_file_list
+          file_test_to_view = grouped_file_list(@test_seeds)
             .map do |struct|
               [Rainbow(struct[:dir]).green].append(struct[:filenames], "\n")
             end

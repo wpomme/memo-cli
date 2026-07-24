@@ -20,7 +20,7 @@ module Memo
     end
 
     def list(dir = nil)
-      puts Memo::Mapper.new(@repo).file_list_to_view(dir)
+      puts @mapper.file_list_to_view(dir)
     end
   end
 end

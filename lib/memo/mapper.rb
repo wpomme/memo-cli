@@ -4,6 +4,8 @@ require 'rainbow'
 
 module Memo
   class Mapper
+    include Memo::Model
+
     def initialize(repo)
       @repo = repo
     end
@@ -19,11 +21,10 @@ module Memo
     #
     # @return [Array | String] NOTE: ユーザーメッセージの方はもう少しなんとかしたい
     def file_list_to_view(dir = nil)
-      ## REVIEW: コードの重複を避けたい
       seeds = @repo.seeds
 
       if dir
-        ret = Memo::Model.new.grouped_file_list(seeds).filter_map do |struct|
+        ret = grouped_file_list(seeds).filter_map do |struct|
           [Rainbow(struct[:dir]).green] + struct[:filenames] if struct[:dir] == dir
         end
 
@@ -38,7 +39,7 @@ module Memo
         NOT_DIR
       end
 
-      Memo::Model.new.grouped_file_list(seeds).map do |struct|
+      grouped_file_list(seeds).map do |struct|
         [Rainbow(struct[:dir]).green] + struct[:filenames]
       end
     end

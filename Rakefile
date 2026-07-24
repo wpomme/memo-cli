@@ -9,6 +9,7 @@ end
 
 task default: :test
 
+desc '環境変数付きでirbにログインする'
 task :irb do
   sh "MEMO_CLI_RUNTIME_ENV='console' bundle exec irb"
 end
@@ -35,6 +36,7 @@ namespace :format do
   end
 end
 
+# TODO: 実装に合わせて更新が必要
 namespace :mock do
   desc '元データからモックデータを作成する'
   task :make do

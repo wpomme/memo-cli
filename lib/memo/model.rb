@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module Memo
-  class Model
+  module Model
     #  対象ディレクトリのファイル情報を保存するための値オブジェクト
     #  Repositoryの内部で使用するため、Memo::Model::Seedとして使用する
     #  TODO: 読み取り専用にする
