@@ -3,17 +3,17 @@
 module Memo
   class Command
     def self.run(memo_dir, argv)
-      new(memo_dir).execute(argv)
+      new(Memo::Repository.new(memo_dir)).execute(argv)
     end
 
-    def initialize(dir)
-      @memo_dir = dir
+    def initialize(repo)
+      @repo = repo
     end
 
     def execute(argv)
       options = Memo::SubCommandParser.parse!(argv)
 
-      view = View.new(@memo_dir)
+      view = View.new(@repo)
 
       case options.shift
       when :list

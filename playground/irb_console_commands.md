@@ -105,6 +105,18 @@ def new_grouped_files(grouped)
 end
 ```
 
+## Rainbowで文字に色付け
+```ruby
+mapper = Memo::Mapper.new(repo)
+mapper.colored_dirs
+> ["\e[32mmemo\e[0m"
+  ...
+
+## 色付けされた文字列はRainbowのインスタンスではなく、単に文字列となる
+mapper.colored_dirs.first.instance_of?(Rainbow)
+> false
+```
+
 ## Data, Structオブジェクトの使い方に慣れてテストデータを新しく作り直したい
 ```ruby
 ## 実データからサンプルデータを取得(四の倍数のデータのみ取得)

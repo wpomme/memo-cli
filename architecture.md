@@ -14,3 +14,8 @@
         - 色付け、日付のフォーマット、インデントなど
 6. View
     - 受け取ったコマンドにしたがって、表示するメッセージを決める
+
+## 依存関係
+1. Model, CommandParserはRepositoryに依存しない
+2. Command, Mapper, ViewはRepositoryに依存する
+3. Command -> View -> Mapper -> Repositoryの順で依存している

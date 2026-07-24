@@ -3,48 +3,25 @@
 require_relative "../helper"
 
 class TestView < Minitest::Test
-  describe 'View::@memo_dir' do
-    include MemoTestRuntimeEnvHooks
-
-    describe '@memo_dir' do
-      it 'テスト環境のときに、memo_dirにテスト用のmemo_dirを渡すと、tmpで作成されたディレクトリになる' do
-        view = Memo::View.new(@memo_dir)
-        expected = view.instance_variable_get(:@memo_dir)
-        actual = @memo_dir
-
-        _(actual).must_equal(expected)
-      end
-
-      it 'テスト環境以外の場合は、Memo::Env::MEMO_DIRとホームディレクトリを結合したディレクトリとなる' do
-        ENV['MEMO_CLI_RUNTIME_ENV'] = 'exe'
-
-        view = Memo::View.new(Memo::Env.memo_dir)
-        expected = view.instance_variable_get(:@memo_dir)
-        actual = File.join(Dir.home, Memo::Env::MEMO_DIR)
-
-        _(actual).must_equal(expected)
-      end
-    end
-  end
-
   describe 'View' do
     include MemoTestLifecycleHooks
 
     describe '#dirs' do
-      it "memoの中のディレクトリの一覧を標準出力に表示する" do
+      it "memoの中のディレクトリの一覧を標準出力に色付きで表示する" do
         out, = capture_io do
-          Memo::View.new(@memo_dir).dirs
+          Memo::View.new(@repo).dirs
         end
 
+        expected = Memo::Mapper.new(@repo).colored_dirs.to_set
         # 順番が異なっていても、書き出す内容が同じなら問題ない
-        assert_equal @dir_set, out.split("\n").to_set
+        assert_equal out.split("\n").to_set, expected
       end
     end
 
     describe '#read' do
       it 'wordが存在するファイルと一致するとき、そのファイルを全文表示する' do
         out, = capture_io do
-          Memo::View.new(@memo_dir).read("push")
+          Memo::View.new(@repo).read("push")
         end
 
         assert_equal Memo::MockSeed::TEST_PUSH_FILE_CONTENT, out
@@ -55,7 +32,7 @@ class TestView < Minitest::Test
 
         out, = capture_io do
           exception = assert_raises(SystemExit) do
-            Memo::View.new(@memo_dir).read(word)
+            Memo::View.new(@repo).read(word)
           end
 
           assert_equal 2, exception.status
@@ -68,7 +45,7 @@ class TestView < Minitest::Test
     describe '#list' do
       it '引数がlistだけのときは、色のついたディレクトリと、そのディレクトリの中のファイルの一覧を表示する' do
         out, = capture_io do
-          Memo::View.new(@memo_dir).list
+          Memo::View.new(@repo).list
         end
 
         # TODO: RepositoryからViewにまで渡るここら辺の処理をまとめたい
@@ -100,7 +77,7 @@ class TestView < Minitest::Test
         valid_dir = 'cli'
 
         out, = capture_io do
-          Memo::View.new(@memo_dir).list(valid_dir)
+          Memo::View.new(@repo).list(valid_dir)
         end
 
         grouped_file_list = @test_seeds.group_by(&:dir).filter_map do |dir, seed|
@@ -126,7 +103,7 @@ class TestView < Minitest::Test
         invalid_dir = 'invalid_dir'
 
         out, = capture_io do
-          Memo::View.new(@memo_dir).list(invalid_dir)
+          Memo::View.new(@repo).list(invalid_dir)
         end
 
         # TODO: とりあえず文字列を返すことだけを確認する

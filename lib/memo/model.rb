@@ -29,7 +29,6 @@ module Memo
       seeds.group_by(&:dir).map do |dir, seed|
         GroupedFileList.new(
           dir: dir,
-          # NOTE: テストコードのためsortする。別にソートする必要はない
           filenames: seed.map(&:filename)
         )
       end
