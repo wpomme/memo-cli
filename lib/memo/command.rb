@@ -6,22 +6,22 @@ module Memo
       new(memo_dir).execute(argv)
     end
 
-    def initialize(dir = Memo::Env.memo_dir)
+    def initialize(dir)
       @memo_dir = dir
     end
 
     def execute(argv)
       options = Memo::SubCommandParser.parse!(argv)
 
-      Memo::Repository.new(@memo_dir)
+      view = View.new(@memo_dir)
 
       case options.shift
       when :list
-        View.list(options.shift, @memo_dir)
+        view.list(options.shift)
       when :dirs
-        View.dirs(@memo_dir)
+        view.dirs
       when :read
-        View.read(options.shift, @memo_dir)
+        view.read(options.shift)
       end
     end
   end

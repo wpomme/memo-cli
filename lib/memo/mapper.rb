@@ -4,7 +4,7 @@ require 'rainbow'
 
 module Memo
   class Mapper
-    def initialize(dir = Memo::Env.memo_dir)
+    def initialize(dir)
       @memo_dir = dir
     end
 

@@ -6,6 +6,13 @@ module Memo
 
     EXCLUDE_FILES = ['README.md'].to_set.freeze
 
+    def initialize(dir)
+      @seeds = load(dir)
+    end
+
+    # モックデータ作成のため@seedsを読み取り可能にしておく
+    attr_reader :seeds
+
     # seedが存在すれば、そのファイルを全文表示する。
     # nilを受け取った場合は、そのままviewにnilを返す
     # @param [Seed, void]
@@ -15,14 +22,6 @@ module Memo
 
       File.readlines(seed.full_path, chomp: true)
     end
-
-    # TODO: Repository.new(dir)としてディレクトリは引数として取るように変更する
-    def initialize(dir = Memo::Env.memo_dir)
-      @seeds = load(dir)
-    end
-
-    # モックデータ作成のため@seedsを読み取り可能にしておく
-    attr_reader :seeds
 
     # ファイル名と一致する文字列があれば、そのseedを返す。
     # 見つからなければ、nilを返す

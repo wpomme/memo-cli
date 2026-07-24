@@ -9,16 +9,17 @@ end
 
 task default: :test
 
+task :irb do
+  sh "MEMO_CLI_RUNTIME_ENV='console' bundle exec irb"
+end
+
 namespace :test do
   desc 'ファイルごとにテストする'
   task :file do
-    sh 'MEMO_CLI_RUNTIME_ENV=test bundle exec ruby -Itest "test/memo/test_env.rb"'
-    sh 'MEMO_CLI_RUNTIME_ENV=test bundle exec ruby -Itest "test/memo/test_mapper.rb"'
-    sh 'MEMO_CLI_RUNTIME_ENV=test bundle exec ruby -Itest "test/memo/test_repository.rb"'
-    sh 'MEMO_CLI_RUNTIME_ENV=test bundle exec ruby -Itest "test/memo/test_file_utility.rb"'
-    sh 'MEMO_CLI_RUNTIME_ENV=test bundle exec ruby -Itest "test/memo/test_model.rb"'
-    sh 'MEMO_CLI_RUNTIME_ENV=test bundle exec ruby -Itest "test/memo/test_view.rb"'
-    sh 'MEMO_CLI_RUNTIME_ENV=test bundle exec ruby -Itest "test/memo/test_command.rb"'
+    Dir.glob("test/**/test_*.rb").each do |path|
+      puts "TEST: #{path}"
+      sh "MEMO_CLI_RUNTIME_ENV='test' bundle exec ruby -Itest #{path}"
+    end
   end
 end
 

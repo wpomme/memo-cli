@@ -1,10 +1,10 @@
 # frozen_string_literal: true
 
-require_relative "../test_helper"
+require_relative "../helper"
 
 class TestMapper < Minitest::Test
-  describe 'Mapper' do
-    include MemoTestLifecycleHooks
+  describe 'Mapper::@memo_dir' do
+    include MemoTestRuntimeEnvHooks
 
     describe '@memo_dir' do
       it 'テスト環境のときに、memo_dirにテスト用のmemo_dirを渡すと、tmpで作成されたディレクトリになる' do
@@ -18,13 +18,17 @@ class TestMapper < Minitest::Test
       it 'テスト環境以外の場合は、Memo::Env::MEMO_DIRとホームディレクトリを結合したディレクトリとなる' do
         ENV['MEMO_CLI_RUNTIME_ENV'] = 'exe'
 
-        mapper = Memo::Mapper.new
+        mapper = Memo::Mapper.new(Memo::Env.memo_dir)
         expected = mapper.instance_variable_get(:@memo_dir)
         actual = File.join(Dir.home, Memo::Env::MEMO_DIR)
 
         _(actual).must_equal(expected)
       end
     end
+  end
+
+  describe 'Mapper' do
+    include MemoTestLifecycleHooks
 
     describe '#file_list_to_view' do
       it "グループ化されたファイル名の一覧をViewで表示しやすくする" do
@@ -67,7 +71,7 @@ class TestMapper < Minitest::Test
 
       it "存在しないディレクトリ名を受け取った場合は、その旨を知らせる文字列を返す" do
         invalid_dir = 'invalid_dir'
-        expected = Memo::Mapper.new.file_list_to_view(invalid_dir)
+        expected = Memo::Mapper.new(@memo_dir).file_list_to_view(invalid_dir)
 
         # TODO: とりあえず文字列を返すことだけを確認する
         assert expected.is_a?(String)

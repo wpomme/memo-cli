@@ -18,6 +18,7 @@ memo dirs # dirsの末尾のディレクトリで検索できるようにした�
 - どうやるんだろう。zsh限定でいい
 
 ## memo_dir問題
+##
 ## dir依存とそうでないオブジェクトに分けてみる
 ## dir依存
 ## repository, mapper, view, command

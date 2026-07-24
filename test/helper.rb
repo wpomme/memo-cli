@@ -11,20 +11,39 @@ require "minitest/expectations"
 require "tmpdir"
 require "fileutils"
 
+# 環境変数MEMO_CLI_RUNTIME_ENVの値によりテストケースを作成したい場合はこちらを使う
+module MemoTestRuntimeEnvHooks
+  def setup
+    @original_runtime_env = ENV.fetch('MEMO_CLI_RUNTIME_ENV', nil)
+
+    @tmpdir = Dir.mktmpdir
+    @memo_dir = File.join(@tmpdir, "memo")
+
+    @original_dir = Dir.pwd
+    Dir.chdir(@tmpdir)
+  end
+
+  def teardown
+    if @original_runtime_env.nil?
+      ENV.delete('MEMO_CLI_RUNTIME_ENV')
+    else
+      ENV['MEMO_CLI_RUNTIME_ENV'] = @original_runtime_env
+    end
+
+    Dir.chdir(@original_dir)
+    FileUtils.remove_entry_secure(@tmpdir)
+  end
+end
+
 module MemoTestLifecycleHooks
-  # TODO: Memo::MockSeedを使ってLifecycleHooksを書き換える
-  include Minitest::Test::LifecycleHooks
   include Memo::FileUtility
 
-  # テストコード用のmemo_dirとその中身を作成する処理を行っている
-  # TODO: tmpdirなどを使って、実際に実装のloadを使ってSeedを生成した方がいいかも
-  def before_setup
-    super
-
-    # unless ENV.fetch('MEMO_CLI_RUNTIME_ENV') == 'test'
-    #   puts 'Do not set MEMO_CLI_RUNTIME_ENV "test". Abort to execute test.'
-    #   exit 1
-    # end
+  def setup
+    # 環境変数MEMO_CLI_RUNTIME_ENVの値がtestでなければテストを中断する
+    if ENV.fetch('MEMO_CLI_RUNTIME_ENV') != 'test'
+      puts "Does not set MEMO_CLI_RUNTIME_ENV 'test'. Abort to execute test."
+      exit 1
+    end
 
     @tmpdir = Dir.mktmpdir
     @memo_dir = Memo::Env.memo_dir(File.join(@tmpdir, "memo").freeze)
@@ -44,8 +63,7 @@ module MemoTestLifecycleHooks
     Dir.chdir(@tmpdir)
   end
 
-  # テストコード用のmemo_dirとその中身を削除する処理
-  def after_teardown
+  def teardown
     super
     Dir.chdir(@original_dir)
     FileUtils.remove_entry_secure(@tmpdir)

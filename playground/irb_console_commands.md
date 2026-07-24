@@ -2,13 +2,14 @@
 - 準備
 ```bash
 ## ログイン
-bundle exec irb
+## 環境変数を設定していないとアプリが中断してしまう
+rake irb
 ```
 
 ## irbコンソールの中
 ```irb
 # メモフォルダへの絶対パスを返す
-dir = Memo::Env.to_memo_dir
+dir = Memo::Env.memo_dir
 
 # Repositoryのオブジェクトも作成しておく
 repo = Memo::Repository.new(dir)
@@ -16,6 +17,44 @@ repo = Memo::Repository.new(dir)
 # モックデータ取得のためにattr_reader :seedsとしてある
 # モックデータ作成のためにseedsを取得する
 seeds = repo.seeds
+```
+
+## memo grepコマンド実装のための調査
+```
+# テスト用のモックデータ読みこみ
+require_relative './test/mock_seeds'
+test_seeds = Memo::MockSeed::TEST_MEMO_DATA_SEED
+
+# contentを読み込む
+test_readlines = test_seeds.map{|seed| seed[:content].split("\n") }.flatten
+
+## モックデータの行数は500程度
+test_readlines.length
+=> 514
+
+## Enumerable#grep
+### 引数に取った値と比較する要素が===の関係ならその要素を配列で返す
+### 正規表現だと大体意図通りの結果が返ってくる
+test_readlines.grep(/ls/).length
+=> 10
+### 文字列の場合は完全一致でないと結果を返さない
+test_readlines.grep("- その他")
+=> ["- その他"] が一件返ってくる
+
+## 単純にその行にその文字列が存在するかどうかを確かめたい場合
+## こちらの方が単純か
+test_readlines.filter{|line| line.include?("ls") }
+
+## 二次元配列のままで読み込んでみる
+test_nest_lines = test_seeds.map{|seed| seed[:content].split("\n") }
+
+## 現在、モックデータは28個ある
+test_nest_lines.length
+=> 28 
+
+## 各コンテンツごとの行数が分かる
+test_nest_lines.map(&:length)
+=> [47, 4, 3, 12, 13, 43, 3, 3, 7, 9, 18, 3, 21, 25, 8, 23, 6, 23, 16, 15, 25, 35, 4, 14, 21, 8, 46, 59]
 ```
 
 ## `seeds`についての調査

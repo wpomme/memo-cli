@@ -5,6 +5,4 @@ require "memo"
 
 ENV['MEMO_CLI_RUNTIME_ENV'] = 'exe'
 
-memo_dir = Memo::Env.memo_dir
-
-Memo::Command.run(memo_dir, ARGV)
+Memo::Command.run(Memo::Env.memo_dir, ARGV)

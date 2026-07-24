@@ -2,17 +2,16 @@
 
 module Memo
   class View
-    def initialize(dir = Memo::Env.memo_dir)
+    def initialize(dir)
       @memo_dir = dir
     end
 
-    def self.dirs(dir = Memo::Env.memo_dir)
-      new(dir)
-      puts Memo::Repository.new(dir).to_dirs
+    def dirs
+      puts Memo::Repository.new(@memo_dir).to_dirs
     end
 
-    def self.read(word, dir = Memo::Env.memo_dir)
-      repo = Memo::Repository.new(dir)
+    def read(word)
+      repo = Memo::Repository.new(@memo_dir)
       found = repo.find(word)
       return puts repo.read(found) if found
 
@@ -20,8 +19,8 @@ module Memo
       exit(2)
     end
 
-    def self.list(word = nil, dir = Memo::Env.memo_dir)
-      puts Memo::Mapper.new(dir).file_list_to_view(word)
+    def list(dir = nil)
+      puts Memo::Mapper.new(@memo_dir).file_list_to_view(dir)
     end
   end
 end
