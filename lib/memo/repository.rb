@@ -3,6 +3,7 @@
 module Memo
   class Repository
     include FileUtility
+    include Memo::Model
 
     EXCLUDE_FILES = ['README.md'].to_set.freeze
 
@@ -12,6 +13,13 @@ module Memo
 
     # モックデータ作成のため@seedsを読み取り可能にしておく
     attr_reader :seeds
+
+    # 対象の全てのファイルに文字列検索を行う
+    def search_all(word)
+      @seeds.filter_map do |seed|
+        search(seed, word).then { |ret| ret unless ret.empty? }
+      end
+    end
 
     # seedが存在すれば、そのファイルを全文表示する。
     # Modelに移動してもいいかも

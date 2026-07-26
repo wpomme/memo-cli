@@ -88,6 +88,27 @@ class TestRepository < Minitest::Test
       end
     end
 
+    describe '#search_all' do
+      it "検索結果の配列を返す" do
+        search_word = 'diff'
+        expected = @repo.search_all(search_word)
+
+        actual = Memo::MockSeed::TEST_MEMO_DATA_SEED.filter_map do |seed|
+          rel_path = File.join(seed[:dir], "#{seed[:filename]}.md")
+          ret = seed[:content]
+            .split("\n")
+            .each_with_index
+            .filter_map do |line, index|
+              Memo::Model::SearchLine.new(path: rel_path, line_number: index, line: line) if line.include?(search_word)
+            end
+          ret unless ret.empty?
+        end
+
+        # 要素が同じなら順番は別で構わない
+        assert_equal expected.to_set, actual.to_set
+      end
+    end
+
     describe '#read' do
       it "seedが存在すれば、そのファイルを全文表示する。、" do
         expected_seed = @test_seeds.find { |seed| seed.filename == "diff" }

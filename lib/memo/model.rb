@@ -21,23 +21,21 @@ module Memo
     GroupedFileList = Struct.new("GroupedFileList", :dir, :filenames)
 
     # 対象のディレクトリを文字列で検索してヒットしたときに返す値
-    # TODO: SearchLineにリネームする
-    GrepLine = Struct.new("GrepLine", :path, :line_number, :line)
+    SearchLine = Struct.new("SearchLine", :path, :line_number, :line)
 
     # ファイルごとに文字列で検索をかけてヒットしたらその行のほか、ファイル名などの情報を返す
     # @params seed [Seed]
-    # @return [Array<GrepLine>]
+    # @return [Array<SearchLine>]
     def search(seed, word)
       # TODO: Pathname.relative_path_fromを使って相対パスにする
       # readlinesの前にあらかじめ相対パスを作成しておく
       File.readlines(seed.full_path, chomp: true)
         .each_with_index
         .filter_map do |line, index|
-          GrepLine.new(path: seed.rel_path, line_number: index, line: line) if line.include?(word)
+          SearchLine.new(path: seed.rel_path, line_number: index, line: line) if line.include?(word)
         end
     end
 
-    # TODO: Modelに移動
     # Seeds -> GroupedFileListに変換する関数
     # grouped = repo.grouped_file_list
     # grouped.class => Array
