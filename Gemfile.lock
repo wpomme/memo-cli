@@ -22,6 +22,11 @@ GEM
     minitest (6.0.6)
       drb (~> 2.0)
       prism (~> 1.5)
+    msgpack (1.8.3)
+    multi_json (1.21.1)
+    neovim (0.10.0)
+      msgpack (~> 1.1)
+      multi_json (~> 1.0)
     parallel (2.1.0)
     parser (3.3.11.1)
       ast (~> 2.4.1)
@@ -73,6 +78,7 @@ DEPENDENCIES
   irb
   memo!
   minitest (~> 6.0.6)
+  neovim (~> 0.10.0)
   rainbow (~> 3.1.1)
   rake (~> 13.0)
   rubocop (~> 1.21)
@@ -90,6 +96,9 @@ CHECKSUMS
   lint_roller (1.1.0) sha256=2c0c845b632a7d172cb849cc90c1bce937a28c5c8ccccb50dfd46a485003cc87
   memo (0.1.0)
   minitest (6.0.6) sha256=153ea36d1d987a62942382b61075745042a2b3123b1cd48f4c3675af9cc7d6f1
+  msgpack (1.8.3) sha256=8bda4a6428d3244e50d6bd55854d354edbada88a4e1f4f5731a39a0f86bee6a1
+  multi_json (1.21.1) sha256=e6126a31808e3b4d19f483c775ceac34df190dffa62adfb63a165ee14ba68080
+  neovim (0.10.0) sha256=8d6170279872201106de1a84c27cc40a571ec2584057a3c335b2721e7326833e
   parallel (2.1.0) sha256=b35258865c2e31134c5ecb708beaaf6772adf9d5efae28e93e99260877b09356
   parser (3.3.11.1) sha256=d17ace7aabe3e72c3cc94043714be27cc6f852f104d81aa284c2281aecc65d54
   pp (0.6.3) sha256=2951d514450b93ccfeb1df7d021cae0da16e0a7f95ee1e2273719669d0ab9df6

@@ -21,5 +21,11 @@ class TestModel < Minitest::Test
         _(actual).must_equal(expected)
       end
     end
+
+    describe '#search' do
+      it '読み込んだファイルの中に該当の文字列が含まれていれば、GrepLineの配列を返す' do
+        skip("TODO: 特定のモックデータが欲しい")
+      end
+    end
   end
 end

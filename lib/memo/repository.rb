@@ -14,6 +14,7 @@ module Memo
     attr_reader :seeds
 
     # seedが存在すれば、そのファイルを全文表示する。
+    # Modelに移動してもいいかも
     # nilを受け取った場合は、そのままviewにnilを返す
     # @param [Seed, void]
     # @return [<Array<String>>] 読み取ったメモが行ごとに保存されていて、さらに配列で包まれている。仕様上、複数のファイルを読み取る場合があるため。

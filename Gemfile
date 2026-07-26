@@ -13,4 +13,5 @@ gem "minitest", "~> 6.0.6"
 gem "rainbow", "~>3.1.1"
 gem "rubocop", "~> 1.21"
 
+gem "neovim", "~> 0.10.0"
 gem "yard", "~> 0.9.45"

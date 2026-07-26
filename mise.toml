@@ -1,2 +1,5 @@
 [tools]
 ruby = "4.0.2"
+
+[shell_alias]
+n = "nvim --listen /tmp/nvim.sock"

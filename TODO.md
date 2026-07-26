@@ -31,7 +31,7 @@ memo の一覧を集めたファイルや、memo を参照した日付などの�
 memo <word>を実行した回数などを計測する？
 集計のためにmemo lsみたいなコマンドを作成するかも
 その他、タグ付けなどで便利そう
-    - Front Matter の追加
+DBでtagとfileの関連を持たせて、JSONか何かでtagとfileの関連を作成して、それをmemoが読み込むようにする、など
     1 tag: CLI, bash, git, bulk, setting, TUI, editor, shell, AI, Application, Package Manager
     2 title: そのファイルの名前を使用する
 ```
