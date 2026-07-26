@@ -67,8 +67,9 @@ module Memo
 
         Memo::Model::Seed.new(
           full_path: full_path,
-          filename: filename(full_path),
-          dir: dir
+          rel_path: rel_path,
+          dir: dir,
+          filename: filename(full_path)
         )
       end
     end

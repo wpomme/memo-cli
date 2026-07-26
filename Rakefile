@@ -36,24 +36,27 @@ namespace :format do
   end
 end
 
-# TODO: 実装に合わせて更新が必要
+# rake mockでmock_seeds.rbを作成
+# 作成後は、rake format:fixを実行して、重複したヒアドキュメントがあれば手動で直す
 namespace :mock do
   desc '元データからモックデータを作成する'
   task :make do
     # メモフォルダへの絶対パスを返す
-    dir = Memo::Env.to_memo_dir
+    dir = Memo::Env.memo_dir
 
     # Repositoryのオブジェクトを作成する
     repo = Memo::Repository.new(dir)
 
     # モックデータ作成のために実データseedsを任意の倍数で絞り込んで取得する
-    # なお、モックデータ取得のためにattr_reader :seedsとする必要がある
     seeds = repo.seeds.filter.each_with_index { |_e, i| i.modulo(4).zero? }
+    # テストのために固定のseedを作成する
+    fixed_mock_file = "diff"
+    seeds.push(repo.find(fixed_mock_file)) if repo.seeds.find { |seed| seed.filename == fixed_mock_file }
 
     ## モックデータ作成用のコマンド
     ## TEST_MEMO_DATA_SEEDの元となるRubyのArray<Hash>とヒアドキュメントを返す
     mock_seeds = seeds.map do |seed|
-      content = Memo::Repository.new.read(seed)
+      content = repo.read(seed)
       filename = seed.filename.upcase.tr("-", "_")
       val_name = "TEST_#{filename}_FILE_CONTENT"
       label = "#{filename}_FILE"
@@ -64,7 +67,6 @@ namespace :mock do
       }
     end
 
-    # test/でなくlib/に入れておく
     output = "test/mock_seeds.rb"
 
     File.open(output, "w") do |file|

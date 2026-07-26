@@ -28,7 +28,7 @@ class TestRepository < Minitest::Test
         end
       end
 
-      it '@seeds.full_pathはREADME(.md) を含まない' do
+      it '@seeds.full_pathはREADME(.md)を含まない' do
         seeds = @repo.instance_variable_get(:@seeds)
         full_path = seeds.map(&:full_path)
 
@@ -90,12 +90,12 @@ class TestRepository < Minitest::Test
 
     describe '#read' do
       it "seedが存在すれば、そのファイルを全文表示する。、" do
-        expected_seed = @test_seeds.find { |seed| seed.filename == "push" }
+        expected_seed = @test_seeds.find { |seed| seed.filename == "diff" }
         expected = @repo.read(expected_seed)
 
-        actual = Memo::MockSeed::TEST_PUSH_FILE_CONTENT
+        actual = Memo::MockSeed::TEST_DIFF_FILE_CONTENT
 
-        assert_equal expected, actual.split("\n") << ""
+        assert_equal expected, actual.split("\n")
       end
 
       it "nilが与えられたら、そのままnilを返す" do

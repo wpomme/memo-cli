@@ -51,7 +51,7 @@ module Memo
           - 例えば、文字色を緑にしたかったら'\033[32m'と'\033[0m'で挟むと、その間の文字色が緑になる
     ANSI_ESCAPE_CODE_AND_SET_COLOR_FILE
 
-    TEST_BUILTIN_FILE_CONTENT_1 = <<~BUILTIN_FILE
+    TEST_BUILTIN_FILE_CONTENT = <<~BUILTIN_FILE
       ## builtin: そのコマンドがbuiltinかどうかを判別する
       - 組み込みだと正常終了し、何も帰ってこない
       - それ以外だと何かが帰ってくる
@@ -95,7 +95,7 @@ module Memo
       ```
     HOMEBREW_FILE
 
-    TEST_MISE_FILE_CONTENT = <<~MISE_FILE
+    TEST_MISE_FILE_CONTENT_1 = <<~MISE_FILE
       # mise.md
       # TODO: mise の設定に関することは docs/setting/mise.md に書く
       ## mise
@@ -327,280 +327,253 @@ module Memo
           2. `gem environment`
     GEM_FILE
 
-    TEST_MARKDOWN_FILE_CONTENT = <<~MARKDOWN_FILE
-      - markdown: markdownの記法に関するメモ
-      # 特殊文字(Special Characters)
-      ## バックスラッシュ(\\)
-      <kbd>option</kbd> + <kbd>¥</kbd>
+    TEST_TEST_ASSERTION_FILE_CONTENT = <<~TEST_ASSERTION_FILE
+      ## テストアサーションについて
+      - いつもexpectedとactualを逆に書いている気がする......。
+      - 文献がいつもexpectedとactualが逆なような......
 
-      - Front Matter
-          - Markdownファイルの先頭に記載されるメタデータのこと
 
-      - textlint
+      ### Ruby
+      minitestのspecはこれが正しいはず！
+      ```ruby
+      _expected).must_equal(actual)
+      ```
+    TEST_ASSERTION_FILE
+
+    TEST_COMMENTING_FILE_CONTENT = <<~COMMENTING_FILE
+      - commenting: コメントアウトなどの操作
+      ```
+      # ドキュメントはcommenting で検索する
+      :h commenting
+      ```
+    COMMENTING_FILE
+
+    TEST_NETRW_FILE_CONTENT = <<~NETRW_FILE
+      ## netrw: 組み込みファイラ
+      - 起動
+      ```
+      :Ex
+      ```
+
+      - 表示モード切り替え
+      <kbd>i</kbd>
+          - thin -> long -> wide -> tree
+          - * このdotfilesではデフォルトの表示モードをtreeにしてある
+
+      - 新しいタブで開く
+      <kbd>t</kbd>
+
+    NETRW_FILE
+
+    TEST_READ_ONLY_FILE_CONTENT = <<~READ_ONLY_FILE
+      ## 閲覧モードなど
+      - 編集不許可の`-M`オプションを付けると便利。neovimでも同様。余計なキーを押したときに編集が不可能になる。
+      ```
+      nvim -M error.log
+      ```
+
+      - 読み取り専用にする場合は`-R`オプションを付けるなど。
+      ```
+      vim -R error.log
+      ```
+    READ_ONLY_FILE
+
+    TEST_DOCKER_COMPOSE_FILE_CONTENT = <<~DOCKER_COMPOSE_FILE
+      - docker-compose.yml
+      ## 書式
+      ```
+      ## 左側がホスト側、右側がコンテナ側
+      ## ホスト側のディレクトリ・ファイルをコンテナ側にマウントする
+          volumes:
+            - ./html:/usr/share/nginx/html
+      ```
+    DOCKER_COMPOSE_FILE
+
+    TEST_MISE_FILE_CONTENT_2 = <<~MISE_FILE
+      # mise.md
+      ## mise.toml
+      - mise.tomlを読み取る順番(抜粋)
+          - ~
+          - .config/mise.toml        (local)
+          - .cinfig/mise/config.toml (dotfiles)
+          - ~
+
+      - install
       ```bash
-      # textlintと日本語のスペース関連のプリセットをグローバルにインストール
-      pnpm add -g textlint textlint-rule-preset-ja-spacing
-
-      # ファイル名は必ず引用符で括る必要がある(自分の環境だけ？)
-      textlint --preset preset-ja-spacing "README.md"
+      # mise install でそれぞれのmise.toml をみてパッケージをインストールする
+      mise install
       ```
-    MARKDOWN_FILE
+    MISE_FILE
 
-    TEST_KEYMAP_FILE_CONTENT = <<~KEYMAP_FILE
-      ## keymap
-
-      ## noremap, silentの意味
-      - noremap
-          - 他のショートカットキーの設定に連鎖させないようにする
-      - silent
-          - キーの実行時に、画面下のコマンドラインに実行コマンドやメッセージを表示させない
-
-      # 例
+    TEST_EXPANSION_FILE_CONTENT = <<~EXPANSION_FILE.freeze
+      ## EXPANSION: bashのコマンドや変数の展開
+      ### ドキュメント
+      EXPANSIONという章がある。次のように検索すればその章に行ける
       ```
-      -- 次のバッファへ移動 (Tab)
-      vim.api.nvim_set_keymap('n', '<Tab>', ':bnext<CR>', { noremap = true, silent = true })
-      -- 前のバッファへ移動 (Shift+Tab)
-      vim.api.nvim_set_keymap('n', '<S-Tab>', ':bprevious<CR>', { noremap = true, silent = true })
+      /^EXPANSION#{' '}
       ```
-    KEYMAP_FILE
 
-    TEST_NVIM_SURROUND_FILE_CONTENT = <<~NVIM_SURROUND_FILE
-      - nvim-surround
-          - 文字列を記号で囲ってくれる
-          - https://github.com/kylechui/nvim-surround
+      ### 関係
+      - Command Substitution(コマンド展開)とも大きな関係がある
 
-      {example}
+      ### コマンド展開: Command Substitution
+      - 次のようにしてコマンドを展開する
+      ```
+      $(command)
+      # or
+      `command`
+      ```
+
+      - *補足
+      man bashの中で、Substitutionを全部大文字にしてSUBSTITUTIONで検索しても見つからない。
+
+      ### パラメーター展開: Parameter Expansion
+      - '$'がパラーメーター展開、コマンド展開、算術展開の橋渡しをする
+      - '{}'(ブレース)で囲まなくてもいいけど、他の文字列と混同することを防ぐ役割がある
+
+      ```
+      ## man bashの Parameter Expansionの冒頭からの引用
+      > The `$' character introduces parameter expansion, command substitution, or arithmetic expansion.
+      > The parameter name or symbol to be expanded may be enclosed in braces, which are optional but serve to protect
+      > the variable to be expanded from characters immediately following it which could be interpreted as part of the name.
+      ```
+
+      ### プロセス置換 (Process Substitution)
+      - 構文
+          - listの実行結果を、ファイルのように扱うことができる
+      ```bash
+      <(list)
+      ```
+      または、
+      ```bash
+      >(list)
+      ```
+
+      ### 例
+      - diffなどの、引数としてファイルを要求するコマンドに使用する
+      ```bash
+      diff <(list) <(list)
+      ```
+
+      ## 補足
+      プロセス置換は、実行されたコマンドの出力をファイル記述子と関連づける。echoを使うと関連づけられたファイル記述子の番号が確認できる。
+      ```bash
+      $ echo <(ls)
+      ```
+    EXPANSION_FILE
+
+    TEST_REDIRECTION_FILE_CONTENT = <<~REDIRECTION_FILE
+      ## Redirection: 標準出力と標準エラー出力の結果を表示しない場合
       - ドキュメント
-      :h nvim-surround | only
-          - ドキュメントに便利なエイリアス集などが載っている
-
-      ## 使い方(ドキュメントから)
-
-          Old text                    Command         New text
-      --------------------------------------------------------------------------------
-          # 単語単位でスペースを入れずにシンボルでくくる -> ysiw
-          surr*ound_words             ysiw)           (surround_words)
-          surr*ound_words             ysiw(           ( surround_words )
-          # 現在のカーソルから文末までシンボルでくくる
-          *make strings               ys$"            "make strings"
-          # くくってあるシンボルを消す -> ds
-          [delete ar*ound me!]        ds]             delete around me!
-          remove <b>HTML t*ags</b>    dst             remove HTML tags
-          # くくってあるシンボルを変更する -> cs<old-symbol><new-symbol>
-          'change quot*es'            cs'"            "change quotes"
-          <b>or tag* types</b>        csth1<CR>       <h1>or tag types</h1>
-          delete(functi*on calls)     dsf             function callsv
-    NVIM_SURROUND_FILE
-
-    TEST_SCRIPT_FILE_CONTENT = <<~SCRIPT_FILE
-      ## Neovim のスクリプト作成
-      ```
-      # 組み込み関数のリスト
-      :help function-list
-      # 組み込み関数の詳細
-      :help vimscript-functions
-
-      # 定義へ移動、元のページに戻る
-      ## Ctrl+] でそのキーワードの詳細へ移動する
-      ## Ctrl+T, Ctrl+O で元の場所に戻る
-      ```
-
-      ## スクリプトを実行
-      ```
-      # コマンドラインモードで%lua と打つと、そのバッファがluaで実行される
-      # line() などの組み込みコマンドはvim.fn.line() などとする必要がある
-      :%lua
-
-      # または-l オプションを付けて実行する
-      nvim -l script.lua
-
-      # スクリプトの作成・デバッグ
-      # -u で設定ファイルを指定して読み込む
-      nvim -u script.lua <file_name>
-
-      # 例
-      ## keymap.lua を読み込んで files.js を編集する
-      nvim -u keymap.lua files.js
-      ```
-
-      - 注意: デフォルトの設定ファイルは読み込まれなくなってしまう
-      - swapfileに関する警告が出るので、swapfile = falseを追加しておくといい
-      ```lua
-      vim.opt.swapfile = false
-      ```
-
-    SCRIPT_FILE
-
-    TEST_EDITORCONFIG_FILE_CONTENT = <<~EDITORCONFIG_FILE
-      - editorconfig
-          - リポジトリのトップに.editorconfigを作成しておけばファイルのフォーマットが簡単にできる
-          - サイトURL: https://editorconfig.org/
-          - VimとNeovimは標準でサポートされている
-    EDITORCONFIG_FILE
-
-    TEST_BUILTIN_FILE_CONTENT_2 = <<~BUILTIN_FILE
-      ## SHELL BUILTIN COMMANDS: 組み込みコマンド
-      - ドキュメント
-          - 組み込みコマンドのドキュメントはman bash のSHELL BUILTIN COMMANDS に記載がある
-          - 例えば、cd, command, 
       ```bash
       man bash
-      ## ^を付けないと結構いっぱい出てくる
-      /^SHELL BUILTIN COMMANDS
+      /^REDIRECTION
       ```
 
-      ## builtinコマンドと外部コマンド
-      - bashには組み込みコマンドと外部コマンドがある
-      - `ls`などは外部コマンドである。
-          - coreutils(GNU/Linux)かmacOSのシステムユーティリティとして提供されている外部コマンド
-    BUILTIN_FILE
-
-    TEST_HISTORY_EXPANSION_FILE_CONTENT = <<~HISTORY_EXPANSION_FILE
-      ## HISTORY EXPANSION: コマンドの履歴を展開する
-      - ドキュメント: HISTORY EXPANSIONという章がある
-      ```
-      man bash
-      /HISTORY EXPANSION
-      ```
-
-      ## コマンドの再実行
-      - 履歴展開 (History Expansion)
-      1. 直前のコマンドを実行する
+      ### 出力を捨てるとき
+      1. 標準出力だけ捨てる
       ```bash
-      $ !!
+      ls ~/Downloads/ > /dev/null
       ```
 
-      2. インクリメンタルサーチ(Incremental search)
-      - シェルプロンプトで`Ctrl - R`を押すと、コマンド履歴から逆順(Reverse)にインクリメンタル検索を実行できる
-
-      3. 最近のstringで始まるコマンドを実行する
+      2. 標準エラー出力だけ捨てる
       ```bash
-      $ !string
+      ls ~/Downloads/do-not-exist-file.txt 2> /dev/null
+      echo $? # will return 1
+
+      ## これは普通にlsの実行結果が表示される
+      ls ~/Downloads/ 2> /dev/null
       ```
 
-    HISTORY_EXPANSION_FILE
+      3. 両方とも捨てる
+      ```bash
+      ## 従来の方法？
+      command -v ls 2>&1 > /dev/null
 
-    TEST_SHELL_VARIABLES_FILE_CONTENT = <<~SHELL_VARIABLES_FILE
-      ### special parameterstと内容が被るけど、memoから見つけられなかった...
-      ### man bashから記号を検索するのが面倒すぎる...
-      ### /?で検索すればOK
-
-      - シェル変数
-          - $?: 直前に実行したコマンドの実行ステータス
-          - $!: 直前に実行したコマンドのプロセスID
-          -> 大体どっちも0で帰ってきたりするから分かりにくい
-    SHELL_VARIABLES_FILE
-
-    TEST_ZSH_FILE_CONTENT = <<~ZSH_FILE
-      Mac OSのデフォルトシェル
-
-      ## history コマンドのドキュメント
-      ```sh
-      $ man zshbuitins
+      ## Bash 4.0だと次の書き方でもOKらしい
+      command -v ls &> /dev/null
       ```
+    REDIRECTION_FILE
 
-      /historyで検索すると、"Same as fc -l" と記載がある
-      -> zshではhistoryコマンドの代わりにfc -lコマンドを使う
+    TEST_TEST_FILE_CONTENT = <<~TEST_FILE
+      - test,[
+          - man testが詳しい
+      ```bash
+      man test
 
-      ## 履歴展開 (History Expansion)
-      - 最近のstringで始まるコマンドを履歴展開で補完して、実行したい場合
-          - `!"string"`まで入力して、`Tab`キーを押すと、該当のコマンドが展開される。該当のコマンドが正しいことを確認して実行ができる。
-      ```sh
-      $ !string
+      # [ に man を適用してもドキュメントが読める
+      man [
       ```
+    TEST_FILE
 
-      - zsh-completions
-          - "zsh compinit: insecure directories"というwarningが出たら次を実行する
-          1. `compaudit`を実行
-          2. 信頼できないパスの一覧が出る。信頼できれば次を実行する
-              - `chmod go-w '/path/to/file'`
-              - `chmod -R go-w '/path/to/file'`
-
-      # ディレクトリ移動コマンドとzsh の設定
-      - 次の設定をdotfilesに記載してある
-      ```zsh
-      # cd すると自動でpushd する
-      setopt autopushd
-
-      # pushd に同じディレクトリを重複させない
-      setopt pushdignoredups
-      ```
-
-      - dirs, pushd, popdについて
-      ```
-      # デフォルトだとディレクトリの遷移が見にくいので-v をalias に設定する
-      alias dirs="dirs -v"
-
-      ## 数値の前に+ を付けなければいけないのが面倒...
-      # pushd +<number> でdirs -v で指定されたディレクトリに移動する
-      pushd +3
-
-      # popd +<number> でdir -v で指定されたディレクトリの履歴を消去する
-      popd +3
-      ```
-    ZSH_FILE
-
-    TEST_TMUX_FILE_CONTENT = <<~TMUX_FILE
+    TEST_GHOSTTY_FILE_CONTENT = <<~GHOSTTY_FILE
       ## 例
-      - 10番目以降のwindowに移動する
-          - 番号を指定して移動する
-          `prefix + '`
-          - インタラクティブな移動
-          `prefix + w`
+      - 新規タブを作成
+      <kbd>⌘</kbd> + <kbd>T</kbd>
 
-      - セッション
-          - セッションに名前を付けて起動する
-              `tmux new -s <session-name>`
-          - 指定したセッションを起動する
-              `tmux attach -t <target-session>`
-          - 次のセッションに移動する
-              `prefix )`
-          - 前のセッションに移動する
-              `prefix (`
+      - タブを移動
+          - <kbd>Shift</kbd> + <kbd>⌘</kbd> + <kbd>[</kbd>
+          - <kbd>Shift</kbd> + <kbd>⌘</kbd> + <kbd>]</kbd>
+    GHOSTTY_FILE
 
-              * target-sessionは次の順番で決まる
-              1. $ のついたsession ID
-              2. セッションの正確な名前
-              ...
+    TEST_DIFF_FILE_CONTENT = <<~DIFF_FILE
+      - diff
 
-          - セッションを一時終了する(Detach)
-              - `prefix + d`
-          - 直前のセッションに戻る(Attach)
-              - `tmux a` or `tmux attach`
-              1例: 間違ってDetachしたときは`tmux attach`で復元する
-              2例: 複数のセッションを起動させるとき、最初のセッションをDetachして、ターミナルで新しいtmuxを起動させる
-                  - その際は、tmuxに名前を付けると良さそう
-                  - ほとんど不具合を起こさない開発サーバーにtmux1を割り当てて、それ以外をtmux2にするとか?
+      - origfileとpatchfileの内容が次の場合、diffの結果は次の通り
+      ```bash
+      cat origfile
+      > 1
+      > 12
+      > 123
 
+      cat patchfile
+      > 123
+      > 123
+      > 123
 
-      - ウィンドウ
-          - 全てのウィンドウの一覧を表示
-          `tmux list-windows`
+      diff origfile patchfile
+      ```
 
-          - 現在開いているウィンドウを完全に終了する
-          `Ctrl + d`
-              - `prefix + d`としてしまうと、セッションがDetachとなるので注意すること
+      ```diff
+      1,2d0
+      < 1
+      < 12
+      3a2,3
+      > 123
+      > 123
+      ```
 
-          - ウィンドウを番号指定で閉じる
-          `tmux kill-window -t <session-name>:<window-number>`
-              - 例: 現在のセッションの５番目のウィンドウを閉じる
-              `tmux kill-window -t 5`
+      - a unified diff形式(-uオプション)
+      ```
+      # -u を付けると、 a unified diff の形式で差分を出力する
+      # 先頭の三行に、パッチファイルとパッチを当てるファイルの情報と、差分の概要を出力する
+      # patch コマンドは、この情報をみて、パッチファイルとパッチを当てるファイルを識別する
+      # なお、-c オプションでも同様の情報を出力する。-c の場合は、context diffs の形式でこの情報を出力する
 
-          - ウィンドウの名前を変更する
-          `prefix + ,`
+      # a unified diff について
+      # --- が付いている方がパッチを当てる方のファイル("old")
+      # +++ が付いている方がパッチファイル("new")
 
-      - その他
-          - tmuxのコマンド一覧
-          `tmux list-commands`
+      diff -u origfile patchfile
+      ```
 
-      - tmuxのドキュメント
-          - tmux attachのドキュメントを探す
-          1. `man tmux`
-          2. `/attach-session`
+      ```diff
+      --- origfile	2026-05-22 08:53:21
+      +++ patchfile	2026-05-22 08:53:27
+      @@ -1,3 +1,3 @@
+      -1
+      -12
+       123
+      +123
+      +123
+      ```
 
-          - tmux newのドキュメントを探す
-          1. `tmux list-commnads | grep new`
-    TMUX_FILE
+      #TODO origfileにパッチファイルを適用する
+      # diff からパイプでpatchに繋げるとreversed patchと判定されるときがある
+      ```bash
+      diff -u origfile patchfile | patch -u
+      ```
+    DIFF_FILE
 
     TEST_MEMO_DATA_SEED = [
       {
@@ -611,7 +584,7 @@ module Memo
       {
         dir: "cli/builtin",
         filename: "builtin",
-        content: TEST_BUILTIN_FILE_CONTENT_1
+        content: TEST_BUILTIN_FILE_CONTENT
       },
       {
         dir: "cli",
@@ -631,7 +604,7 @@ module Memo
       {
         dir: "cli",
         filename: "mise",
-        content: TEST_MISE_FILE_CONTENT
+        content: TEST_MISE_FILE_CONTENT_1
       },
       {
         dir: "cli/old",
@@ -694,54 +667,59 @@ module Memo
         content: TEST_GEM_FILE_CONTENT
       },
       {
-        dir: "memo",
-        filename: "markdown",
-        content: TEST_MARKDOWN_FILE_CONTENT
+        dir: "lang",
+        filename: "test-assertion",
+        content: TEST_TEST_ASSERTION_FILE_CONTENT
       },
       {
         dir: "neovim",
-        filename: "keymap",
-        content: TEST_KEYMAP_FILE_CONTENT
+        filename: "commenting",
+        content: TEST_COMMENTING_FILE_CONTENT
       },
       {
         dir: "neovim/plugin",
-        filename: "nvim-surround",
-        content: TEST_NVIM_SURROUND_FILE_CONTENT
+        filename: "netrw",
+        content: TEST_NETRW_FILE_CONTENT
       },
       {
         dir: "neovim",
-        filename: "script",
-        content: TEST_SCRIPT_FILE_CONTENT
+        filename: "read-only",
+        content: TEST_READ_ONLY_FILE_CONTENT
       },
       {
         dir: "setting",
-        filename: "editorconfig",
-        content: TEST_EDITORCONFIG_FILE_CONTENT
+        filename: "docker-compose",
+        content: TEST_DOCKER_COMPOSE_FILE_CONTENT
+      },
+      {
+        dir: "setting",
+        filename: "mise",
+        content: TEST_MISE_FILE_CONTENT_2
       },
       {
         dir: "shell/bash",
-        filename: "builtin",
-        content: TEST_BUILTIN_FILE_CONTENT_2
+        filename: "expansion",
+        content: TEST_EXPANSION_FILE_CONTENT
       },
       {
         dir: "shell/bash",
-        filename: "history-expansion",
-        content: TEST_HISTORY_EXPANSION_FILE_CONTENT
+        filename: "redirection",
+        content: TEST_REDIRECTION_FILE_CONTENT
       },
       {
         dir: "shell/bash",
-        filename: "shell-variables",
-        content: TEST_SHELL_VARIABLES_FILE_CONTENT
-      },
-      {
-        dir: "shell/zsh",
-        filename: "zsh",
-        content: TEST_ZSH_FILE_CONTENT
+        filename: "test",
+        content: TEST_TEST_FILE_CONTENT
       },
       {
         dir: "tui",
-        filename: "tmux",
-        content: TEST_TMUX_FILE_CONTENT
+        filename: "ghostty",
+        content: TEST_GHOSTTY_FILE_CONTENT
+      },
+      {
+        dir: "cli",
+        filename: "diff",
+        content: TEST_DIFF_FILE_CONTENT
       }
     ].freeze
   end

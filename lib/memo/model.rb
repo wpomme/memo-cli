@@ -8,17 +8,20 @@ module Memo
     #
     # @!attribute [rw] full_path
     #   @return [String] memoディレクトリの中にあるファイルの絶対パス。メモを読み取るために使う
-    # @!attribute [rw] filename
-    #   @return [String] 対象のファイルのファイル名
+    # @!attribute [rw] rel_path
+    #   @return [String] 対象のディレクトリからそのファイルへのパス
     # @!attribute [rw] dir
     #   @return [String] そのファイルが格納されているディレクトリ
-    Seed = Data.define(:full_path, :filename, :dir)
+    # @!attribute [rw] filename
+    #   @return [String] 対象のファイルのファイル名
+    Seed = Data.define(:full_path, :rel_path, :dir, :filename)
 
     # 対象のディレクトリの中にあるファイル名の配列を保存する
     # :dirは文字列、:filenamesは文字列の配列が入る
     GroupedFileList = Struct.new("GroupedFileList", :dir, :filenames)
 
     # 対象のディレクトリを文字列で検索してヒットしたときに返す値
+    # TODO: SearchLineにリネームする
     GrepLine = Struct.new("GrepLine", :path, :line_number, :line)
 
     # ファイルごとに文字列で検索をかけてヒットしたらその行のほか、ファイル名などの情報を返す
@@ -29,7 +32,9 @@ module Memo
       # readlinesの前にあらかじめ相対パスを作成しておく
       File.readlines(seed.full_path, chomp: true)
         .each_with_index
-        .filter_map { |line, index| GrepLine.new(path: seed.full_path, line_number: index, line: line) if line.include?(word) }
+        .filter_map do |line, index|
+          GrepLine.new(path: seed.rel_path, line_number: index, line: line) if line.include?(word)
+        end
     end
 
     # TODO: Modelに移動
