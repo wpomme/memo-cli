@@ -10,8 +10,8 @@ end
 task default: :test
 
 desc '環境変数付きでirbにログインする'
-task :irb do
-  sh "MEMO_CLI_RUNTIME_ENV='console' bundle exec irb"
+task :console do
+  sh "MEMO_CLI_RUNTIME_ENV='console' bundle exec console"
 end
 
 namespace :test do

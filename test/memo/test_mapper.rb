@@ -43,5 +43,28 @@ class TestMapper < Minitest::Test
         assert expected.is_a?(String)
       end
     end
+
+    describe '#search_result_to_view' do
+      it '検索でヒットした文字列に色を付けて一次元配列の文字列を返す' do
+        search_word = 'diff'
+        expected = Memo::Mapper.new(@repo).search_result_to_view(search_word)
+
+        actual = @repo.search_all(search_word).flatten.map do |line|
+          line.to_view(search_word)
+        end
+
+        _(expected).must_be_instance_of(Array)
+        _(expected.first).must_be_instance_of(String)
+        _(expected).must_equal(actual)
+      end
+
+      it '検索でヒットしなかった場合は、その旨を知らせる文字列を返す' do
+        search_word = 'hikkakaranasounakotoba'
+        expected = Memo::Mapper.new(@repo).search_result_to_view(search_word)
+
+        # TODO: とりあえず文字列を返すことだけを確認する
+        assert expected.is_a?(String)
+      end
+    end
   end
 end

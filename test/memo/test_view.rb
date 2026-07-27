@@ -110,5 +110,31 @@ class TestView < Minitest::Test
         _(out).must_be_instance_of(String)
       end
     end
+
+    describe '#search' do
+      it "受け取った文字列で全てのメモをで検索して、ヒットした行をgrep風に出力する" do
+        search_word = "diff"
+
+        out, = capture_io do
+          Memo::View.new(@repo).search(search_word)
+        end
+
+        actual = Memo::Mapper.new(@repo).search_result_to_view(search_word)
+          .join("\n") << "\n"
+
+        _(out).must_equal(actual)
+      end
+
+      it "受け取った文字列で一件もヒットしなかった場合は、その旨を知らせるメッセージを表示する" do
+        search_word = "hikkakaranasounakotoba"
+
+        out, = capture_io do
+          Memo::View.new(@repo).search(search_word)
+        end
+
+        # TODO: とりあえず文字列を返すことを確認する
+        _(out).must_be_instance_of(String)
+      end
+    end
   end
 end

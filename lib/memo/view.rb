@@ -22,5 +22,9 @@ module Memo
     def list(dir = nil)
       puts @mapper.file_list_to_view(dir)
     end
+
+    def search(word)
+      puts @mapper.search_result_to_view(word)
+    end
   end
 end

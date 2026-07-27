@@ -21,19 +21,30 @@ module Memo
     GroupedFileList = Struct.new("GroupedFileList", :dir, :filenames)
 
     # 対象のディレクトリを文字列で検索してヒットしたときに返す値
-    SearchLine = Struct.new("SearchLine", :path, :line_number, :line)
+    SearchLine = Struct.new("SearchLine", :path, :line_number, :line) do
+      def to_view(word)
+        "#{path}:#{line_number}:#{line.sub(word, Rainbow(word).red)}"
+      end
+    end
 
     # ファイルごとに文字列で検索をかけてヒットしたらその行のほか、ファイル名などの情報を返す
+    #
+    # ヒットした場合は、SearchLineの一次元配列を返す
+    # ヒットしなかった場合は、nilを返す
     # @params seed [Seed]
-    # @return [Array<SearchLine>]
+    # @return [Array<SearchLine>, nil]
     def search(seed, word)
       # TODO: Pathname.relative_path_fromを使って相対パスにする
       # readlinesの前にあらかじめ相対パスを作成しておく
-      File.readlines(seed.full_path, chomp: true)
+      ret = File.readlines(seed.full_path, chomp: true)
         .each_with_index
         .filter_map do |line, index|
-          SearchLine.new(path: seed.rel_path, line_number: index, line: line) if line.include?(word)
+          # index + 1が本当の行数
+          SearchLine.new(path: seed.rel_path, line_number: index + 1, line: line) if line.include?(word)
         end
+      return nil if ret.empty?
+
+      ret
     end
 
     # Seeds -> GroupedFileListに変換する関数

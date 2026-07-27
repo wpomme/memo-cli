@@ -22,6 +22,8 @@ module Memo
         view.dirs
       when :read
         view.read(options.shift)
+      when :search
+        view.search(options.shift)
       end
     end
   end

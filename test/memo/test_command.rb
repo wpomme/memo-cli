@@ -108,6 +108,43 @@ class TestCommand < Minitest::Test
           end
         end
       end
+
+      describe 'args: search' do
+        it "['search', 'diff']を受け取ったときは、全てのメモの中でdiffが入っている行を色付きで表示する" do
+          search_word = 'diff'
+
+          out, = capture_io do
+            Memo::Command.new(@repo).execute(["search", search_word])
+          end
+
+          actual = Memo::Mapper.new(@repo).search_result_to_view(search_word)
+            .join("\n") << "\n"
+
+          _(out).must_equal(actual)
+        end
+
+        it "['search', 'hikkakaranasounakotoba']を受け取ったときは、そのようなメモがないことを表示する" do
+          search_word = 'hikkakaranasounakotoba'
+
+          out, = capture_io do
+            Memo::Command.new(@repo).execute(["search", search_word])
+          end
+
+          assert_equal out, "#{search_word}で全ファイル検索しましたが、そのような文字列は見当たりませんでした。\n"
+        end
+
+        it "['search', nil]を受け取ったときは、例外を送出する" do
+          word = nil
+
+          capture_io do
+            exception = assert_raises(OptionParser::InvalidArgument) do
+              Memo::Command.new(@repo).execute(['search', word])
+            end
+
+            assert_equal "invalid argument: -s ", exception.message
+          end
+        end
+      end
     end
   end
 end

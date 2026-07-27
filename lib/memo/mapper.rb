@@ -10,6 +10,22 @@ module Memo
       @repo = repo
     end
 
+    # 検索でヒットした文字列に色をつける
+    #
+    # @param word [string]
+    # @return [Array<string>, String]
+    def search_result_to_view(word)
+      # TODO: ユーザーメッセージを集約化する
+      not_found_message = "#{word}で全ファイル検索しましたが、そのような文字列は見当たりませんでした。"
+
+      search_result = @repo.search_all(word)
+      return not_found_message if search_result.nil?
+
+      search_result.flatten.map do |line|
+        line.to_view(word)
+      end
+    end
+
     # memo_dirの中にあるディレクトリに色をつける
     # return [Array<>]
     def colored_dirs

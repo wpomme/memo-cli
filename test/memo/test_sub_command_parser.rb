@@ -52,6 +52,30 @@ class TestSubCommandParser < Minitest::Test
       end
     end
 
+    describe 'memo search' do
+      it '引数がsearchだけのときは、エラーメッセージを表示して異常終了する' do
+        _, err = capture_io do
+          exception = assert_raises(SystemExit) do
+            Memo::SubCommandParser.parse!(['search'])
+          end
+
+          assert_equal 2, exception.status
+        end
+
+        assert_equal "", err
+      end
+
+      it '引数がsearch <word>のときは、[:search, <word>]' do
+        expected = Memo::SubCommandParser.parse!(%w[search foo])
+        assert_equal [:search, 'foo'], expected
+      end
+
+      it '引数がsearchで、その後に続く引数が二つ以上あるときは、searchの次の引数を返す' do
+        expected = Memo::SubCommandParser.parse!(%w[search foo bar])
+        assert_equal [:search, 'foo'], expected
+      end
+    end
+
     describe 'memo dirs' do
       it '引数がdirsだけのときは、:dirsを返す' do
         expected = Memo::SubCommandParser.parse!(['dirs'])

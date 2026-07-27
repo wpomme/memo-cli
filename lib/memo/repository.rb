@@ -15,10 +15,17 @@ module Memo
     attr_reader :seeds
 
     # 対象の全てのファイルに文字列検索を行う
+    # 検索した文字列がどのファイルにも見当たらなかった場合はnilを返す
+    #
+    # @param seed [Memo::Model::Seed]
+    # @return [Array<Array<Memo::Model::SearchLine>>, nil]
     def search_all(word)
-      @seeds.filter_map do |seed|
-        search(seed, word).then { |ret| ret unless ret.empty? }
+      ret = @seeds.filter_map do |seed|
+        search(seed, word)
       end
+      return nil if ret.empty?
+
+      ret
     end
 
     # seedが存在すれば、そのファイルを全文表示する。
