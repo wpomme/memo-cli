@@ -33,16 +33,13 @@ module Memo
     end
 
     # ファイル名の一覧をViewに渡す前に加工するための関数
-    # ディレクトリ名に色を付けるのは、GroupedFileListのStructのブロックで定義するのもありかもしれない
     #
-    # @return [Array | String] NOTE: ユーザーメッセージの方はもう少しなんとかしたい
+    # @return [Array | String]
     def file_list_to_view(dir = nil)
       seeds = @repo.seeds
 
       if dir
-        ret = grouped_file_list(seeds).filter_map do |struct|
-          [Rainbow(struct[:dir]).green] + struct[:filenames] if struct[:dir] == dir
-        end
+        ret = grouped_file_list(seeds).filter_map { |grouped| grouped.to_view(dir) }
 
         ## dir が存在する場合
         return ret unless ret.empty?
@@ -55,9 +52,7 @@ module Memo
         NOT_DIR
       end
 
-      grouped_file_list(seeds).map do |struct|
-        [Rainbow(struct[:dir]).green] + struct[:filenames]
-      end
+      grouped_file_list(seeds).map(&:to_view)
     end
   end
 end

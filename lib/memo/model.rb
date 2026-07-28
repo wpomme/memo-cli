@@ -19,8 +19,27 @@ module Memo
     # 対象のディレクトリの中にあるファイル名の配列を保存する
     # :dirは文字列、:filenamesは文字列の配列が入る
     GroupedFileList = Struct.new("GroupedFileList", :dir, :filenames) do
-      def to_view
-        [Rainbow(dir).green, filenames]
+      def to_view(target_dir = nil)
+        if target_dir
+          [Rainbow(dir).green] + filenames if dir == target_dir
+        else
+          [Rainbow(dir).green] + filenames
+        end
+      end
+    end
+
+    # Seeds -> GroupedFileListに変換する関数
+    # grouped = repo.grouped_file_list
+    # grouped.class => Array
+    # その中身はMemo::Model::GroupedFileListとなる
+    # 値はSet<Hash>
+    # @return [Array<Memo::Model::GroupedFileList>]
+    def grouped_file_list(seeds)
+      seeds.group_by(&:dir).map do |dir, seed|
+        GroupedFileList.new(
+          dir: dir,
+          filenames: seed.map(&:filename)
+        )
       end
     end
 
@@ -49,21 +68,6 @@ module Memo
       return nil if ret.empty?
 
       ret
-    end
-
-    # Seeds -> GroupedFileListに変換する関数
-    # grouped = repo.grouped_file_list
-    # grouped.class => Array
-    # その中身はMemo::Model::GroupedFileListとなる
-    # 値はSet<Hash>
-    # @return [Array<Memo::Model::GroupedFileList>]
-    def grouped_file_list(seeds)
-      seeds.group_by(&:dir).map do |dir, seed|
-        GroupedFileList.new(
-          dir: dir,
-          filenames: seed.map(&:filename)
-        )
-      end
     end
   end
 end

@@ -8,14 +8,46 @@ class TestModel < Minitest::Test
     include Memo::Model
 
     describe "GroupedFileList#to_view" do
-      it "ディレクトリ名に色付けをしてディレクトリとファイル名の配列を返す" do
-        expected = grouped_file_list(@test_seeds).map(&:to_view)
+      describe "引数を取らず、mapで#to_viewを使用する場合" do
+        it "戻り値は二次元配列である" do
+          expected = grouped_file_list(@test_seeds).map(&:to_view)
 
-        actual = @test_seeds.group_by(&:dir).map do |dir, seed|
-          [Rainbow(dir).green, seed.map(&:filename)]
+          _(expected).must_be_instance_of(Array)
+
+          expected.each do |exp|
+            _(exp).must_be_instance_of(Array)
+          end
         end
 
-        _(expected).must_equal(actual)
+        it "ディレクトリ名に色付けをしてディレクトリとファイル名の配列を返す" do
+          expected = grouped_file_list(@test_seeds).map(&:to_view)
+
+          actual = @test_seeds.group_by(&:dir).map do |dir, grouped|
+            [Rainbow(dir).green] + grouped.map(&:filename)
+          end
+
+          _(expected).must_equal(actual)
+        end
+      end
+
+      describe "引数にディレクトリ名を取り、filter_mapで#to_viewを使用する場合" do
+        it "引数と同じディレクトリ名を色付けして、その中のファイル名と一緒に値を返す" do
+          target_dir = "cli"
+          expected = grouped_file_list(@test_seeds).filter_map { |grouped| grouped.to_view(target_dir) }
+
+          actual = @test_seeds.group_by(&:dir).filter_map do |dir, grouped|
+            [Rainbow(dir).green] + grouped.map(&:filename) if dir == target_dir
+          end
+
+          _(expected).must_equal(actual)
+        end
+
+        it "メモの中に存在しないディレクトリ名を受け取った場合は、空の配列を返す" do
+          target_dir = "not_exist_dir"
+          expected = grouped_file_list(@test_seeds).filter_map { |grouped| grouped.to_view(target_dir) }
+
+          _(expected).must_equal([])
+        end
       end
     end
 
