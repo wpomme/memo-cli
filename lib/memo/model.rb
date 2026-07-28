@@ -19,8 +19,12 @@ module Memo
     # 対象のディレクトリの中にあるファイル名の配列を保存する
     # :dirは文字列、:filenamesは文字列の配列が入る
     GroupedFileList = Struct.new("GroupedFileList", :dir, :filenames) do
-      def to_view
-        [Rainbow(dir).green, filenames]
+      def to_view(target_dir = nil)
+        if target_dir
+          [Rainbow(dir).green] + filenames if dir == target_dir
+        else
+          [Rainbow(dir).green] + filenames
+        end
       end
     end
 
