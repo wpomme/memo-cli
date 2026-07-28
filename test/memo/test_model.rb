@@ -7,8 +7,20 @@ class TestModel < Minitest::Test
     include MemoTestLifecycleHooks
     include Memo::Model
 
+    describe "GroupedFileList#to_view" do
+      it "ディレクトリ名に色付けをしてディレクトリとファイル名の配列を返す" do
+        expected = grouped_file_list(@test_seeds).map(&:to_view)
+
+        actual = @test_seeds.group_by(&:dir).map do |dir, seed|
+          [Rainbow(dir).green, seed.map(&:filename)]
+        end
+
+        _(expected).must_equal(actual)
+      end
+    end
+
     describe '#grouped_file_list' do
-      it "Structを返す" do
+      it "Seedの配列を受け取ったら、GroupedFileListを返す" do
         expected = grouped_file_list(@test_seeds)
 
         actual = @test_seeds.group_by(&:dir).map do |dir, seed|

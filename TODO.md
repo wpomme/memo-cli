@@ -22,10 +22,24 @@ DBでtagとfileの関連を持たせて、JSONか何かでtagとfileの関連を
 ## Rakefileとe2eテスト
 Rakefileで各種コマンドを発行させてe2eテストを作成したい
 
+## プライベートgem
+- gemにするならプライベートにする
+
 ## 分岐対応
 - README.md除外対応
 - トップディレクトリ -> 対象のディレクトリの末尾
     -テストコードで明確にしたい
+
+## テスト拡張
+- coverageを取得する
+
+## CLIの拡張
+- サブコマンドだけでなくオプションも使えるようにする
+    - `memo -r grep`など
+
+## Modelにto_viewと追加 => Mapperに適用
+## dir_setとdirsのそのまま使うか、一つにするか
+## モックデータの変数を`@test_`にしたい
 
 ## リネーム・構造変更
 1. Memo::Env -> Memo::Configにする？
