@@ -29,7 +29,7 @@ module Memo
     # memo_dirの中にあるディレクトリに色をつける
     # return [Array<>]
     def colored_dirs
-      @repo.to_dirs.map { |dir| Rainbow(dir).green }
+      @repo.dir_set.to_a.map { |dir| Rainbow(dir).green }
     end
 
     # ファイル名の一覧をViewに渡す前に加工するための関数

@@ -38,8 +38,8 @@ Rakefileで各種コマンドを発行させてe2eテストを作成したい
     - `memo -r grep`など
 
 ## Modelにto_viewと追加 => Mapperに適用
-## dir_setとdirsのそのまま使うか、一つにするか
 ## モックデータの変数を`@test_`にしたい
+## Repositoryのseedsをプライベートにする
 
 ## リネーム・構造変更
 1. Memo::Env -> Memo::Configにする？

@@ -47,13 +47,6 @@ module Memo
       @seeds.find { |seed| seed.filename == word }
     end
 
-    # ディレクトリの集合を配列に変換する
-    #
-    # @return [Array<String>] フォルダの配下にあるディレクトリの一覧を配列で返す
-    def to_dirs
-      dir_set.to_a.freeze
-    end
-
     # フォルダの中のディレクトリの集合
     #
     # @return [Set<String>]

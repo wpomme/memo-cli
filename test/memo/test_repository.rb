@@ -49,18 +49,9 @@ class TestRepository < Minitest::Test
     describe '#dir_set' do
       it "モックデータと実際のdir_setが同じであること" do
         expected = @repo.dir_set
-        actual = @dir_set
+        actual = Memo::MockSeed::TEST_MEMO_DATA_SEED.map { |seed_hash| seed_hash[:dir] }.uniq.to_set
 
-        _(actual).must_equal(expected)
-      end
-    end
-
-    describe '#to_dirs' do
-      it "モックデータと実際のto_dirsが同じであること" do
-        expected = @repo.to_dirs.sort
-        actual = @dir_set.to_a.sort
-
-        _(actual).must_equal(expected)
+        _(expected).must_equal(actual)
       end
     end
 
