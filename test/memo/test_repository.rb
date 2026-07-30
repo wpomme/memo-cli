@@ -19,13 +19,11 @@ class TestRepository < Minitest::Test
         skip "TODO"
       end
 
-      it '@seedsはMemo::Model::SeedのArrayである' do
+      it '@seedsの配列の要素はMemo::Model::Seedである' do
         seeds = @repo.instance_variable_get(:@seeds)
+        expected = seeds.all?(Memo::Model::Seed)
 
-        assert_instance_of Array, seeds
-        seeds.each do |seed|
-          assert_instance_of Memo::Model::Seed, seed
-        end
+        _(expected).must_equal(true)
       end
 
       it '@seeds.full_pathはREADME(.md)を含まない' do
@@ -97,7 +95,17 @@ class TestRepository < Minitest::Test
     end
 
     describe '#search_all' do
-      it "検索結果の配列を返す" do
+      it "検索結果は二重配列で要素はMemo::Model::SearchLineである" do
+        search_word = 'diff'
+        result = @repo.search_all(search_word)
+
+        expected = result.all? do |memo|
+          memo.all?(Memo::Model::SearchLine)
+        end
+        _(expected).must_equal(true)
+      end
+
+      it "モックデータから作成した検索結果と要素が同じである" do
         search_word = 'diff'
         expected = @repo.search_all(search_word)
 
@@ -112,11 +120,6 @@ class TestRepository < Minitest::Test
           ret unless ret.empty?
         end
 
-        # search_allの戻り値は二重配列でそれぞれの配列はファイルごとにグループ化されている
-        _(expected).must_be_instance_of(Array)
-        _(expected.first).must_be_instance_of(Array)
-        _(expected.first.first).must_be_instance_of(Memo::Model::SearchLine)
-        # 要素が同じなら順番は別で構わない
         _(expected.to_set).must_equal(actual.to_set)
       end
 

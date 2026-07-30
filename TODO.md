@@ -4,52 +4,86 @@
 - DBとの連携とは別に、ファイル名の重複などを調べておきたい
 - 最初はirbから調べて、そのうちクラスを作成する
 
+### tag CLIとDB(WIP)
+    - とりあえずmemo, memo-tag, tagの三つからなるテーブルを作成してみる？
+    - 一旦、memoはseedの情報を全て入れる
+    - タグ付けでネットワークのようなデータ構造を作成できないだろうか
+#### タグ名候補
+    - CLI, bash, git, bulk, setting, TUI, editor, shell, AI, Application, Package Manager
+- tag CLI案
+```bash
+CREATE
+memo tag add <tag>
+=> 新しくタグを追加する
+memo tag add <memo> <tag>
+=> メモにタグを追加する
+
+READ
+memo tag list <tag>
+=> そのタグが付けられたメモの一覧を返す
+
+DELETE
+memo tag delete <memo> <tag>
+=> メモからタグを削除する
+memo tag delete <tag>
+=> タグを削除する
+    - タグ付けされたファイルがない場合
+```
+
 ### DBと集計情報
-- DBと連携させて集計情報を取得してみる
-memo の一覧を集めたファイルや、memo を参照した日付などの情報を入れておく場所として使う
-memo <word>を実行した回数などを計測する？
-集計のためにmemo lsみたいなコマンドを作成するかも
-その他、タグ付けなどで便利そう
-DBでtagとfileの関連を持たせて、JSONか何かでtagとfileの関連を作成して、それをmemoが読み込むようにする、など
-    1 tag: CLI, bash, git, bulk, setting, TUI, editor, shell, AI, Application, Package Manager
-    2 title: そのファイルの名前を使用する
-
-## Rdocかyard、または型検査の導入
-
+- 取得したい集計情報
+    - メモの参照回数
+        - (できれば)メモのどこを参照したか、など
+        - Markdownのコードブロックの中を見て、コマンドとそのコマンドのコメント行を抜き出せないだろうか
+    - メモの作成日・最終更新日時・最終アクセス日時
+- 集計のためにmemo statみたいなコマンドを作成するかも
+    - ファイル数や行数、コマンドの例の数を拾ってくるようなもの
+- rubocopのメトリクスを測る機能を使いたい
+    - `.rubocop.metrics.yaml`のようなものが欲しい
 
 ## 後で対応
-## 修正事項
+## リファクタリング・修正事項
+
+# テスト系
 ## Rakefileとe2eテスト
-Rakefileで各種コマンドを発行させてe2eテストを作成したい
+- Rakefileで各種コマンドを発行させてe2eテストを作成したい
 
-## プライベートgem
-- gemにするならプライベートにする
-
-## 分岐対応
-- README.md除外対応
-- トップディレクトリ -> 対象のディレクトリの末尾
-    -テストコードで明確にしたい
+## 型検査・型のテスト
+- Rdocかyard、または型検査の導入
 
 ## テスト拡張
 - coverageを取得する
+
+## Repository#load対応
+## 分岐対応
+    - README.md除外対応
+    - トップディレクトリ -> 対象のディレクトリの末尾
+    - Repositoryのseedsをプライベートにする
+        -テストコードで明確にしたい
+            - load独自のモックデータを作成する
+
+## モックデータの変数を`@test_`にしたい
+
+# その他
+## プライベートgem
+- gemにするならプライベートにする
 
 ## CLIの拡張
 - サブコマンドだけでなくオプションも使えるようにする
     - `memo -r grep`など
 
-## Modelにto_viewと追加 => Mapperに適用
-## モックデータの変数を`@test_`にしたい
-## Repositoryのseedsをプライベートにする
-
+# パス名・環境変数系
 ## リネーム・構造変更
 1. Memo::Env -> Memo::Configにする？
 2. メソッドは今のままでOK
+3. パス名・環境変数に対応するためにdotenvの導入
+    - dotenvよりmemo_path.rbとmemo_path.sample.rbのようなものを作成して、memo_path.rbはgitで管理しない、の方が良さそう
+    - config/memo_path.rbとmemo_path.sample.rbを作成して、lib/env.rb(config.rb)からmemo_path.rbを読み取るのが良さそう
+    - memo initでmemo_path.sample.rbをコピーして、引数で指定されたフォルダ名を書き込む
 
-## パス名・環境変数に対応するためにdotenvの導入
-- 本番環境の場合はdotenvで設定するよりはCLIでmemo initのようなもので設定するのが正しい
-- 使うのが自分だけなので、本番環境も含めてdotenvでパスや環境変数を設定する
-
-# ファイル名重複問題
+## ファイル名重複問題
+    - 二つ程度の重複なら、二つとも表示した方が早い
+    - 三つ以上になると、選択したい
 1. memo readとmemo dirsでファイル名が重複している場合の改修
 2. memo readはどちらを見るかを選択する方針にするか、単純に二つのファイルを表示するか
 3. memo dirsは、まずdirsの末尾だけで検索できるようにしたいのだが、そうすると名前が重複しそう
@@ -58,3 +92,6 @@ Rakefileで各種コマンドを発行させてe2eテストを作成したい
 
 # CLIの自動補完 <= zshを使う？
 - どうやるんだろう。zsh限定でいい
+
+# 異なる環境用のlinux containerを作成
+    - dotfiles, memorandomの環境構築も行いたい
