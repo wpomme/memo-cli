@@ -12,7 +12,7 @@ class TestConfig < Minitest::Test
         ENV.delete('MEMO_CLI_RUNTIME_ENV')
 
         assert_raises(KeyError) do
-          Memo::Config.memo_dir(@memo_dir)
+          Memo::Config.memo_dir(@test_memo_dir)
         end
       end
 
@@ -20,8 +20,8 @@ class TestConfig < Minitest::Test
         skip "TODO"
         ENV['MEMO_CLI_RUNTIME_ENV'] = 'test'
 
-        expected = @memo_dir
-        actual = Memo::Config.memo_dir(@memo_dir)
+        expected = @test_memo_dir
+        actual = Memo::Config.memo_dir(@test_memo_dir)
 
         _(expected).must_equal(actual)
       end

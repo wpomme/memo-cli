@@ -17,7 +17,7 @@ module MemoTestRuntimeEnvHooks
     @original_runtime_env = ENV.fetch('MEMO_CLI_RUNTIME_ENV', nil)
 
     @tmpdir = Dir.mktmpdir
-    @memo_dir = File.join(@tmpdir, "memo")
+    @test_memo_dir = File.join(@tmpdir, "memo")
 
     @original_dir = Dir.pwd
     Dir.chdir(@tmpdir)
@@ -46,17 +46,17 @@ module MemoTestLifecycleHooks
     end
 
     @tmpdir = Dir.mktmpdir
-    @memo_dir = Memo::Env.memo_dir(File.join(@tmpdir, "memo").freeze)
+    @test_memo_dir = Memo::Env.memo_dir(File.join(@tmpdir, "memo").freeze)
 
     Memo::MockSeed::TEST_MEMO_DATA_SEED.each do |elem|
-      dir_for_file = File.join(@memo_dir, elem[:dir])
+      dir_for_file = File.join(@test_memo_dir, elem[:dir])
       FileUtils.mkdir_p(dir_for_file) unless FileTest.directory?(dir_for_file)
 
-      File.write(File.join(@memo_dir, elem[:dir], "#{elem[:filename]}.md"), elem[:content])
+      File.write(File.join(@test_memo_dir, elem[:dir], "#{elem[:filename]}.md"), elem[:content])
     end
 
-    @repo = Memo::Repository.new(@memo_dir)
-    @test_seeds = @repo.seeds
+    @test_repo = Memo::Repository.new(@test_memo_dir)
+    @test_seeds = @test_repo.seeds
 
     @original_dir = Dir.pwd
     Dir.chdir(@tmpdir)

@@ -11,10 +11,10 @@ class TestCommand < Minitest::Test
       describe 'args: dirs' do
         it "['dirs']を受け取ったときは、memo_dirの中のディレクトリの一覧を標準出力に表示する" do
           out, = capture_io do
-            Memo::Command.new(@repo).execute(['dirs'])
+            Memo::Command.new(@test_repo).execute(['dirs'])
           end
 
-          expected = Memo::Mapper.new(@repo).colored_dirs.to_set
+          expected = Memo::Mapper.new(@test_repo).colored_dirs.to_set
           assert_equal out.split("\n").to_set, expected
         end
       end
@@ -22,7 +22,7 @@ class TestCommand < Minitest::Test
       describe 'args: list' do
         it "['list']を受け取ったときは、memo_dirの中のディレクトリとその中にあるメモファイルを全て表示する" do
           out, = capture_io do
-            Memo::Command.new(@repo).execute(['list'])
+            Memo::Command.new(@test_repo).execute(['list'])
           end
 
           file_test_to_view = grouped_file_list(@test_seeds)
@@ -46,7 +46,7 @@ class TestCommand < Minitest::Test
           valid_dir = 'cli'
 
           out, = capture_io do
-            Memo::Command.new(@repo).execute(['list', valid_dir])
+            Memo::Command.new(@test_repo).execute(['list', valid_dir])
           end
 
           grouped_file_list_by_dir = @test_seeds.group_by(&:dir).filter_map do |dir, seed|
@@ -75,7 +75,7 @@ class TestCommand < Minitest::Test
       describe 'args: read' do
         it "['read', 'push']を受け取ったときは、push.mdを全文表示する" do
           out, = capture_io do
-            Memo::Command.new(@repo).execute(%w[read push])
+            Memo::Command.new(@test_repo).execute(%w[read push])
           end
 
           assert_equal Memo::MockSeed::TEST_PUSH_FILE_CONTENT, out
@@ -86,7 +86,7 @@ class TestCommand < Minitest::Test
 
           out, = capture_io do
             exception = assert_raises(SystemExit) do
-              Memo::Command.new(@repo).execute(%w[read invalid_memo])
+              Memo::Command.new(@test_repo).execute(%w[read invalid_memo])
             end
 
             assert_equal 2, exception.status
@@ -101,7 +101,7 @@ class TestCommand < Minitest::Test
 
           capture_io do
             exception = assert_raises(OptionParser::InvalidArgument) do
-              Memo::Command.new(@repo).execute(['read', word])
+              Memo::Command.new(@test_repo).execute(['read', word])
             end
 
             assert_equal "invalid argument: -r ", exception.message
@@ -114,10 +114,10 @@ class TestCommand < Minitest::Test
           search_word = 'diff'
 
           out, = capture_io do
-            Memo::Command.new(@repo).execute(["search", search_word])
+            Memo::Command.new(@test_repo).execute(["search", search_word])
           end
 
-          actual = Memo::Mapper.new(@repo).search_result_to_view(search_word)
+          actual = Memo::Mapper.new(@test_repo).search_result_to_view(search_word)
             .join("\n") << "\n"
 
           _(out).must_equal(actual)
@@ -127,7 +127,7 @@ class TestCommand < Minitest::Test
           search_word = 'hikkakaranasounakotoba'
 
           out, = capture_io do
-            Memo::Command.new(@repo).execute(["search", search_word])
+            Memo::Command.new(@test_repo).execute(["search", search_word])
           end
 
           assert_equal out, "#{search_word}で全ファイル検索しましたが、そのような文字列は見当たりませんでした。\n"
@@ -138,7 +138,7 @@ class TestCommand < Minitest::Test
 
           capture_io do
             exception = assert_raises(OptionParser::InvalidArgument) do
-              Memo::Command.new(@repo).execute(['search', word])
+              Memo::Command.new(@test_repo).execute(['search', word])
             end
 
             assert_equal "invalid argument: -s ", exception.message

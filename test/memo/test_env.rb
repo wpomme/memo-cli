@@ -11,15 +11,15 @@ class TestEnv < Minitest::Test
         ENV.delete('MEMO_CLI_RUNTIME_ENV')
 
         assert_raises(KeyError) do
-          Memo::Env.memo_dir(@memo_dir)
+          Memo::Env.memo_dir(@test_memo_dir)
         end
       end
 
       it 'テスト環境のときに、memo_dirにテスト用のmemo_dirを渡すと、tmpで作成されたディレクトリになる' do
         ENV['MEMO_CLI_RUNTIME_ENV'] = 'test'
 
-        expected = @memo_dir
-        actual = Memo::Env.memo_dir(@memo_dir)
+        expected = @test_memo_dir
+        actual = Memo::Env.memo_dir(@test_memo_dir)
 
         _(expected).must_equal(actual)
       end

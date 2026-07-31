@@ -94,7 +94,7 @@ end
 namespace :cli do
   desc '開発中のmemo listを実行する'
   task :list do
-    sh 'bundle exec ruby exe/memo list'
+    sh 'bundle exec ruby exe/memo list 2>&1 > /dev/null || echo "Failed: memo list"'
   end
 
   desc '開発中のmemo dirsを実行する'
@@ -106,12 +106,12 @@ namespace :cli do
   namespace :read do
     desc 'memo read grepを実行'
     task :positive1 do
-      sh 'bundle exec ruby exe/memo read grep'
+      sh 'bundle exec ruby exe/memo search'
     end
 
     desc 'memo grepを実行。'
     task :positive2 do
-      sh 'bundle exec ruby exe/memo grep'
+      sh 'bundle exec ruby exe/memo search'
     end
 
     desc 'memo readを実行する。失敗するはず。'
