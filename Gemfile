@@ -5,13 +5,17 @@ source "https://rubygems.org"
 # Specify your gem's dependencies in memo.gemspec
 gemspec
 
-gem "irb"
-gem "rake", "~> 13.0"
+group :production do
+  gem "rainbow", "~>3.1.1"
+end
 
-gem "minitest", "~> 6.0.6"
+group :development do
+  gem "irb"
+  gem "rake", "~> 13.0"
 
-gem "rainbow", "~>3.1.1"
-gem "rubocop", "~> 1.21"
+  gem "minitest", "~> 6.0.6"
+  gem "rubocop", "~> 1.21"
 
-gem "neovim", "~> 0.10.0"
-gem "yard", "~> 0.9.45"
+  gem "neovim", "~> 0.10.0"
+  gem "yard", "~> 0.9.45"
+end

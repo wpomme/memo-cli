@@ -74,14 +74,18 @@ memo tag delete <tag>
 ## CLIの拡張
 - サブコマンドだけでなくオプションも使えるようにする
     - `memo -r grep`など
+- ** `memo list <dirs> | fzf | xargs -I{} memo read {}`で選択したメモを読むことができる
+    - 例: `memo list cli | fzf | xargs -I{} memo read {}`
+    - ** `memo list | fzf | xargs -I{} memo read {}`でも可能
+        - `memo list`について、pipeやファイルに出力するとカラーコードが落ちてしまう
+            - `Rainbow.enabled`の設定変更が必要？ -> パス名・環境変数系へ
 
 # パス名・環境変数系
-## リネーム・構造変更
-1. Memo::Env -> Memo::Configにする？
+    - WIP: 作成中
+1. Rainbow.enabledをdisabledにしたい
+    - https://github.com/ku1ik/rainbow#configuration
 2. メソッドは今のままでOK
 3. パス名・環境変数に対応するためにdotenvの導入
-    - dotenvよりmemo_path.rbとmemo_path.sample.rbのようなものを作成して、memo_path.rbはgitで管理しない、の方が良さそう
-    - config/memo_path.rbとmemo_path.sample.rbを作成して、lib/env.rb(config.rb)からmemo_path.rbを読み取るのが良さそう
     - memo initでmemo_path.sample.rbをコピーして、引数で指定されたフォルダ名を書き込む
 
 ## ファイル名重複問題
