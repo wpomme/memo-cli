@@ -8,7 +8,8 @@
         - seedsに直接触れるようなメソッドはRepositoryに持たせる
 4. Model
     - Repositoryに依存しないメソッドと値オブジェクト
-        - メソッドはseedを引数に取るものがあり、実質的にRepositoryに依存しているような...
+        - Seed, GroupedFileList, SearchLine
+        - seedsを引数に取るものはRepositoryに移動させる
     - 取得するデータの構造を決定する
     - 取得したデータを加工する
 5. Mapper

@@ -11,6 +11,7 @@ require_relative "memo/repository"
 require_relative "memo/mapper"
 require_relative "memo/view"
 require_relative "memo/command"
+require_relative "memo/service"
 
 # memoディレクトリのトップモジュール
 #

@@ -62,7 +62,10 @@ memo tag delete <tag>
         -テストコードで明確にしたい
             - load独自のモックデータを作成する
 
-## モックデータの変数を`@test_`にしたい
+## モックデータ
+    - モックデータの変数を`@test_`にしたい
+    - @fixed_mock_file = 'diff'が欲しい
+        - 別のsetup, teardownを作成するべきだろうか
 
 # その他
 ## プライベートgem
