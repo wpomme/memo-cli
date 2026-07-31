@@ -10,8 +10,9 @@ group :production do
 end
 
 group :development do
-  gem "irb"
+  gem "irb", "~> 1.18.0"
   gem "rake", "~> 13.0"
+  gem "rbs", "~> 4.1.1"
 
   gem "minitest", "~> 6.0.6"
   gem "rubocop", "~> 1.21"
