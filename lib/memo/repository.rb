@@ -3,7 +3,8 @@
 module Memo
   class Repository
     include FileUtility
-    include Memo::Model
+    include Model
+    include Service
 
     EXCLUDE_FILES = ['README.md'].to_set.freeze
 
@@ -20,12 +21,9 @@ module Memo
     # @param seed [Memo::Model::Seed]
     # @return [Array<Array<Memo::Model::SearchLine>>, nil]
     def search_all(word)
-      ret = @seeds.filter_map do |seed|
+      @seeds.filter_map do |seed|
         search(seed, word)
       end
-      return nil if ret.empty?
-
-      ret
     end
 
     # seedが存在すれば、そのファイルを全文表示する。

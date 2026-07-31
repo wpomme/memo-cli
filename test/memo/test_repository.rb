@@ -95,39 +95,47 @@ class TestRepository < Minitest::Test
     end
 
     describe '#search_all' do
-      it "検索結果は二重配列で要素はMemo::Model::SearchLineである" do
-        search_word = 'diff'
-        result = @repo.search_all(search_word)
+      describe '戻り値の型検査' do
+        it "検索結果は二重配列で要素はMemo::Model::SearchLineである" do
+          search_word = 'diff'
+          result = @repo.search_all(search_word)
 
-        expected = result.all? do |memo|
-          memo.all?(Memo::Model::SearchLine)
-        end
-        _(expected).must_equal(true)
-      end
+          expected = result.all? do |memo|
+            memo.all?(Memo::Model::SearchLine)
+          end
 
-      it "モックデータから作成した検索結果と要素が同じである" do
-        search_word = 'diff'
-        expected = @repo.search_all(search_word)
-
-        actual = Memo::MockSeed::TEST_MEMO_DATA_SEED.filter_map do |seed|
-          rel_path = File.join(seed[:dir], "#{seed[:filename]}.md")
-          ret = seed[:content]
-            .split("\n")
-            .each_with_index
-            .filter_map do |line, index|
-              Memo::Model::SearchLine.new(path: rel_path, line_number: index + 1, line: line) if line.include?(search_word)
-            end
-          ret unless ret.empty?
+          _(expected).must_equal(true)
         end
 
-        _(expected.to_set).must_equal(actual.to_set)
+        it "検索結果が空の場合は、空の二重配列を返す" do
+          search_word = 'hikkakaranasounakotoba'
+          result = @repo.search_all(search_word)
+
+          expected = result.all? do |memo|
+            memo.all?(&:empty?)
+          end
+
+          _(expected).must_equal(true)
+        end
       end
 
-      it "検索してもヒットしなかった場合はnilを返す" do
-        search_word = 'hikkakaranasounakotoba'
-        expected = @repo.search_all(search_word)
+      describe '戻り値の値検査' do
+        it "モックデータから作成した検索結果と要素が同じである" do
+          search_word = 'diff'
+          expected = @repo.search_all(search_word)
 
-        assert_nil expected
+          actual = Memo::MockSeed::TEST_MEMO_DATA_SEED.filter_map do |seed|
+            rel_path = File.join(seed[:dir], "#{seed[:filename]}.md")
+            seed[:content]
+              .split("\n")
+              .each_with_index
+              .filter_map do |line, index|
+                Memo::Model::SearchLine.new(path: rel_path, line_number: index + 1, line: line) if line.include?(search_word)
+              end
+          end
+
+          _(expected.to_set).must_equal(actual.to_set)
+        end
       end
     end
   end

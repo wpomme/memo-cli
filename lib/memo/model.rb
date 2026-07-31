@@ -56,18 +56,18 @@ module Memo
     # ヒットしなかった場合は、nilを返す
     # @params seed [Seed]
     # @return [Array<SearchLine>, nil]
-    def search(seed, word)
-      # TODO: Pathname.relative_path_fromを使って相対パスにする
-      # readlinesの前にあらかじめ相対パスを作成しておく
-      ret = File.readlines(seed.full_path, chomp: true)
-        .each_with_index
-        .filter_map do |line, index|
-          # index + 1が本当の行数
-          SearchLine.new(path: seed.rel_path, line_number: index + 1, line: line) if line.include?(word)
-        end
-      return nil if ret.empty?
-
-      ret
-    end
+    # def search(seed, word)
+    #   # TODO: Pathname.relative_path_fromを使って相対パスにする
+    #   # readlinesの前にあらかじめ相対パスを作成しておく
+    #   ret = File.readlines(seed.full_path, chomp: true)
+    #     .each_with_index
+    #     .filter_map do |line, index|
+    #       # index + 1が本当の行数
+    #       SearchLine.new(path: seed.rel_path, line_number: index + 1, line: line) if line.include?(word)
+    #     end
+    #   return nil if ret.empty?
+    #
+    #   ret
+    # end
   end
 end

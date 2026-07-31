@@ -6,6 +6,8 @@ module Memo
   class Mapper
     include Memo::Model
 
+    NOT_FOUND_MESSAGE = "wordで全ファイル検索しましたが、そのような文字列は見当たりませんでした。"
+
     def initialize(repo)
       @repo = repo
     end
@@ -13,13 +15,10 @@ module Memo
     # 検索でヒットした文字列に色をつける
     #
     # @param word [string]
-    # @return [Array<string>, String]
+    # @return [Array<String>, String]
     def search_result_to_view(word)
-      # TODO: ユーザーメッセージを集約化する
-      not_found_message = "#{word}で全ファイル検索しましたが、そのような文字列は見当たりませんでした。"
-
       search_result = @repo.search_all(word)
-      return not_found_message if search_result.nil?
+      return NOT_FOUND_MESSAGE.sub('word', word) if search_result.all?(&:empty?)
 
       search_result.flatten.map do |line|
         line.to_view(word)

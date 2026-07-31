@@ -45,25 +45,46 @@ class TestMapper < Minitest::Test
     end
 
     describe '#search_result_to_view' do
-      it '検索でヒットした文字列に色を付けて一次元配列の文字列を返す' do
-        search_word = 'diff'
-        expected = Memo::Mapper.new(@repo).search_result_to_view(search_word)
+      describe '戻り値の型検査' do
+        it '色付きの検索結果が含まれている文字列の一次元配列を返す' do
+          search_word = 'diff'
+          result = Memo::Mapper.new(@repo).search_result_to_view(search_word)
 
-        actual = @repo.search_all(search_word).flatten.map do |line|
-          line.to_view(search_word)
+          expected = result.all? do |memo|
+            memo.instance_of?(String)
+            memo.include?(Rainbow(search_word).red)
+          end
+
+          _(expected).must_equal(true)
         end
 
-        _(expected).must_be_instance_of(Array)
-        _(expected.first).must_be_instance_of(String)
-        _(expected).must_equal(actual)
+        it '検索結果がなかった場合は、文字列を返す' do
+          search_word = 'hikkakaranasounakotoba'
+          expected = Memo::Mapper.new(@repo).search_result_to_view(search_word)
+
+          _(expected).must_be_instance_of(String)
+        end
       end
 
-      it '検索でヒットしなかった場合は、その旨を知らせる文字列を返す' do
-        search_word = 'hikkakaranasounakotoba'
-        expected = Memo::Mapper.new(@repo).search_result_to_view(search_word)
+      describe '戻り値の値検査' do
+        it '検索でヒットした文字列に色を付けて値を返す' do
+          search_word = 'diff'
+          expected = Memo::Mapper.new(@repo).search_result_to_view(search_word)
 
-        # TODO: とりあえず文字列を返すことだけを確認する
-        assert expected.is_a?(String)
+          actual = @repo.search_all(search_word).flatten.map do |line|
+            line.to_view(search_word)
+          end
+
+          _(expected).must_equal(actual)
+        end
+
+        it '検索結果がなかった場合は、その旨を知らせる文字列を返す' do
+          search_word = 'hikkakaranasounakotoba'
+          expected = Memo::Mapper.new(@repo).search_result_to_view(search_word)
+          actual = Memo::Mapper::NOT_FOUND_MESSAGE.sub('word', search_word)
+
+          _(expected).must_equal(actual)
+        end
       end
     end
   end

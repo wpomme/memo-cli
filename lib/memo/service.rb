@@ -11,7 +11,7 @@ module Memo
     # @params seed [Seed]
     # @params word [String]
     # @return [Array<SearchLine>, Array]
-    def self.search(seed, word)
+    def search(seed, word)
       File.readlines(seed.full_path, chomp: true)
         .each_with_index
         .filter_map do |line, index|
