@@ -4,39 +4,36 @@ require_relative "../helper"
 
 class TestConfig < Minitest::Test
   describe 'Config' do
-    # include MemoTestRuntimeConfigHooks
+    describe '#load' do
+      it '設定ファイルが見つからない場合は、例外を送出して終了する' do
+        _ do
+          does_not_exist_config_path = File.expand_path("../../config/does_not_exist_config.yml", __dir__)
+
+          load_method = Memo::Config.method(:load)
+          load_method.call(does_not_exist_config_path)
+        end.must_raise(Errno::ENOENT)
+      end
+    end
 
     describe '#memo_dir' do
-      it 'MEMO_CLI_RUNTIME_ENVの値が未設定の場合は、例外を送出する' do
-        skip "TODO"
-        ENV.delete('MEMO_CLI_RUNTIME_ENV')
+      def setup
+        @original_runtime_env = ENV.fetch('MEMO_CLI_RUNTIME_ENV', nil)
+      end
 
-        assert_raises(KeyError) do
-          Memo::Config.memo_dir(@test_memo_dir)
+      def teardown
+        if @original_runtime_env.nil?
+          ENV.delete('MEMO_CLI_RUNTIME_ENV')
+        else
+          ENV['MEMO_CLI_RUNTIME_ENV'] = @original_runtime_env
         end
       end
 
-      it 'テスト環境のときに、memo_dirにテスト用のmemo_dirを渡すと、tmpで作成されたディレクトリになる' do
-        skip "TODO"
-        ENV['MEMO_CLI_RUNTIME_ENV'] = 'test'
-
-        expected = @test_memo_dir
-        actual = Memo::Config.memo_dir(@test_memo_dir)
-
-        _(expected).must_equal(actual)
-      end
-
-      it 'テスト環境以外の場合は、Memo::Config::MEMO_DIRとホームディレクトリを結合したディレクトリとなる' do
-        skip "TODO"
+      it '#memo_dirがディレクトリであること' do
         ENV['MEMO_CLI_RUNTIME_ENV'] = 'exe'
 
-        config_path = File.expand_path("../../config/config.yml", __dir__)
-        config = YAML.load_file(config_path)
+        test_memo_dir = Memo::Config.memo_dir
 
-        expected = File.join(Dir.home, config[memo_dir])
-        actual = Memo::Config.memo_dir
-
-        _(actual).must_equal(expected)
+        _(FileTest.directory?(test_memo_dir)).must_equal(true)
       end
     end
   end

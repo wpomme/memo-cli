@@ -46,7 +46,7 @@ module MemoTestLifecycleHooks
     end
 
     @tmpdir = Dir.mktmpdir
-    @test_memo_dir = Memo::Env.memo_dir(File.join(@tmpdir, "memo").freeze)
+    @test_memo_dir = File.join(Dir.home, File.join(@tmpdir, "memo"))
 
     Memo::MockSeed::TEST_MEMO_DATA_SEED.each do |elem|
       dir_for_file = File.join(@test_memo_dir, elem[:dir])

@@ -15,10 +15,6 @@ class TestRepository < Minitest::Test
         assert memo_dir_set.subset?(memo_file_set)
       end
 
-      it 'テスト環境の以外のとき、memo_dirはMemo::Env::MEMO_DIRとなる' do
-        skip "TODO"
-      end
-
       it '@seedsの配列の要素はMemo::Model::Seedである' do
         seeds = @test_repo.instance_variable_get(:@seeds)
         expected = seeds.all?(Memo::Model::Seed)

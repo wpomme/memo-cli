@@ -6,6 +6,9 @@
 
 ### tag CLIとDB(WIP)
     - とりあえずmemo, memo-tag, tagの三つからなるテーブルを作成してみる？
+        - 相対パスを主キーにする
+    - それかyamlでtagを再現してみる
+        - yamlを手で更新できるならgit tag addは不要になる
     - 一旦、memoはseedの情報を全て入れる
     - タグ付けでネットワークのようなデータ構造を作成できないだろうか
 #### タグ名候補
@@ -63,7 +66,6 @@ memo tag delete <tag>
             - load独自のモックデータを作成する
 
 ## モックデータ
-    - モックデータの変数を`@test_`にしたい
     - @fixed_mock_file = 'diff'が欲しい
         - 別のsetup, teardownを作成するべきだろうか
 
