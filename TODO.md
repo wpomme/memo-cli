@@ -57,13 +57,8 @@ memo tag delete <tag>
 ## テスト拡張
 - coverageを取得する
 
-## Repository#load対応
-## 分岐対応
-    - README.md除外対応
-    - トップディレクトリ -> 対象のディレクトリの末尾
+## Repository#load
     - Repositoryのseedsをプライベートにする
-        -テストコードで明確にしたい
-            - load独自のモックデータを作成する
 
 ## モックデータ
     - @fixed_mock_file = 'diff'が欲しい
@@ -83,12 +78,8 @@ memo tag delete <tag>
             - `Rainbow.enabled`の設定変更が必要？ -> パス名・環境変数系へ
 
 # パス名・環境変数系
-    - WIP: 作成中
 1. Rainbow.enabledをdisabledにしたい
     - https://github.com/ku1ik/rainbow#configuration
-2. メソッドは今のままでOK
-3. パス名・環境変数に対応するためにdotenvの導入
-    - memo initでmemo_path.sample.rbをコピーして、引数で指定されたフォルダ名を書き込む
 
 ## ファイル名重複問題
     - 二つ程度の重複なら、二つとも表示した方が早い

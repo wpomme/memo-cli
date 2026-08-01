@@ -22,6 +22,7 @@ class TestRepository < Minitest::Test
         _(expected).must_equal(true)
       end
 
+      # TODO: モックデータにREADME.md用のデータを作成する
       it '@seeds.full_pathはREADME(.md)を含まない' do
         seeds = @test_repo.instance_variable_get(:@seeds)
         full_path = seeds.map(&:full_path)
@@ -37,6 +38,10 @@ class TestRepository < Minitest::Test
         full_paths.each do |full_path|
           assert File.absolute_path?(full_path)
         end
+      end
+
+      it '対象ディレクトリの最上位にあるメモのdirは、そのメモが保存されているディレクトリ名になる' do
+        slip "TODO"
       end
     end
 
