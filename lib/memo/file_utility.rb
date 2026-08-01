@@ -2,6 +2,7 @@
 
 module Memo
   # ファイルやディレクトリパスの操作に関するユーティリティモジュール
+  # TODO: Utilityにリネームする
   module FileUtility
     # ファイルパスから、そのファイルのファイル名を返す
     #

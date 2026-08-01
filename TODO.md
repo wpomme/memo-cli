@@ -1,58 +1,39 @@
 ## TODO・IDEA
 ### TODO
-### 情報の集計
-- DBとの連携とは別に、ファイル名の重複などを調べておきたい
-- 最初はirbから調べて、そのうちクラスを作成する
+### DB連携
+- 次の理由でDBと連携したい。sqlite3とSequelを使う
+    - ファイルにタグ付けをする
+        - yamlやFront Matterでtagを再現する案もある
+        - タグ付けでネットワークのようなデータ構造を作成できないだろうか
+        - タグ名の候補
+            - CLI, bash, git, bulk, setting, TUI, editor, shell, AI, Application, Package Manager
+    - 閲覧履歴などの集計を取る
+        - 取得したい集計情報
+            - メモの参照回数
+                - (できれば)メモのどこを参照したか、など
+                - Markdownのコードブロックの中を見て、コマンドとそのコマンドのコメント行を抜き出せないだろうか
+            - メモの作成日・最終更新日時・最終アクセス日時
+        - 集計のためにmemo statみたいなコマンドを作成するかも
+            - ファイル数や行数、コマンドの例の数を拾ってくるようなもの
+        - rubocopのメトリクスを測る機能を使いたい
+            - `.rubocop.metrics.yaml`のようなものが欲しい
+- DBモデル案
+    - Memo: memo_id, rel_path, ...
+        - メモのリネームや削除があるためIDは自動採番のものを使う
 
-### tag CLIとDB(WIP)
-    - とりあえずmemo, memo-tag, tagの三つからなるテーブルを作成してみる？
-        - 相対パスを主キーにする
-    - それかyamlでtagを再現してみる
-        - yamlを手で更新できるならgit tag addは不要になる
-    - 一旦、memoはseedの情報を全て入れる
-    - タグ付けでネットワークのようなデータ構造を作成できないだろうか
-#### タグ名候補
-    - CLI, bash, git, bulk, setting, TUI, editor, shell, AI, Application, Package Manager
-- tag CLI案
-```bash
-CREATE
-memo tag add <tag>
-=> 新しくタグを追加する
-memo tag add <memo> <tag>
-=> メモにタグを追加する
 
-READ
-memo tag list <tag>
-=> そのタグが付けられたメモの一覧を返す
-
-DELETE
-memo tag delete <memo> <tag>
-=> メモからタグを削除する
-memo tag delete <tag>
-=> タグを削除する
-    - タグ付けされたファイルがない場合
-```
-
-### DBと集計情報
-- 取得したい集計情報
-    - メモの参照回数
-        - (できれば)メモのどこを参照したか、など
-        - Markdownのコードブロックの中を見て、コマンドとそのコマンドのコメント行を抜き出せないだろうか
-    - メモの作成日・最終更新日時・最終アクセス日時
-- 集計のためにmemo statみたいなコマンドを作成するかも
-    - ファイル数や行数、コマンドの例の数を拾ってくるようなもの
-- rubocopのメトリクスを測る機能を使いたい
-    - `.rubocop.metrics.yaml`のようなものが欲しい
-
-## 後で対応
-## リファクタリング・修正事項
+### リファクタリング・修正事項
+#### パス名・環境変数系
+1. DBと接続するための設定をMemo::Configに入れる
+2. Rainbow.enabledをdisabledにしたい
+    - https://github.com/ku1ik/rainbow#configuration
 
 # テスト系
 ## Rakefileとe2eテスト
 - Rakefileで各種コマンドを発行させてe2eテストを作成したい
 
 ## 型検査・型のテスト
-- Rdocかyard、または型検査の導入
+- Rdocかyard、型検査の導入
 
 ## テスト拡張
 - coverageを取得する
@@ -73,10 +54,6 @@ memo tag delete <tag>
     - ** `memo list | fzf | xargs -I{} memo read {}`でも可能
         - `memo list`について、pipeやファイルに出力するとカラーコードが落ちてしまう
             - `Rainbow.enabled`の設定変更が必要？ -> パス名・環境変数系へ
-
-# パス名・環境変数系
-1. Rainbow.enabledをdisabledにしたい
-    - https://github.com/ku1ik/rainbow#configuration
 
 ## ファイル名重複問題
     - 二つ程度の重複なら、二つとも表示した方が早い
