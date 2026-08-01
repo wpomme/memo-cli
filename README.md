@@ -47,7 +47,7 @@ bundle install
 bundle exec rake install:local
 
 # mise も使っているのでmise trust も必要
-mise trus
+mise trust
 
 # Result: どこからでもmemo が実行できるはず
 memo list
