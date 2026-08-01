@@ -5,15 +5,12 @@ require_relative "../helper"
 class TestMapper < Minitest::Test
   describe 'Mapper' do
     include MemoTestLifecycleHooks
-    include Memo::Model
 
     describe '#file_list_to_view' do
       it "グループ化されたファイル名の一覧をViewで表示しやすくする" do
         expected = Memo::Mapper.new(@test_repo).file_list_to_view
 
-        grouped_file_list = grouped_file_list(@test_seeds)
-
-        actual = grouped_file_list
+        actual = @test_repo.grouped_file_list
           .map do |struct|
             [Rainbow(struct[:dir]).green] + struct[:filenames]
           end
@@ -25,9 +22,7 @@ class TestMapper < Minitest::Test
         valid_dir = 'cli'
         expected = Memo::Mapper.new(@test_repo).file_list_to_view(valid_dir)
 
-        grouped_file_list = grouped_file_list(@test_seeds)
-
-        actual = grouped_file_list
+        actual = @test_repo.grouped_file_list
           .filter_map do |struct|
             [Rainbow(struct[:dir]).green] + struct[:filenames] if struct[:dir] == valid_dir
           end

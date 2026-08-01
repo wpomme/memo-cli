@@ -48,21 +48,12 @@ class TestView < Minitest::Test
           Memo::View.new(@test_repo).list
         end
 
-        # TODO: RepositoryからViewにまで渡るここら辺の処理をまとめたい
-        grouped_file_list = @test_seeds.group_by(&:dir).map do |dir, seed|
-          Memo::Model::GroupedFileList.new(
-            dir: dir,
-            filenames: seed.map(&:filename).sort
-          )
-        end
-
-        file_test_to_view = grouped_file_list
+        file_test_to_view = @test_repo.grouped_file_list
           .map do |struct|
             [Rainbow(struct[:dir]).green].append(struct[:filenames], "\n")
           end
 
-        # 表示される文字列が同じなら順番は関係がない
-        # 集合にして同じ文字列があればよし
+        # 順番は考慮しない
         actual = file_test_to_view.flatten.to_set
 
         # 改行で配列を作成するが、改行自身は集合に加える必要がある
@@ -80,25 +71,13 @@ class TestView < Minitest::Test
           Memo::View.new(@test_repo).list(valid_dir)
         end
 
-        grouped_file_list = @test_seeds.group_by(&:dir).filter_map do |dir, seed|
-          if dir == valid_dir
-            Memo::Model::GroupedFileList.new(
-              dir: dir,
-              filenames: seed.map(&:filename).sort
-            )
-          end
-        end
+        actual = @test_repo.grouped_file_list.filter_map { |grouped| grouped.to_view(valid_dir) }
+          .flatten.join("\n") << "\n"
 
-        # FIXME: 実装の方で、最後の方に余計な改行が入っているので、修正すること
-        actual = grouped_file_list
-          .map do |struct|
-            [Rainbow(struct[:dir]).green].append(struct[:filenames])
-          end.flatten.join("\n") << "\n"
-
-        _(actual).must_equal(out)
+        _(out).must_equal(actual)
       end
 
-      # TODO: 本当にユーザーメッセージを出すだけで、exit 2とかをしていないので直す
+      # TODO: exit 2としたい
       it "存在しないディレクトリ名を受け取った場合は、その旨を知らせる文字列を返す" do
         invalid_dir = 'invalid_dir'
 

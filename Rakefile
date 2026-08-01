@@ -46,7 +46,7 @@ namespace :mock do
     repo = Memo::Repository.new(dir)
 
     # モックデータ作成のために実データseedsを任意の倍数で絞り込んで取得する
-    seeds = repo.seeds.filter.each_with_index { |_e, i| i.modulo(4).zero? }
+    seeds = repo.instance_variable_get(:@seeds).filter.each_with_index { |_e, i| i.modulo(4).zero? }
     # テストのために固定のseedを作成する
     fixed_mock_file = "diff"
     seeds.push(repo.find(fixed_mock_file)) if repo.seeds.find { |seed| seed.filename == fixed_mock_file }

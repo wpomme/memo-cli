@@ -2,8 +2,6 @@
 
 module Memo
   module Service
-    include Model
-
     # ファイルごとに引数のwordで行ごとに検索する
     #
     # wordが含まれている行の情報をSearchLineの一次元配列として返す
@@ -15,7 +13,7 @@ module Memo
       File.readlines(seed.full_path, chomp: true)
         .each_with_index
         .filter_map do |line, index|
-          SearchLine.new(path: seed.rel_path, line_number: index + 1, line: line) if line.include?(word)
+          Memo::Model::SearchLine.new(path: seed.rel_path, line_number: index + 1, line: line) if line.include?(word)
         end
     end
   end

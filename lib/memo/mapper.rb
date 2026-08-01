@@ -4,8 +4,6 @@ require 'rainbow'
 
 module Memo
   class Mapper
-    include Memo::Model
-
     NOT_FOUND_MESSAGE = "wordで全ファイル検索しましたが、そのような文字列は見当たりませんでした。"
 
     def initialize(repo)
@@ -35,10 +33,10 @@ module Memo
     #
     # @return [Array | String]
     def file_list_to_view(dir = nil)
-      seeds = @repo.seeds
+      grouped_file_list = @repo.grouped_file_list
 
       if dir
-        ret = grouped_file_list(seeds).filter_map { |grouped| grouped.to_view(dir) }
+        ret = grouped_file_list.filter_map { |grouped| grouped.to_view(dir) }
 
         ## dir が存在する場合
         return ret unless ret.empty?
@@ -51,7 +49,7 @@ module Memo
         NOT_DIR
       end
 
-      grouped_file_list(seeds).map(&:to_view)
+      grouped_file_list.map(&:to_view)
     end
   end
 end

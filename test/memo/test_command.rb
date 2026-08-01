@@ -5,7 +5,6 @@ require_relative "../helper"
 class TestCommand < Minitest::Test
   describe 'Command' do
     include MemoTestLifecycleHooks
-    include Memo::Model
 
     describe '#execute' do
       describe 'args: dirs' do
@@ -25,18 +24,12 @@ class TestCommand < Minitest::Test
             Memo::Command.new(@test_repo).execute(['list'])
           end
 
-          file_test_to_view = grouped_file_list(@test_seeds)
-            .map do |struct|
-              [Rainbow(struct[:dir]).green].append(struct[:filenames], "\n")
-            end
+          # 順番は考慮しない
+          actual = @test_repo.grouped_file_list.map(&:to_view)
+            .flatten.to_set
 
-          # 表示される文字列が同じなら順番は関係がない
-          # 集合にして同じ文字列があればよし
-          actual = file_test_to_view.flatten.to_set
-
-          # 改行で配列を作成するが、改行自身は集合に加える必要がある
-          expected = out.split("\n").to_set.add("\n")
-          # ユーザーに表示される票は空行が入っているので、それを取り除く
+          expected = out.split("\n").to_set
+          # 空行を取り除く
           expected.delete("")
 
           _(expected).must_equal(actual)
@@ -49,22 +42,10 @@ class TestCommand < Minitest::Test
             Memo::Command.new(@test_repo).execute(['list', valid_dir])
           end
 
-          grouped_file_list_by_dir = @test_seeds.group_by(&:dir).filter_map do |dir, seed|
-            if dir == valid_dir
-              Memo::Model::GroupedFileList.new(
-                dir: dir,
-                filenames: seed.map(&:filename).sort
-              )
-            end
-          end
+          actual = @test_repo.grouped_file_list.filter_map { |grouped| grouped.to_view(valid_dir) }
+            .flatten.join("\n") << "\n"
 
-          # FIXME: 実装の方で、最後の方に余計な改行が入っているので、修正すること
-          actual = grouped_file_list_by_dir
-            .map do |struct|
-              [Rainbow(struct[:dir]).green].append(struct[:filenames])
-            end.flatten.join("\n") << "\n"
-
-          _(actual).must_equal(out)
+          _(out).must_equal(actual)
         end
 
         it "['list', 'invalid_dir']の場合、ユーザーメッセージ" do
@@ -95,7 +76,6 @@ class TestCommand < Minitest::Test
           assert_equal "#{word} というメモは見つかりませんでした。\n", out
         end
 
-        # Memo::Command以下のParserの動作みたい
         it "['read', nil]を受け取ったときは、例外を送出する" do
           word = nil
 

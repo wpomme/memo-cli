@@ -57,9 +57,6 @@ memo tag delete <tag>
 ## テスト拡張
 - coverageを取得する
 
-## Repository#load
-    - Repositoryのseedsをプライベートにする
-
 ## モックデータ
     - @fixed_mock_file = 'diff'が欲しい
         - 別のsetup, teardownを作成するべきだろうか

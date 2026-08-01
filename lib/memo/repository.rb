@@ -3,7 +3,6 @@
 module Memo
   class Repository
     include FileUtility
-    include Model
     include Service
 
     EXCLUDE_FILES = ['README.md'].to_set.freeze
@@ -11,9 +10,6 @@ module Memo
     def initialize(dir)
       @seeds = load(dir)
     end
-
-    # モックデータ作成のため@seedsを読み取り可能にしておく
-    attr_reader :seeds
 
     # 対象の全てのファイルに文字列検索を行う
     # 検索した文字列がどのファイルにも見当たらなかった場合はnilを返す
@@ -26,8 +22,19 @@ module Memo
       end
     end
 
+    # Seeds -> GroupedFileListに変換する関数
+    # @return [Array<Memo::Model::GroupedFileList>]
+    def grouped_file_list
+      @seeds.group_by(&:dir).map do |dir, seed|
+        Memo::Model::GroupedFileList.new(
+          dir: dir,
+          filenames: seed.map(&:filename)
+        )
+      end
+    end
+
     # seedが存在すれば、そのファイルを全文表示する。
-    # Modelに移動してもいいかも
+    # TODO: Serviceに移動する
     # nilを受け取った場合は、そのままviewにnilを返す
     # @param [Seed, void]
     # @return [<Array<String>>] 読み取ったメモが行ごとに保存されていて、さらに配列で包まれている。仕様上、複数のファイルを読み取る場合があるため。

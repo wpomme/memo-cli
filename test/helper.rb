@@ -28,7 +28,7 @@ module MemoTestLifecycleHooks
     end
 
     @test_repo = Memo::Repository.new(@test_memo_dir)
-    @test_seeds = @test_repo.seeds
+    @test_seeds = @test_repo.instance_variable_get(:@seeds)
 
     @original_dir = Dir.pwd
     Dir.chdir(@tmpdir)

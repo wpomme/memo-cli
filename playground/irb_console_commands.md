@@ -2,21 +2,19 @@
 - 準備
 ```bash
 ## ログイン
-## 環境変数を設定していないとアプリが中断してしまう
 rake colsole
 ```
 
-## irbコンソールの中
-```irb
-# メモフォルダへの絶対パスを返す
+## rake consoleで必要なデータを作成する
+```ruby
+# メモフォルダへの絶対パスを取得する
 dir = Memo::Config.memo_dir
 
-# Repositoryのオブジェクトも作成しておく
+# Repositoryのオブジェクトを作成する
 repo = Memo::Repository.new(dir)
 
-# モックデータ取得のためにattr_reader :seedsとしてある
-# モックデータ作成のためにseedsを取得する
-seeds = repo.seeds
+# Repository.seedsも取得しておく
+seeds = repo.instance_variable_get(:@seeds)
 ```
 
 ## Rainbowで文字に色付け
