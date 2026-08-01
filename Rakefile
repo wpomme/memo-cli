@@ -3,15 +3,13 @@
 require "bundler/gem_tasks"
 require "minitest/test_task"
 
-Minitest::TestTask.create :test do |_t|
-  ENV['MEMO_CLI_RUNTIME_ENV'] = 'test'
-end
+Minitest::TestTask.create :test
 
 task default: :test
 
-desc '環境変数付きでirbにログインする'
+desc 'irbにログインする'
 task :console do
-  sh "MEMO_CLI_RUNTIME_ENV='console' bundle exec console"
+  sh "bundle exec console"
 end
 
 namespace :test do
@@ -19,7 +17,7 @@ namespace :test do
   task :file do
     Dir.glob("test/**/test_*.rb").each do |path|
       puts "TEST: #{path}"
-      sh "MEMO_CLI_RUNTIME_ENV='test' bundle exec ruby -Itest #{path}"
+      sh "bundle exec ruby -Itest #{path}"
     end
   end
 end
@@ -42,7 +40,7 @@ namespace :mock do
   desc '元データからモックデータを作成する'
   task :make do
     # メモフォルダへの絶対パスを返す
-    dir = Memo::Env.memo_dir
+    dir = Memo::Config.memo_dir
 
     # Repositoryのオブジェクトを作成する
     repo = Memo::Repository.new(dir)

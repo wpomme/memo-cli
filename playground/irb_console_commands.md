@@ -9,7 +9,7 @@ rake colsole
 ## irbコンソールの中
 ```irb
 # メモフォルダへの絶対パスを返す
-dir = Memo::Env.memo_dir
+dir = Memo::Config.memo_dir
 
 # Repositoryのオブジェクトも作成しておく
 repo = Memo::Repository.new(dir)

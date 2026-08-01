@@ -1,6 +1,5 @@
 # frozen_string_literal: true
 
-require_relative "memo/env"
 require_relative "memo/config"
 require_relative "memo/version"
 require_relative "memo/file_utility"
