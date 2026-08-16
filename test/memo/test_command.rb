@@ -73,7 +73,7 @@ class TestCommand < Minitest::Test
             assert_equal 2, exception.status
           end
 
-          assert_equal "#{word} というメモは見つかりませんでした。\n", out
+          _(out).must_equal(Memo::View::NOT_FOUND_MESSAGE.sub("word", word) << "\n")
         end
 
         it "['read', nil]を受け取ったときは、例外を送出する" do

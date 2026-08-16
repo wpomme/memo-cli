@@ -23,16 +23,13 @@ module Memo
     # @params title [String]
     # @params choices [Hash]
     def select_prompt(title:, choices:)
-      prompt_hash = {}
-      choices.each_key.with_index do |key, index|
-        prompt_hash[index + 1] = key
-      end
+      choice_keys = choices.keys
 
-      print_prompt(title: title, prompt_hash: prompt_hash)
+      print_prompt(title: title, choice_keys: choice_keys)
       input = gets.chomp.to_i
 
       if input.between?(1, choices.length)
-        choices[prompt_hash[input]]
+        choices[choice_keys[input - 1]]
       else
         select_prompt(title: title, choices: choices)
       end
@@ -43,11 +40,11 @@ module Memo
     # select_promptから標準出力に表示する文字列を抽出した関数
     #
     # @params title [String]
-    # @params prompt_hash [Hash]
-    def print_prompt(title:, prompt_hash:)
+    # @params choice_keys [Array]
+    def print_prompt(title:, choice_keys:)
       puts title
-      prompt_hash.each_key do |key|
-        puts "[#{key}] #{prompt_hash[key]}"
+      choice_keys.each_with_index do |key, index|
+        puts "[#{index + 1}] #{key}"
       end
     end
   end

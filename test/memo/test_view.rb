@@ -27,11 +27,26 @@ class TestView < Minitest::Test
         assert_equal Memo::MockSeed::TEST_PUSH_FILE_CONTENT, out
       end
 
-      it 'wordが存在するファイルと複数件一致するとき、どのファイルを表示するかのプロンプトを表示する' do
-        skip "TODO"
-        # word = 'mise'
-        # seeds = @test_repo.find(word)
-        # choices = seeds.to_h { |seed| [seed.rel_path, seed.full_path] }
+      it 'wordが存在するファイルと複数件一致するとき、どのファイルを表示するかのプロンプトを表示し、選択したファイルを全文表示する' do
+        word = 'mise'
+        choices = Memo::MockSeed::TEST_MEMO_DATA_SEED.filter_map do |seed|
+          [[seed[:dir], "#{seed[:filename]}.md"].join("/"), seed[:content]] if seed[:filename] == word
+        end.to_h
+
+        $stdin = StringIO.new("2\n")
+        out, = capture_io do
+          Memo::View.new(@test_repo).read(word)
+        end
+
+        title = Memo::View::MULTIPLE_FOUND_MESSAGE.sub("size", choices.size.to_s)
+        choices_out = choices.keys.map.with_index do |key, index|
+          "[#{index + 1}] #{key}"
+        end
+        content = Memo::MockSeed::TEST_MISE_FILE_CONTENT_2
+
+        _(out).must_equal([title].concat(choices_out).push(content).join("\n"))
+      ensure
+        $stdin = STDIN
       end
 
       it 'wordが存在しないファイルの場合は、そのwordにあたるメモはないことを表示する' do
@@ -45,7 +60,7 @@ class TestView < Minitest::Test
           assert_equal 2, exception.status
         end
 
-        assert_equal "#{word} というメモは見つかりませんでした。\n", out
+        _(out).must_equal(Memo::View::NOT_FOUND_MESSAGE.sub("word", word) << "\n")
       end
     end
 

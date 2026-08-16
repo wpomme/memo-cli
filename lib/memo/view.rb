@@ -2,6 +2,10 @@
 
 module Memo
   class View
+    NOT_FOUND_MESSAGE = "wordというメモは見つかりませんでした。"
+    MULTIPLE_FOUND_MESSAGE = "メモがsize件あります。"
+    include Memo::Service
+
     def initialize(repo)
       @repo = repo
       @mapper = Memo::Mapper.new(repo)
@@ -16,10 +20,14 @@ module Memo
       ## TODO: とりあえずの修正
       return puts @repo.read(found.first) if found.size == 1
 
-      # choices = found.to_h { |seed| [seed.rel_path, seed.full_path] }
-
-      puts "#{word} というメモは見つかりませんでした。"
-      exit(2)
+      if found.size > 1
+        choices = found.to_h { |seed| [seed.rel_path, seed] }
+        choice = select_prompt(title: MULTIPLE_FOUND_MESSAGE.sub("size", found.size.to_s), choices: choices)
+        puts @repo.read(choice)
+      else
+        puts NOT_FOUND_MESSAGE.sub("word", word)
+        exit(2)
+      end
     end
 
     def list(dir = nil)
