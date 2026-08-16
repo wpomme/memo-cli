@@ -13,7 +13,10 @@ module Memo
 
     def read(word)
       found = @repo.find(word)
-      return puts @repo.read(found) if found
+      ## TODO: とりあえずの修正
+      return puts @repo.read(found.first) if found.size == 1
+
+      # choices = found.to_h { |seed| [seed.rel_path, seed.full_path] }
 
       puts "#{word} というメモは見つかりませんでした。"
       exit(2)

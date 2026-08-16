@@ -1,12 +1,13 @@
 ## TODO・IDEA
 ### TODO
 ### DB連携
-- 次の理由でDBと連携したい。sqlite3とSequelを使う
+- sqlite3とSequelを使う
     - ファイルにタグ付けをする
         - yamlやFront Matterでtagを再現する案もある
         - タグ付けでネットワークのようなデータ構造を作成できないだろうか
         - タグ名の候補
             - CLI, bash, git, bulk, setting, TUI, editor, shell, AI, Application, Package Manager
+            - CLI: File System, Process Management, User Management, Text Processor, Built-in
     - 閲覧履歴などの集計を取る
         - 取得したい集計情報
             - メモの参照回数
@@ -25,8 +26,6 @@
 ### リファクタリング・修正事項
 #### パス名・環境変数系
 1. DBと接続するための設定をMemo::Configに入れる
-2. Rainbow.enabledをdisabledにしたい
-    - https://github.com/ku1ik/rainbow#configuration
 
 # テスト系
 ## Rakefileとe2eテスト
@@ -53,11 +52,12 @@
     - 例: `memo list cli | fzf | xargs -I{} memo read {}`
     - ** `memo list | fzf | xargs -I{} memo read {}`でも可能
         - `memo list`について、pipeやファイルに出力するとカラーコードが落ちてしまう
+        - `memo list | xargs -I@ echo @`などで再現する
             - `Rainbow.enabled`の設定変更が必要？ -> パス名・環境変数系へ
 
 ## ファイル名重複問題
-    - 二つ程度の重複なら、二つとも表示した方が早い
-    - 三つ以上になると、選択したい
+    - tty-promptを使って読み取るメモを選択できるようにする
+
 1. memo readとmemo dirsでファイル名が重複している場合の改修
 2. memo readはどちらを見るかを選択する方針にするか、単純に二つのファイルを表示するか
 3. memo dirsは、まずdirsの末尾だけで検索できるようにしたいのだが、そうすると名前が重複しそう

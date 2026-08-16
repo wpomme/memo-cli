@@ -27,6 +27,13 @@ class TestView < Minitest::Test
         assert_equal Memo::MockSeed::TEST_PUSH_FILE_CONTENT, out
       end
 
+      it 'wordが存在するファイルと複数件一致するとき、どのファイルを表示するかのプロンプトを表示する' do
+        skip "TODO"
+        # word = 'mise'
+        # seeds = @test_repo.find(word)
+        # choices = seeds.to_h { |seed| [seed.rel_path, seed.full_path] }
+      end
+
       it 'wordが存在しないファイルの場合は、そのwordにあたるメモはないことを表示する' do
         word = 'invalid_memo'
 

@@ -1,7 +1,7 @@
 ## Memo Summary: memoフォルダの集計
 
 ### 重複の集計
-```irb
+```ruby
 ## Repositoryからファイル名と親ディレクトリを配列の組で抜き出す
 file_seed = repo.map {|e| [e.filename, e.dir] }
 
@@ -19,7 +19,7 @@ file_seed.filter{|e| filenames.count(e.first) > 1 }
 ```
 
 ### グループ化したファイルの数をHashで取得する
-```
+```ruby
 # 全体のファイルの数
 repo.count
 ## > return 95

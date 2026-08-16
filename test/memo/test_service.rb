@@ -49,5 +49,49 @@ class TestService < Minitest::Test
         end
       end
     end
+
+    describe '#select_prompt' do
+      it '二番目の選択肢を選んでエンターキーを押すと、その選択肢の値を返す' do
+        title = "選択肢が三件あります。番号を選択してください。"
+
+        choices = { foo: "return 1", bar: "return 2", baz: "return 3" }
+
+        $stdin = StringIO.new("2\n")
+        out, = capture_io do
+          expected = select_prompt(title: title, choices: choices)
+          _(expected).must_equal(choices[:bar])
+        end
+
+        choices_out = choices.keys.map.with_index do |key, index|
+          "[#{index + 1}] #{key}"
+        end
+
+        _(out).must_equal([title].concat(choices_out).join("\n") << "\n")
+      ensure
+        $stdin = STDIN
+      end
+
+      it '二回無効な値を選んで、三回目で三番目の選択肢を選択してエンターキーを押すと、その選択肢の値を返す' do
+        title = "選択肢が三件あります。番号を選択してください。"
+
+        choices = { foo: "return 1", bar: "return 2", baz: "return 3" }
+
+        $stdin = StringIO.new("5\n4\n3\n")
+        out, = capture_io do
+          expected = select_prompt(title: title, choices: choices)
+          _(expected).must_equal(choices[:baz])
+        end
+
+        choices_out = choices.keys.map.with_index do |key, index|
+          "[#{index + 1}] #{key}"
+        end
+
+        actual = ([title].concat(choices_out).join("\n") << "\n") * 3
+
+        _(out).must_equal(actual)
+      ensure
+        $stdin = STDIN
+      end
+    end
   end
 end

@@ -55,26 +55,35 @@ class TestRepository < Minitest::Test
     end
 
     describe '#find' do
-      it "memoの中に存在するファイルが見つかった場合は、最初に見つかったSeedを返す" do
-        word = 'push'
+      it "メモの中に存在するファイルが見つかった場合は、そのSeedの配列を返す" do
+        word = 'diff'
         expected = @test_repo.find(word)
-        actual = @test_seeds.find { |seed| seed.filename == word }
+        actual = @test_seeds.filter { |seed| seed.filename == word }
 
-        assert_equal expected, actual
+        _(expected).must_equal(actual)
       end
 
-      it "memoの中に存在しないwordが入力された場合は、nilを返す" do
+      it "メモの中に存在するファイルが複数見つかった場合は、複数分の配列のSeedを返す" do
+        word = 'mise'
+        expected = @test_repo.find(word)
+        actual = @test_seeds.filter { |seed| seed.filename == word }
+
+        _(expected).must_equal(actual)
+        _(expected.size).must_equal(2)
+      end
+
+      it "メモの中に存在しないwordが入力された場合は、空の配列を返す" do
         word = 'invalid_word'
         expected = @test_repo.find(word)
 
-        assert_nil expected
+        _(expected).must_equal([])
       end
 
-      it "wordがnilの場合も、nilを返す" do
+      it "wordがnilの場合は、空の配列を返す" do
         word = nil
         expected = @test_repo.find(word)
 
-        assert_nil expected
+        _(expected).must_equal([])
       end
     end
 

@@ -17,6 +17,38 @@ repo = Memo::Repository.new(dir)
 seeds = repo.instance_variable_get(:@seeds)
 ```
 
+## sqliteに接続
+```ruby
+require "sequel"
+
+# connect to an in-memory database
+DB = Sequel.sqlite
+
+DB.create_table :seeds do
+  primary_key :id
+  String :rel_path, unique: true, null: false
+end
+
+seeds_dataset = DB[:seeds]
+
+seeds.each do |seed|
+  seeds_dataset.insert(rel_path: seed.rel_path)
+end
+
+seeds_dataset.count
+# => 112
+
+# 全てのデータが取り出せる
+seeds_dataset.all
+```
+
+## seedsからFileデータの集計をとる
+```ruby
+stats = seeds.map do |seed|
+  File.stat(seed.full_path)
+end
+```
+
 ## Rainbowで文字に色付け
 ```ruby
 mapper = Memo::Mapper.new(repo)

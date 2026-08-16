@@ -7,6 +7,8 @@ gemspec
 
 group :production do
   gem "rainbow", "~>3.1.1"
+  gem "sequel", "~>5.107"
+  gem 'sqlite3', '~> 2.9.5'
 end
 
 group :development do
@@ -15,6 +17,7 @@ group :development do
   gem "rbs", "~> 4.1.1"
 
   gem "minitest", "~> 6.0.6"
+  gem "minitest-mock", "~> 5.27"
   gem "rubocop", "~> 1.21"
 
   gem "neovim", "~> 0.10.0"

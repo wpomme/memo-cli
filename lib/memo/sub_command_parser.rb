@@ -42,7 +42,7 @@ module Memo
         end
       end
 
-      return opts.parse!(['-h'] + argv) if HELP_COMMANDS.to_set.include?(first)
+      return opts.parse!(['-h']) if HELP_COMMANDS.to_set.include?(first)
 
       if SUB_COMMAND_MAP.key?(first)
         return to_error_message(:requires_argv) if SUB_COMMAND_REQUIRED_ARGC[first] > argv.length
@@ -51,8 +51,7 @@ module Memo
       end
 
       # first がどのサブコマンドにも当てはまらなかった場合、memo <word>として処理する
-      # TODO: OptionParserを使いたい
-      [:read, word?(first)]
+      opts.parse!(['-r'] + [first])
     end
 
     # とりあえず作成

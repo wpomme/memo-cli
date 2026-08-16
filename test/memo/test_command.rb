@@ -54,12 +54,12 @@ class TestCommand < Minitest::Test
       end
 
       describe 'args: read' do
-        it "['read', 'push']を受け取ったときは、push.mdを全文表示する" do
+        it "['read', 'diff']を受け取ったときは、diff.mdを全文表示する" do
           out, = capture_io do
-            Memo::Command.new(@test_repo).execute(%w[read push])
+            Memo::Command.new(@test_repo).execute(%w[read diff])
           end
 
-          assert_equal Memo::MockSeed::TEST_PUSH_FILE_CONTENT, out
+          assert_equal Memo::MockSeed::TEST_DIFF_FILE_CONTENT, out
         end
 
         it "['read', 'invalid_memo']を受け取ったときは、そのようなメモがないことを表示する" do

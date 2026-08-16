@@ -44,12 +44,11 @@ module Memo
       File.readlines(seed.full_path, chomp: true)
     end
 
-    # ファイル名と一致する文字列があれば、そのseedを返す。
-    # 見つからなければ、nilを返す
-    # TODO: 一度、ファイルが見つかったらそこで探索が終了してしまう
-    # @return [Seed, void]
+    # 検索文字列と合致するファイル名の配列を返す
+    # @param word [String]
+    # @return [Array<Seed>]
     def find(word)
-      @seeds.find { |seed| seed.filename == word }
+      @seeds.filter { |seed| seed.filename == word }
     end
 
     # フォルダの中のディレクトリの集合

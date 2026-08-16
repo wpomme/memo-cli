@@ -7,6 +7,7 @@ require_relative "mock_seeds"
 require "minitest/autorun"
 require "minitest/spec"
 require "minitest/expectations"
+require "minitest/mock"
 
 require "tmpdir"
 require "fileutils"

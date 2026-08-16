@@ -117,6 +117,20 @@ class TestSubCommandParser < Minitest::Test
         assert_equal "", err
       end
 
+      it '引数がない場合は、ヘルプメッセージを表示する' do
+        skip "TODO"
+        out, err = capture_io do
+          exception = assert_raises(SystemExit) do
+            Memo::SubCommandParser.parse!([])
+          end
+
+          assert_equal 0, exception.status
+        end
+
+        assert_equal "", err
+        assert_equal out, ""
+      end
+
       describe('#word?') do
         it '正常系' do
           words = %w[foo a A 0 9 aa aA a0 a9 0a a_ a- _a _A _0 _9 _-a _-0 _-9 _-A]
