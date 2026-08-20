@@ -6,24 +6,31 @@ module Memo
   class SubCommandParser
     include Message
 
-    SUB_COMMAND_MAP = {
-      'read' => '-r',
-      'list' => '-l',
-      'dirs' => '-d',
-      'search' => '-s'
-    }.freeze
-    SUB_COMMAND_REQUIRED_ARGC = {
-      'read' => 1,
-      'list' => 0,
-      'dirs' => 0,
-      'search' => 1
-    }.freeze
+    # TODO: parse_procを作成して、opts.onひブロック引数として渡して、opts.onをeachで作成する
+    # TODO: -rや-sでもコマンドが動くようになっているはず。テストコードを修正する
+    SUB_COMMAND_SPEC = Struct.new(:sub_command_form, :long_form, :short_form, :desc, :args_type, :long_form_with_args) do
+      def to_opts(word)
+        short_form if deconstruct_keys(%i[sub_command_form long_form short_form]).values.include?(word)
+      end
+    end
+
+    HELP_COMMAND_SPEC = SUB_COMMAND_SPEC.new("help", "--help", "-h", "memoコマンドのヘルプ", :none, nil)
+    READ_COMMAND_SPEC = SUB_COMMAND_SPEC.new("read", "--read", "-r", "対象のメモを全文表示する", :required, "--read WORD")
+    LIST_COMMAND_SPEC = SUB_COMMAND_SPEC.new("list", "--list", "-l", "メモの一覧を表示する", :optional, "--list [DIRS]")
+    DIRS_COMMAND_SPEC = SUB_COMMAND_SPEC.new("dirs", "--dirs", "-d", "メモの中のディレクトリの一覧を表示する", :none, nil)
+    SEARCH_COMMAND_SPEC = SUB_COMMAND_SPEC.new("search", "--search", "-s", "検索した文字列で全てのメモを全文検索する", :required, "--search WORD")
+
+    SUB_COMMANDS_SPEC = [HELP_COMMAND_SPEC, READ_COMMAND_SPEC, LIST_COMMAND_SPEC, DIRS_COMMAND_SPEC, SEARCH_COMMAND_SPEC].freeze
+    SUB_COMMAND_FIND = lambda { |word|
+      SUB_COMMANDS_SPEC.find { |spec| spec.to_opts(word) }
+    }
 
     def self.parse!(argv)
       first = argv.shift
 
       opts = OptionParser.new do |opts|
         opts.banner = HELP_MESSAGE
+
         opts.on('-h', '--help', "memoコマンドのヘルプ") do
           puts opts.banner
           exit
@@ -42,16 +49,19 @@ module Memo
         end
       end
 
-      return opts.parse!(['-h']) if HELP_COMMANDS.to_set.include?(first)
+      found = SUB_COMMAND_FIND.call(first)
 
-      if SUB_COMMAND_MAP.key?(first)
-        return to_error_message(:requires_argv) if SUB_COMMAND_REQUIRED_ARGC[first] > argv.length
+      # 引数がゼロの場合、ヘルプメッセージを表示する
+      opts.parse!(['-h']) if first.nil?
 
-        opts.parse!([SUB_COMMAND_MAP[first]] + argv)
+      if found.nil?
+        # first がどのサブコマンドにも当てはまらなかった場合、memo <word>として処理する
+        opts.parse!(['-r'] + [first])
+      else
+        return to_error_message(:requires_argv) if found[:args_type] == :required && argv.empty?
+
+        opts.parse!([found[:short_form]] + argv)
       end
-
-      # first がどのサブコマンドにも当てはまらなかった場合、memo <word>として処理する
-      opts.parse!(['-r'] + [first])
     end
 
     # とりあえず作成

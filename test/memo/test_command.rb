@@ -62,6 +62,28 @@ class TestCommand < Minitest::Test
           assert_equal Memo::MockSeed::TEST_DIFF_FILE_CONTENT, out
         end
 
+        it "['read', 'mise']を受け取ったときは、プロンプトを表示した後、選択した方のmise.mdを全文表示する" do
+          word = 'mise'
+          choices = Memo::MockSeed::TEST_MEMO_DATA_SEED.filter_map do |seed|
+            [[seed[:dir], "#{seed[:filename]}.md"].join("/"), seed[:content]] if seed[:filename] == word
+          end.to_h
+          $stdin = StringIO.new("2\n")
+
+          out, = capture_io do
+            Memo::Command.new(@test_repo).execute(%w[read mise])
+          end
+
+          title = Memo::View::MULTIPLE_FOUND_MESSAGE.sub("size", choices.size.to_s)
+          choices_out = choices.keys.map.with_index do |key, index|
+            "[#{index + 1}] #{key}"
+          end
+          content = Memo::MockSeed::TEST_MISE_FILE_CONTENT_2
+
+          _(out).must_equal([title].concat(choices_out).push(content).join("\n"))
+        ensure
+          $stdin = STDIN
+        end
+
         it "['read', 'invalid_memo']を受け取ったときは、そのようなメモがないことを表示する" do
           word = 'invalid_memo'
 
