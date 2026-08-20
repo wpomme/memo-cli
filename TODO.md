@@ -49,8 +49,6 @@
 - `memo walk`でmemoの階層のトップを見せて、プロンプトに従って、フォルダを指定したら、その階層に飛び、ファイルを指定したらreadするようなコマンドが欲しい
     - tagにも応用が効くはず
     - Repositoryでseedにフォルダ階層の追加情報を持たせる？
-- サブコマンドだけでなくオプションも使えるようにする
-    - `memo -r grep`など
 - ** `memo list <dirs> | fzf | xargs -I{} memo read {}`で選択したメモを読むことができる
     - 例: `memo list cli | fzf | xargs -I{} memo read {}`
     - ** `memo list | fzf | xargs -I{} memo read {}`でも可能

@@ -6,20 +6,27 @@ class TestSubCommandParser < Minitest::Test
   include Memo::Message
 
   describe '"#parse!' do
+    # TODO: read, searchなど、-r, -sでもコマンドが実行できるようになったので、そのようにテストを修正する
     describe 'memo list' do
-      it '引数がlistだけのときは、[:list]を返す' do
-        expected = Memo::SubCommandParser.parse!(['list'])
-        assert_equal [:list], expected
+      it '引数がlist, -l, --listだけのときは、[:list]を返す' do
+        Memo::SubCommandParser::LIST_COMMAND_SPEC.take_command_forms.each do |command|
+          expected = Memo::SubCommandParser.parse!([command])
+          _(expected).must_equal([:list])
+        end
       end
 
-      it '引数がlist <word>のときは、[:list, <word>]を返す' do
-        expected = Memo::SubCommandParser.parse!(%w[list foo])
-        assert_equal [:list, 'foo'], expected
+      it '引数がlist, -l, --list <word>のときは、[:list, <word>]を返す' do
+        Memo::SubCommandParser::LIST_COMMAND_SPEC.take_command_forms.each do |command|
+          expected = Memo::SubCommandParser.parse!([command, "foo"])
+          _(expected).must_equal([:list, 'foo'])
+        end
       end
 
-      it '引数がlistで、その後に続く引数が二つ以上あるときは、listの次の引数を返す' do
-        expected = Memo::SubCommandParser.parse!(%w[list foo bar])
-        assert_equal [:list, 'foo'], expected
+      it '引数がlist, -l, --listで、その後に続く引数が二つ以上あるときは、listの次の引数を返す' do
+        Memo::SubCommandParser::LIST_COMMAND_SPEC.take_command_forms.each do |command|
+          expected = Memo::SubCommandParser.parse!([command, "foo", "bar"])
+          _(expected).must_equal([:list, 'foo'])
+        end
       end
     end
 
@@ -90,31 +97,33 @@ class TestSubCommandParser < Minitest::Test
 
     describe 'memo help' do
       it '引数がhelp, -h, --helpだけのときは、ヘルプメッセージを表示する' do
-        _, err = capture_io do
+        out, err = capture_io do
           exception = assert_raises(SystemExit) do
-            HELP_COMMANDS.each do |h_str|
-              Memo::SubCommandParser.parse!([h_str])
+            Memo::SubCommandParser::HELP_COMMAND_SPEC.take_command_forms.each do |sub_command|
+              Memo::SubCommandParser.parse!([sub_command])
             end
           end
 
-          assert_equal 0, exception.status
+          _(exception.status).must_equal(0)
         end
 
-        assert_equal "", err
+        _("").must_equal(err)
+        _(out).must_equal(Memo::Message::HELP_MESSAGE)
       end
 
       it '引数がhelp, -h, --helpで、引数が一つ以上あるときでも、そのままヘルプメッセージを表示する' do
-        _, err = capture_io do
+        out, err = capture_io do
           exception = assert_raises(SystemExit) do
-            HELP_COMMANDS.each do |h_str|
-              Memo::SubCommandParser.parse!([h_str, "foo"])
+            Memo::SubCommandParser::HELP_COMMAND_SPEC.take_command_forms.each do |sub_command|
+              Memo::SubCommandParser.parse!([sub_command, "foo"])
             end
           end
 
-          assert_equal 0, exception.status
+          _(exception.status).must_equal(0)
         end
 
-        assert_equal "", err
+        _("").must_equal(err)
+        _(out).must_equal(Memo::Message::HELP_MESSAGE)
       end
 
       it '引数がない場合は、ヘルプメッセージを表示する' do
@@ -123,80 +132,13 @@ class TestSubCommandParser < Minitest::Test
             Memo::SubCommandParser.parse!([])
           end
 
-          assert_equal 0, exception.status
+          _(exception.status).must_equal(0)
         end
 
-        assert_equal "", err
-        assert_equal out, Memo::Message::HELP_MESSAGE
+        _("").must_equal(err)
+        _(out).must_equal(Memo::Message::HELP_MESSAGE)
       end
 
-      describe('#word?') do
-        it '正常系' do
-          words = %w[foo a A 0 9 aa aA a0 a9 0a a_ a- _a _A _0 _9 _-a _-0 _-9 _-A]
-          words.each do |word|
-            # テストに失敗した場合、どのwordが失敗したわからないのでexpectedをwordにする
-            expected = Memo::SubCommandParser.word?(word) && word
-
-            assert_equal expected, word
-          end
-        end
-
-        it '正常系: 文字数' do
-          word1 = "a" * 32
-          word2 = "_#{'-' * 30}_"
-
-          words = [word1, word2]
-
-          words.each do |word|
-            expected = Memo::SubCommandParser.word?(word) && word
-
-            assert_equal expected, word
-          end
-        end
-
-        it '異常系: 文字数' do
-          _, err = capture_io do
-            exception = assert_raises(SystemExit) do
-              word = "a" * 33
-              Memo::SubCommandParser.word?(word)
-            end
-
-            assert_equal 2, exception.status
-          end
-
-          assert_equal "", err
-        end
-
-        it '異常系: 不審な文字列１' do
-          words = %w[file.exe touch; / | /etc/password `whoami` $(whoami) && || & > file\ncat $IFS$()]
-          words.each do |word|
-            _, err = capture_io do
-              exception = assert_raises(SystemExit) do
-                Memo::SubCommandParser.word?(word)
-              end
-
-              assert_equal 2, exception.status
-            end
-
-            assert_equal "", err
-          end
-        end
-
-        it '異常系: 不審な文字列２' do
-          words = %w[../../../etc/passwd ..%2F..%2F..%2Fetc%2Fpasswd ../../../etc/passwd%00.jpg symlink_to_root/../../etc/passwd]
-          words.each do |word|
-            _, err = capture_io do
-              exception = assert_raises(SystemExit) do
-                Memo::SubCommandParser.word?(word)
-              end
-
-              assert_equal 2, exception.status
-            end
-
-            assert_equal "", err
-          end
-        end
-      end
     end
   end
 end

@@ -2,7 +2,6 @@
 
 module Memo
   module Message
-    HELP_COMMANDS = %w[-h --help help].freeze
     HELP_MESSAGE = <<~HELP
       Usage:
       # メモの一覧を表示する

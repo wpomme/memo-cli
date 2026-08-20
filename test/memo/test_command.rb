@@ -7,7 +7,7 @@ class TestCommand < Minitest::Test
     include MemoTestLifecycleHooks
 
     describe '#execute' do
-      describe 'args: dirs' do
+      describe 'argv: dirs' do
         it "['dirs']を受け取ったときは、memo_dirの中のディレクトリの一覧を標準出力に表示する" do
           out, = capture_io do
             Memo::Command.new(@test_repo).execute(['dirs'])
@@ -18,7 +18,7 @@ class TestCommand < Minitest::Test
         end
       end
 
-      describe 'args: list' do
+      describe 'argv: list' do
         it "['list']を受け取ったときは、memo_dirの中のディレクトリとその中にあるメモファイルを全て表示する" do
           out, = capture_io do
             Memo::Command.new(@test_repo).execute(['list'])
@@ -53,7 +53,7 @@ class TestCommand < Minitest::Test
         end
       end
 
-      describe 'args: read' do
+      describe 'argv: read' do
         it "['read', 'diff']を受け取ったときは、diff.mdを全文表示する" do
           out, = capture_io do
             Memo::Command.new(@test_repo).execute(%w[read diff])
@@ -111,7 +111,7 @@ class TestCommand < Minitest::Test
         end
       end
 
-      describe 'args: search' do
+      describe 'argv: search' do
         it "['search', 'diff']を受け取ったときは、全てのメモの中でdiffが入っている行を色付きで表示する" do
           search_word = 'diff'
 
