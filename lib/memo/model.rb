@@ -15,6 +15,17 @@ module Memo
     #   @return [String] 対象のファイルのファイル名
     Seed = Data.define(:full_path, :rel_path, :dir, :filename)
 
+    GroupedDirList = Struct.new(:grouped_dir, :org_dir, :basename)
+
+    DirSeed = Struct.new(:basename, :parent_dir, :dir) do
+      def initialize(target_dir, root_dir)
+        root_dir_basename = File.basename(root_dir)
+        parent_dir = root_dir_basename == target_dir ? nil : File.basename(File.dirname(target_dir))
+
+        super(File.basename(target_dir), parent_dir == "." ? root_dir_basename : parent_dir, target_dir)
+      end
+    end
+
     # 対象のディレクトリの中にあるファイル名の配列を保存する
     # :dirは文字列、:filenamesは文字列の配列が入る
     GroupedFileList = Struct.new("GroupedFileList", :dir, :filenames) do

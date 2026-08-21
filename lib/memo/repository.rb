@@ -9,6 +9,7 @@ module Memo
 
     def initialize(dir)
       @seeds = load(dir)
+      @root_dir = dir
     end
 
     # 対象の全てのファイルに文字列検索を行う
@@ -51,6 +52,13 @@ module Memo
       @seeds.filter { |seed| seed.filename == word }
     end
 
+    # parent_dir: @root_dirと同じなら、ディレクトリのトップである。parent_dirはnilに設定する
+    #
+    # @return [Array<DirSeed>]
+    def dir_seeds
+      dir_set.map { |dir| Model::DirSeed.new(dir, @root_dir) }
+    end
+
     # フォルダの中のディレクトリの集合
     #
     # @return [Set<String>]
@@ -63,15 +71,15 @@ module Memo
     # ディレクトリ内をglobで捜索して、ファイルの読み取りや検索に必要な情報を取得する
     #
     # @return [Array<Seed>]
-    def load(memo_dir)
-      Dir.glob("**/*.md", base: memo_dir).filter_map do |rel_path|
+    def load(root_dir)
+      Dir.glob("**/*.md", base: root_dir).filter_map do |rel_path|
         # README.mdは読み飛ばす
         next if EXCLUDE_FILES.include?(File.basename(rel_path))
 
-        full_path = File.join(memo_dir, rel_path)
+        full_path = File.join(root_dir, rel_path)
 
         # トップディレクトリにあるメモのdirは"."となってしまうため、引数として受け取ったディレクトリの末尾を使う
-        dir = File.dirname(rel_path) == "." ? File.basename(memo_dir) : File.dirname(rel_path)
+        dir = File.dirname(rel_path) == "." ? File.basename(root_dir) : File.dirname(rel_path)
 
         Memo::Model::Seed.new(
           full_path: full_path,

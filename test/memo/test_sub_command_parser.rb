@@ -138,7 +138,6 @@ class TestSubCommandParser < Minitest::Test
         _("").must_equal(err)
         _(out).must_equal(Memo::Message::HELP_MESSAGE)
       end
-
     end
   end
 end

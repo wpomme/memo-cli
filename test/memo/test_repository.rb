@@ -54,6 +54,28 @@ class TestRepository < Minitest::Test
       end
     end
 
+    describe '#dir_seeds' do
+      it '戻り値はDirSeedの一次元配列となる' do
+        expected = @test_repo.dir_seeds.all?(Memo::Model::DirSeed)
+        _(expected).must_equal(true)
+      end
+
+      it 'basenameがディレクトリのトップのとき、parent_dirはnilとなる' do
+        root_dir_seed = @test_repo.dir_seeds.find { |seed| seed.basename == File.basename(@test_memo_dir) }
+        _(root_dir_seed.parent_dir).must_be_nil
+      end
+
+      it 'ディレクトリのトップの直下にあるディレクトリは、parent_dirがルートディレクトリになる' do
+        target_dir = 'cli'
+        target_dir_seed = @test_repo.dir_seeds.find { |seed| seed.dir == target_dir }
+        _(target_dir_seed.parent_dir).must_equal(File.basename(@test_memo_dir))
+      end
+
+      it 'dir: aaa/bbb/cccのようなディレクトリのparent_dirはbbbとなる' do
+        skip "TODO"
+      end
+    end
+
     describe '#find' do
       it "メモの中に存在するファイルが見つかった場合は、そのSeedの配列を返す" do
         word = 'diff'
