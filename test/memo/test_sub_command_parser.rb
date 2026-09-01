@@ -3,8 +3,6 @@
 require_relative "../helper"
 
 class TestSubCommandParser < Minitest::Test
-  include Memo::Message
-
   describe '"#parse!' do
     # TODO: read, searchなど、-r, -sでもコマンドが実行できるようになったので、そのようにテストを修正する
     describe 'memo list' do
@@ -96,6 +94,17 @@ class TestSubCommandParser < Minitest::Test
     end
 
     describe 'memo help' do
+      help_message_expected = <<~MESSAGE
+        Usage: memo subcommand [arguments]
+
+        Subcommand List:
+            -r, --read WORD                  対象のメモを全文表示する
+            -l, --list [DIRS]                メモの一覧を表示する
+            -d, --dirs                       メモの中のディレクトリの一覧を表示する
+            -s, --search WORD                検索した文字列で全てのメモを全文検索する
+            -h, --help                       memoコマンドのヘルプ
+      MESSAGE
+
       it '引数がhelp, -h, --helpだけのときは、ヘルプメッセージを表示する' do
         out, err = capture_io do
           exception = assert_raises(SystemExit) do
@@ -108,7 +117,7 @@ class TestSubCommandParser < Minitest::Test
         end
 
         _("").must_equal(err)
-        _(out).must_equal(Memo::Message::HELP_MESSAGE)
+        _(help_message_expected).must_equal(out)
       end
 
       it '引数がhelp, -h, --helpで、引数が一つ以上あるときでも、そのままヘルプメッセージを表示する' do
@@ -123,7 +132,7 @@ class TestSubCommandParser < Minitest::Test
         end
 
         _("").must_equal(err)
-        _(out).must_equal(Memo::Message::HELP_MESSAGE)
+        _(help_message_expected).must_equal(out)
       end
 
       it '引数がない場合は、ヘルプメッセージを表示する' do
@@ -136,7 +145,7 @@ class TestSubCommandParser < Minitest::Test
         end
 
         _("").must_equal(err)
-        _(out).must_equal(Memo::Message::HELP_MESSAGE)
+        _(help_message_expected).must_equal(out)
       end
     end
   end

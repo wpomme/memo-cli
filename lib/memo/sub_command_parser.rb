@@ -50,10 +50,7 @@ module Memo
       end
     end
 
-    HELP_COMMAND_SPEC = SUB_COMMAND_SPEC.new("help", "--help", "-h", "memoコマンドのヘルプ", :none, nil, proc do
-      puts Message::HELP_MESSAGE
-      exit
-    end)
+    HELP_COMMAND_SPEC = SUB_COMMAND_SPEC.new("help", "--help", "-h", "memoコマンドのヘルプ", :none, nil, nil)
     READ_COMMAND_SPEC = SUB_COMMAND_SPEC.new("read", "--read", "-r", "対象のメモを全文表示する", :required, "--read WORD", proc do |word|
       self.parsed = [:read, word]
     end)
@@ -67,7 +64,7 @@ module Memo
       self.parsed = [:search, word]
     end)
 
-    SUB_COMMANDS_SPEC = [HELP_COMMAND_SPEC, READ_COMMAND_SPEC, LIST_COMMAND_SPEC, DIRS_COMMAND_SPEC, SEARCH_COMMAND_SPEC].freeze
+    SUB_COMMANDS_SPEC = [READ_COMMAND_SPEC, LIST_COMMAND_SPEC, DIRS_COMMAND_SPEC, SEARCH_COMMAND_SPEC, HELP_COMMAND_SPEC].freeze
 
     # 引数が登録されているサブコマンドであれば、そのサブコマンドの構造体SPECを返す
     #
@@ -84,10 +81,18 @@ module Memo
       first = argv.shift
 
       opts = OptionParser.new do |opts|
-        opts.banner = HELP_MESSAGE
+        opts.banner = "Usage: memo subcommand [arguments]"
+
+        opts.separator ""
+        opts.separator "Subcommand List:"
 
         SUB_COMMANDS_SPEC.each do |spec|
-          if spec.argv_type == :none
+          if spec.sub_command_form == "help"
+            opts.on_tail(spec.short_form, spec.long_form, spec.desc) do
+              puts opts
+              exit 0
+            end
+          elsif spec.argv_type == :none
             opts.on(spec.short_form, spec.long_form, spec.desc, &spec.parsed_block)
           else
             opts.on(spec.short_form, spec.long_form_with_argv, String, spec.desc, &spec.parsed_block)

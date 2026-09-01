@@ -70,10 +70,6 @@ class TestRepository < Minitest::Test
         target_dir_seed = @test_repo.dir_seeds.find { |seed| seed.dir == target_dir }
         _(target_dir_seed.parent_dir).must_equal(File.basename(@test_memo_dir))
       end
-
-      it 'dir: aaa/bbb/cccのようなディレクトリのparent_dirはbbbとなる' do
-        skip "TODO"
-      end
     end
 
     describe '#find' do
