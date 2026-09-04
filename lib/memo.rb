@@ -2,7 +2,6 @@
 
 require_relative "memo/config"
 require_relative "memo/version"
-require_relative "memo/file_utility"
 require_relative "memo/message"
 require_relative "memo/sub_command_parser"
 require_relative "memo/model"

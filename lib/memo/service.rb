@@ -2,6 +2,16 @@
 
 module Memo
   module Service
+    module_function
+
+    # 受け取ったSeedにしたがい、そのSeedの元となったファイルを全文表示する。
+    #
+    # @param [Seed]
+    # @return [Array<String>] ファイルの全文を文字列型の一次元配列で返す
+    def read(seed)
+      File.readlines(seed.full_path, chomp: true)
+    end
+
     # ファイルごとに引数のwordで行ごとに検索する
     #
     # wordが含まれている行の情報をSearchLineの一次元配列として返す
@@ -34,8 +44,6 @@ module Memo
         select_prompt(title: title, choices: choices)
       end
     end
-
-    private
 
     # select_promptから標準出力に表示する文字列を抽出した関数
     #

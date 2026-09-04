@@ -2,9 +2,6 @@
 
 module Memo
   class Repository
-    include FileUtility
-    include Service
-
     EXCLUDE_FILES = ['README.md'].to_set.freeze
 
     def initialize(dir)
@@ -19,7 +16,7 @@ module Memo
     # @return [Array<Array<Memo::Model::SearchLine>>, nil]
     def search_all(word)
       @seeds.filter_map do |seed|
-        search(seed, word)
+        Memo::Service.search(seed, word)
       end
     end
 
@@ -34,18 +31,9 @@ module Memo
       end
     end
 
-    # seedが存在すれば、そのファイルを全文表示する。
-    # TODO: Serviceに移動する
-    # nilを受け取った場合は、そのままviewにnilを返す
-    # @param [Seed, void]
-    # @return [<Array<String>>] 読み取ったメモが行ごとに保存されていて、さらに配列で包まれている。仕様上、複数のファイルを読み取る場合があるため。
-    def read(seed)
-      return if seed.nil?
-
-      File.readlines(seed.full_path, chomp: true)
-    end
-
-    # 検索文字列と合致するファイル名の配列を返す
+    # 検索文字列と一致するファイル名の配列を返す
+    # 一致するファイル名が見つからなかった場合は空の配列を返す
+    #
     # @param word [String]
     # @return [Array<Seed>]
     def find(word)
@@ -88,6 +76,14 @@ module Memo
           filename: filename(full_path)
         )
       end
+    end
+
+    # ファイルパスから、そのファイルのファイル名を返す
+    #
+    # @param [String] file_path 対象のファイルのファイルパス
+    # @return [String] ファイル名
+    def filename(file_path)
+      File.basename(file_path, '.md')
     end
   end
 end

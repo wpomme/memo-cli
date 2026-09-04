@@ -2,7 +2,7 @@
 - 準備
 ```bash
 ## ログイン
-rake colsole
+bundle exec irb
 ```
 
 ## rake consoleで必要なデータを作成する

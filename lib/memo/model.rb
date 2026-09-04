@@ -3,15 +3,14 @@
 module Memo
   module Model
     #  対象ディレクトリのファイル情報を保存するための値オブジェクト
-    #  TODO: 読み取り専用にする
     #
-    # @!attribute [rw] full_path
+    # @!attribute [w] full_path
     #   @return [String] memoディレクトリの中にあるファイルの絶対パス。メモを読み取るために使う
-    # @!attribute [rw] rel_path
+    # @!attribute [w] rel_path
     #   @return [String] 対象のディレクトリからそのファイルへのパス
-    # @!attribute [rw] dir
+    # @!attribute [w] dir
     #   @return [String] そのファイルが格納されているディレクトリ
-    # @!attribute [rw] filename
+    # @!attribute [w] filename
     #   @return [String] 対象のファイルのファイル名
     Seed = Data.define(:full_path, :rel_path, :dir, :filename)
 

@@ -38,7 +38,7 @@ class TestView < Minitest::Test
           Memo::View.new(@test_repo).read(word)
         end
 
-        title = Memo::View::MULTIPLE_FOUND_MESSAGE.sub("size", choices.size.to_s)
+        title = Memo::Message::MULTIPLE_MEMOS_WEWE_FOUND.sub("size", choices.size.to_s)
         choices_out = choices.keys.map.with_index do |key, index|
           "[#{index + 1}] #{key}"
         end
@@ -60,7 +60,7 @@ class TestView < Minitest::Test
           assert_equal 2, exception.status
         end
 
-        _(out).must_equal(Memo::View::NOT_FOUND_MESSAGE.sub("word", word) << "\n")
+        _(out).must_equal(Memo::Message::NO_MEMOS_WEWE_FOUND.sub("word", word) << "\n")
       end
     end
 

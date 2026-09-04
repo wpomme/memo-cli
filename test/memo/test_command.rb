@@ -73,7 +73,7 @@ class TestCommand < Minitest::Test
             Memo::Command.new(@test_repo).execute(%w[read mise])
           end
 
-          title = Memo::View::MULTIPLE_FOUND_MESSAGE.sub("size", choices.size.to_s)
+          title = Memo::Message::MULTIPLE_MEMOS_WEWE_FOUND.sub("size", choices.size.to_s)
           choices_out = choices.keys.map.with_index do |key, index|
             "[#{index + 1}] #{key}"
           end
@@ -95,7 +95,7 @@ class TestCommand < Minitest::Test
             assert_equal 2, exception.status
           end
 
-          _(out).must_equal(Memo::View::NOT_FOUND_MESSAGE.sub("word", word) << "\n")
+          _(out).must_equal(Memo::Message::NO_MEMOS_WEWE_FOUND.sub("word", word) << "\n")
         end
 
         it "['read', nil]を受け取ったときは、例外を送出する" do
@@ -132,7 +132,7 @@ class TestCommand < Minitest::Test
             Memo::Command.new(@test_repo).execute(["search", search_word])
           end
 
-          assert_equal out, "#{search_word}で全ファイル検索しましたが、そのような文字列は見当たりませんでした。\n"
+          assert_equal out, Memo::Message::NO_SEARCH_RESULTS_WERE_FOUND.sub('word', search_word) << "\n"
         end
 
         it "['search', nil]を受け取ったときは、例外を送出する" do

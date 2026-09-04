@@ -73,52 +73,53 @@ class TestRepository < Minitest::Test
     end
 
     describe '#find' do
-      it "メモの中に存在するファイルが見つかった場合は、そのSeedの配列を返す" do
-        word = 'diff'
-        expected = @test_repo.find(word)
-        actual = @test_seeds.filter { |seed| seed.filename == word }
+      describe '戻り値の型検査' do
+        describe "検索文字列と一致するファイル名が見つかった場合は、Seedの一次元配列を返す" do
+          it "ファイル名が一件見つかった場合" do
+            word = 'diff'
+            ret = @test_repo.find(word)
+            expected = ret.all?(Memo::Model::Seed)
 
-        _(expected).must_equal(actual)
+            _(expected).must_equal(true)
+          end
+
+          it "ファイル名が複数件見つかった場合" do
+            word = 'mise'
+            ret = @test_repo.find(word)
+            expected = ret.all?(Memo::Model::Seed)
+
+            _(expected).must_equal(true)
+          end
+        end
+
+        describe "検索文字列と一致するファイル名が見つからなかった場合は、空の配列を返す" do
+          it "メモの中に存在しない検索文字列が入力された場合" do
+            word = 'invalid_word'
+            expected = @test_repo.find(word)
+
+            _(expected).must_equal([])
+          end
+        end
       end
 
-      it "メモの中に存在するファイルが複数見つかった場合は、複数分の配列のSeedを返す" do
-        word = 'mise'
-        expected = @test_repo.find(word)
-        actual = @test_seeds.filter { |seed| seed.filename == word }
+      describe "戻り値の値検査" do
+        describe "検索文字列と一致するファイル名が見つかった場合は、そのSeedの一次元配列を返す" do
+          it "ファイル名が一件見つかった場合" do
+            word = 'diff'
+            expected = @test_repo.find(word)
+            actual = @test_seeds.filter { |seed| seed.filename == word }
 
-        _(expected).must_equal(actual)
-        _(expected.size).must_equal(2)
-      end
+            _(expected).must_equal(actual)
+          end
 
-      it "メモの中に存在しないwordが入力された場合は、空の配列を返す" do
-        word = 'invalid_word'
-        expected = @test_repo.find(word)
+          it "ファイル名が複数件見つかった場合" do
+            word = 'mise'
+            expected = @test_repo.find(word)
+            actual = @test_seeds.filter { |seed| seed.filename == word }
 
-        _(expected).must_equal([])
-      end
-
-      it "wordがnilの場合は、空の配列を返す" do
-        word = nil
-        expected = @test_repo.find(word)
-
-        _(expected).must_equal([])
-      end
-    end
-
-    describe '#read' do
-      it "seedが存在すれば、そのファイルを全文表示する。、" do
-        expected_seed = @test_seeds.find { |seed| seed.filename == "diff" }
-        expected = @test_repo.read(expected_seed)
-
-        actual = Memo::MockSeed::TEST_DIFF_FILE_CONTENT
-
-        assert_equal expected, actual.split("\n")
-      end
-
-      it "nilが与えられたら、そのままnilを返す" do
-        expected = @test_repo.read(nil)
-
-        assert_nil expected
+            _(expected).must_equal(actual)
+          end
+        end
       end
     end
 

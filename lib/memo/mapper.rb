@@ -4,8 +4,6 @@ require 'rainbow'
 
 module Memo
   class Mapper
-    NOT_FOUND_MESSAGE = "wordで全ファイル検索しましたが、そのような文字列は見当たりませんでした。"
-
     def initialize(repo)
       @repo = repo
     end
@@ -16,7 +14,7 @@ module Memo
     # @return [Array<String>, String]
     def search_result_to_view(word)
       search_result = @repo.search_all(word)
-      return NOT_FOUND_MESSAGE.sub('word', word) if search_result.all?(&:empty?)
+      return Memo::Message::NO_SEARCH_RESULTS_WERE_FOUND.sub('word', word) if search_result.all?(&:empty?)
 
       search_result.flatten.map do |line|
         line.to_view(word)
@@ -42,11 +40,7 @@ module Memo
         return ret unless ret.empty?
 
         ## dir が存在しない場合は、ユーザーに表示するメッセージを返す
-        return <<~NOT_DIR
-          #{dir}というディレクトリはありませんでした。
-          ディレクトリの一覧は次の通りです。
-          #{colored_dirs.join(' ')}
-        NOT_DIR
+        return Memo::Message::NO_DIRECTORIES.sub('dir', dir) << colored_dirs.join(' ')
       end
 
       grouped_file_list.map(&:to_view)

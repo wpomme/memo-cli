@@ -94,16 +94,14 @@ class TestSubCommandParser < Minitest::Test
     end
 
     describe 'memo help' do
-      help_message_expected = <<~MESSAGE
-        Usage: memo subcommand [arguments]
-
-        Subcommand List:
-            -r, --read WORD                  対象のメモを全文表示する
-            -l, --list [DIRS]                メモの一覧を表示する
-            -d, --dirs                       メモの中のディレクトリの一覧を表示する
-            -s, --search WORD                検索した文字列で全てのメモを全文検索する
-            -h, --help                       memoコマンドのヘルプ
-      MESSAGE
+      parser = Memo::SubCommandParser.parser
+      help_message_expected = parser.on.to_a.each.with_index.reduce("") do |result, (line, index)|
+        result += line
+        # opts.bannerとopts.separatorの間には手動で改行を入れる必要がある
+        result += "\n" if index.zero?
+        result
+      end
+        .chomp
 
       it '引数がhelp, -h, --helpだけのときは、ヘルプメッセージを表示する' do
         out, err = capture_io do

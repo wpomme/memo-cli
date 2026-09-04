@@ -13,8 +13,6 @@ require "tmpdir"
 require "fileutils"
 
 module MemoTestLifecycleHooks
-  include Memo::FileUtility
-
   def setup
     @tmpdir = Dir.mktmpdir
 

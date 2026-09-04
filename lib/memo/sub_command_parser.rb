@@ -5,12 +5,9 @@ require "optparse"
 module Memo
   # NOTE: できればやりたいこと
   #  1. SUB_COMMAND_SPECをModelに移動してもいいかも
-  #  2. ヘルプメッセージをSUB_COMMAND_SPEC.descから生成できないか？
-  #  3. parsedを返す場合と、ヘルプ・ユーザーメッセージを返す場合を明確にする
-  #  4. to_error_message => to_user_messageにしてhelp_messageと共用化してもいい
+  #  2. parsedを返す場合と、ヘルプ・ユーザーメッセージを返す場合を明確にする
+  #  3. to_error_message => to_user_messageにしてhelp_messageと共用化してもいい
   class SubCommandParser
-    include Message
-
     # サブコマンドの詳細を作成するための構造体
     #
     # @!attribute [r] :sub_command_form
@@ -80,15 +77,41 @@ module Memo
     def self.parse!(argv)
       first = argv.shift
 
-      opts = OptionParser.new do |opts|
-        opts.banner = "Usage: memo subcommand [arguments]"
+      parser
+
+      found = SUB_COMMAND_FIND.call(first)
+
+      # 引数がゼロの場合、ヘルプメッセージを表示する
+      parser.parse!(['-h']) if first.nil?
+
+      if found.nil?
+        # firstがどのサブコマンドにも当てはまらなかった場合、memo <word>として処理する
+        parser.parse!(['-r'] + [first])
+      else
+        return to_error_message(:requires_argv) if found[:argv_type] == :required && argv.empty?
+
+        parser.parse!([found[:short_form]] + argv)
+      end
+
+      parsed unless parsed.nil?
+    end
+
+    def self.parser
+      OptionParser.new do |opts|
+        opts.banner = "memo CLI: ローカルのメモフォルダをコマンドで閲覧、検索するためのコマンド"
+        opts.separator ""
+        opts.separator "使い方: memo subcommand [arguments]"
+        opts.separator "例: memo list cli => memoフォルダ内のcliフォルダの中のメモの一覧を返す"
+        opts.separator "サブコマンドの--は省略可能"
 
         opts.separator ""
-        opts.separator "Subcommand List:"
+        opts.separator "サブコマンド(subcommand)のリスト:"
 
+        # OptionParserにそれぞれのサブコマンドを登録する
         SUB_COMMANDS_SPEC.each do |spec|
           if spec.sub_command_form == "help"
-            opts.on_tail(spec.short_form, spec.long_form, spec.desc) do
+            # helpコマンドを呼び出したときの処理がopts.on_tailのブロックに記載がある。
+            opts.on(spec.short_form, spec.long_form, spec.desc) do
               puts opts
               exit 0
             end
@@ -99,22 +122,6 @@ module Memo
           end
         end
       end
-
-      found = SUB_COMMAND_FIND.call(first)
-
-      # 引数がゼロの場合、ヘルプメッセージを表示する
-      opts.parse!(['-h']) if first.nil?
-
-      if found.nil?
-        # firstがどのサブコマンドにも当てはまらなかった場合、memo <word>として処理する
-        opts.parse!(['-r'] + [first])
-      else
-        return to_error_message(:requires_argv) if found[:argv_type] == :required && argv.empty?
-
-        opts.parse!([found[:short_form]] + argv)
-      end
-
-      parsed unless parsed.nil?
     end
 
     # とりあえず作成

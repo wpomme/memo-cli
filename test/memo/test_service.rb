@@ -7,6 +7,28 @@ class TestService < Minitest::Test
     include MemoTestLifecycleHooks
     include Memo::Service
 
+    describe '#read' do
+      describe "戻り値の型検査" do
+        it "文字列型の一次元配列を返す" do
+          expected_seed = @test_seeds.find { |seed| seed.filename == "diff" }
+          ret = read(expected_seed)
+
+          expected = ret.all?(String)
+
+          _(expected).must_equal(true)
+        end
+      end
+
+      it "与えられたseedにしたがい、そのSeedの元となっているファイルを全文表示する。、" do
+        expected_seed = @test_seeds.find { |seed| seed.filename == "diff" }
+        expected = read(expected_seed)
+
+        actual = Memo::MockSeed::TEST_DIFF_FILE_CONTENT
+
+        _(expected).must_equal(actual.split("\n"))
+      end
+    end
+
     describe '#search' do
       describe "戻り値の型検査" do
         it '読み込んだファイルの中に該当の文字列が含まれている場合は、SearchLineの配列を返す' do

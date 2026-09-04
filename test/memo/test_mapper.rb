@@ -32,10 +32,11 @@ class TestMapper < Minitest::Test
 
       it "存在しないディレクトリ名を受け取った場合は、その旨を知らせる文字列を返す" do
         invalid_dir = 'invalid_dir'
-        expected = Memo::Mapper.new(@test_repo).file_list_to_view(invalid_dir)
+        mapper = Memo::Mapper.new(@test_repo)
+        expected = mapper.file_list_to_view(invalid_dir)
+        actual = Memo::Message::NO_DIRECTORIES.sub('dir', invalid_dir) << mapper.colored_dirs.join(' ')
 
-        # TODO: とりあえず文字列を返すことだけを確認する
-        assert expected.is_a?(String)
+        _(expected).must_equal(actual)
       end
     end
 
@@ -76,7 +77,7 @@ class TestMapper < Minitest::Test
         it '検索結果がなかった場合は、その旨を知らせる文字列を返す' do
           search_word = 'hikkakaranasounakotoba'
           expected = Memo::Mapper.new(@test_repo).search_result_to_view(search_word)
-          actual = Memo::Mapper::NOT_FOUND_MESSAGE.sub('word', search_word)
+          actual = Memo::Message::NO_SEARCH_RESULTS_WERE_FOUND.sub('word', search_word)
 
           _(expected).must_equal(actual)
         end
