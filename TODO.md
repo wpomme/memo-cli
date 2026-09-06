@@ -33,9 +33,6 @@
 
 ### その他
 # テスト系
-## Rakefileとe2eテスト
-- Rakefileで各種コマンドを実行させてe2eテストを作成する
-
 ## 型検査・型のテスト
 - Rdocかyard、型検査の導入
 
@@ -45,6 +42,7 @@
 ## モックデータ
     - 欲しいモックデータ
         - @fixed_mock_file = 'diff'
+        - @fixed_mock_search_word = 'diff'
         - @fixed_mock_duplicated_file = 'mise'
             - 別のsetup, teardownを作成するべきだろうか
 

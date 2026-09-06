@@ -2,6 +2,7 @@
 
 require "bundler/gem_tasks"
 require "minitest/test_task"
+require "English"
 
 Minitest::TestTask.create :test
 
@@ -88,33 +89,63 @@ namespace :mock do
   end
 end
 
-# ここら辺をひとまとめにしてtest:cliかtest:e2eにする
+cmd_tasks = {
+  list: [
+    {
+      name: "noargs",
+      cmd: "list"
+    },
+    {
+      name: "dirs",
+      cmd: "list cli"
+    }
+  ],
+  dirs: [
+    {
+      name: "default",
+      cmd: "dirs"
+    }
+  ],
+  read: [
+    {
+      name: "default",
+      cmd: "read ls"
+    },
+    {
+      name: "memo",
+      cmd: "ls"
+    }
+  ],
+  search: [
+    {
+      name: "default",
+      cmd: "search diff"
+    }
+  ]
+}
+
+desc "memo cliの正常系が成功するかテストする"
+task :e2e do
+  cmd_tasks.each do |cmd_name, task_list|
+    task_list.each do |task_hash|
+      sh("rake cli:#{cmd_name}:#{task_hash[:name]}", verbose: false)
+    end
+  end
+end
+
 namespace :cli do
-  desc '開発中のmemo listを実行する'
-  task :list do
-    sh 'bundle exec ruby exe/memo list 2>&1 > /dev/null || echo "Failed: memo list"'
-  end
-
-  desc '開発中のmemo dirsを実行する'
-  task :dirs do
-    sh 'bundle exec ruby exe/memo dirs'
-  end
-
-  desc '開発中のmemo readを実行する'
-  namespace :read do
-    desc 'memo read grepを実行'
-    task :positive1 do
-      sh 'bundle exec ruby exe/memo search'
-    end
-
-    desc 'memo grepを実行。'
-    task :positive2 do
-      sh 'bundle exec ruby exe/memo search'
-    end
-
-    desc 'memo readを実行する。失敗するはず。'
-    task :negative do
-      sh 'bundle exec ruby exe/memo read'
+  cmd_tasks.each do |cmd_name, task_list|
+    namespace cmd_name do
+      desc "#{cmd_name}を実行する"
+      task_list.each do |task_hash|
+        desc "memo #{task_hash[:cmd]}を実行する"
+        task task_hash[:name] do
+          IO.popen((%w[bundle exec ruby exe/memo] << task_hash[:cmd].split).flatten) do |pipe|
+            puts "Success: memo #{task_hash[:cmd]}" if $CHILD_STATUS.success?
+            pipe.close
+          end
+        end
+      end
     end
   end
 end
