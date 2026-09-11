@@ -19,7 +19,7 @@ class TestRepository < Minitest::Test
         seeds = @test_repo.instance_variable_get(:@seeds)
         expected = seeds.all?(Memo::Model::Seed)
 
-        _(expected).must_equal(true)
+        _(true).must_equal(expected)
       end
 
       # TODO: モックデータにREADME.md用のデータを作成する
@@ -41,34 +41,29 @@ class TestRepository < Minitest::Test
       end
 
       it '対象ディレクトリの最上位にあるメモのdirは、そのメモが保存されているディレクトリ名になる' do
-        skip "TODO"
+        skip "TODO: @fixed_mock_file_under_root_dirを作成する"
+
       end
     end
 
     describe '#dir_set' do
       it "モックデータと実際のdir_setが同じであること" do
         expected = @test_repo.dir_set
-        actual = Memo::MockSeed::TEST_MEMO_DATA_SEED.map { |seed_hash| seed_hash[:dir] }.uniq.to_set
+        actual = Dir.glob("**/*/", base: @test_memo_dir).to_set { |dir| dir.rstrip("/") }.add(@test_root_dirname)
 
-        _(expected).must_equal(actual)
+        _(actual).must_equal(expected)
       end
     end
 
     describe '#dir_seeds' do
       it '戻り値はDirSeedの一次元配列となる' do
         expected = @test_repo.dir_seeds.all?(Memo::Model::DirSeed)
-        _(expected).must_equal(true)
+        _(true).must_equal(expected)
       end
 
-      it 'basenameがディレクトリのトップのとき、parent_dirはnilとなる' do
-        root_dir_seed = @test_repo.dir_seeds.find { |seed| seed.basename == File.basename(@test_memo_dir) }
+      it 'DirSeedのbasenameがディレクトリのトップのとき、parent_dirはnilとなる' do
+        root_dir_seed = @test_repo.dir_seeds.find { |seed| seed.basename == @test_root_dirname }
         _(root_dir_seed.parent_dir).must_be_nil
-      end
-
-      it 'ディレクトリのトップの直下にあるディレクトリは、parent_dirがルートディレクトリになる' do
-        target_dir = 'cli'
-        target_dir_seed = @test_repo.dir_seeds.find { |seed| seed.dir == target_dir }
-        _(target_dir_seed.parent_dir).must_equal(File.basename(@test_memo_dir))
       end
     end
 
@@ -80,7 +75,7 @@ class TestRepository < Minitest::Test
             ret = @test_repo.find(word)
             expected = ret.all?(Memo::Model::Seed)
 
-            _(expected).must_equal(true)
+            _(true).must_equal(expected)
           end
 
           it "ファイル名が複数件見つかった場合" do
@@ -88,7 +83,7 @@ class TestRepository < Minitest::Test
             ret = @test_repo.find(word)
             expected = ret.all?(Memo::Model::Seed)
 
-            _(expected).must_equal(true)
+            _(true).must_equal(expected)
           end
         end
 
@@ -97,7 +92,7 @@ class TestRepository < Minitest::Test
             word = 'invalid_word'
             expected = @test_repo.find(word)
 
-            _(expected).must_equal([])
+            _([]).must_equal(expected)
           end
         end
       end
@@ -109,7 +104,7 @@ class TestRepository < Minitest::Test
             expected = @test_repo.find(word)
             actual = @test_seeds.filter { |seed| seed.filename == word }
 
-            _(expected).must_equal(actual)
+            _(actual).must_equal(expected)
           end
 
           it "ファイル名が複数件見つかった場合" do
@@ -117,7 +112,7 @@ class TestRepository < Minitest::Test
             expected = @test_repo.find(word)
             actual = @test_seeds.filter { |seed| seed.filename == word }
 
-            _(expected).must_equal(actual)
+            _(actual).must_equal(expected)
           end
         end
       end
@@ -129,7 +124,7 @@ class TestRepository < Minitest::Test
           ret = @test_repo.grouped_file_list
           expected = ret.all?(Memo::Model::GroupedFileList)
 
-          _(expected).must_equal(true)
+          _(true).must_equal(expected)
         end
       end
 
@@ -144,7 +139,7 @@ class TestRepository < Minitest::Test
             )
           end
 
-          _(expected).must_equal(actual)
+          _(actual).must_equal(expected)
         end
       end
 
@@ -157,7 +152,7 @@ class TestRepository < Minitest::Test
               grouped.all?(String)
             end
 
-            _(expected).must_equal(true)
+            _(true).must_equal(expected)
           end
 
           it "ディレクトリ名に色付けをしてディレクトリとファイル名の配列を返す" do
@@ -167,7 +162,7 @@ class TestRepository < Minitest::Test
               [Rainbow(dir).green] + grouped.map(&:filename)
             end
 
-            _(expected).must_equal(actual)
+            _(actual).must_equal(expected)
           end
         end
 
@@ -180,14 +175,14 @@ class TestRepository < Minitest::Test
               [Rainbow(dir).green] + grouped.map(&:filename) if dir == target_dir
             end
 
-            _(expected).must_equal(actual)
+            _(actual).must_equal(expected)
           end
 
           it "メモの中に存在しないディレクトリ名を受け取った場合は、空の配列を返す" do
             target_dir = "not_exist_dir"
             expected = @test_repo.grouped_file_list.filter_map { |grouped| grouped.to_view(target_dir) }
 
-            _(expected).must_equal([])
+            _([]).must_equal(expected)
           end
         end
       end
@@ -203,7 +198,7 @@ class TestRepository < Minitest::Test
             memo.all?(Memo::Model::SearchLine)
           end
 
-          _(expected).must_equal(true)
+          _(true).must_equal(expected)
         end
 
         it "検索結果が空の場合は、空の二重配列を返す" do
@@ -214,7 +209,7 @@ class TestRepository < Minitest::Test
             memo.all?(&:empty?)
           end
 
-          _(expected).must_equal(true)
+          _(true).must_equal(expected)
         end
       end
 

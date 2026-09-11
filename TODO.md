@@ -46,6 +46,12 @@
         - @fixed_mock_search_word = 'diff'
         - @fixed_mock_duplicated_file = 'mise'
             - 別のsetup, teardownを作成するべきだろうか
+        - @fixed_mock_file_under_root_dir = 'ANSI-escape-code-and-set-color'
+            - ルートディレクトリ直下に保存されているファイルのモックデータを固定したい
+
+## expected, actual
+- expected, actualを意味的に逆に使っている箇所があるかもしれない
+    - 洗い出す
 
 ### gemspecをどうするか
     - gemとして公開する必要がない。gemspecについて調査しておくこと

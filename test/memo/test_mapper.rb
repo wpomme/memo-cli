@@ -15,7 +15,7 @@ class TestMapper < Minitest::Test
             [Rainbow(struct[:dir]).green] + struct[:filenames]
           end
 
-        _(expected).must_equal(actual)
+        _(actual).must_equal(expected)
       end
 
       it "有効なディレクトリ名を受け取った場合は、そのディレクトリとその中のファイル名を表示する" do
@@ -27,7 +27,7 @@ class TestMapper < Minitest::Test
             [Rainbow(struct[:dir]).green] + struct[:filenames] if struct[:dir] == valid_dir
           end
 
-        _(expected).must_equal(actual)
+        _(actual).must_equal(expected)
       end
 
       it "存在しないディレクトリ名を受け取った場合は、その旨を知らせる文字列を返す" do
@@ -36,7 +36,7 @@ class TestMapper < Minitest::Test
         expected = mapper.file_list_to_view(invalid_dir)
         actual = Memo::Message::NO_DIRECTORIES.sub('dir', invalid_dir) << mapper.colored_dirs.join(' ')
 
-        _(expected).must_equal(actual)
+        _(actual).must_equal(expected)
       end
     end
 
@@ -51,14 +51,18 @@ class TestMapper < Minitest::Test
             memo.include?(Rainbow(search_word).red)
           end
 
-          _(expected).must_equal(true)
+          _(true).must_equal(expected)
         end
 
         it '検索結果がなかった場合は、文字列を返す' do
           search_word = 'hikkakaranasounakotoba'
-          expected = Memo::Mapper.new(@test_repo).search_result_to_view(search_word)
+          mapper = Memo::Mapper.new(@test_repo)
 
-          _(expected).must_be_instance_of(String)
+          actual = mapper.search_result_to_view(search_word)
+
+          expected = Memo::Message::NO_SEARCH_RESULTS_WERE_FOUND.sub('word', search_word)
+
+          _(actual).must_equal(expected)
         end
       end
 
@@ -71,7 +75,7 @@ class TestMapper < Minitest::Test
             line.to_view(search_word)
           end
 
-          _(expected).must_equal(actual)
+          _(actual).must_equal(expected)
         end
 
         it '検索結果がなかった場合は、その旨を知らせる文字列を返す' do
@@ -79,7 +83,7 @@ class TestMapper < Minitest::Test
           expected = Memo::Mapper.new(@test_repo).search_result_to_view(search_word)
           actual = Memo::Message::NO_SEARCH_RESULTS_WERE_FOUND.sub('word', search_word)
 
-          _(expected).must_equal(actual)
+          _(actual).must_equal(expected)
         end
       end
     end

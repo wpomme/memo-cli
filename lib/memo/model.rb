@@ -15,11 +15,14 @@ module Memo
     Seed = Data.define(:full_path, :rel_path, :dir, :filename)
 
     DirSeed = Struct.new(:basename, :parent_dir, :dir) do
-      def initialize(target_dir, root_dir)
-        root_dir_basename = File.basename(root_dir)
-        parent_dir = root_dir_basename == target_dir ? nil : File.basename(File.dirname(target_dir))
+      def initialize(target_dir, root_dirname)
+        if target_dir == root_dirname
+          super(File.basename(target_dir), nil, target_dir)
+        else
+          parent_dir = File.dirname(target_dir)
 
-        super(File.basename(target_dir), parent_dir == "." ? root_dir_basename : parent_dir, target_dir)
+          super(File.basename(target_dir), parent_dir == "." ? root_dirname : parent_dir, target_dir)
+        end
       end
     end
 

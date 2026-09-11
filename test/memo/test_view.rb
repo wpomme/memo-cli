@@ -83,7 +83,7 @@ class TestView < Minitest::Test
         # ユーザーに表示される票は空行が入っているので、それを取り除く
         expected.delete("")
 
-        _(expected).must_equal(actual)
+        _(actual).must_equal(expected)
       end
 
       it "有効なディレクトリ名を受け取った場合は、そのディレクトリとその中のファイル名を表示する" do

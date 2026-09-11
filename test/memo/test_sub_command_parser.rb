@@ -8,21 +8,21 @@ class TestSubCommandParser < Minitest::Test
       it '引数がlistのときは、[:list]を返す' do
         Memo::SubCommandParser::LIST_COMMAND_SPEC.take_command_forms.each do |command|
           expected = Memo::SubCommandParser.parse!([command])
-          _(expected).must_equal([:list])
+          _([:list]).must_equal(expected)
         end
       end
 
       it '引数がlist <word>のときは、[:list, <word>]を返す' do
         Memo::SubCommandParser::LIST_COMMAND_SPEC.take_command_forms.each do |command|
           expected = Memo::SubCommandParser.parse!([command, "foo"])
-          _(expected).must_equal([:list, 'foo'])
+          _([:list, 'foo']).must_equal(expected)
         end
       end
 
       it '引数がlistで、その後に続く引数が二つ以上あるときは、listの次の引数を返す' do
         Memo::SubCommandParser::LIST_COMMAND_SPEC.take_command_forms.each do |command|
           expected = Memo::SubCommandParser.parse!([command, "foo", "bar"])
-          _(expected).must_equal([:list, 'foo'])
+          _([:list, 'foo']).must_equal(expected)
         end
       end
     end
@@ -33,7 +33,7 @@ class TestSubCommandParser < Minitest::Test
           exception = assert_raises(SystemExit) do
             Memo::SubCommandParser::READ_COMMAND_SPEC.take_command_forms.each do |command|
               expected = Memo::SubCommandParser.parse!([command])
-              _(expected).must_equal([:read])
+              _([:read]).must_equal(expected)
             end
           end
 
@@ -46,20 +46,20 @@ class TestSubCommandParser < Minitest::Test
       it '引数がread <word>のときは、[:read, <word>]' do
         Memo::SubCommandParser::READ_COMMAND_SPEC.take_command_forms.each do |command|
           expected = Memo::SubCommandParser.parse!([command, "foo"])
-          _(expected).must_equal([:read, "foo"])
+          _([:read, "foo"]).must_equal(expected)
         end
       end
 
       it '引数がreadで、その後に続く引数が二つ以上あるときは、readの次の引数を返す' do
         Memo::SubCommandParser::READ_COMMAND_SPEC.take_command_forms.each do |command|
           expected = Memo::SubCommandParser.parse!([command, "foo", "bar"])
-          _(expected).must_equal([:read, "foo"])
+          _([:read, "foo"]).must_equal(expected)
         end
       end
 
       it '引数が一つだけなら、readの引数とする' do
         expected = Memo::SubCommandParser.parse!(%w[foo])
-        _(expected).must_equal([:read, "foo"])
+        _([:read, "foo"]).must_equal(expected)
       end
     end
 
@@ -69,7 +69,7 @@ class TestSubCommandParser < Minitest::Test
           exception = assert_raises(SystemExit) do
             Memo::SubCommandParser::SEARCH_COMMAND_SPEC.take_command_forms.each do |command|
               expected = Memo::SubCommandParser.parse!([command])
-              _(expected).must_equal([:search])
+              _([:search]).must_equal(expected)
             end
           end
 
@@ -82,14 +82,14 @@ class TestSubCommandParser < Minitest::Test
       it '引数がsearch <word>のときは、[:search, <word>]' do
         Memo::SubCommandParser::SEARCH_COMMAND_SPEC.take_command_forms.each do |command|
           expected = Memo::SubCommandParser.parse!([command, "foo"])
-          _(expected).must_equal([:search, "foo"])
+          _([:search, "foo"]).must_equal(expected)
         end
       end
 
       it '引数がsearchで、その後に続く引数が二つ以上あるときは、searchの次の引数を返す' do
         Memo::SubCommandParser::SEARCH_COMMAND_SPEC.take_command_forms.each do |command|
           expected = Memo::SubCommandParser.parse!([command, "foo", "bar"])
-          _(expected).must_equal([:search, "foo"])
+          _([:search, "foo"]).must_equal(expected)
         end
       end
     end
@@ -98,14 +98,14 @@ class TestSubCommandParser < Minitest::Test
       it '引数がdirsだけのときは、:dirsを返す' do
         Memo::SubCommandParser::DIRS_COMMAND_SPEC.take_command_forms.each do |command|
           expected = Memo::SubCommandParser.parse!([command])
-          _(expected).must_equal([:dirs])
+          _([:dirs]).must_equal(expected)
         end
       end
 
       it '引数がdirsで、その後に続く引数があってもそのまま:dirsを返す' do
         Memo::SubCommandParser::DIRS_COMMAND_SPEC.take_command_forms.each do |command|
           expected = Memo::SubCommandParser.parse!([command, "foo"])
-          _(expected).must_equal([:dirs])
+          _([:dirs]).must_equal(expected)
         end
       end
     end

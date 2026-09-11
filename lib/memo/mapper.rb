@@ -14,6 +14,8 @@ module Memo
     # @return [Array<String>, String]
     def search_result_to_view(word)
       search_result = @repo.search_all(word)
+
+      # 検索結果が空だった場合は、その旨を示すメッセージを表示する
       return Memo::Message::NO_SEARCH_RESULTS_WERE_FOUND.sub('word', word) if search_result.all?(&:empty?)
 
       search_result.flatten.map do |line|

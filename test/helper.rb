@@ -17,7 +17,8 @@ module MemoTestLifecycleHooks
     @tmpdir = Dir.mktmpdir
 
     # テスト環境ではMemo::Config.memo_dirを使わない
-    @test_memo_dir = File.join(Dir.home, File.join(@tmpdir, "memo"))
+    @test_memo_dir = File.join(Dir.home, File.join(@tmpdir))
+    @test_root_dirname = File.basename(@test_memo_dir)
 
     Memo::MockSeed::TEST_MEMO_DATA_SEED.each do |elem|
       dir_for_file = File.join(@test_memo_dir, elem[:dir])

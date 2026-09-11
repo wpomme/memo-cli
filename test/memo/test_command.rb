@@ -32,7 +32,7 @@ class TestCommand < Minitest::Test
           # 空行を取り除く
           expected.delete("")
 
-          _(expected).must_equal(actual)
+          _(actual).must_equal(expected)
         end
 
         it "['list', 'cli']を受け取ったときは、memo_dirの中のcliディレクトリの中にあるメモファイルを全て表示する" do

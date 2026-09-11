@@ -15,7 +15,7 @@ class TestService < Minitest::Test
 
           expected = ret.all?(String)
 
-          _(expected).must_equal(true)
+          _(true).must_equal(expected)
         end
       end
 
@@ -25,7 +25,7 @@ class TestService < Minitest::Test
 
         actual = Memo::MockSeed::TEST_DIFF_FILE_CONTENT
 
-        _(expected).must_equal(actual.split("\n"))
+        _(actual.split("\n")).must_equal(expected)
       end
     end
 
@@ -39,7 +39,7 @@ class TestService < Minitest::Test
           search_lines = search(target_seed, search_word)
           expected = search_lines.all?(Memo::Model::SearchLine)
 
-          _(expected).must_equal(true)
+          _(true).must_equal(expected)
         end
 
         it '読み込んだファイルの中に該当の文字列が含まれていない場合は、空の配列を返す' do
@@ -49,7 +49,7 @@ class TestService < Minitest::Test
           target_seed = @test_seeds.find { |seed| seed.filename == target_file }
           expected = search(target_seed, search_word)
 
-          _(expected).must_equal([])
+          _([]).must_equal(expected)
         end
       end
 
@@ -67,7 +67,7 @@ class TestService < Minitest::Test
               Memo::Model::SearchLine.new(path: target_seed.rel_path, line_number: index + 1, line: line) if line.include?(search_word)
             end
 
-          _(expected).must_equal(actual)
+          _(actual).must_equal(expected)
         end
       end
     end
@@ -81,7 +81,7 @@ class TestService < Minitest::Test
         $stdin = StringIO.new("2\n")
         out, = capture_io do
           expected = select_prompt(title: title, choices: choices)
-          _(expected).must_equal(choices[:bar])
+          _(choices[:bar]).must_equal(expected)
         end
 
         choices_out = choices.keys.map.with_index do |key, index|
@@ -101,7 +101,7 @@ class TestService < Minitest::Test
         $stdin = StringIO.new("5\n4\n3\n")
         out, = capture_io do
           expected = select_prompt(title: title, choices: choices)
-          _(expected).must_equal(choices[:baz])
+          _(choices[:baz]).must_equal(expected)
         end
 
         choices_out = choices.keys.map.with_index do |key, index|

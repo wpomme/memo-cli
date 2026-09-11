@@ -6,7 +6,8 @@ module Memo
 
     def initialize(dir)
       @seeds = load(dir)
-      @root_dir = dir
+      @dirs = load_dirs(dir)
+      @root_dirname = File.basename(dir)
     end
 
     # 対象の全てのファイルに文字列検索を行う
@@ -40,23 +41,31 @@ module Memo
       @seeds.filter { |seed| seed.filename == word }
     end
 
-    # parent_dir: @root_dirと同じなら、ディレクトリのトップである。parent_dirはnilに設定する
+    # parent_dir: @root_dirnameと同じなら、ディレクトリのトップである。parent_dirはnilに設定する
     #
     # @return [Array<DirSeed>]
     def dir_seeds
-      dir_set.map { |dir| Model::DirSeed.new(dir, @root_dir) }
+      dir_set.map { |dir| Model::DirSeed.new(dir, @root_dirname) }
     end
 
     # フォルダの中のディレクトリの集合
+    # 対象のディレクトリはルートディレクトリとしてディレクトリの集合の中に加える
     #
     # @return [Set<String>]
     def dir_set
-      Set.new(@seeds.map(&:dir).uniq).freeze
+      Set.new(@dirs).add(@root_dirname)
     end
 
     private
 
-    # ディレクトリ内をglobで捜索して、ファイルの読み取りや検索に必要な情報を取得する
+    # 対象のディレクトリ内をglobで捜索して、その中にあるディレクトリの一覧を取得する
+    #
+    # @return [Array<String>]
+    def load_dirs(root_dir)
+      Dir.glob("**/*/", base: root_dir).map { |dir| dir.rstrip("/") }
+    end
+
+    # 対象のディレクトリ内をglobで捜索して、ファイルの読み取りや検索に必要な情報を取得する
     #
     # @return [Array<Seed>]
     def load(root_dir)
