@@ -103,6 +103,8 @@ module Memo
         opts.separator "使い方: memo subcommand [arguments]"
         opts.separator "例: memo list cli => memoフォルダ内のcliフォルダの中のメモの一覧を返す"
         opts.separator "サブコマンドの--は省略可能"
+        opts.separator "また、サブコマンドを省略した場合はmemo readを実行するものとみなされる"
+        opts.separator "例: memo ls => フォルダ内のls.mdを検索して、あればls.mdを全文表示する"
 
         opts.separator ""
         opts.separator "サブコマンド(subcommand)のリスト:"

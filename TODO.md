@@ -2,6 +2,7 @@
 ### TODO
 ### 1. memo walkの作成
 - `memo walk`というコマンドを作成する
+    -  先に`memo dirs walk`というディレクトリ専用のコマンドを作成してもいいかも
     1. 実行したら、memoフォルダの階層のトップを表示させ、プロンプトで選択できるようにする
     2. フォルダを選択したら、そのフォルダの中を表示させる
         2.1. トップ以外のフォルダを表示している場合は、その親のフォルダに移動できるようにする
@@ -45,9 +46,6 @@
         - @fixed_mock_search_word = 'diff'
         - @fixed_mock_duplicated_file = 'mise'
             - 別のsetup, teardownを作成するべきだろうか
-
-### ModuleとClassの整理
-- Moduleがフォルダを作成して、Classがファイルのまま、だっただろうか？
 
 ### gemspecをどうするか
     - gemとして公開する必要がない。gemspecについて調査しておくこと

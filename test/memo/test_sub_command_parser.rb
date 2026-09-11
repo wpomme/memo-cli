@@ -4,23 +4,22 @@ require_relative "../helper"
 
 class TestSubCommandParser < Minitest::Test
   describe '"#parse!' do
-    # TODO: read, searchなど、-r, -sでもコマンドが実行できるようになったので、そのようにテストを修正する
-    describe 'memo list' do
-      it '引数がlist, -l, --listだけのときは、[:list]を返す' do
+    describe 'memo list(-l, --list)' do
+      it '引数がlistのときは、[:list]を返す' do
         Memo::SubCommandParser::LIST_COMMAND_SPEC.take_command_forms.each do |command|
           expected = Memo::SubCommandParser.parse!([command])
           _(expected).must_equal([:list])
         end
       end
 
-      it '引数がlist, -l, --list <word>のときは、[:list, <word>]を返す' do
+      it '引数がlist <word>のときは、[:list, <word>]を返す' do
         Memo::SubCommandParser::LIST_COMMAND_SPEC.take_command_forms.each do |command|
           expected = Memo::SubCommandParser.parse!([command, "foo"])
           _(expected).must_equal([:list, 'foo'])
         end
       end
 
-      it '引数がlist, -l, --listで、その後に続く引数が二つ以上あるときは、listの次の引数を返す' do
+      it '引数がlistで、その後に続く引数が二つ以上あるときは、listの次の引数を返す' do
         Memo::SubCommandParser::LIST_COMMAND_SPEC.take_command_forms.each do |command|
           expected = Memo::SubCommandParser.parse!([command, "foo", "bar"])
           _(expected).must_equal([:list, 'foo'])
@@ -28,72 +27,90 @@ class TestSubCommandParser < Minitest::Test
       end
     end
 
-    describe 'memo read' do
+    describe 'memo read(-r, --read)' do
       it '引数がreadだけのときは、エラーメッセージを表示して異常終了する' do
         _, err = capture_io do
           exception = assert_raises(SystemExit) do
-            Memo::SubCommandParser.parse!(['read'])
+            Memo::SubCommandParser::READ_COMMAND_SPEC.take_command_forms.each do |command|
+              expected = Memo::SubCommandParser.parse!([command])
+              _(expected).must_equal([:read])
+            end
           end
 
-          assert_equal 2, exception.status
+          _(exception.status).must_equal(2)
         end
 
-        assert_equal "", err
+        _("").must_equal(err)
       end
 
       it '引数がread <word>のときは、[:read, <word>]' do
-        expected = Memo::SubCommandParser.parse!(%w[read foo])
-        assert_equal [:read, 'foo'], expected
+        Memo::SubCommandParser::READ_COMMAND_SPEC.take_command_forms.each do |command|
+          expected = Memo::SubCommandParser.parse!([command, "foo"])
+          _(expected).must_equal([:read, "foo"])
+        end
       end
 
       it '引数がreadで、その後に続く引数が二つ以上あるときは、readの次の引数を返す' do
-        expected = Memo::SubCommandParser.parse!(%w[read foo bar])
-        assert_equal [:read, 'foo'], expected
+        Memo::SubCommandParser::READ_COMMAND_SPEC.take_command_forms.each do |command|
+          expected = Memo::SubCommandParser.parse!([command, "foo", "bar"])
+          _(expected).must_equal([:read, "foo"])
+        end
       end
 
-      it '引数が一つだけで、サブコマンドではなく、不正な文字列でなければ、readの引数とする' do
+      it '引数が一つだけなら、readの引数とする' do
         expected = Memo::SubCommandParser.parse!(%w[foo])
-        assert_equal [:read, 'foo'], expected
+        _(expected).must_equal([:read, "foo"])
       end
     end
 
-    describe 'memo search' do
+    describe 'memo search(-s, --search)' do
       it '引数がsearchだけのときは、エラーメッセージを表示して異常終了する' do
         _, err = capture_io do
           exception = assert_raises(SystemExit) do
-            Memo::SubCommandParser.parse!(['search'])
+            Memo::SubCommandParser::SEARCH_COMMAND_SPEC.take_command_forms.each do |command|
+              expected = Memo::SubCommandParser.parse!([command])
+              _(expected).must_equal([:search])
+            end
           end
 
-          assert_equal 2, exception.status
+          _(exception.status).must_equal(2)
         end
 
-        assert_equal "", err
+        _("").must_equal(err)
       end
 
       it '引数がsearch <word>のときは、[:search, <word>]' do
-        expected = Memo::SubCommandParser.parse!(%w[search foo])
-        assert_equal [:search, 'foo'], expected
+        Memo::SubCommandParser::SEARCH_COMMAND_SPEC.take_command_forms.each do |command|
+          expected = Memo::SubCommandParser.parse!([command, "foo"])
+          _(expected).must_equal([:search, "foo"])
+        end
       end
 
       it '引数がsearchで、その後に続く引数が二つ以上あるときは、searchの次の引数を返す' do
-        expected = Memo::SubCommandParser.parse!(%w[search foo bar])
-        assert_equal [:search, 'foo'], expected
+        Memo::SubCommandParser::SEARCH_COMMAND_SPEC.take_command_forms.each do |command|
+          expected = Memo::SubCommandParser.parse!([command, "foo", "bar"])
+          _(expected).must_equal([:search, "foo"])
+        end
       end
     end
 
-    describe 'memo dirs' do
+    describe 'memo dirs(-d, --dirs)' do
       it '引数がdirsだけのときは、:dirsを返す' do
-        expected = Memo::SubCommandParser.parse!(['dirs'])
-        assert_equal [:dirs], expected
+        Memo::SubCommandParser::DIRS_COMMAND_SPEC.take_command_forms.each do |command|
+          expected = Memo::SubCommandParser.parse!([command])
+          _(expected).must_equal([:dirs])
+        end
       end
 
       it '引数がdirsで、その後に続く引数があってもそのまま:dirsを返す' do
-        expected = Memo::SubCommandParser.parse!(%w[dirs foo])
-        assert_equal [:dirs], expected
+        Memo::SubCommandParser::DIRS_COMMAND_SPEC.take_command_forms.each do |command|
+          expected = Memo::SubCommandParser.parse!([command, "foo"])
+          _(expected).must_equal([:dirs])
+        end
       end
     end
 
-    describe 'memo help' do
+    describe 'memo help(-h, --help)' do
       parser = Memo::SubCommandParser.parser
       help_message_expected = parser.on.to_a.each.with_index.reduce("") do |result, (line, index)|
         result += line
@@ -103,7 +120,7 @@ class TestSubCommandParser < Minitest::Test
       end
         .chomp
 
-      it '引数がhelp, -h, --helpだけのときは、ヘルプメッセージを表示する' do
+      it '引数がhelpだけのときは、ヘルプメッセージを表示する' do
         out, err = capture_io do
           exception = assert_raises(SystemExit) do
             Memo::SubCommandParser::HELP_COMMAND_SPEC.take_command_forms.each do |sub_command|
@@ -118,7 +135,7 @@ class TestSubCommandParser < Minitest::Test
         _(help_message_expected).must_equal(out)
       end
 
-      it '引数がhelp, -h, --helpで、引数が一つ以上あるときでも、そのままヘルプメッセージを表示する' do
+      it '引数がhelpで、引数が一つ以上あるときでも、そのままヘルプメッセージを表示する' do
         out, err = capture_io do
           exception = assert_raises(SystemExit) do
             Memo::SubCommandParser::HELP_COMMAND_SPEC.take_command_forms.each do |sub_command|
