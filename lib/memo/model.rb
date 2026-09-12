@@ -28,6 +28,7 @@ module Memo
 
     # 対象のディレクトリの中にあるファイル名の配列を保存する
     # :dirは文字列、:filenamesは文字列の配列が入る
+    # NOTE: :dirがキーで:filenamesが値となるHashで良さそう
     GroupedFileList = Struct.new(:dir, :filenames) do
       def initialize(...)
         super

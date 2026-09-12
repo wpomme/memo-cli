@@ -32,6 +32,10 @@ module Memo
       end
     end
 
+    def grouped_file_list_hash
+      @seeds.group_by(&:dir).transform_values { |seeds| seeds.map(&:filename) }
+    end
+
     # 検索文字列と一致するファイル名の配列を返す
     # 一致するファイル名が見つからなかった場合は空の配列を返す
     #

@@ -42,7 +42,6 @@ class TestRepository < Minitest::Test
 
       it '対象ディレクトリの最上位にあるメモのdirは、そのメモが保存されているディレクトリ名になる' do
         skip "TODO: @fixed_mock_file_under_root_dirを作成する"
-
       end
     end
 
@@ -184,6 +183,33 @@ class TestRepository < Minitest::Test
 
             _([]).must_equal(expected)
           end
+        end
+      end
+    end
+
+    describe '#grouped_file_list_hash' do
+      describe '戻り値の型検査' do
+        it "キーがディレクトリを示す文字列で、値がファイル名を示す文字列の配列となるHashを返す" do
+          result = @test_repo.grouped_file_list_hash
+
+          keys_type = result.keys.all?(String)
+          values_type = result.values.all? do |filenames|
+            filenames.all?(String)
+          end
+
+          _(result).must_be_instance_of Hash
+          _(true).must_equal keys_type
+          _(true).must_equal values_type
+        end
+      end
+
+      describe '戻り値の値検査' do
+        it "モックデータの値と同じであること" do
+          actual = @test_repo.grouped_file_list_hash
+
+          expected = @test_seeds.group_by(&:dir).transform_values { |seeds| seeds.map(&:filename) }
+
+          _(actual).must_equal(expected)
         end
       end
     end

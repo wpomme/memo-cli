@@ -40,6 +40,41 @@ class TestMapper < Minitest::Test
       end
     end
 
+    describe "grouped_file_list_hash" do
+      it "引数を取らなかった場合は、色付けされたディレクトリとそれに紐付くファイル名のリストを返す" do
+        actual = Memo::Mapper.new(@test_repo).file_list_hash_to_view
+
+        expected = @test_repo.grouped_file_list_hash.each do |dir, filenames|
+          [Rainbow(dir).green].concat(filenames)
+        end
+
+        _(actual).must_equal(expected)
+      end
+
+      describe "引数にディレクトリ名を取った場合" do
+        it "その引数がキーに存在するならば、そのディレクトリ名を色付けして、さらにそれに紐付くファイル名のリストを返す" do
+          target_dir = "cli"
+          actual = Memo::Mapper.new(@test_repo).file_list_hash_to_view(target_dir)
+
+          expected = @test_repo.grouped_file_list_hash[target_dir].map do |filename|
+            (ret ||= [Rainbow(target_dir).green]) << filename
+            ret
+          end
+
+          _(actual).must_equal(expected)
+        end
+
+        it "メモの中に存在しないディレクトリ名を受け取った場合は、その旨をユーザーに表示するメッセージを返す" do
+          target_dir = "not_exist_dir"
+          actual = Memo::Mapper.new(@test_repo).file_list_hash_to_view(target_dir)
+
+          expected = Memo::Message::NO_DIRECTORIES.sub('dir', target_dir) << @test_repo.dir_set.join(' ')
+
+          _(actual).must_equal(expected)
+        end
+      end
+    end
+
     describe '#search_result_to_view' do
       describe '戻り値の型検査' do
         it '色付きの検索結果が含まれている文字列の一次元配列を返す' do
