@@ -61,7 +61,7 @@ namespace :mock do
       label = "#{basename}_FILE"
       heredoc = ["#{val_name} = <<~#{label}"] + content + [label] + ["\n"]
       {
-        mock_seed: { dir: seed.dir, basename: seed.basename, content: val_name.to_sym },
+        mock_seed: { parent_dir: seed.parent_dir, basename: seed.basename, content: val_name.to_sym },
         heredoc: heredoc
       }
     end
@@ -77,7 +77,7 @@ namespace :mock do
       test_memo_data_seed = mock_seeds.map do |seed|
         <<~MEMO_DATA
           {
-            dir: "#{seed[:mock_seed][:dir]}",
+            parent_dir: "#{seed[:mock_seed][:parent_dir]}",
             basename: "#{seed[:mock_seed][:basename]}",
             content: #{seed[:mock_seed][:content]}
           },

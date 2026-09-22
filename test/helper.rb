@@ -18,10 +18,10 @@ module MemoTestLifecycleHooks
     @test_root_dirname = File.basename(@test_memo_dir)
 
     Memo::MockSeed::TEST_MEMO_DATA_SEED.each do |elem|
-      dir_for_file = File.join(@test_memo_dir, elem[:dir])
+      dir_for_file = File.join(@test_memo_dir, elem[:parent_dir])
       FileUtils.mkdir_p(dir_for_file) unless FileTest.directory?(dir_for_file)
 
-      File.write(File.join(@test_memo_dir, elem[:dir], "#{elem[:basename]}.md"), elem[:content])
+      File.write(File.join(@test_memo_dir, elem[:parent_dir], "#{elem[:basename]}.md"), elem[:content])
     end
 
     @test_repo = Memo::Repository.new(@test_memo_dir)

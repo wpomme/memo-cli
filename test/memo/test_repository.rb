@@ -131,7 +131,7 @@ class TestRepository < Minitest::Test
         it "モックデータの値と同じであること" do
           expected = @test_repo.grouped_file_list
 
-          actual = @test_seeds.group_by(&:dir).map do |dir, seed|
+          actual = @test_seeds.group_by(&:parent_dir).map do |dir, seed|
             Memo::Model::GroupedFileList.new(
               dir: dir,
               filenames: seed.map(&:basename)
@@ -157,7 +157,7 @@ class TestRepository < Minitest::Test
           it "ディレクトリ名に色付けをしてディレクトリとファイル名の配列を返す" do
             expected = @test_repo.grouped_file_list.map(&:to_view)
 
-            actual = @test_seeds.group_by(&:dir).map do |dir, grouped|
+            actual = @test_seeds.group_by(&:parent_dir).map do |dir, grouped|
               [Rainbow(dir).green] + grouped.map(&:basename)
             end
 
@@ -170,7 +170,7 @@ class TestRepository < Minitest::Test
             target_dir = "cli"
             expected = @test_repo.grouped_file_list.filter_map { |grouped| grouped.to_view(target_dir) }
 
-            actual = @test_seeds.group_by(&:dir).filter_map do |dir, grouped|
+            actual = @test_seeds.group_by(&:parent_dir).filter_map do |dir, grouped|
               [Rainbow(dir).green] + grouped.map(&:basename) if dir == target_dir
             end
 
@@ -236,13 +236,7 @@ class TestRepository < Minitest::Test
           values = test_walk_seed_hash[@test_root_dirname]
 
           actual = values.all? do |seed|
-            if seed.instance_of?(Memo::Model::DirSeed)
-              seed.parent_dir == @test_root_dirname
-            elsif seed.instance_of?(Memo::Model::Seed)
-              seed.dir == @test_root_dirname
-            else
-              StandardError "Test Failed: Memo::Repository#walk_seed_hash 戻り値の値検査"
-            end
+            seed.parent_dir == @test_root_dirname
           end
 
           _(true).must_equal(actual)
@@ -270,7 +264,7 @@ class TestRepository < Minitest::Test
         it "モックデータの値と同じであること" do
           actual = @test_repo.grouped_file_list_hash
 
-          expected = @test_seeds.group_by(&:dir).transform_values { |seeds| seeds.map(&:basename) }
+          expected = @test_seeds.group_by(&:parent_dir).transform_values { |seeds| seeds.map(&:basename) }
 
           _(actual).must_equal(expected)
         end
@@ -308,7 +302,7 @@ class TestRepository < Minitest::Test
           expected = @test_repo.search_all(search_word)
 
           actual = Memo::MockSeed::TEST_MEMO_DATA_SEED.filter_map do |seed|
-            rel_path = File.join(seed[:dir], "#{seed[:basename]}.md")
+            rel_path = File.join(seed[:parent_dir], "#{seed[:basename]}.md")
             seed[:content]
               .split("\n")
               .each_with_index

@@ -709,167 +709,167 @@ module Memo
 
     TEST_MEMO_DATA_SEED = [
       {
-        dir: "memo",
+        parent_dir: "memo",
         basename: "ANSI-escape-code-and-set-color",
         content: TEST_ANSI_ESCAPE_CODE_AND_SET_COLOR_FILE_CONTENT
       },
       {
-        dir: "cli/core/builtin",
+        parent_dir: "cli/core/builtin",
         basename: "builtin",
         content: TEST_BUILTIN_FILE_CONTENT
       },
       {
-        dir: "cli/core/file",
+        parent_dir: "cli/core/file",
         basename: "ls",
         content: TEST_LS_FILE_CONTENT
       },
       {
-        dir: "cli/core/process",
+        parent_dir: "cli/core/process",
         basename: "lsof",
         content: TEST_LSOF_FILE_CONTENT
       },
       {
-        dir: "cli/core/text",
+        parent_dir: "cli/core/text",
         basename: "cut",
         content: TEST_CUT_FILE_CONTENT
       },
       {
-        dir: "cli/core/text",
+        parent_dir: "cli/core/text",
         basename: "sed",
         content: TEST_SED_FILE_CONTENT
       },
       {
-        dir: "cli/core/text",
+        parent_dir: "cli/core/text",
         basename: "xargs",
         content: TEST_XARGS_FILE_CONTENT
       },
       {
-        dir: "cli/third-party",
+        parent_dir: "cli/third-party",
         basename: "claude",
         content: TEST_CLAUDE_FILE_CONTENT
       },
       {
-        dir: "cli/third-party",
+        parent_dir: "cli/third-party",
         basename: "mise",
         content: TEST_MISE_FILE_CONTENT_1
       },
       {
-        dir: "cli",
+        parent_dir: "cli",
         basename: "units",
         content: TEST_UNITS_FILE_CONTENT
       },
       {
-        dir: "git",
+        parent_dir: "git",
         basename: "checkout",
         content: TEST_CHECKOUT_FILE_CONTENT
       },
       {
-        dir: "git",
+        parent_dir: "git",
         basename: "diff",
         content: TEST_DIFF_FILE_CONTENT
       },
       {
-        dir: "git",
+        parent_dir: "git",
         basename: "merge",
         content: TEST_MERGE_FILE_CONTENT
       },
       {
-        dir: "git",
+        parent_dir: "git",
         basename: "reset",
         content: TEST_RESET_FILE_CONTENT
       },
       {
-        dir: "git",
+        parent_dir: "git",
         basename: "upstream",
         content: TEST_UPSTREAM_FILE_CONTENT
       },
       {
-        dir: "how-to",
+        parent_dir: "how-to",
         basename: "server",
         content: TEST_SERVER_FILE_CONTENT
       },
       {
-        dir: "lang/javascript",
+        parent_dir: "lang/javascript",
         basename: "console",
         content: TEST_CONSOLE_FILE_CONTENT
       },
       {
-        dir: "lang/javascript",
+        parent_dir: "lang/javascript",
         basename: "package-json",
         content: TEST_PACKAGE_JSON_FILE_CONTENT
       },
       {
-        dir: "lang/perl",
+        parent_dir: "lang/perl",
         basename: "oneliner",
         content: TEST_ONELINER_FILE_CONTENT
       },
       {
-        dir: "lang/ruby",
+        parent_dir: "lang/ruby",
         basename: "compare",
         content: TEST_COMPARE_FILE_CONTENT
       },
       {
-        dir: "lang/ruby",
+        parent_dir: "lang/ruby",
         basename: "rake",
         content: TEST_RAKE_FILE_CONTENT
       },
       {
-        dir: "lang/ruby",
+        parent_dir: "lang/ruby",
         basename: "type-check",
         content: TEST_TYPE_CHECK_FILE_CONTENT
       },
       {
-        dir: "memo",
+        parent_dir: "memo",
         basename: "memo-summary",
         content: TEST_MEMO_SUMMARY_FILE_CONTENT
       },
       {
-        dir: "neovim",
+        parent_dir: "neovim",
         basename: "keymap",
         content: TEST_KEYMAP_FILE_CONTENT
       },
       {
-        dir: "neovim/plugin",
+        parent_dir: "neovim/plugin",
         basename: "vim-pack",
         content: TEST_VIM_PACK_FILE_CONTENT
       },
       {
-        dir: "neovim",
+        parent_dir: "neovim",
         basename: "text-objects",
         content: TEST_TEXT_OBJECTS_FILE_CONTENT
       },
       {
-        dir: "setting",
+        parent_dir: "setting",
         basename: "docker-compose",
         content: TEST_DOCKER_COMPOSE_FILE_CONTENT
       },
       {
-        dir: "setting",
+        parent_dir: "setting",
         basename: "mise",
         content: TEST_MISE_FILE_CONTENT_2
       },
       {
-        dir: "shell/bash",
+        parent_dir: "shell/bash",
         basename: "exit-status",
         content: TEST_EXIT_STATUS_FILE_CONTENT
       },
       {
-        dir: "shell/bash",
+        parent_dir: "shell/bash",
         basename: "parameter-expansion",
         content: TEST_PARAMETER_EXPANSION_FILE_CONTENT
       },
       {
-        dir: "shell/bash",
+        parent_dir: "shell/bash",
         basename: "special-parameters",
         content: TEST_SPECIAL_PARAMETERS_FILE_CONTENT
       },
       {
-        dir: "tui",
+        parent_dir: "tui",
         basename: "emacs",
         content: TEST_EMACS_FILE_CONTENT
       },
       {
-        dir: "tui",
+        parent_dir: "tui",
         basename: "tmux",
         content: TEST_TMUX_FILE_CONTENT
       }

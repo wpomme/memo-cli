@@ -24,7 +24,7 @@ module Memo
     # Seeds -> GroupedFileListに変換する関数
     # @return [Array<Memo::Model::GroupedFileList>]
     def grouped_file_list
-      @seeds.group_by(&:dir).map do |dir, seed|
+      @seeds.group_by(&:parent_dir).map do |dir, seed|
         Memo::Model::GroupedFileList.new(
           dir: dir,
           filenames: seed.map(&:basename)
@@ -34,7 +34,7 @@ module Memo
 
     # grouped_file_listを代替するためのHashを返す関数
     def grouped_file_list_hash
-      @seeds.group_by(&:dir).transform_values { |seeds| seeds.map(&:basename) }
+      @seeds.group_by(&:parent_dir).transform_values { |seeds| seeds.map(&:basename) }
     end
 
     # memo walk CLIに使用するためのseed Hash
@@ -45,7 +45,7 @@ module Memo
     #
     # @return [Hash<String | nil, Memo::Model::Seed, Memo::Model::DirSeed>]
     def walk_seed_hash
-      grouped_seeds = @seeds.group_by(&:dir)
+      grouped_seeds = @seeds.group_by(&:parent_dir)
       grouped_dir_seeds = dir_seeds.group_by(&:parent_dir)
 
       grouped_dir_seeds.merge(grouped_seeds) do |_, dirs, files|
@@ -97,12 +97,12 @@ module Memo
         full_path = File.join(root_dir, rel_path)
 
         # トップディレクトリにあるメモのdirは"."となってしまうため、引数として受け取ったディレクトリの末尾を使う
-        dir = File.dirname(rel_path) == "." ? File.basename(root_dir) : File.dirname(rel_path)
+        parent_dir = File.dirname(rel_path) == "." ? File.basename(root_dir) : File.dirname(rel_path)
 
         Memo::Model::Seed.new(
           full_path: full_path,
           rel_path: rel_path,
-          dir: dir,
+          parent_dir: parent_dir,
           basename: basename(full_path)
         )
       end

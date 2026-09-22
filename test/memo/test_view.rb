@@ -32,7 +32,7 @@ class TestView < Minitest::Test
       it 'wordが存在するファイルと複数件一致するとき、どのファイルを表示するかのプロンプトを表示し、選択したファイルを全文表示する' do
         word = 'mise'
         choices = Memo::MockSeed::TEST_MEMO_DATA_SEED.filter_map do |seed|
-          [[seed[:dir], "#{seed[:basename]}.md"].join("/"), seed[:content]] if seed[:basename] == word
+          [[seed[:parent_dir], "#{seed[:basename]}.md"].join("/"), seed[:content]] if seed[:basename] == word
         end.to_h
 
         $stdin = StringIO.new("2\n")
