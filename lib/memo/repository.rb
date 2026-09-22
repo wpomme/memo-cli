@@ -36,6 +36,22 @@ module Memo
       @seeds.group_by(&:dir).transform_values { |seeds| seeds.map(&:filename) }
     end
 
+    # memo walk CLIに使用するためのseed Hash
+    #
+    # キーはディレクトリを示す文字列かnilとなる
+    # 値はDirSeedかSeedの一次元配列となる
+    # キーがnilの場合の値は、最上位を示すディレクトリのDirSeedが一つだけ入った配列がその値となる
+    #
+    # @return [Hash<String | nil, Memo::Model::Seed, Memo::Model::DirSeed>]
+    def walk_seed_hash
+      grouped_seeds = @seeds.group_by(&:dir)
+      grouped_dir_seeds = dir_seeds.group_by(&:parent_dir)
+
+      grouped_dir_seeds.merge(grouped_seeds) do |_, dirs, files|
+        dirs.concat(files)
+      end
+    end
+
     # 検索文字列と一致するファイル名の配列を返す
     # 一致するファイル名が見つからなかった場合は空の配列を返す
     #

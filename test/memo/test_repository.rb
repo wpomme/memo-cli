@@ -187,6 +187,69 @@ class TestRepository < Minitest::Test
       end
     end
 
+    describe "#walk_seed_hash" do
+      describe "戻り値の型検査" do
+        it "戻り値はHashである" do
+          result = @test_repo.walk_seed_hash
+
+          _(result).must_be_instance_of Hash
+        end
+
+        it "キーは文字列かnilとなる" do
+          result = @test_repo.walk_seed_hash
+
+          keys_type = result.keys.all? { |key| key.instance_of?(String) || key.nil? }
+
+          _(true).must_equal keys_type
+        end
+
+        it "値はSeedかDirSeedの一次元配列となる" do
+          result = @test_repo.walk_seed_hash
+
+          values_type = result.values.all? do |seeds|
+            seeds.all? do |seed|
+              seed.instance_of?(Memo::Model::Seed) || seed.instance_of?(Memo::Model::DirSeed)
+            end
+          end
+
+          _(true).must_equal values_type
+        end
+      end
+
+      describe "戻り値の値検査" do
+        it "キーがnilの値は、対象のディレクトリの最上位であることを示すDirSeedが一つだけ入っている一次元配列である" do
+          test_walk_seed_hash = @test_repo.walk_seed_hash
+
+          actual = test_walk_seed_hash[nil]
+
+          # NOTE: actualは次のような一次元配列である。
+          # parent_dirはnilであるようなDirSeedが一つだけ入っている
+          # 例: [#<struct Memo::Model::DirSeed basename="memo", parent_dir=nil, dir="memo">]
+          _(1).must_equal(actual.length)
+          _(actual[0]).must_be_instance_of Memo::Model::DirSeed
+          _(actual[0].parent_dir).must_be_nil
+        end
+
+        it "キーが対象のディレクトリの最上位であるときの値は、DirSeedかSeedの一次元配列であり、そのparent_dirかdirがディレクトリの最上位を示す文字列である" do
+          test_walk_seed_hash = @test_repo.walk_seed_hash
+
+          values = test_walk_seed_hash[@test_root_dirname]
+
+          actual = values.all? do |seed|
+            if seed.instance_of?(Memo::Model::DirSeed)
+              seed.parent_dir == @test_root_dirname
+            elsif seed.instance_of?(Memo::Model::Seed)
+              seed.dir == @test_root_dirname
+            else
+              StandardError "Test Failed: Memo::Repository#walk_seed_hash 戻り値の値検査"
+            end
+          end
+
+          _(true).must_equal(actual)
+        end
+      end
+    end
+
     describe '#grouped_file_list_hash' do
       describe '戻り値の型検査' do
         it "キーがディレクトリを示す文字列で、値がファイル名を示す文字列の配列となるHashを返す" do

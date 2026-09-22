@@ -13,5 +13,6 @@ merged = grouped_dir_seeds.merge(grouped_seeds) do |_, dirs, files|
   dirs.concat(files)
 end
 
+# Memo::Repository::WalkSeedHash
 # => これをMemo::ModelにStructとして定義して、その後にwalkを定義する
 ```
