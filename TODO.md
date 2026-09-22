@@ -2,7 +2,6 @@
 ### TODO
 ### 1. memo walkの作成
 - `memo walk`というコマンドを作成する
-    -  先に`memo dirs walk`というディレクトリ専用のコマンドを作成してもいいかも
     1. 実行したら、memoフォルダの階層のトップを表示させ、プロンプトで選択できるようにする
     2. フォルダを選択したら、そのフォルダの中を表示させる
         2.1. トップ以外のフォルダを表示している場合は、その親のフォルダに移動できるようにする
@@ -40,8 +39,7 @@
 ## Memo::Modelの整理
 - GroupedFileListを廃止し、Repository#grouped_file_list_hashを使う
     - 独自のデータ型を減らしてみる
-- DirSeedとSeedは同じSeedに統合出来るのでは？
-    - :full_path, :rel_path, :parent_dir, :basename, :type の五つを持たせる
+- DirSeedを削除する
 
 ## テスト拡張
 - coverageを取得する

@@ -6,8 +6,7 @@ module Memo
 
     def initialize(dir)
       @seeds = load(dir)
-      @dirs = load_dirs(dir)
-      @root_dirname = File.basename(dir)
+      @dir_seeds = load_dirs(dir)
     end
 
     # 対象の全てのファイルに文字列検索を行う
@@ -40,13 +39,13 @@ module Memo
     # memo walk CLIに使用するためのseed Hash
     #
     # キーはディレクトリを示す文字列かnilとなる
-    # 値はDirSeedかSeedの一次元配列となる
-    # キーがnilの場合の値は、最上位を示すディレクトリのDirSeedが一つだけ入った配列がその値となる
+    # 値はSeedの一次元配列となる
+    # キーがnilの場合の値は、最上位を示すディレクトリのSeedが一つだけ入った配列がその値となる
     #
-    # @return [Hash<String | nil, Memo::Model::Seed, Memo::Model::DirSeed>]
+    # @return [Hash<String | nil, Memo::Model::Seed>]
     def walk_seed_hash
       grouped_seeds = @seeds.group_by(&:parent_dir)
-      grouped_dir_seeds = dir_seeds.group_by(&:parent_dir)
+      grouped_dir_seeds = @dir_seeds.group_by(&:parent_dir)
 
       grouped_dir_seeds.merge(grouped_seeds) do |_, dirs, files|
         dirs.concat(files)
@@ -62,19 +61,12 @@ module Memo
       @seeds.filter { |seed| seed.basename == word }
     end
 
-    # parent_dir: @root_dirnameと同じなら、ディレクトリのトップである。parent_dirはnilに設定する
-    #
-    # @return [Array<DirSeed>]
-    def dir_seeds
-      dir_set.map { |dir| Model::DirSeed.new(dir, @root_dirname) }
-    end
-
     # フォルダの中のディレクトリの集合
     # 対象のディレクトリはルートディレクトリとしてディレクトリの集合の中に加える
     #
     # @return [Set<String>]
     def dir_set
-      Set.new(@dirs).add(@root_dirname)
+      Set.new(@dir_seeds.map(&:rel_path))
     end
 
     private
@@ -83,7 +75,29 @@ module Memo
     #
     # @return [Array<String>]
     def load_dirs(root_dir)
-      Dir.glob("**/*/", base: root_dir).map { |dir| dir.rstrip("/") }
+      dir_seeds = Dir.glob("**/*/", base: root_dir).map do |rel_path|
+        full_path = File.join(root_dir, rel_path)
+
+        target_dir = rel_path.rstrip("/")
+        parent_dir = File.dirname(target_dir)
+
+        Memo::Model::Seed.new(
+          full_path: full_path,
+          rel_path: rel_path,
+          parent_dir: parent_dir == "." ? File.basename(root_dir) : parent_dir,
+          basename: File.basename(rel_path),
+          type: :directory
+        )
+      end
+
+      # root_dirのSeedも作成する
+      dir_seeds << Memo::Model::Seed.new(
+        full_path: root_dir,
+        rel_path: File.basename(root_dir),
+        parent_dir: nil,
+        basename: File.basename(root_dir),
+        type: :directory
+      )
     end
 
     # 対象のディレクトリ内をglobで捜索して、ファイルの読み取りや検索に必要な情報を取得する
@@ -103,7 +117,8 @@ module Memo
           full_path: full_path,
           rel_path: rel_path,
           parent_dir: parent_dir,
-          basename: basename(full_path)
+          basename: basename(full_path),
+          type: :file
         )
       end
     end

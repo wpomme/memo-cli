@@ -48,21 +48,9 @@ class TestRepository < Minitest::Test
     describe '#dir_set' do
       it "モックデータと実際のdir_setが同じであること" do
         expected = @test_repo.dir_set
-        actual = Dir.glob("**/*/", base: @test_memo_dir).to_set { |dir| dir.rstrip("/") }.add(@test_root_dirname)
+        actual = Dir.glob("**/*/", base: @test_memo_dir).to_set.add(@test_root_dirname)
 
         _(actual).must_equal(expected)
-      end
-    end
-
-    describe '#dir_seeds' do
-      it '戻り値はDirSeedの一次元配列となる' do
-        expected = @test_repo.dir_seeds.all?(Memo::Model::DirSeed)
-        _(true).must_equal(expected)
-      end
-
-      it 'DirSeedのbasenameがディレクトリのトップのとき、parent_dirはnilとなる' do
-        root_dir_seed = @test_repo.dir_seeds.find { |seed| seed.basename == @test_root_dirname }
-        _(root_dir_seed.parent_dir).must_be_nil
       end
     end
 
@@ -203,13 +191,11 @@ class TestRepository < Minitest::Test
           _(true).must_equal keys_type
         end
 
-        it "値はSeedかDirSeedの一次元配列となる" do
+        it "値はSeedの一次元配列となる" do
           result = @test_repo.walk_seed_hash
 
           values_type = result.values.all? do |seeds|
-            seeds.all? do |seed|
-              seed.instance_of?(Memo::Model::Seed) || seed.instance_of?(Memo::Model::DirSeed)
-            end
+            seeds.all?(Memo::Model::Seed)
           end
 
           _(true).must_equal values_type
@@ -217,20 +203,20 @@ class TestRepository < Minitest::Test
       end
 
       describe "戻り値の値検査" do
-        it "キーがnilの値は、対象のディレクトリの最上位であることを示すDirSeedが一つだけ入っている一次元配列である" do
+        it "キーがnilの値は、対象のディレクトリの最上位であることを示すSeedが一つだけ入っている一次元配列である" do
           test_walk_seed_hash = @test_repo.walk_seed_hash
 
           actual = test_walk_seed_hash[nil]
 
           # NOTE: actualは次のような一次元配列である。
-          # parent_dirはnilであるようなDirSeedが一つだけ入っている
-          # 例: [#<struct Memo::Model::DirSeed basename="memo", parent_dir=nil, dir="memo">]
+          # parent_dirはnilであるようなSeedが一つだけ入っている
+          # 例: [#<struct Memo::Model::Seed full_path="/Users/hy/var/test-memo-dir", rel_path=".", parent_dir=nil, basename="test-memo-dir", type=:directory]
           _(1).must_equal(actual.length)
-          _(actual[0]).must_be_instance_of Memo::Model::DirSeed
+          _(actual[0]).must_be_instance_of Memo::Model::Seed
           _(actual[0].parent_dir).must_be_nil
         end
 
-        it "キーが対象のディレクトリの最上位であるときの値は、DirSeedかSeedの一次元配列であり、そのparent_dirかdirがディレクトリの最上位を示す文字列である" do
+        it "キーが対象のディレクトリの最上位であるときの値は、Seedの一次元配列であり、そのparent_dirかdirがディレクトリの最上位を示す文字列である" do
           test_walk_seed_hash = @test_repo.walk_seed_hash
 
           values = test_walk_seed_hash[@test_root_dirname]

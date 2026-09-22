@@ -51,12 +51,29 @@ module Memo
           - 例えば、文字色を緑にしたかったら'\033[32m'と'\033[0m'で挟むと、その間の文字色が緑になる
     ANSI_ESCAPE_CODE_AND_SET_COLOR_FILE
 
+    TEST_ALIAS_FILE_CONTENT = <<~ALIAS_FILE
+      ## alias: CLIにエイリアスを付ける
+      ```bash
+      ## aliasを実行すると、その環境のエイリアスの一覧が見れる
+      alias
+      ```
+    ALIAS_FILE
+
     TEST_BUILTIN_FILE_CONTENT = <<~BUILTIN_FILE
       ## builtin: そのコマンドがbuiltinかどうかを判別する
       - 組み込みだと正常終了し、何も帰ってこない
       - それ以外だと何かが帰ってくる
       - cdがカスタマイズされてないかどうかを調べたりするのに使うらしい
     BUILTIN_FILE
+
+    TEST_HASH_FILE_CONTENT = <<~HASH_FILE
+      ## hash: bash builtinコマンド
+      ```bash
+      ## hashを実行すると、その環境で実行できるコマンドと、そのパスの一覧が見れる
+      hash | wc -l
+      > 2692
+      ```
+    HASH_FILE
 
     TEST_LS_FILE_CONTENT = <<~LS_FILE
       ## ls: list directory contents
@@ -108,6 +125,12 @@ module Memo
          and the pathname.
     LS_FILE
 
+    TEST_GROUPS_FILE_CONTENT = <<~GROUPS_FILE
+      - groups: グループを表示する
+          - idコマンドにより廃止された
+          - `id -Gn [user]`と同等である
+    GROUPS_FILE
+
     TEST_LSOF_FILE_CONTENT = <<~LSOF_FILE
       ## lsof: list open files - オープン中のファイルについて、その情報を得るためのコマンド
 
@@ -128,6 +151,22 @@ module Memo
       ```
     LSOF_FILE
 
+    TEST_FIND_FILE_CONTENT = <<~FIND_FILE
+      ## find: フォルダの階層を巡回する
+
+      - 例
+      ```bash
+      # 名前に"foo"を含むファイルを検索する
+      find . -type f -name "*foo*"
+
+      # 実行可能なファイルを検索して、中身の文字数などを確認する
+      find . -perm -a+x -type f -exec wc {} ;
+      ```
+
+      - オプション
+          - `-print0`: 改行の代わりにヌル文字を使って入力文字列を区切る
+    FIND_FILE
+
     TEST_CUT_FILE_CONTENT = <<~CUT_FILE
       ## cut: ファイルを適切なところでカットする
 
@@ -144,6 +183,21 @@ module Memo
           - `-w` : デリミタとしてホワイトスペースを使う
 
     CUT_FILE
+
+    TEST_ED_FILE_CONTENT = <<~ED_FILE
+      ## ed: classic text editor
+
+      ## 使い方１
+      1. `ed <filename>`でファイルを読み込む
+      2. コマンドを打ちながら修正したい行に移動したり修正する
+      3. wでsave、qでedをexit、数字を打つとその行に移動して表示する、.を打つと現在の行を表示するなど
+
+      ### 例(WIP)
+      ```bash
+      ## ファイルを読み込む
+      ed foo.txt
+      ```
+    ED_FILE
 
     TEST_SED_FILE_CONTENT = <<~SED_FILE.freeze
       ## sed: stream editor
@@ -177,6 +231,15 @@ module Memo
 
     SED_FILE
 
+    TEST_UNIQ_FILE_CONTENT = <<~UNIQ_FILE
+      - uniq: 文字の重複排除
+          - 他のコマンドとsortと組み合わせて使うことが多い
+      ```bash
+      # 例: コマンド履歴の集計
+      fc -ln 1 | sort | uniq -c | sort
+      ```
+    UNIQ_FILE
+
     TEST_XARGS_FILE_CONTENT = <<~XARGS_FILE.freeze
       ## 例
       - -Iコマンド
@@ -206,11 +269,38 @@ module Memo
       ```
     XARGS_FILE
 
+    TEST_SSH_FILE_CONTENT = <<~SSH_FILE
+      ```bash
+      ssh <login name>@<address>
+      ```
+    SSH_FILE
+
     TEST_CLAUDE_FILE_CONTENT = <<~CLAUDE_FILE
       # claude CLI
       - `/resume`
       過去のセッションを選択して再開する
     CLAUDE_FILE
+
+    TEST_GH_FILE_CONTENT = <<~GH_FILE
+      ## gh: github CLI
+      ```bash
+      # 現在のブランチのPR のステータスを確認する場合
+      ## マージ済みかどうかなどが分かる
+      gh pr status
+
+      # より詳細な情報 (タイトル、本文、レビュー状態など)
+      gh pr view
+
+      # CI チェックの結果一覧
+      # URL からCI のRun ID が分かる
+      gh pr checks
+
+      # CI を再実行する
+      gh run rerun <run-id>
+      ## 詳細に指定する場合
+      gh run rerun <run-id>  --repo <repo-name> --failed
+      ```
+    GH_FILE
 
     TEST_MISE_FILE_CONTENT_1 = <<~MISE_FILE
       # mise.md
@@ -258,10 +348,37 @@ module Memo
       ```
     MISE_FILE
 
+    TEST_NKF_FILE_CONTENT = <<~NKF_FILE
+      - nkf: 文字コードの判定・変換
+      ```bash
+      # 文字コードを推測する
+      nkf --guess <filename>
+
+      # 例 ls のドキュメントの文字コード
+      nkf --guess <(man ls)
+      UTF-8 (LF)
+
+      # ISO-2022-JP (JIS code) 形式のテキストを表示する
+      nkf -J <filename>
+      ```
+    NKF_FILE
+
     TEST_UNITS_FILE_CONTENT = <<~UNITS_FILE
       - units: 単位の計算ができる
           - mac版だと'/usr/share/misc/units.lib'に使える単位の一覧がある
     UNITS_FILE
+
+    TEST_APPLY_FILE_CONTENT = <<~APPLY_FILE
+      - パッチファイルを適用する
+      ```bash
+      git apply <filename>
+
+      # 例
+      git apply patch.diff
+      ```
+
+      - patchコマンドでも差分を取り込めるらしい
+    APPLY_FILE
 
     TEST_CHECKOUT_FILE_CONTENT = <<~CHECKOUT_FILE
       ## `git checkout`から`git switch`, `git restore`へ
@@ -273,6 +390,27 @@ module Memo
 
           -> これらを`git switch`か`git restore`へ
     CHECKOUT_FILE
+
+    TEST_CONFIG_FILE_CONTENT = <<~CONFIG_FILE
+      - gitのアカウント情報などの確認
+      ```bash
+      git config -l
+      ```
+
+      - ローカルのgitアカウント作成
+      ```bash
+      git config --local user.name "<username>"
+      git config --local user.email "<email>"
+      ```
+
+      ```bash
+      # テキストエディタをneovimにする
+      git config --global core.editor 'nvim'
+
+      # テキストエディタをVimにする
+      git config --global core.editor 'vim -c "set fenc=utf-8"'
+      ```
+    CONFIG_FILE
 
     TEST_DIFF_FILE_CONTENT = <<~DIFF_FILE
       ## git diff: 差分を取る
@@ -299,6 +437,12 @@ module Memo
       ```
     DIFF_FILE
 
+    TEST_GITIGNORE_FILE_CONTENT = <<~GITIGNORE_FILE
+      - .gitignore
+      ## ローカル環境だけでgitignoreを設定するには
+      .git/info/excludeに該当のファイル・フォルダ名を書けばいい
+    GITIGNORE_FILE
+
     TEST_MERGE_FILE_CONTENT = <<~MERGE_FILE
       - git squash
       ```bash
@@ -310,6 +454,31 @@ module Memo
       ```
     MERGE_FILE
 
+    TEST_PUSH_FILE_CONTENT = <<~PUSH_FILE
+      - 現在チェックアウトしているブランチをpushする
+      ```bash
+      # 最もシンプルな方法
+      git push origin HEAD
+      # 上流ブランチ(upstream)が設定済みならgit push でOK
+      git push
+      # 最初に-uを付けて上流を設定しておけばいい
+      git push -u origin HEAD
+      ```
+
+      ## 上流ブランチ(Upstream Branch)
+      - ローカルブランチが追跡(トラッキング)しているリモートブランチのこと
+      ```bash
+      ## 上流ブランチの設定方法
+      # -u(--set-upstream)オプションを追加する
+      git push -u origin <branch-name>
+
+      ## 現在のブランチが上流ブランチに設定されているかどうかを確認
+      git rev-parse --abbrev-ref @{upstream}
+      # -> 未設定の場合はエラーになる
+      ```
+
+    PUSH_FILE
+
     TEST_RESET_FILE_CONTENT = <<~RESET_FILE
       - resetとrevertの違い
           - reset -> コミットログが残らない
@@ -320,6 +489,34 @@ module Memo
       git reset --soft HEAD^
       ```
     RESET_FILE
+
+    TEST_REV_PARSE_FILE_CONTENT = <<~REV_PARSE_FILE
+      - rev-parse
+          - "Pick out and massage parameters"というporcelain command
+
+      - `git rev-parse --show-toplevel`
+          - 対象のgitリポジトリの第一階層のディレクトリを取得できるコマンド
+          - このコマンドをスクリプトで使用する際の注意点
+          1. gitリポジトリ外で実行するとエラーになる
+          2. worktree内での実行、シンボリックリンク経由による実行、サブモジュール内での実行
+
+          - 改善版
+      ```bash
+      # Add Error Handling
+      REPO_ROOT=$(git rev-parse --show-toplevel 2>/dev/null) || {
+        echo "Error: not inside a git repository" >&2
+        exit 1
+      }
+
+      TARGET_PATH="$REPO_ROOT/path/to/target"
+      ```
+
+      - なお、gitに依存したくない場合はこちら
+      ```bash
+      SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+      REPO_ROOT="$(cd "$SCRIPT_DIR/path/to/target" && pwd)"
+      ```
+    REV_PARSE_FILE
 
     TEST_UPSTREAM_FILE_CONTENT = <<~UPSTREAM_FILE
       ## upstream: 追跡ブランチ
@@ -343,6 +540,33 @@ module Memo
       ```
     UPSTREAM_FILE
 
+    TEST_DATA_EXCHANGER_FILE_CONTENT = <<~DATA_EXCHANGER_FILE
+      ## 概要
+      - パソコン間でファイルの送受信をしたいときなど
+
+      ### 送り手側
+      1. ncで送信する
+      ``` sh
+      # -l でリスナーモードにする
+      # ポート番号は任意のものを使用する。一旦8888とする。
+      cat file.txt | nc -l 8888
+
+      # 画像などは多分こっちがいい
+      nc -l 8888 < file.jpeg
+      ```
+
+      2. 送信側IPアドレスを調べる
+      ``` sh
+      ifconfig | grep "inet "
+      ```
+
+      ### 受け手側
+      1. ncで受信する
+      ``` sh
+      nc [送り手川のIPアドレス] 8888 > received.txt
+      ```
+    DATA_EXCHANGER_FILE
+
     TEST_SERVER_FILE_CONTENT = <<~SERVER_FILE
       - server: 簡易的なWebサーバーを起動させる方法
       ```bash
@@ -353,6 +577,23 @@ module Memo
       python3 -m http.server 8000
       ```
     SERVER_FILE
+
+    TEST_HOVER_FILE_CONTENT = <<~HOVER_FILE
+      ## hover: CSSの擬似クラス
+      - カーソルを要素の上にかざしたときに発動するスタイル
+
+      ### 順番
+      - LVHA順で定義されるようにする
+          - :link — :visited — :hover — :active
+
+      ## 例
+          - 擬似クラスを複数記載する場合はカンマで区切る
+      ```css
+      .link-button:hover, :active {
+          background-color: blue;
+      }
+      ```
+    HOVER_FILE
 
     TEST_CONSOLE_FILE_CONTENT = <<~CONSOLE_FILE
       - console
@@ -366,6 +607,25 @@ module Memo
       console.dir(obj);
       ```
     CONSOLE_FILE
+
+    TEST_MAP_FILE_CONTENT = <<~MAP_FILE.freeze
+      - map
+      ```javascript
+      # 値を得るときはget() を使う
+      const map = new Map();
+
+      map.get("key")
+      // -> key に対応するvalue が返ってくる
+      ```
+
+      ## JSDoc の書き方
+      ```javascript
+      /**
+       *#{' '}
+       * @param {Map<string, String>} userMap - ユーザーとユーザーに紐づくMap
+       */
+      ```
+    MAP_FILE
 
     TEST_PACKAGE_JSON_FILE_CONTENT = <<~PACKAGE_JSON_FILE.freeze
       ## package.json:#{' '}
@@ -382,6 +642,28 @@ module Memo
       - 大なり(>): 指定したバージョン以上なら更新可能とする
 
     PACKAGE_JSON_FILE
+
+    TEST_LUA_FILE_CONTENT = <<~LUA_FILE
+      ## lua
+
+      ### パッケージマネージャー
+      - `luarocks`を使う
+          - homebrewからインストールする
+
+      ### リンター
+      - `luacheck`を使う
+          - luarocksからインストールする
+              - ref: https://github.com/lunarmodules/luacheck#installation
+
+      - neovimの設定ファイルにLinterを実行
+          - dotfiles/の下に`.luacheckrc`を作成する
+              - globalsに`vim`を設定し、accessing undefined variable vimの警告をなくす
+
+      #### 実行
+      ```bash
+      luacheck config/nvim/**/*.lua
+      ```
+    LUA_FILE
 
     TEST_ONELINER_FILE_CONTENT = <<~ONELINER_FILE
       ## Perl one-liners: Perlによるワンライナー
@@ -401,9 +683,8 @@ module Memo
 
       ###
       find lib/ test/ -type f | xargs -I@ perl -ne 'print if /\Qseed[:filename]\E|\Qseed.filename/' @
-      find lib/ test/ -type f | xargs -I@ perl -ne 'print if /(seed[:filename])\E|seed.filename/' @
-      find lib/ test/ -type f | xargs -I@ perl -pi -e 's/seed[:filename]\E|seed.filename/seed.basename/g' @
-
+      find lib/ test/ -type f | xargs -I@ perl -n -e 'print if /seed[:dir]/ or /seed.dir/' @
+      find lib/ test/ -type f | xargs -I@ perl -pi -e 's/seed[:dir]/seed[:parent_dir]/g' @
       ## sed系
       ### 対象ファイルについて、文字列の一括置換を行う場合(in-place編集)
       git grep -l NOT_FOUND_MESSAGE | xargs -I@ perl -pi -e 's/NOT_FOUND_MESSAGE/READ_RESULT_IS_NOT_FOUND/g' @
@@ -432,6 +713,44 @@ module Memo
       - \E: \Qなどのエスケープを\Eが追加された位置で終了させる
     ONELINER_FILE
 
+    TEST_BUNDLE_FILE_CONTENT = <<~BUNDLE_FILE
+      - bundle
+          - プロジェクトごとに使うRubyのパッケージマネージャー
+
+      - How to use
+      ```bash
+      # Gemfileを作成する
+      bundle init
+
+      # パッケージのminitestを追加する
+      bundle add minitest
+
+      # そのプロジェクトの全てのgemを確認する
+      bundle show
+
+      # そのプロジェクトのパッケージを読み込んだ状態でirbにログインする
+      bundle exec irb
+      ```
+
+      - rakeとbundle exec rake
+          - `rake` -> システムにインストールされた`rake`を使う
+          - `bundle exec rake` -> Gemfile.lockで固定されたバージョンの方の`rake`を使う
+
+      - bundle gem
+      ```bash
+      # rubygem を作るための雛形を作成するコマンド
+      # <name> -> . とすればカレントディレクトリが指定される
+      # Gemfile や README が既にあると、上書きしていいかどうか聞かれる
+      bundle gem <name>
+      ```
+
+      - bundler/gem_tasks
+      ```ruby
+      # Rakefileでbundler/gem_tasksをインポートすると、build, release, installなどが行える
+      require "bundler/gem_tasks"
+      ```
+    BUNDLE_FILE
+
     TEST_COMPARE_FILE_CONTENT = <<~COMPARE_FILE
       ## Rubyオブジェクトの比較の仕方
       - 趣旨: 言語やそのオブジェクトによって値の比較方法が特殊だったりするので
@@ -445,6 +764,21 @@ module Memo
               3. 全ての要素が等しいこと
     COMPARE_FILE
 
+    TEST_MINITEST_FILE_CONTENT = <<~MINITEST_FILE
+      ## minitest: 軽量なテスティングフレームワーク
+
+      - expectedとactualの位置
+          - なぜか混同してしまうので
+      ```rb
+      ## spec形式
+      ## この順番！
+      _(expected).must_equal(actual)
+
+      ## assertion形式
+      assert_equal expected, actual
+      ```
+    MINITEST_FILE
+
     TEST_RAKE_FILE_CONTENT = <<~RAKE_FILE
       - rake: タスクランナー
       ```bash
@@ -452,6 +786,26 @@ module Memo
       rake -T
       ```
     RAKE_FILE
+
+    TEST_START_PROJECT_FILE_CONTENT = <<~START_PROJECT_FILE
+      ## Start Project with Ruby: Rubyでプロジェクト・リポジトリを作成には
+
+      ```bash
+      # 1. bundlerでGemfileを作成する
+      bundle init
+
+      # 2.1. 作成されるGemfileに使いたいパッケージを追加する
+      gem "rails", "~>8.1"
+
+      # 2.1.1. bundle installすればOK
+      bundle install
+
+      # 2.2. bundle addでも良さそう
+      bundle add minitest
+      ```
+
+      - * なお、`bundle gem`コマンドでRubyGemを作成することができる
+    START_PROJECT_FILE
 
     TEST_TYPE_CHECK_FILE_CONTENT = <<~TYPE_CHECK_FILE
       ## Ruby型検査
@@ -467,6 +821,26 @@ module Memo
       # => true
       ```
     TYPE_CHECK_FILE
+
+    TEST_TEST_ASSERTION_FILE_CONTENT = <<~TEST_ASSERTION_FILE
+      ## テストアサーションについて
+      - いつもexpectedとactualを逆に書いている気がする......。
+      - 文献がいつもexpectedとactualが逆なような......
+
+      ### 期待値と実際の値
+      - expected(期待値): テストを実行する側が、こうあるべきとして定義する値
+      - actual(実際の値): テストを実際に実行して得られる値
+
+      ### Ruby
+      minitestのassert, specは次の順番でactual, expectedを書く
+      ```ruby
+      ### assert
+      assert_equal expected, actual
+
+      ### expectation
+      _(actual).must_equal(expected)
+      ```
+    TEST_ASSERTION_FILE
 
     TEST_MEMO_SUMMARY_FILE_CONTENT = <<~MEMO_SUMMARY_FILE
       ## summary: memorandumの集計情報
@@ -485,6 +859,18 @@ module Memo
       ```
 
     MEMO_SUMMARY_FILE
+
+    TEST_COMMAND_FILE_CONTENT = <<~COMMAND_FILE
+      ## Command Line Mode: neovimのコマンドラインモード
+
+      ## コマンドの詳細を調べたい場合
+      ```
+      # コマンドラインモードでkeymapの詳細を調べる
+      :verbose command <Command>
+      # 例
+      :verbose command Git
+      ```
+    COMMAND_FILE
 
     TEST_KEYMAP_FILE_CONTENT = <<~KEYMAP_FILE
       ## keymap
@@ -516,12 +902,42 @@ module Memo
       ```
     KEYMAP_FILE
 
+    TEST_NETRW_FILE_CONTENT = <<~NETRW_FILE
+      ## netrw: 組み込みファイラ
+      - 起動
+      ```
+      :Ex
+      ```
+
+      - 表示モード切り替え
+      <kbd>i</kbd>
+          - thin -> long -> wide -> tree
+          - * このdotfilesではデフォルトの表示モードをtreeにしてある
+
+      - 新しいタブで開く
+      <kbd>t</kbd>
+
+    NETRW_FILE
+
     TEST_VIM_PACK_FILE_CONTENT = <<~VIM_PACK_FILE
       ## vim.pack
       - neovim組み込みのプラグインマネージャー
       - ドキュメント
       :h vim.pack | only
     VIM_PACK_FILE
+
+    TEST_READ_ONLY_FILE_CONTENT = <<~READ_ONLY_FILE
+      ## 閲覧モードなど
+      - 編集不許可の`-M`オプションを付けると便利。neovimでも同様。余計なキーを押したときに編集が不可能になる。
+      ```
+      nvim -M error.log
+      ```
+
+      - 読み取り専用にする場合は`-R`オプションを付けるなど。
+      ```
+      vim -R error.log
+      ```
+    READ_ONLY_FILE
 
     TEST_TEXT_OBJECTS_FILE_CONTENT = <<~TEXT_OBJECTS_FILE
       ## text objects: テキスト操作のためのコマンド
@@ -562,6 +978,26 @@ module Memo
 
     TEXT_OBJECTS_FILE
 
+    TEST_VIRTUAL_TEXT_FILE_CONTENT = <<~VIRTUAL_TEXT_FILE
+      ## Virtual Text: 仮想のテキスト表示
+
+      ### yankする方法
+      ```
+        方法1: :luaでdiagnosticメッセージを取得してレジスタに入れる
+        :lua vim.fn.setreg('+', vim.diagnostic.get(0)[1].message)
+
+        カーソル行のdiagnosticを取得する場合：
+        :lua local d = vim.diagnostic.get(0, {lnum = vim.fn.line('.')-1}); vim.fn.setreg('+', d[1].message)
+
+        方法2: Floating windowを開いてそこからyank
+        :lua vim.diagnostic.open_float()
+
+        方法3: :messages 経由（一時的に表示させる場合）
+        1. :lua print(vim.diagnostic.get(0, {lnum = vim.fn.line('.')-1})[1].message)
+        2. :messages で履歴を確認してコピー
+      ```
+    VIRTUAL_TEXT_FILE
+
     TEST_DOCKER_COMPOSE_FILE_CONTENT = <<~DOCKER_COMPOSE_FILE
       - docker-compose.yml
       ## 書式
@@ -572,6 +1008,13 @@ module Memo
             - ./html:/usr/share/nginx/html
       ```
     DOCKER_COMPOSE_FILE
+
+    TEST_EDITORCONFIG_FILE_CONTENT = <<~EDITORCONFIG_FILE
+      - editorconfig
+          - リポジトリのトップに.editorconfigを作成しておけばファイルのフォーマットが簡単にできる
+          - サイトURL: https://editorconfig.org/
+          - VimとNeovimは標準でサポートされている
+    EDITORCONFIG_FILE
 
     TEST_MISE_FILE_CONTENT_2 = <<~MISE_FILE
       # mise.md
@@ -588,6 +1031,63 @@ module Memo
       mise install
       ```
     MISE_FILE
+
+    TEST_BASH_FILE_CONTENT = <<~BASH_FILE.freeze
+      ## bash: GNU Bourne-Again SHell
+
+      ## ドキュメントについて
+      - manページを確認することが基本: `man bash`
+      - 特に重要な章を次にリストアップしておく
+      ```plain
+      # bashの組み込みコマンドに関する説明が載っている
+      # echo, cd, alias, type, command, etc...
+      SHELL BUILTIN COMMANDS
+
+      # コマンドや変数の展開について
+      EXPANSION
+      ```
+
+      ## bashの章を抜き出すコマンド
+      ```bash
+      man bash | perl -ne 'print if /^[A-Z]/'
+      ```
+
+      ## Tips
+      Control + l(C-l)で画面にある出力を消去できる#{'  '}
+      詳しくはman bashのCommands for Movingを参照#{'  '}
+      その他、(M-f)と(M-b)で単語単位で前後に移動できる、など#{'  '}
+
+      ### コマンドを例示するときのドル記号($)とハッシュ(#)の違い
+      - $ -> 一般ユーザー
+      - # -> rootユーザー
+
+      ## 条件付きリスト(conditional list)
+      ### &&演算子
+      - cd dirが成功した場合にのみ、touch new.txtを実行
+      ```bash
+      $ cd dir && touch new.txt
+      ```
+
+      ## ||演算子
+      - cd dirが失敗した場合、エラーコード1で終了する
+      ```bash
+      $ cd dir || exit 1
+
+      # 例
+      ## フォルダがなければ作成する
+      [ -d path/to/folder ] || mkdir -p path/to/folder
+      ```
+
+      ## 複数の文字列を変数に入れるとき
+      - `read`を使う。`while`やパイプと組み合わせる。
+      ```bash
+      echo 'aaa bbb ccc' | while read A B C
+      do
+        echo $A, $B, $C
+      done
+      # > aaa, bbb, ccc
+      ```
+    BASH_FILE
 
     TEST_EXIT_STATUS_FILE_CONTENT = <<~EXIT_STATUS_FILE
       - EXIT STATUS
@@ -609,11 +1109,46 @@ module Memo
       ```
     EXIT_STATUS_FILE
 
+    TEST_FOR_FILE_CONTENT = <<~FOR_FILE
+      ## bash - for 文
+      - 動機: bashだとパイプラインとxargsだけだとfilterのようなものを作成するのが難しかった...
+          - xargsの後にbash -c '<command>'とすれば出来そうだったけど
+
+      ```bash
+      ##
+      ## man bashの中のSHELL GRAMMARという章のCompound Commandsという項に載っている
+      ## 次で大体見つかるはず
+      man bash
+      /^SHELL GRAMMAR
+
+      ## パターン１
+      ## for name [ in word ] ; do list ; done
+      ## nameがfor文の中で使える変数になる。[ in word ]は色々なパターンがあったと思うが、
+      ## ここでは、コマンド置換としている。doの後のlistのところに処理を書いて、doneで終了
+      ## 例:
+      for DIRS in `find "$HOME/repo/memorandum/memo" -type f`; do
+        echo $DIRS
+      done
+      ```
+    FOR_FILE
+
     TEST_PARAMETER_EXPANSION_FILE_CONTENT = <<~PARAMETER_EXPANSION_FILE
       - Parameter Expansion
           - `$`がパラメーターの展開に使われる
 
     PARAMETER_EXPANSION_FILE
+
+    TEST_SHEBANG_FILE_CONTENT = <<~SHEBANG_FILE
+      # シェバン(shebang)
+      ```
+      # 例
+      ## bash
+      #!/usr/bin/env bash
+
+      ## zsh
+      #!/usr/bin/env zsh
+      ```
+    SHEBANG_FILE
 
     TEST_SPECIAL_PARAMETERS_FILE_CONTENT = <<~SPECIAL_PARAMETERS_FILE.freeze
       - Special parameters
@@ -627,6 +1162,29 @@ module Memo
           - !: 直前に実行したコマンドのプロセスID#{' '}
           - Ref: Expands to the process ID of the most recently executed background (asynchronous) command.
     SPECIAL_PARAMETERS_FILE
+
+    TEST_COMMAND_HISTORY_FILE_CONTENT = <<~COMMAND_HISTORY_FILE
+      - Zshのコマンド履歴
+          - fcコマンドを使う
+          - コマンド履歴はtmuxだとウィンドウごとである
+          - ドキュメントはman zshbuiltinsからfcで検索すること
+      ```zsh
+      # 直前のコマンド履歴を見る
+      # fc -l
+
+      # 数が指定できる
+      # fc -l 500
+
+      # 全ての履歴を番号なしで表示する
+      fc -ln 1
+
+      ## コマンド履歴の集計
+      fc -ln 1 | sort | uniq -c | sort
+
+      ## コマンドの文字列検索
+      fc -lm "git*"
+      ```
+    COMMAND_HISTORY_FILE
 
     TEST_EMACS_FILE_CONTENT = <<~EMACS_FILE
       - Emacs: エディター
@@ -644,6 +1202,18 @@ module Memo
       - 一文字を消す
       <kbd>C</kbd> + <kbd>h</kbd>
     EMACS_FILE
+
+    TEST_LAZYGIT_FILE_CONTENT = <<~LAZYGIT_FILE
+      ## lazygit: git status, git addなどの操作を簡単にするTUI
+      ### 基本
+      - <space>: stagedとuntrackedをトグルする
+      - e: 該当のファイルを編集する
+      - q: lazygitを閉じる
+      - ?: キーマッピングの一覧を見る
+          - <esc>でキーマッピングの画面を閉じる
+
+      - 画面下部の方に主要なキーマッピングが載っているので要確認
+    LAZYGIT_FILE
 
     TEST_TMUX_FILE_CONTENT = <<~TMUX_FILE
       ## 例
@@ -715,8 +1285,18 @@ module Memo
       },
       {
         parent_dir: "cli/core/builtin",
+        basename: "alias",
+        content: TEST_ALIAS_FILE_CONTENT
+      },
+      {
+        parent_dir: "cli/core/builtin",
         basename: "builtin",
         content: TEST_BUILTIN_FILE_CONTENT
+      },
+      {
+        parent_dir: "cli/core/builtin",
+        basename: "hash",
+        content: TEST_HASH_FILE_CONTENT
       },
       {
         parent_dir: "cli/core/file",
@@ -724,9 +1304,19 @@ module Memo
         content: TEST_LS_FILE_CONTENT
       },
       {
+        parent_dir: "cli/core/old",
+        basename: "groups",
+        content: TEST_GROUPS_FILE_CONTENT
+      },
+      {
         parent_dir: "cli/core/process",
         basename: "lsof",
         content: TEST_LSOF_FILE_CONTENT
+      },
+      {
+        parent_dir: "cli/core/search",
+        basename: "find",
+        content: TEST_FIND_FILE_CONTENT
       },
       {
         parent_dir: "cli/core/text",
@@ -735,13 +1325,28 @@ module Memo
       },
       {
         parent_dir: "cli/core/text",
+        basename: "ed",
+        content: TEST_ED_FILE_CONTENT
+      },
+      {
+        parent_dir: "cli/core/text",
         basename: "sed",
         content: TEST_SED_FILE_CONTENT
       },
       {
         parent_dir: "cli/core/text",
+        basename: "uniq",
+        content: TEST_UNIQ_FILE_CONTENT
+      },
+      {
+        parent_dir: "cli/core/text",
         basename: "xargs",
         content: TEST_XARGS_FILE_CONTENT
+      },
+      {
+        parent_dir: "cli",
+        basename: "ssh",
+        content: TEST_SSH_FILE_CONTENT
       },
       {
         parent_dir: "cli/third-party",
@@ -750,8 +1355,18 @@ module Memo
       },
       {
         parent_dir: "cli/third-party",
+        basename: "gh",
+        content: TEST_GH_FILE_CONTENT
+      },
+      {
+        parent_dir: "cli/third-party",
         basename: "mise",
         content: TEST_MISE_FILE_CONTENT_1
+      },
+      {
+        parent_dir: "cli/third-party",
+        basename: "nkf",
+        content: TEST_NKF_FILE_CONTENT
       },
       {
         parent_dir: "cli",
@@ -760,8 +1375,18 @@ module Memo
       },
       {
         parent_dir: "git",
+        basename: "apply",
+        content: TEST_APPLY_FILE_CONTENT
+      },
+      {
+        parent_dir: "git",
         basename: "checkout",
         content: TEST_CHECKOUT_FILE_CONTENT
+      },
+      {
+        parent_dir: "git",
+        basename: "config",
+        content: TEST_CONFIG_FILE_CONTENT
       },
       {
         parent_dir: "git",
@@ -770,8 +1395,18 @@ module Memo
       },
       {
         parent_dir: "git",
+        basename: "gitignore",
+        content: TEST_GITIGNORE_FILE_CONTENT
+      },
+      {
+        parent_dir: "git",
         basename: "merge",
         content: TEST_MERGE_FILE_CONTENT
+      },
+      {
+        parent_dir: "git",
+        basename: "push",
+        content: TEST_PUSH_FILE_CONTENT
       },
       {
         parent_dir: "git",
@@ -780,13 +1415,28 @@ module Memo
       },
       {
         parent_dir: "git",
+        basename: "rev-parse",
+        content: TEST_REV_PARSE_FILE_CONTENT
+      },
+      {
+        parent_dir: "git",
         basename: "upstream",
         content: TEST_UPSTREAM_FILE_CONTENT
       },
       {
         parent_dir: "how-to",
+        basename: "data-exchanger",
+        content: TEST_DATA_EXCHANGER_FILE_CONTENT
+      },
+      {
+        parent_dir: "how-to",
         basename: "server",
         content: TEST_SERVER_FILE_CONTENT
+      },
+      {
+        parent_dir: "lang/css",
+        basename: "hover",
+        content: TEST_HOVER_FILE_CONTENT
       },
       {
         parent_dir: "lang/javascript",
@@ -795,8 +1445,18 @@ module Memo
       },
       {
         parent_dir: "lang/javascript",
+        basename: "map",
+        content: TEST_MAP_FILE_CONTENT
+      },
+      {
+        parent_dir: "lang/javascript",
         basename: "package-json",
         content: TEST_PACKAGE_JSON_FILE_CONTENT
+      },
+      {
+        parent_dir: "lang/lua",
+        basename: "lua",
+        content: TEST_LUA_FILE_CONTENT
       },
       {
         parent_dir: "lang/perl",
@@ -805,8 +1465,18 @@ module Memo
       },
       {
         parent_dir: "lang/ruby",
+        basename: "bundle",
+        content: TEST_BUNDLE_FILE_CONTENT
+      },
+      {
+        parent_dir: "lang/ruby",
         basename: "compare",
         content: TEST_COMPARE_FILE_CONTENT
+      },
+      {
+        parent_dir: "lang/ruby",
+        basename: "minitest",
+        content: TEST_MINITEST_FILE_CONTENT
       },
       {
         parent_dir: "lang/ruby",
@@ -815,8 +1485,18 @@ module Memo
       },
       {
         parent_dir: "lang/ruby",
+        basename: "start-project",
+        content: TEST_START_PROJECT_FILE_CONTENT
+      },
+      {
+        parent_dir: "lang/ruby",
         basename: "type-check",
         content: TEST_TYPE_CHECK_FILE_CONTENT
+      },
+      {
+        parent_dir: "lang",
+        basename: "test-assertion",
+        content: TEST_TEST_ASSERTION_FILE_CONTENT
       },
       {
         parent_dir: "memo",
@@ -825,8 +1505,18 @@ module Memo
       },
       {
         parent_dir: "neovim",
+        basename: "command",
+        content: TEST_COMMAND_FILE_CONTENT
+      },
+      {
+        parent_dir: "neovim",
         basename: "keymap",
         content: TEST_KEYMAP_FILE_CONTENT
+      },
+      {
+        parent_dir: "neovim/plugin",
+        basename: "netrw",
+        content: TEST_NETRW_FILE_CONTENT
       },
       {
         parent_dir: "neovim/plugin",
@@ -835,8 +1525,18 @@ module Memo
       },
       {
         parent_dir: "neovim",
+        basename: "read-only",
+        content: TEST_READ_ONLY_FILE_CONTENT
+      },
+      {
+        parent_dir: "neovim",
         basename: "text-objects",
         content: TEST_TEXT_OBJECTS_FILE_CONTENT
+      },
+      {
+        parent_dir: "neovim",
+        basename: "virtual-text",
+        content: TEST_VIRTUAL_TEXT_FILE_CONTENT
       },
       {
         parent_dir: "setting",
@@ -845,8 +1545,18 @@ module Memo
       },
       {
         parent_dir: "setting",
+        basename: "editorconfig",
+        content: TEST_EDITORCONFIG_FILE_CONTENT
+      },
+      {
+        parent_dir: "setting",
         basename: "mise",
         content: TEST_MISE_FILE_CONTENT_2
+      },
+      {
+        parent_dir: "shell/bash",
+        basename: "bash",
+        content: TEST_BASH_FILE_CONTENT
       },
       {
         parent_dir: "shell/bash",
@@ -855,8 +1565,18 @@ module Memo
       },
       {
         parent_dir: "shell/bash",
+        basename: "for",
+        content: TEST_FOR_FILE_CONTENT
+      },
+      {
+        parent_dir: "shell/bash",
         basename: "parameter-expansion",
         content: TEST_PARAMETER_EXPANSION_FILE_CONTENT
+      },
+      {
+        parent_dir: "shell/bash",
+        basename: "shebang",
+        content: TEST_SHEBANG_FILE_CONTENT
       },
       {
         parent_dir: "shell/bash",
@@ -864,9 +1584,19 @@ module Memo
         content: TEST_SPECIAL_PARAMETERS_FILE_CONTENT
       },
       {
+        parent_dir: "shell/zsh",
+        basename: "command-history",
+        content: TEST_COMMAND_HISTORY_FILE_CONTENT
+      },
+      {
         parent_dir: "tui",
         basename: "emacs",
         content: TEST_EMACS_FILE_CONTENT
+      },
+      {
+        parent_dir: "tui",
+        basename: "lazygit",
+        content: TEST_LAZYGIT_FILE_CONTENT
       },
       {
         parent_dir: "tui",

@@ -12,8 +12,11 @@ module Memo
     #   @return [String] そのファイルが格納されているディレクトリ
     # @!attribute [w] basename
     #   @return [String] 対象のファイルのファイル名
-    Seed = Data.define(:full_path, :rel_path, :parent_dir, :basename)
+    # @!attribute [w] type
+    #   @return [:file | :directory] 対象のファイルがディレクトリかどうか
+    Seed = Struct.new(:full_path, :rel_path, :parent_dir, :basename, :type)
 
+    # 削除予定
     DirSeed = Struct.new(:basename, :parent_dir, :dir) do
       def initialize(target_dir, root_dirname)
         if target_dir == root_dirname
