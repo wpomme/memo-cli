@@ -70,7 +70,7 @@ class TestRepository < Minitest::Test
       describe '戻り値の型検査' do
         describe "検索文字列と一致するファイル名が見つかった場合は、Seedの一次元配列を返す" do
           it "ファイル名が一件見つかった場合" do
-            word = 'diff'
+            word = @fixed_search_word
             ret = @test_repo.find(word)
             expected = ret.all?(Memo::Model::Seed)
 
@@ -99,9 +99,9 @@ class TestRepository < Minitest::Test
       describe "戻り値の値検査" do
         describe "検索文字列と一致するファイル名が見つかった場合は、そのSeedの一次元配列を返す" do
           it "ファイル名が一件見つかった場合" do
-            word = 'diff'
+            word = @fixed_search_word
             expected = @test_repo.find(word)
-            actual = @test_seeds.filter { |seed| seed.filename == word }
+            actual = @test_seeds.filter { |seed| seed.basename == word }
 
             _(actual).must_equal(expected)
           end
@@ -109,7 +109,7 @@ class TestRepository < Minitest::Test
           it "ファイル名が複数件見つかった場合" do
             word = 'mise'
             expected = @test_repo.find(word)
-            actual = @test_seeds.filter { |seed| seed.filename == word }
+            actual = @test_seeds.filter { |seed| seed.basename == word }
 
             _(actual).must_equal(expected)
           end
@@ -134,7 +134,7 @@ class TestRepository < Minitest::Test
           actual = @test_seeds.group_by(&:dir).map do |dir, seed|
             Memo::Model::GroupedFileList.new(
               dir: dir,
-              filenames: seed.map(&:filename)
+              filenames: seed.map(&:basename)
             )
           end
 
@@ -158,7 +158,7 @@ class TestRepository < Minitest::Test
             expected = @test_repo.grouped_file_list.map(&:to_view)
 
             actual = @test_seeds.group_by(&:dir).map do |dir, grouped|
-              [Rainbow(dir).green] + grouped.map(&:filename)
+              [Rainbow(dir).green] + grouped.map(&:basename)
             end
 
             _(actual).must_equal(expected)
@@ -171,7 +171,7 @@ class TestRepository < Minitest::Test
             expected = @test_repo.grouped_file_list.filter_map { |grouped| grouped.to_view(target_dir) }
 
             actual = @test_seeds.group_by(&:dir).filter_map do |dir, grouped|
-              [Rainbow(dir).green] + grouped.map(&:filename) if dir == target_dir
+              [Rainbow(dir).green] + grouped.map(&:basename) if dir == target_dir
             end
 
             _(actual).must_equal(expected)
@@ -270,7 +270,7 @@ class TestRepository < Minitest::Test
         it "モックデータの値と同じであること" do
           actual = @test_repo.grouped_file_list_hash
 
-          expected = @test_seeds.group_by(&:dir).transform_values { |seeds| seeds.map(&:filename) }
+          expected = @test_seeds.group_by(&:dir).transform_values { |seeds| seeds.map(&:basename) }
 
           _(actual).must_equal(expected)
         end
@@ -280,7 +280,7 @@ class TestRepository < Minitest::Test
     describe '#search_all' do
       describe '戻り値の型検査' do
         it "検索結果は二重配列で要素はMemo::Model::SearchLineである" do
-          search_word = 'diff'
+          search_word = @fixed_search_word
           result = @test_repo.search_all(search_word)
 
           expected = result.all? do |memo|
@@ -304,11 +304,11 @@ class TestRepository < Minitest::Test
 
       describe '戻り値の値検査' do
         it "モックデータから作成した検索結果と要素が同じである" do
-          search_word = 'diff'
+          search_word = @fixed_search_word
           expected = @test_repo.search_all(search_word)
 
           actual = Memo::MockSeed::TEST_MEMO_DATA_SEED.filter_map do |seed|
-            rel_path = File.join(seed[:dir], "#{seed[:filename]}.md")
+            rel_path = File.join(seed[:dir], "#{seed[:basename]}.md")
             seed[:content]
               .split("\n")
               .each_with_index

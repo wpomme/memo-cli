@@ -21,11 +21,14 @@ module MemoTestLifecycleHooks
       dir_for_file = File.join(@test_memo_dir, elem[:dir])
       FileUtils.mkdir_p(dir_for_file) unless FileTest.directory?(dir_for_file)
 
-      File.write(File.join(@test_memo_dir, elem[:dir], "#{elem[:filename]}.md"), elem[:content])
+      File.write(File.join(@test_memo_dir, elem[:dir], "#{elem[:basename]}.md"), elem[:content])
     end
 
     @test_repo = Memo::Repository.new(@test_memo_dir)
     @test_seeds = @test_repo.instance_variable_get(:@seeds)
+
+    @fixed_mock_file = 'ls'
+    @fixed_search_word = 'ls'
   end
 
   def teardown

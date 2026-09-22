@@ -20,17 +20,19 @@ class TestView < Minitest::Test
 
     describe '#read' do
       it 'wordが存在するファイルと一致するとき、そのファイルを全文表示する' do
+        target_file = @fixed_mock_file
+
         out, = capture_io do
-          Memo::View.new(@test_repo).read("push")
+          Memo::View.new(@test_repo).read(target_file)
         end
 
-        assert_equal Memo::MockSeed::TEST_PUSH_FILE_CONTENT, out
+        assert_equal Memo::MockSeed::TEST_LS_FILE_CONTENT, out
       end
 
       it 'wordが存在するファイルと複数件一致するとき、どのファイルを表示するかのプロンプトを表示し、選択したファイルを全文表示する' do
         word = 'mise'
         choices = Memo::MockSeed::TEST_MEMO_DATA_SEED.filter_map do |seed|
-          [[seed[:dir], "#{seed[:filename]}.md"].join("/"), seed[:content]] if seed[:filename] == word
+          [[seed[:dir], "#{seed[:basename]}.md"].join("/"), seed[:content]] if seed[:basename] == word
         end.to_h
 
         $stdin = StringIO.new("2\n")
@@ -114,7 +116,7 @@ class TestView < Minitest::Test
 
     describe '#search' do
       it "受け取った文字列で全てのメモをで検索して、ヒットした行をgrep風に出力する" do
-        search_word = "diff"
+        search_word = @fixed_search_word
 
         out, = capture_io do
           Memo::View.new(@test_repo).search(search_word)

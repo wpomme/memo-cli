@@ -54,18 +54,18 @@ class TestCommand < Minitest::Test
       end
 
       describe 'argv: read' do
-        it "['read', 'diff']を受け取ったときは、diff.mdを全文表示する" do
+        it "['read', 'ls']を受け取ったときは、ls.mdを全文表示する" do
           out, = capture_io do
-            Memo::Command.new(@test_repo).execute(%w[read diff])
+            Memo::Command.new(@test_repo).execute(%w[read ls])
           end
 
-          assert_equal Memo::MockSeed::TEST_DIFF_FILE_CONTENT, out
+          assert_equal Memo::MockSeed::TEST_LS_FILE_CONTENT, out
         end
 
         it "['read', 'mise']を受け取ったときは、プロンプトを表示した後、選択した方のmise.mdを全文表示する" do
           word = 'mise'
           choices = Memo::MockSeed::TEST_MEMO_DATA_SEED.filter_map do |seed|
-            [[seed[:dir], "#{seed[:filename]}.md"].join("/"), seed[:content]] if seed[:filename] == word
+            [[seed[:dir], "#{seed[:basename]}.md"].join("/"), seed[:content]] if seed[:basename] == word
           end.to_h
           $stdin = StringIO.new("2\n")
 
@@ -112,8 +112,8 @@ class TestCommand < Minitest::Test
       end
 
       describe 'argv: search' do
-        it "['search', 'diff']を受け取ったときは、全てのメモの中でdiffが入っている行を色付きで表示する" do
-          search_word = 'diff'
+        it "['search', 'ls']を受け取ったときは、全てのメモの中でlsが入っている行を色付きで表示する" do
+          search_word = @fixed_search_word
 
           out, = capture_io do
             Memo::Command.new(@test_repo).execute(["search", search_word])

@@ -78,7 +78,7 @@ class TestMapper < Minitest::Test
     describe '#search_result_to_view' do
       describe '戻り値の型検査' do
         it '色付きの検索結果が含まれている文字列の一次元配列を返す' do
-          search_word = 'diff'
+          search_word = @fixed_search_word
           result = Memo::Mapper.new(@test_repo).search_result_to_view(search_word)
 
           expected = result.all? do |memo|
@@ -103,7 +103,7 @@ class TestMapper < Minitest::Test
 
       describe '戻り値の値検査' do
         it '検索でヒットした文字列に色を付けて値を返す' do
-          search_word = 'diff'
+          search_word = @fixed_search_word
           expected = Memo::Mapper.new(@test_repo).search_result_to_view(search_word)
 
           actual = @test_repo.search_all(search_word).flatten.map do |line|

@@ -58,42 +58,159 @@ module Memo
       - cdがカスタマイズされてないかどうかを調べたりするのに使うらしい
     BUILTIN_FILE
 
+    TEST_LS_FILE_CONTENT = <<~LS_FILE
+      ## ls: list directory contents
+      ```bash
+      ## 再帰的にファイル名を表示する
+      ls -R memo/
+
+      ## memo/フォルダの全てのファイルの詳細を表示する
+      ## totalや空行は他のコマンドと組み合わせて消すのが一番良さそう
+      ls -Rl memo/
+
+      ## -Tは-lと組み合わせると年数も表示できる
+      ls -RlT memo/
+
+      ## さらに-tと組み合わせて、最終更新日時(mtime)が新しい順に表示することができる
+      ls -RTlt memo/
+
+      ## なお、-uも付けると、最終アクセス日時(atime)が新しい順に表示することができる
+      ### 最終更新時間 -> Last Modified Time, 最終アクセス時間 -> Last Access Time
+      ls -RTltu memo/
+
+      ## aliasで定義されているlsの情報を確認
+      ## -G: 色付け -F: ファイルの種別によって末尾に色々つける -p: ディレクトリの末尾にスラッシュを付ける
+      ## * OSによってオプションの意味が結構変わるコマンドだったような...
+      command -v
+      > alias ls='ls -GpF'
+
+      ## aliasで定義されているllの情報も確認
+      ## -a: ドットファイルも表示する -l: 詳細表示（下記参照）
+      command -v ll
+      > alias ll='ls -alGpF'
+
+      ## よく使うコマンド
+      ### 更新順に表示するとき
+      ls -lt
+
+      ### 容量順に表示するときは-Sオプションを使う
+      ### さらに、-hで容量に単位がつく
+      ### なお、-sオプションは、使用しているブロック数を表示する
+      ls -lS
+      ```
+
+      ## -lオプションについて
+
+      - `-l`: 詳細表示
+         以下のデータを表示する
+         file mode, number of links, owner name, group name,
+         number of bytes in the file, abbreviated month, day-of-month file was last modified, hour file last modified, minute file last modified,
+         and the pathname.
+    LS_FILE
+
+    TEST_LSOF_FILE_CONTENT = <<~LSOF_FILE
+      ## lsof: list open files - オープン中のファイルについて、その情報を得るためのコマンド
+
+      ### 例: ポート8080によって開かれているファイルの情報を得るには
+      ```bash
+      lsof -i:8080
+      # 次のような値が返ってくる
+      # COMMAND   PID USER   FD   TYPE             DEVICE SIZE/OFF NODE NAME
+      # node    25789   hy   32u  IPv6 0xc355a48837ad9ec6      0t0  TCP localhost:rwhois (LISTEN)
+      ```
+
+      ### 例: 特定のuserが開いているファイルの情報を得るには
+      ```bash
+      lsof -u <USER>
+
+      ## USERが開いているプロセス名の一覧を取得するには
+      lsof -u <USER> | cut -w -f1 | sort | uniq
+      ```
+    LSOF_FILE
+
+    TEST_CUT_FILE_CONTENT = <<~CUT_FILE
+      ## cut: ファイルを適切なところでカットする
+
+      - 例
+      ```sh
+      # psコマンドの最後の行(COMMAND)を除外する
+      ps aux | cut -w -f1-10
+
+      # スネークケースの最初の文字列だけ切り取る
+      cut -d'-' -f2-
+      ```
+
+      - オプション
+          - `-w` : デリミタとしてホワイトスペースを使う
+
+    CUT_FILE
+
+    TEST_SED_FILE_CONTENT = <<~SED_FILE.freeze
+      ## sed: stream editor
+
+      ## 例
+      ```bash
+      # 1.1. gitリポジトリで対象のファイルの中の命名を置換したい場合
+      ## 置換コマンドのところの-eを省略するとエラーが出る
+      ## たぶんBSD版のsedを使っているMac限定のコマンド
+      git grep -l 'foo' | xargs sed -i '' -e 's/foo/bar/g'
+
+      # 1.2. ls を使ったファイルの中身の置換
+      ls | xargs sed -i '' s/foo/bar/g
+
+      # 2. ファイル名の一括リネーム
+      # 2.1. lsと組み合わせる
+      ls | sed "p;s/test/foo-test/" | xargs -n 2 mv
+
+
+      ## その他、オプションの使い方など
+      ### lsでフォルダを除外して、ファイル名だけを表示するには
+      ```bash
+      $ ls -p | grep -v /
+      ```
+
+      ## オプションの詳細
+      - p: sedで変換される前の文字列も表示する
+      - i: 拡張子を指定して上書き(BSD version) -> macのsedはBSD#{'  '}
+          -> 空の文字列を指定すればバックアップなしの上書きになる#{'  '}
+          上書き(GNU version)#{'  '}
+
+    SED_FILE
+
+    TEST_XARGS_FILE_CONTENT = <<~XARGS_FILE.freeze
+      ## 例
+      - -Iコマンド
+      ### コマンドに渡す引数の場所を指定する
+      ```bash
+      echo 01 Black Rain.aiff | tr " " - | xargs -I{} mv 01 Black Rain.aiff {}
+      ```
+
+      - -nコマンド
+      ### コマンドに渡す引数の数を制御する
+      - できるだけ多くの入力文字列を受け入れる
+      ```bash
+      ls | xargs echo
+      ```
+
+      - 一つのechoコマンドにつき一つの引数を渡す
+      ```bash
+      ls | xargs -n1 echo
+      ```
+
+      - findとの組み合わせ
+      拡張子のあるファイルパスを取得して、行数を数える#{'  '}
+      findに-print0を指定して、改行の代わりにヌル文字でファイルパスのリストを区切る#{'  '}
+      また、xargsに-0を指定して、空白の代わりにヌル文字を入力セパレーターとして認識する#{'  '}
+      ```bash
+      $ find . -type f -name "*.*" -print0 | xargs -0 wc -l
+      ```
+    XARGS_FILE
+
     TEST_CLAUDE_FILE_CONTENT = <<~CLAUDE_FILE
       # claude CLI
       - `/resume`
       過去のセッションを選択して再開する
     CLAUDE_FILE
-
-    TEST_ED_FILE_CONTENT = <<~ED_FILE
-      ## ed: classic text editor
-
-      ## 使い方１
-      1. `ed <filename>`でファイルを読み込む
-      2. コマンドを打ちながら修正したい行に移動したり修正する
-      3. wでsave、qでedをexit、数字を打つとその行に移動して表示する、.を打つと現在の行を表示するなど
-
-      ### 例(WIP)
-      ```bash
-      ## ファイルを読み込む
-      ed foo.txt
-      ```
-    ED_FILE
-
-    TEST_HOMEBREW_FILE_CONTENT = <<~HOMEBREW_FILE
-      - 自分でインストールしたパッケージを確認するとき
-      # TODO: homebrew の設定に関することは docs/setting/homebrew.md に書く
-      ```bash
-      brew leaves -r
-      ```
-      - -r, --installed-on-request: 自分で入れたパッケージ
-      - -p, --installed-as-dependency: 他と依存関係がないパッケージ
-
-      - パッケージの情報を確認するとき
-          - インストールしたパッケージについて、warningが出た場合の対処法などが書いてあったりする
-      ```bash
-      brew info <package>
-      ```
-    HOMEBREW_FILE
 
     TEST_MISE_FILE_CONTENT_1 = <<~MISE_FILE
       # mise.md
@@ -141,119 +258,90 @@ module Memo
       ```
     MISE_FILE
 
-    TEST_GROUPS_FILE_CONTENT = <<~GROUPS_FILE
-      - groups: グループを表示する
-          - idコマンドにより廃止された
-          - `id -Gn [user]`と同等である
-    GROUPS_FILE
+    TEST_UNITS_FILE_CONTENT = <<~UNITS_FILE
+      - units: 単位の計算ができる
+          - mac版だと'/usr/share/misc/units.lib'に使える単位の一覧がある
+    UNITS_FILE
 
-    TEST_SSH_FILE_CONTENT = <<~SSH_FILE
+    TEST_CHECKOUT_FILE_CONTENT = <<~CHECKOUT_FILE
+      ## `git checkout`から`git switch`, `git restore`へ
+      - `git checkout`の役割
+          - ブランチの切り替え
+          - 新規ブランチの作成
+          - ファイルの復元
+          - コミットのチェックアウト
+
+          -> これらを`git switch`か`git restore`へ
+    CHECKOUT_FILE
+
+    TEST_DIFF_FILE_CONTENT = <<~DIFF_FILE
+      ## git diff: 差分を取る
+      - 例
       ```bash
-      ssh <login name>@<address>
+      # stagedしたファイルのdiff
+      git diff --cached
+
+      # ファイル名だけ取得
+      git diff --name-only
+
+      # git diff を標準出力に書き出す
+      git --no-pager diff
+
+      # なお、`--no-pager`は`git`コマンド全体で使える。
+      git --no-pager <subcommand> <options>
+
+      # 直前のコミットとdiffをとる
+      # patchファイルを作成するときなどに使う
+      git diff HEAD^ HEAD
+
+      # patchファイルを作成
+      git diff HEAD^ HEAD > patch.diff
       ```
-    SSH_FILE
+    DIFF_FILE
 
-    TEST_WC_FILE_CONTENT = <<~WC_FILE.freeze
-      ## オプション
-      出力される数値は、行数・単語数・バイト数の順番で並んでいる#{'  '}
-
-      - -l: 行数のみ出力
-      - -c: バイト数のみ出力
-      - -m: 文字数でカウント。通常はUTF-8で数える。日本語も一文字としてカウント
-      - -w: 単語数のみ出力。日本語だと使う意味がそこまでない。
-    WC_FILE
-
-    TEST_APPLY_FILE_CONTENT = <<~APPLY_FILE
-      - パッチファイルを適用する
+    TEST_MERGE_FILE_CONTENT = <<~MERGE_FILE
+      - git squash
       ```bash
-      git apply <filename>
+      # git squashしてマージ
+      git merge --squash origin/feature/foo
 
-      # 例
-      git apply patch.diff
+      # コンフリクトの事前確認
+      git merge --no-commit --no-ff feature/foo
       ```
+    MERGE_FILE
 
-      - patchコマンドでも差分を取り込めるらしい
-    APPLY_FILE
+    TEST_RESET_FILE_CONTENT = <<~RESET_FILE
+      - resetとrevertの違い
+          - reset -> コミットログが残らない
+          - revert -> コミットログが残る
 
-    TEST_CONFIG_FILE_CONTENT = <<~CONFIG_FILE
-      - gitのアカウント情報などの確認
+      - featureブランチで直前のコミットを取り消す
       ```bash
-      git config -l
+      git reset --soft HEAD^
       ```
+    RESET_FILE
 
-      - ローカルのgitアカウント作成
-      ```bash
-      git config --local user.name "<username>"
-      git config --local user.email "<email>"
-      ```
+    TEST_UPSTREAM_FILE_CONTENT = <<~UPSTREAM_FILE
+      ## upstream: 追跡ブランチ
 
       ```bash
-      # テキストエディタをneovimにする
-      git config --global core.editor 'nvim'
+      ## git pushするときに-u(--set-upstream) originを付けると、そのブランチは追跡ブランチとなる
+      git push -u origin feature/foobar
+      # -> 次回以降はgit pushだけでpushできる
 
-      # テキストエディタをVimにする
-      git config --global core.editor 'vim -c "set fenc=utf-8"'
+      ## 追跡ブランチが設定されているかどうかを確認するには
+      git branch -vv
+      # -> 三番目の項目に[origin/feature/foobar]などと表示されていれば、そのブランチは追跡ブランチ
+      ## コマンドで抽出するなら:
+      git branch -vv | grep '[origin/'
+
+      ## 追跡ブランチを取り消すには
+      git branch --unset-upstream develop
+
+      ## ただし、git pullするときにorigin developを追加する必要がある
+      git pull origin develop
       ```
-    CONFIG_FILE
-
-    TEST_GITIGNORE_FILE_CONTENT = <<~GITIGNORE_FILE
-      - .gitignore
-      ## ローカル環境だけでgitignoreを設定するには
-      .git/info/excludeに該当のファイル・フォルダ名を書けばいい
-    GITIGNORE_FILE
-
-    TEST_PUSH_FILE_CONTENT = <<~PUSH_FILE
-      - 現在チェックアウトしているブランチをpushする
-      ```bash
-      # 最もシンプルな方法
-      git push origin HEAD
-      # 上流ブランチ(upstream)が設定済みならgit push でOK
-      git push
-      # 最初に-uを付けて上流を設定しておけばいい
-      git push -u origin HEAD
-      ```
-
-      ## 上流ブランチ(Upstream Branch)
-      - ローカルブランチが追跡(トラッキング)しているリモートブランチのこと
-      ```bash
-      ## 上流ブランチの設定方法
-      # -u(--set-upstream)オプションを追加する
-      git push -u origin <branch-name>
-
-      ## 現在のブランチが上流ブランチに設定されているかどうかを確認
-      git rev-parse --abbrev-ref @{upstream}
-      # -> 未設定の場合はエラーになる
-      ```
-
-    PUSH_FILE
-
-    TEST_REV_PARSE_FILE_CONTENT = <<~REV_PARSE_FILE
-      - rev-parse
-          - "Pick out and massage parameters"というporcelain command
-
-      - `git rev-parse --show-toplevel`
-          - 対象のgitリポジトリの第一階層のディレクトリを取得できるコマンド
-          - このコマンドをスクリプトで使用する際の注意点
-          1. gitリポジトリ外で実行するとエラーになる
-          2. worktree内での実行、シンボリックリンク経由による実行、サブモジュール内での実行
-
-          - 改善版
-      ```bash
-      # Add Error Handling
-      REPO_ROOT=$(git rev-parse --show-toplevel 2>/dev/null) || {
-        echo "Error: not inside a git repository" >&2
-        exit 1
-      }
-
-      TARGET_PATH="$REPO_ROOT/path/to/target"
-      ```
-
-      - なお、gitに依存したくない場合はこちら
-      ```bash
-      SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-      REPO_ROOT="$(cd "$SCRIPT_DIR/path/to/target" && pwd)"
-      ```
-    REV_PARSE_FILE
+    UPSTREAM_FILE
 
     TEST_SERVER_FILE_CONTENT = <<~SERVER_FILE
       - server: 簡易的なWebサーバーを起動させる方法
@@ -266,117 +354,213 @@ module Memo
       ```
     SERVER_FILE
 
-    TEST_JSDOC_FILE_CONTENT = <<~JSDOC_FILE.freeze
-      ## JSDoc の書き方
+    TEST_CONSOLE_FILE_CONTENT = <<~CONSOLE_FILE
+      - console
       ```javascript
-      ## Array
-      # ex.1
-      /** @type {Array<number>} */
+      # Map オブジェクトにはconsole.table()を使うと中身が見やすい
+      const map = new Map(obj);
+      console.table(map);
 
-      # ex.2
-      /**
-       * URL の文字列を処理する
-       *#{' '}
-       * @param {Array<string>} urls - URL の文字列#{' '}
-       */
-       const processUrls = (urls) => processedUrls;
-
-       ## string
-       ### 先頭のアルファベットは小文字のはず
-      /**
-       * string か boolean
-       *
-       * @type {(string | boolean)}
-       */
-      var sb;
+      # Object にはconsole.dir() がいい
+      # Map に使うと全部見えてしまう
+      console.dir(obj);
       ```
-    JSDOC_FILE
+    CONSOLE_FILE
 
-    TEST_NAMING_CONVENTION_FILE_CONTENT = <<~NAMING_CONVENTION_FILE
-      ## 命名規則
-      - プログラミングで大事な命名の、その規則や習慣について
+    TEST_PACKAGE_JSON_FILE_CONTENT = <<~PACKAGE_JSON_FILE.freeze
+      ## package.json:#{' '}
 
-      - 対になっている
-          - synonym antonym dictionaryがあったらいいかも
-          Entry <-> Collection
-    NAMING_CONVENTION_FILE
+      ### バージョン指定について
+      - 数字のみ: 指定したバージョンと正確に一致するバージョンがインストールされる
 
-    TEST_GEM_FILE_CONTENT = <<~GEM_FILE
-      - gem
-          - Rubyのパッケージマネージャー
-          - プロジェクトごとにパッケージを管理する場合はbundleを使う
+      - キャレット(^): メジャーバージョン以外の更新は可能とする
+          - ^1.2.3: 1.2.3以上、2.0.0未満までのバージョン更新を可能とする
 
-      - 例
+      - チルダ(~): マイナーバージョンの更新を可能とする
+          - ~1.2.3: 1.2.3以上、1.3.0未満までのバージョン更新を可能とする
+
+      - 大なり(>): 指定したバージョン以上なら更新可能とする
+
+    PACKAGE_JSON_FILE
+
+    TEST_ONELINER_FILE_CONTENT = <<~ONELINER_FILE
+      ## Perl one-liners: Perlによるワンライナー
       ```bash
-      # RubyGems のリポジトリを調べる
-      gem search -r <package>
+      ## ドキュメント: perlrunにperlコマンドのオプションの解説がある
+      man perlrun
 
-      ## 例: pryに関係のあるパッケージを調べる
-      gem search -r pry
+      ## grep系
+      ### ドットファイルだけを取得
+      ls -alGpF | perl -lane 'print if $F[-1] =~ /^./'
 
-      # gem のサブコマンド一覧を表示する
-      gem help commands
+      ### bashのマニュアルから章を抜き出すコマンド
+      man bash | perl -ne 'print if /^[A-Z]/'
 
-      # gem list のhelp を確認する
-      gem help list
+      ### 特定のフォルダから、"href="か"src="が含まれている行を抜き出すコマンド(正規表現の「選択」)
+      find packages/web/src | xargs -I@ perl -ne 'print if /href=|src=/' @
+
+      ###
+      find lib/ test/ -type f | xargs -I@ perl -ne 'print if /\Qseed[:filename]\E|\Qseed.filename/' @
+      find lib/ test/ -type f | xargs -I@ perl -ne 'print if /(seed[:filename])\E|seed.filename/' @
+      find lib/ test/ -type f | xargs -I@ perl -pi -e 's/seed[:filename]\E|seed.filename/seed.basename/g' @
+
+      ## sed系
+      ### 対象ファイルについて、文字列の一括置換を行う場合(in-place編集)
+      git grep -l NOT_FOUND_MESSAGE | xargs -I@ perl -pi -e 's/NOT_FOUND_MESSAGE/READ_RESULT_IS_NOT_FOUND/g' @
+
+      ### マッチする部分が正規表現ではなくて文字列である場合は、正規表現の最初に\Qを付ける
+      ### 置換する文字列にも\Qを付けてしまうと、メタ文字も一緒に置換されてしまう
+      echo "_(expected).must_equal(actual)" | perl -p -e 's/\Q_(expected).must_equal(actual)/_(actual).must_equal(expected)/g'
+
+      ### マッチングしたものを取り出す場合: https://perldoc.jp/docs/perl/5.22.1/perlretut.pod#Extracting32matches
+      ### グループ化メタ文字()の中でマッチしたものは、$1, $2, ...などで取り出せる
+      ### must_equalのカッコの中身にマッチさせて、その中身を_()の中に移動する
+      echo "_(expected).must_equal([:list, 'foo'])" | perl -p -e 's/\Q_(expected).must_equal(\E(.+))/_($1).must_equal(expected)/g'
+      # => _([:list, 'foo']).must_equal(expected)
       ```
 
-      - 自分でインストールしたgemの一覧
-          - (1)インストール先を指定して確認するコマンドや、(2)インストール場所ごとに分けて確認するコマンドを組み合わせて確認する。
-          1. `gem list -d`
-          2. `gem environment`
-    GEM_FILE
+      ## オプション
+          - `man perlrun`にオプションのドキュメントがある。詳しくはそちらを参照すること。
+      - -e: perlのワンライナーを入力するために使用する。-eの後にワンライナーを入力すれば、perlはそのワンライナーを認識する
+      - -n: 一行ずつ処理する。ダイアモンド演算子と`while (<>) {...}`と同じ。`sed -n`や`awk`と似たような処理を実行する
+      - -p: -nと同じように一行ずつ処理するが、警告が-nより詳しい。perlにprintさせるだけなら、-nを使う。
+      - -i: in-placeで編集する。-iの後に何も指定しなければ、同じファイルを編集する。バックアップが不要なら`perl -i -e '...' <filename>`のようにして使う。
+      - -l: 行末処理の自動化を行う。入力時に改行を削除し、出力時に改行を追加する。
 
-    TEST_TEST_ASSERTION_FILE_CONTENT = <<~TEST_ASSERTION_FILE
-      ## テストアサーションについて
-      - いつもexpectedとactualを逆に書いている気がする......。
-      - 文献がいつもexpectedとactualが逆なような......
+      ## 正規表現のオプション
+      - \Q: その正規表現のメタ文字をエスケープする
+      - \E: \Qなどのエスケープを\Eが追加された位置で終了させる
+    ONELINER_FILE
 
+    TEST_COMPARE_FILE_CONTENT = <<~COMPARE_FILE
+      ## Rubyオブジェクトの比較の仕方
+      - 趣旨: 言語やそのオブジェクトによって値の比較方法が特殊だったりするので
+          - JavaScriptの===や!= nullとか...言語によるので
+          - Rubyの中で特筆すべき比較方法を書いておく場所
 
-      ### Ruby
-      minitestのspecはこれが正しいはず！
+      - Setの比較
+          - ==について
+              1. どちらもSetオブジェクトであること
+              2. 要素が同数であること
+              3. 全ての要素が等しいこと
+    COMPARE_FILE
+
+    TEST_RAKE_FILE_CONTENT = <<~RAKE_FILE
+      - rake: タスクランナー
+      ```bash
+      # タスクの一覧を表示する
+      rake -T
+      ```
+    RAKE_FILE
+
+    TEST_TYPE_CHECK_FILE_CONTENT = <<~TYPE_CHECK_FILE
+      ## Ruby型検査
+      - テストコード
       ```ruby
-      _expected).must_equal(actual)
-      ```
-    TEST_ASSERTION_FILE
+      ## 配列の要素が全て同じなら真が戻り値になる
+      ## Array#all?に検査したい型を入れる
+      require "minitest/expectations"
 
-    TEST_COMMENTING_FILE_CONTENT = <<~COMMENTING_FILE
-      - commenting: コメントアウトなどの操作
-      ```
-      # ドキュメントはcommenting で検索する
-      :h commenting
-      ```
-    COMMENTING_FILE
+      expected = seeds.all?(Memo::Model::Seed)
 
-    TEST_NETRW_FILE_CONTENT = <<~NETRW_FILE
-      ## netrw: 組み込みファイラ
-      - 起動
+      _(expected).must_equal(true)
+      # => true
       ```
-      :Ex
-      ```
+    TYPE_CHECK_FILE
 
-      - 表示モード切り替え
-      <kbd>i</kbd>
-          - thin -> long -> wide -> tree
-          - * このdotfilesではデフォルトの表示モードをtreeにしてある
+    TEST_MEMO_SUMMARY_FILE_CONTENT = <<~MEMO_SUMMARY_FILE
+      ## summary: memorandumの集計情報
+      ```bash
+      ## 作成したファイルの数
+      ## READMEなども含めた数
+      find memo -type f | wc -l
+      > 92
 
-      - 新しいタブで開く
-      <kbd>t</kbd>
+      ## 作成したファイルの総行数
+      ## 最後のtotalに表示される
+      find memo -type f | xargs wc -l
+      > 1597 total
 
-    NETRW_FILE
-
-    TEST_READ_ONLY_FILE_CONTENT = <<~READ_ONLY_FILE
-      ## 閲覧モードなど
-      - 編集不許可の`-M`オプションを付けると便利。neovimでも同様。余計なキーを押したときに編集が不可能になる。
-      ```
-      nvim -M error.log
+      ## lsやgrepでも集計情報が取得できそう
       ```
 
-      - 読み取り専用にする場合は`-R`オプションを付けるなど。
+    MEMO_SUMMARY_FILE
+
+    TEST_KEYMAP_FILE_CONTENT = <<~KEYMAP_FILE
+      ## keymap
+
+      ## noremap, silentの意味
+      - noremap
+          - 他のショートカットキーの設定に連鎖させないようにする
+      - silent
+          - キーの実行時に、画面下のコマンドラインに実行コマンドやメッセージを表示させない
+
+      # 例
       ```
-      vim -R error.log
+      -- 次のバッファへ移動 (Tab)
+      vim.api.nvim_set_keymap('n', '<Tab>', ':bnext<CR>', { noremap = true, silent = true })
+      -- 前のバッファへ移動 (Shift+Tab)
+      vim.api.nvim_set_keymap('n', '<S-Tab>', ':bprevious<CR>', { noremap = true, silent = true })
       ```
-    READ_ONLY_FILE
+
+      ## keymapの重複を調査する
+      ```
+      # checkhealthを実行すろと、which-keyプラグインの方でkeymapの重複を調べてくれる
+      :checkhealth
+
+      # コマンドラインモードでkeymapの詳細を調べる
+      :verbose map <your-keybinding>
+      # 例
+      :verbose map <C-b>
+      :verbose nmap <leader>f
+      ```
+    KEYMAP_FILE
+
+    TEST_VIM_PACK_FILE_CONTENT = <<~VIM_PACK_FILE
+      ## vim.pack
+      - neovim組み込みのプラグインマネージャー
+      - ドキュメント
+      :h vim.pack | only
+    VIM_PACK_FILE
+
+    TEST_TEXT_OBJECTS_FILE_CONTENT = <<~TEXT_OBJECTS_FILE
+      ## text objects: テキスト操作のためのコマンド
+
+      ### 例
+      - 単語を一つだけヤンクするには:
+          `yiw` or `yaw`
+          y: yank operator
+          iw, aw: text objects
+
+      - 引用符で囲まれた範囲をヤンクするには:
+          `yi"` or `ya"`
+
+      - 検索した単語を置き換えるには:
+          `cgn`
+          => `n`と`.`を組み合わせて検索した単語を順次置き換えられる
+
+
+      ### オペレーター
+      - d: 削除
+      - y: ヤンク
+      - c: 変更
+      - v: 選択
+
+      ### 範囲指定
+      - i: inner - 内側
+      - a: a/around - 外側
+
+      ### オブジェクト
+      - w: word - 一単語
+      - s: sentence - 一行の場合が多い
+      - 引用符、カッコ: 該当の引用符、カッコを指定する
+      - b: block - ブロックという単位を表す。Rubyのブロックと対応していた。
+      - gn: 最後に使われた検索パターンを前方検索しマッチしたものを選択してビジュアルモードを開始する
+          - n: 検索した単語について前方に移動
+          - N: 検索した単語について後方に移動
+          - ref: https://vim-jp.org/vimdoc-ja/visual.html#gn
+
+    TEXT_OBJECTS_FILE
 
     TEST_DOCKER_COMPOSE_FILE_CONTENT = <<~DOCKER_COMPOSE_FILE
       - docker-compose.yml
@@ -405,321 +589,289 @@ module Memo
       ```
     MISE_FILE
 
-    TEST_EXPANSION_FILE_CONTENT = <<~EXPANSION_FILE.freeze
-      ## EXPANSION: bashのコマンドや変数の展開
-      ### ドキュメント
-      EXPANSIONという章がある。次のように検索すればその章に行ける
-      ```
-      /^EXPANSION#{' '}
-      ```
+    TEST_EXIT_STATUS_FILE_CONTENT = <<~EXIT_STATUS_FILE
+      - EXIT STATUS
+          - CLIコマンドの終了ステータス
 
-      ### 関係
-      - Command Substitution(コマンド展開)とも大きな関係がある
+      man bash -> EXIT STATUSの章に載っている
+      0 - 正常終了
+      1 - 一般エラー
+      2 - 誤用法(引数や文法エラー)
 
-      ### コマンド展開: Command Substitution
-      - 次のようにしてコマンドを展開する
-      ```
-      $(command)
-      # or
-      `command`
-      ```
+      厳密な規約はない
 
-      - *補足
-      man bashの中で、Substitutionを全部大文字にしてSUBSTITUTIONで検索しても見つからない。
-
-      ### パラメーター展開: Parameter Expansion
-      - '$'がパラーメーター展開、コマンド展開、算術展開の橋渡しをする
-      - '{}'(ブレース)で囲まなくてもいいけど、他の文字列と混同することを防ぐ役割がある
-
-      ```
-      ## man bashの Parameter Expansionの冒頭からの引用
-      > The `$' character introduces parameter expansion, command substitution, or arithmetic expansion.
-      > The parameter name or symbol to be expanded may be enclosed in braces, which are optional but serve to protect
-      > the variable to be expanded from characters immediately following it which could be interpreted as part of the name.
-      ```
-
-      ### プロセス置換 (Process Substitution)
-      - 構文
-          - listの実行結果を、ファイルのように扱うことができる
+      ## 判定方法
+      - $?を使うこと(shell-variables.mdと同じ内容)
+          - $?: 直前に実行したコマンドの実行ステータス
       ```bash
-      <(list)
+      ## これで確認できる
+      echo $?
       ```
-      または、
-      ```bash
-      >(list)
-      ```
+    EXIT_STATUS_FILE
 
-      ### 例
-      - diffなどの、引数としてファイルを要求するコマンドに使用する
-      ```bash
-      diff <(list) <(list)
-      ```
+    TEST_PARAMETER_EXPANSION_FILE_CONTENT = <<~PARAMETER_EXPANSION_FILE
+      - Parameter Expansion
+          - `$`がパラメーターの展開に使われる
 
-      ## 補足
-      プロセス置換は、実行されたコマンドの出力をファイル記述子と関連づける。echoを使うと関連づけられたファイル記述子の番号が確認できる。
-      ```bash
-      $ echo <(ls)
-      ```
-    EXPANSION_FILE
+    PARAMETER_EXPANSION_FILE
 
-    TEST_REDIRECTION_FILE_CONTENT = <<~REDIRECTION_FILE
-      ## Redirection: 標準出力と標準エラー出力の結果を表示しない場合
-      - ドキュメント
-      ```bash
-      man bash
-      /^REDIRECTION
-      ```
+    TEST_SPECIAL_PARAMETERS_FILE_CONTENT = <<~SPECIAL_PARAMETERS_FILE.freeze
+      - Special parameters
+      Special Parameterは$ を付けて展開する(Parameter Expansion)
+          - #: スクリプトや関数に渡された引数の数
+          - Ref: Expands to the number of positional parameters in decimal
 
-      ### 出力を捨てるとき
-      1. 標準出力だけ捨てる
-      ```bash
-      ls ~/Downloads/ > /dev/null
-      ```
+          - ?: 直前に実行したコマンドの実行結果。0 ならTrue である。
+          - Ref: Expands to the status of the most recently executed foreground pipeline.
 
-      2. 標準エラー出力だけ捨てる
-      ```bash
-      ls ~/Downloads/do-not-exist-file.txt 2> /dev/null
-      echo $? # will return 1
+          - !: 直前に実行したコマンドのプロセスID#{' '}
+          - Ref: Expands to the process ID of the most recently executed background (asynchronous) command.
+    SPECIAL_PARAMETERS_FILE
 
-      ## これは普通にlsの実行結果が表示される
-      ls ~/Downloads/ 2> /dev/null
-      ```
-
-      3. 両方とも捨てる
-      ```bash
-      ## 従来の方法？
-      command -v ls 2>&1 > /dev/null
-
-      ## Bash 4.0だと次の書き方でもOKらしい
-      command -v ls &> /dev/null
-      ```
-    REDIRECTION_FILE
-
-    TEST_TEST_FILE_CONTENT = <<~TEST_FILE
-      - test,[
-          - man testが詳しい
-      ```bash
-      man test
-
-      # [ に man を適用してもドキュメントが読める
-      man [
-      ```
-    TEST_FILE
-
-    TEST_GHOSTTY_FILE_CONTENT = <<~GHOSTTY_FILE
+    TEST_EMACS_FILE_CONTENT = <<~EMACS_FILE
+      - Emacs: エディター
+      ## TUI というよりIDE に近い気がする
+      ## 今後使用することはないと思うが、一部のコマンドをvim で使用しているので、残しておく
       ## 例
-      - 新規タブを作成
-      <kbd>⌘</kbd> + <kbd>T</kbd>
+      - 改行
+      <kbd>C</kbd> + <kbd>o</kbd>
+      - 先の行を消す
+      <kbd>C</kbd> + <kbd>k</kbd>
+      - 前の行を消す
+      <kbd>C</kbd> + <kbd>u</kbd>
+      - 単語を消す
+      <kbd>C</kbd> + <kbd>w</kbd>
+      - 一文字を消す
+      <kbd>C</kbd> + <kbd>h</kbd>
+    EMACS_FILE
 
-      - タブを移動
-          - <kbd>Shift</kbd> + <kbd>⌘</kbd> + <kbd>[</kbd>
-          - <kbd>Shift</kbd> + <kbd>⌘</kbd> + <kbd>]</kbd>
-    GHOSTTY_FILE
+    TEST_TMUX_FILE_CONTENT = <<~TMUX_FILE
+      ## 例
+      - 10番目以降のwindowに移動する
+          - 番号を指定して移動する
+          `prefix + '`
+          - インタラクティブな移動
+          `prefix + w`
 
-    TEST_DIFF_FILE_CONTENT = <<~DIFF_FILE
-      - diff
+      - セッション
+          - セッションに名前を付けて起動する
+              `tmux new -s <session-name>`
+          - 指定したセッションを起動する
+              `tmux attach -t <target-session>`
+          - 次のセッションに移動する
+              `prefix )`
+          - 前のセッションに移動する
+              `prefix (`
 
-      - origfileとpatchfileの内容が次の場合、diffの結果は次の通り
-      ```bash
-      cat origfile
-      > 1
-      > 12
-      > 123
+              * target-sessionは次の順番で決まる
+              1. $ のついたsession ID
+              2. セッションの正確な名前
+              ...
 
-      cat patchfile
-      > 123
-      > 123
-      > 123
+          - セッションを一時終了する(Detach)
+              - `prefix + d`
+          - 直前のセッションに戻る(Attach)
+              - `tmux a` or `tmux attach`
+              1例: 間違ってDetachしたときは`tmux attach`で復元する
+              2例: 複数のセッションを起動させるとき、最初のセッションをDetachして、ターミナルで新しいtmuxを起動させる
+                  - その際は、tmuxに名前を付けると良さそう
+                  - ほとんど不具合を起こさない開発サーバーにtmux1を割り当てて、それ以外をtmux2にするとか?
 
-      diff origfile patchfile
-      ```
 
-      ```diff
-      1,2d0
-      < 1
-      < 12
-      3a2,3
-      > 123
-      > 123
-      ```
+      - ウィンドウ
+          - 全てのウィンドウの一覧を表示
+          `tmux list-windows`
 
-      - a unified diff形式(-uオプション)
-      ```
-      # -u を付けると、 a unified diff の形式で差分を出力する
-      # 先頭の三行に、パッチファイルとパッチを当てるファイルの情報と、差分の概要を出力する
-      # patch コマンドは、この情報をみて、パッチファイルとパッチを当てるファイルを識別する
-      # なお、-c オプションでも同様の情報を出力する。-c の場合は、context diffs の形式でこの情報を出力する
+          - 現在開いているウィンドウを完全に終了する
+          `Ctrl + d`
+              - `prefix + d`としてしまうと、セッションがDetachとなるので注意すること
 
-      # a unified diff について
-      # --- が付いている方がパッチを当てる方のファイル("old")
-      # +++ が付いている方がパッチファイル("new")
+          - ウィンドウを番号指定で閉じる
+          `tmux kill-window -t <session-name>:<window-number>`
+              - 例: 現在のセッションの５番目のウィンドウを閉じる
+              `tmux kill-window -t 5`
 
-      diff -u origfile patchfile
-      ```
+          - ウィンドウの名前を変更する
+          `prefix + ,`
 
-      ```diff
-      --- origfile	2026-05-22 08:53:21
-      +++ patchfile	2026-05-22 08:53:27
-      @@ -1,3 +1,3 @@
-      -1
-      -12
-       123
-      +123
-      +123
-      ```
+      - その他
+          - tmuxのコマンド一覧
+          `tmux list-commands`
 
-      #TODO origfileにパッチファイルを適用する
-      # diff からパイプでpatchに繋げるとreversed patchと判定されるときがある
-      ```bash
-      diff -u origfile patchfile | patch -u
-      ```
-    DIFF_FILE
+      - tmuxのドキュメント
+          - tmux attachのドキュメントを探す
+          1. `man tmux`
+          2. `/attach-session`
+
+          - tmux newのドキュメントを探す
+          1. `tmux list-commnads | grep new`
+    TMUX_FILE
 
     TEST_MEMO_DATA_SEED = [
       {
         dir: "memo",
-        filename: "ANSI-escape-code-and-set-color",
+        basename: "ANSI-escape-code-and-set-color",
         content: TEST_ANSI_ESCAPE_CODE_AND_SET_COLOR_FILE_CONTENT
       },
       {
-        dir: "cli/builtin",
-        filename: "builtin",
+        dir: "cli/core/builtin",
+        basename: "builtin",
         content: TEST_BUILTIN_FILE_CONTENT
       },
       {
-        dir: "cli",
-        filename: "claude",
+        dir: "cli/core/file",
+        basename: "ls",
+        content: TEST_LS_FILE_CONTENT
+      },
+      {
+        dir: "cli/core/process",
+        basename: "lsof",
+        content: TEST_LSOF_FILE_CONTENT
+      },
+      {
+        dir: "cli/core/text",
+        basename: "cut",
+        content: TEST_CUT_FILE_CONTENT
+      },
+      {
+        dir: "cli/core/text",
+        basename: "sed",
+        content: TEST_SED_FILE_CONTENT
+      },
+      {
+        dir: "cli/core/text",
+        basename: "xargs",
+        content: TEST_XARGS_FILE_CONTENT
+      },
+      {
+        dir: "cli/third-party",
+        basename: "claude",
         content: TEST_CLAUDE_FILE_CONTENT
       },
       {
-        dir: "cli",
-        filename: "ed",
-        content: TEST_ED_FILE_CONTENT
-      },
-      {
-        dir: "cli",
-        filename: "homebrew",
-        content: TEST_HOMEBREW_FILE_CONTENT
-      },
-      {
-        dir: "cli",
-        filename: "mise",
+        dir: "cli/third-party",
+        basename: "mise",
         content: TEST_MISE_FILE_CONTENT_1
       },
       {
-        dir: "cli/old",
-        filename: "groups",
-        content: TEST_GROUPS_FILE_CONTENT
-      },
-      {
         dir: "cli",
-        filename: "ssh",
-        content: TEST_SSH_FILE_CONTENT
-      },
-      {
-        dir: "cli",
-        filename: "wc",
-        content: TEST_WC_FILE_CONTENT
+        basename: "units",
+        content: TEST_UNITS_FILE_CONTENT
       },
       {
         dir: "git",
-        filename: "apply",
-        content: TEST_APPLY_FILE_CONTENT
+        basename: "checkout",
+        content: TEST_CHECKOUT_FILE_CONTENT
       },
       {
         dir: "git",
-        filename: "config",
-        content: TEST_CONFIG_FILE_CONTENT
+        basename: "diff",
+        content: TEST_DIFF_FILE_CONTENT
       },
       {
         dir: "git",
-        filename: "gitignore",
-        content: TEST_GITIGNORE_FILE_CONTENT
+        basename: "merge",
+        content: TEST_MERGE_FILE_CONTENT
       },
       {
         dir: "git",
-        filename: "push",
-        content: TEST_PUSH_FILE_CONTENT
+        basename: "reset",
+        content: TEST_RESET_FILE_CONTENT
       },
       {
         dir: "git",
-        filename: "rev-parse",
-        content: TEST_REV_PARSE_FILE_CONTENT
+        basename: "upstream",
+        content: TEST_UPSTREAM_FILE_CONTENT
       },
       {
         dir: "how-to",
-        filename: "server",
+        basename: "server",
         content: TEST_SERVER_FILE_CONTENT
       },
       {
         dir: "lang/javascript",
-        filename: "jsdoc",
-        content: TEST_JSDOC_FILE_CONTENT
+        basename: "console",
+        content: TEST_CONSOLE_FILE_CONTENT
       },
       {
-        dir: "lang",
-        filename: "naming-convention",
-        content: TEST_NAMING_CONVENTION_FILE_CONTENT
+        dir: "lang/javascript",
+        basename: "package-json",
+        content: TEST_PACKAGE_JSON_FILE_CONTENT
+      },
+      {
+        dir: "lang/perl",
+        basename: "oneliner",
+        content: TEST_ONELINER_FILE_CONTENT
       },
       {
         dir: "lang/ruby",
-        filename: "gem",
-        content: TEST_GEM_FILE_CONTENT
+        basename: "compare",
+        content: TEST_COMPARE_FILE_CONTENT
       },
       {
-        dir: "lang",
-        filename: "test-assertion",
-        content: TEST_TEST_ASSERTION_FILE_CONTENT
+        dir: "lang/ruby",
+        basename: "rake",
+        content: TEST_RAKE_FILE_CONTENT
+      },
+      {
+        dir: "lang/ruby",
+        basename: "type-check",
+        content: TEST_TYPE_CHECK_FILE_CONTENT
+      },
+      {
+        dir: "memo",
+        basename: "memo-summary",
+        content: TEST_MEMO_SUMMARY_FILE_CONTENT
       },
       {
         dir: "neovim",
-        filename: "commenting",
-        content: TEST_COMMENTING_FILE_CONTENT
+        basename: "keymap",
+        content: TEST_KEYMAP_FILE_CONTENT
       },
       {
         dir: "neovim/plugin",
-        filename: "netrw",
-        content: TEST_NETRW_FILE_CONTENT
+        basename: "vim-pack",
+        content: TEST_VIM_PACK_FILE_CONTENT
       },
       {
         dir: "neovim",
-        filename: "read-only",
-        content: TEST_READ_ONLY_FILE_CONTENT
+        basename: "text-objects",
+        content: TEST_TEXT_OBJECTS_FILE_CONTENT
       },
       {
         dir: "setting",
-        filename: "docker-compose",
+        basename: "docker-compose",
         content: TEST_DOCKER_COMPOSE_FILE_CONTENT
       },
       {
         dir: "setting",
-        filename: "mise",
+        basename: "mise",
         content: TEST_MISE_FILE_CONTENT_2
       },
       {
         dir: "shell/bash",
-        filename: "expansion",
-        content: TEST_EXPANSION_FILE_CONTENT
+        basename: "exit-status",
+        content: TEST_EXIT_STATUS_FILE_CONTENT
       },
       {
         dir: "shell/bash",
-        filename: "redirection",
-        content: TEST_REDIRECTION_FILE_CONTENT
+        basename: "parameter-expansion",
+        content: TEST_PARAMETER_EXPANSION_FILE_CONTENT
       },
       {
         dir: "shell/bash",
-        filename: "test",
-        content: TEST_TEST_FILE_CONTENT
+        basename: "special-parameters",
+        content: TEST_SPECIAL_PARAMETERS_FILE_CONTENT
       },
       {
         dir: "tui",
-        filename: "ghostty",
-        content: TEST_GHOSTTY_FILE_CONTENT
+        basename: "emacs",
+        content: TEST_EMACS_FILE_CONTENT
       },
       {
-        dir: "cli",
-        filename: "diff",
-        content: TEST_DIFF_FILE_CONTENT
+        dir: "tui",
+        basename: "tmux",
+        content: TEST_TMUX_FILE_CONTENT
       }
     ].freeze
   end

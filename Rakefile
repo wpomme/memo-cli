@@ -49,19 +49,19 @@ namespace :mock do
     # モックデータ作成のために実データseedsを任意の倍数で絞り込んで取得する
     seeds = repo.instance_variable_get(:@seeds).filter.each_with_index { |_e, i| i.modulo(4).zero? }
     # テストのために固定のseedを作成する
-    fixed_mock_file = "diff"
-    seeds.push(repo.find(fixed_mock_file)) if repo.seeds.find { |seed| seed.filename == fixed_mock_file }
+    fixed_mock_file = "ls"
+    seeds.concat(repo.find(fixed_mock_file)) if seeds.none? { |seed| seed.basename == fixed_mock_file }
 
     ## モックデータ作成用のコマンド
     ## TEST_MEMO_DATA_SEEDの元となるRubyのArray<Hash>とヒアドキュメントを返す
     mock_seeds = seeds.map do |seed|
-      content = repo.read(seed)
-      filename = seed.filename.upcase.tr("-", "_")
-      val_name = "TEST_#{filename}_FILE_CONTENT"
-      label = "#{filename}_FILE"
+      content = Memo::Service.read(seed)
+      basename = seed.basename.upcase.tr("-", "_")
+      val_name = "TEST_#{basename}_FILE_CONTENT"
+      label = "#{basename}_FILE"
       heredoc = ["#{val_name} = <<~#{label}"] + content + [label] + ["\n"]
       {
-        mock_seed: { dir: seed.dir, filename: seed.filename, content: val_name.to_sym },
+        mock_seed: { dir: seed.dir, basename: seed.basename, content: val_name.to_sym },
         heredoc: heredoc
       }
     end
@@ -78,7 +78,7 @@ namespace :mock do
         <<~MEMO_DATA
           {
             dir: "#{seed[:mock_seed][:dir]}",
-            filename: "#{seed[:mock_seed][:filename]}",
+            basename: "#{seed[:mock_seed][:basename]}",
             content: #{seed[:mock_seed][:content]}
           },
         MEMO_DATA

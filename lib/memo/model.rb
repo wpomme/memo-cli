@@ -10,9 +10,9 @@ module Memo
     #   @return [String] 対象のディレクトリからそのファイルへのパス
     # @!attribute [w] dir
     #   @return [String] そのファイルが格納されているディレクトリ
-    # @!attribute [w] filename
+    # @!attribute [w] basename
     #   @return [String] 対象のファイルのファイル名
-    Seed = Data.define(:full_path, :rel_path, :dir, :filename)
+    Seed = Data.define(:full_path, :rel_path, :dir, :basename)
 
     DirSeed = Struct.new(:basename, :parent_dir, :dir) do
       def initialize(target_dir, root_dirname)

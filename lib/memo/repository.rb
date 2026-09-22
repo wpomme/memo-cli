@@ -27,14 +27,14 @@ module Memo
       @seeds.group_by(&:dir).map do |dir, seed|
         Memo::Model::GroupedFileList.new(
           dir: dir,
-          filenames: seed.map(&:filename)
+          filenames: seed.map(&:basename)
         )
       end
     end
 
     # grouped_file_listを代替するためのHashを返す関数
     def grouped_file_list_hash
-      @seeds.group_by(&:dir).transform_values { |seeds| seeds.map(&:filename) }
+      @seeds.group_by(&:dir).transform_values { |seeds| seeds.map(&:basename) }
     end
 
     # memo walk CLIに使用するためのseed Hash
@@ -59,7 +59,7 @@ module Memo
     # @param word [String]
     # @return [Array<Seed>]
     def find(word)
-      @seeds.filter { |seed| seed.filename == word }
+      @seeds.filter { |seed| seed.basename == word }
     end
 
     # parent_dir: @root_dirnameと同じなら、ディレクトリのトップである。parent_dirはnilに設定する
@@ -103,7 +103,7 @@ module Memo
           full_path: full_path,
           rel_path: rel_path,
           dir: dir,
-          filename: filename(full_path)
+          basename: basename(full_path)
         )
       end
     end
@@ -112,7 +112,7 @@ module Memo
     #
     # @param [String] file_path 対象のファイルのファイルパス
     # @return [String] ファイル名
-    def filename(file_path)
+    def basename(file_path)
       File.basename(file_path, '.md')
     end
   end

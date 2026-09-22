@@ -10,7 +10,8 @@ class TestService < Minitest::Test
     describe '#read' do
       describe "戻り値の型検査" do
         it "文字列型の一次元配列を返す" do
-          expected_seed = @test_seeds.find { |seed| seed.filename == "diff" }
+          target_file = @fixed_mock_file
+          expected_seed = @test_seeds.find { |seed| seed.basename == target_file }
           ret = read(expected_seed)
 
           expected = ret.all?(String)
@@ -20,10 +21,11 @@ class TestService < Minitest::Test
       end
 
       it "与えられたseedにしたがい、そのSeedの元となっているファイルを全文表示する。、" do
-        expected_seed = @test_seeds.find { |seed| seed.filename == "diff" }
+        target_file = @fixed_mock_file
+        expected_seed = @test_seeds.find { |seed| seed.basename == target_file }
         expected = read(expected_seed)
 
-        actual = Memo::MockSeed::TEST_DIFF_FILE_CONTENT
+        actual = Memo::MockSeed::TEST_LS_FILE_CONTENT
 
         _(actual.split("\n")).must_equal(expected)
       end
@@ -32,10 +34,10 @@ class TestService < Minitest::Test
     describe '#search' do
       describe "戻り値の型検査" do
         it '読み込んだファイルの中に該当の文字列が含まれている場合は、SearchLineの配列を返す' do
-          target_file = "diff"
+          target_file = @fixed_mock_file
           ## NOTE: target_fileと同じワードで検索すれば複数行ヒットする
           search_word = target_file
-          target_seed = @test_seeds.find { |seed| seed.filename == target_file }
+          target_seed = @test_seeds.find { |seed| seed.basename == target_file }
           search_lines = search(target_seed, search_word)
           expected = search_lines.all?(Memo::Model::SearchLine)
 
@@ -43,10 +45,10 @@ class TestService < Minitest::Test
         end
 
         it '読み込んだファイルの中に該当の文字列が含まれていない場合は、空の配列を返す' do
-          target_file = "diff"
+          target_file = @fixed_mock_file
           ## target_fileと同じワードで検索すれば複数行ヒットするので都合がいい
           search_word = "hikkakaranasounakotoba"
-          target_seed = @test_seeds.find { |seed| seed.filename == target_file }
+          target_seed = @test_seeds.find { |seed| seed.basename == target_file }
           expected = search(target_seed, search_word)
 
           _([]).must_equal(expected)
@@ -55,12 +57,12 @@ class TestService < Minitest::Test
 
       describe "戻り値の値検査" do
         it '読み込んだファイルの中に該当の文字列が含まれている場合は、SearchLineの配列を返す' do
-          target_file = "diff"
+          target_file = @fixed_mock_file
           search_word = target_file
-          target_seed = @test_seeds.find { |seed| seed.filename == target_file }
+          target_seed = @test_seeds.find { |seed| seed.basename == target_file }
           expected = search(target_seed, search_word)
 
-          actual = Memo::MockSeed::TEST_DIFF_FILE_CONTENT
+          actual = Memo::MockSeed::TEST_LS_FILE_CONTENT
             .split("\n")
             .each_with_index
             .filter_map do |line, index|
