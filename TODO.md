@@ -37,6 +37,11 @@
 ## 型検査・型のテスト
 - Rdocかyard、型検査の導入
 
+## Memo::Modelの整理
+- GroupedFileListを廃止し、Repository#grouped_file_list_hashを使う
+    - 独自のデータ型を減らしてみる
+- DirSeedとSeedは同じSeedに統合出来るのでは？
+
 ## テスト拡張
 - coverageを取得する
 

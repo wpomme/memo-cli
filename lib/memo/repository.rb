@@ -32,6 +32,7 @@ module Memo
       end
     end
 
+    # grouped_file_listを代替するためのHashを返す関数
     def grouped_file_list_hash
       @seeds.group_by(&:dir).transform_values { |seeds| seeds.map(&:filename) }
     end

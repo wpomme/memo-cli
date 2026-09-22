@@ -9,15 +9,12 @@ require "minitest/spec"
 require "minitest/expectations"
 require "minitest/mock"
 
-require "tmpdir"
-require "fileutils"
-
 module MemoTestLifecycleHooks
   def setup
-    @tmpdir = Dir.mktmpdir
-
     # テスト環境ではMemo::Config.memo_dirを使わない
-    @test_memo_dir = File.join(Dir.home, File.join(@tmpdir))
+    @test_memo_dir = File.join(Dir.home, "/var/test-memo-dir")
+    FileUtils.mkdir_p(@test_memo_dir)
+
     @test_root_dirname = File.basename(@test_memo_dir)
 
     Memo::MockSeed::TEST_MEMO_DATA_SEED.each do |elem|
@@ -29,14 +26,10 @@ module MemoTestLifecycleHooks
 
     @test_repo = Memo::Repository.new(@test_memo_dir)
     @test_seeds = @test_repo.instance_variable_get(:@seeds)
-
-    @original_dir = Dir.pwd
-    Dir.chdir(@tmpdir)
   end
 
   def teardown
-    super
-    Dir.chdir(@original_dir)
-    FileUtils.remove_entry_secure(@tmpdir)
+    # ~/var/memo-cli-test-dirまでは削除して、~/var/は消さずに残しておく
+    FileUtils.remove_entry_secure(@test_memo_dir)
   end
 end
