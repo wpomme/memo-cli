@@ -31,7 +31,7 @@ module Memo
     end
 
     def list(dir = nil)
-      puts @mapper.file_list_to_view(dir)
+      puts @mapper.grouped_ls_to_view(dir)
     end
 
     def search(word)

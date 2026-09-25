@@ -46,10 +46,16 @@ class TestRepository < Minitest::Test
     end
 
     describe '#dir_set' do
+      it "dir_setの中に対象の最上位のディレクトリが含まれていること" do
+        dir_set = @test_repo.dir_set
+
+        _(dir_set.include?(@test_root_dirname)).must_equal(true)
+      end
       it "モックデータと実際のdir_setが同じであること" do
-        expected = @test_repo.dir_set
-        actual = Dir.glob("**/*/", base: @test_memo_dir)
+        actual = @test_repo.dir_set
+        expected = Dir.glob("**/*/", base: @test_memo_dir)
           .to_set { |dir| dir.rstrip("/") }
+          .add(@test_root_dirname)
 
         _(actual).must_equal(expected)
       end

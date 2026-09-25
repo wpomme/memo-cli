@@ -7,6 +7,7 @@ module Memo
     def initialize(dir)
       @seeds = load(dir)
       @dir_seeds = load_dirs(dir)
+      @root_dir = File.basename(dir)
     end
 
     # 対象の全てのファイルに文字列検索を行う
@@ -64,7 +65,7 @@ module Memo
       dirs = @dir_seeds
         .map(&:rel_path)
         .map { |dir| dir.rstrip("/") }
-      Set.new(dirs)
+      Set.new(dirs).add(@root_dir)
     end
 
     private

@@ -72,18 +72,11 @@ class TestView < Minitest::Test
           Memo::View.new(@test_repo).list
         end
 
-        file_test_to_view = @test_repo.grouped_file_list
-          .map do |struct|
-            [Rainbow(struct[:dir]).green].append(struct[:filenames], "\n")
-          end
+        grouped_ls_to_view = Memo::Mapper.new(@test_repo).grouped_ls_to_view
 
-        # 順番は考慮しない
-        actual = file_test_to_view.flatten.to_set
+        actual = grouped_ls_to_view.to_set
 
-        # 改行で配列を作成するが、改行自身は集合に加える必要がある
-        expected = out.split("\n").to_set.add("\n")
-        # ユーザーに表示される票は空行が入っているので、それを取り除く
-        expected.delete("")
+        expected = out.split("\n").to_set
 
         _(actual).must_equal(expected)
       end
@@ -95,10 +88,13 @@ class TestView < Minitest::Test
           Memo::View.new(@test_repo).list(valid_dir)
         end
 
-        actual = @test_repo.grouped_file_list.filter_map { |grouped| grouped.to_view(valid_dir) }
-          .flatten.join("\n") << "\n"
+        grouped_ls_to_view = Memo::Mapper.new(@test_repo).grouped_ls_to_view(valid_dir)
 
-        _(out).must_equal(actual)
+        actual = grouped_ls_to_view.to_set
+
+        expected = out.split("\n").to_set
+
+        _(actual).must_equal(expected)
       end
 
       # TODO: exit 2としたい
@@ -109,8 +105,9 @@ class TestView < Minitest::Test
           Memo::View.new(@test_repo).list(invalid_dir)
         end
 
-        # TODO: とりあえず文字列を返すことだけを確認する
-        _(out).must_be_instance_of(String)
+        expected = Memo::Message::NO_DIRECTORIES.sub('dir', invalid_dir) << @test_repo.dir_set.join(' ') << "\n"
+
+        _(out).must_equal(expected)
       end
     end
 

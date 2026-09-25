@@ -24,32 +24,41 @@ class TestCommand < Minitest::Test
             Memo::Command.new(@test_repo).execute(['list'])
           end
 
-          # 順番は考慮しない
-          actual = @test_repo.grouped_file_list.map(&:to_view)
-            .flatten.to_set
+          grouped_ls_to_view = Memo::Mapper.new(@test_repo).grouped_ls_to_view
+
+          actual = grouped_ls_to_view.to_set
 
           expected = out.split("\n").to_set
-          # 空行を取り除く
-          expected.delete("")
 
           _(actual).must_equal(expected)
         end
 
-        it "['list', 'cli']を受け取ったときは、memo_dirの中のcliディレクトリの中にあるメモファイルを全て表示する" do
+        it "['list', 'cli']を受け取ったときは、memo_dirの中のcliディレクトリの中にあるメモファイルとディレクトリを全て表示する" do
           valid_dir = 'cli'
 
           out, = capture_io do
             Memo::Command.new(@test_repo).execute(['list', valid_dir])
           end
 
-          actual = @test_repo.grouped_file_list.filter_map { |grouped| grouped.to_view(valid_dir) }
-            .flatten.join("\n") << "\n"
+          grouped_ls_to_view = Memo::Mapper.new(@test_repo).grouped_ls_to_view(valid_dir)
 
-          _(out).must_equal(actual)
+          actual = grouped_ls_to_view.to_set
+
+          expected = out.split("\n").to_set
+
+          _(actual).must_equal(expected)
         end
 
-        it "['list', 'invalid_dir']の場合、ユーザーメッセージ" do
-          skip "TODO"
+        it "['list', 'invalid_dir']の場合、そのようなディレクトリが存在しない旨のメッセージを表示する" do
+          invalid_dir = 'invalid_dir'
+
+          out, = capture_io do
+            Memo::Command.new(@test_repo).execute(['list', invalid_dir])
+          end
+
+          expected = Memo::Message::NO_DIRECTORIES.sub('dir', invalid_dir) << @test_repo.dir_set.join(' ') << "\n"
+
+          _(out).must_equal(expected)
         end
       end
 
