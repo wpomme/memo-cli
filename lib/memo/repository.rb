@@ -21,13 +21,12 @@ module Memo
       end
     end
 
-    # memo walk CLIに使用するためのseed Hash
+    # 対象のディレクトリ配下にあるディレクトリとファイルのSeedを、ディレクトリごとにグループ化しハッシュとして返す
     #
-    # キーはディレクトリを示す文字列かnilとなる
+    # キーはディレクトリを示す文字列となる
     # 値はSeedの一次元配列となる
-    # キーがnilの場合の値は、最上位を示すディレクトリのSeedが一つだけ入った配列がその値となる
     #
-    # @return [Hash<String | nil, Memo::Model::Seed>]
+    # @return [Hash<String, Array<Memo::Model::Seed>>]
     def grouped_ls
       (@dir_seeds + @seeds).group_by(&:parent_dir)
     end

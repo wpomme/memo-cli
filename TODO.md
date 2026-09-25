@@ -1,19 +1,10 @@
 ## TODO・IDEA
 ### TODO
-### 1. memo walkの作成
-- `memo walk`というコマンドを作成する
-    1. 実行したら、memoフォルダの階層のトップを表示させ、プロンプトで選択できるようにする
-    2. フォルダを選択したら、そのフォルダの中を表示させる
-        2.1. トップ以外のフォルダを表示している場合は、その親のフォルダに移動できるようにする
-    3. ファイルを選択したら、そのファイルの全文を表示する
-
-- DB連携=>タグ作成で同様のコマンドが作成できるはず
-    - DB連携より先に作成する
-
-### 2. DB連携
+### 1. DB連携 or yamlかfrontmatterでタグ付け
+<- やはりfrontmatterが良さそう。tags: [CLI, bash, ...]といった感じにするか
 - sqlite3とSequelを使う
     - ファイルにタグ付けをする
-        - yamlやFront Matterでtagを再現する案もある
+        - yamlやfrontmatterでtagを再現する案もある
         - タグ付けでネットワークのようなデータ構造を作成できないだろうか
         - タグ名の候補
             - CLI, bash, git, bulk, setting, TUI, editor, shell, AI, Application, Package Manager
@@ -43,6 +34,15 @@
 ## expected, actual
 - expected, actualを意味的に逆に使っている箇所があるかもしれない
     - 洗い出す
+
+## 修正するところ
+- memo listにて、次のように表示したい
+```bash
+cli[緑色]
+  folder1[緑色]
+  file1[デフォルト色]
+```
+- select_promptにて`input = gets.chomp.to_i`がコマンドの引数を読んでいるよな動作をしており、エラーが出てしまうので修正する
 
 ### gemspecをどうするか
     - gemとして公開する必要がない。gemspecについて調査しておくこと

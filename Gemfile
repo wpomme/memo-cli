@@ -7,8 +7,8 @@ gemspec
 
 group :production do
   gem "rainbow", "~>3.1.1"
-  gem "sequel", "~>5.107"
-  gem 'sqlite3', '~> 2.9.5'
+  # gem "sequel", "~>5.107"
+  # gem 'sqlite3', '~> 2.9.5'
 end
 
 group :development do

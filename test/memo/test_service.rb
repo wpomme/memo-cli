@@ -74,6 +74,54 @@ class TestService < Minitest::Test
       end
     end
 
+    describe '#parse_yaml_front_matter' do
+      describe 'yaml形式のフロントマターが付いたマークダウン形式の文字列を読み取って、フロントマターの値を返す' do
+        it '文字列、boolean、文字列型の一次元配列をパースして、ハッシュで返す' do
+          title = "RubyでYAMLを扱う"
+          markdown = <<~MARKDOWN
+            ---
+            # title: 文字列
+            title: #{title}
+            # draft: boolean
+            draft: false
+            # tags1: Array<String>
+            tags1: ["CLI", "Text Process", "Built-in"]
+            # tags2: Array<String>
+            tags2:
+              - TUI
+              - Editor
+              - File System
+            ---
+            # 本文
+            ここがマークダウンの本文です。
+          MARKDOWN
+
+          actual = parse_yaml_front_matter(markdown)
+
+          expected = { "title" => "RubyでYAMLを扱う", "draft" => false, "tags1" => ["CLI", "Text Process", "Built-in"],
+                       "tags2" => ["TUI", "Editor", "File System"] }
+          _(actual).must_equal(expected)
+        end
+
+        it 'Timeをパースして、ハッシュで返す' do
+          time_str = "2024-02-15 10:20:30+09:00"
+          markdown = <<~MARKDOWN
+            ---
+            # Time
+            time: #{time_str}
+            ---
+            # 本文
+            ここがマークダウンの本文です。
+          MARKDOWN
+
+          actual = parse_yaml_front_matter(markdown)
+
+          expected = { "time" => Time.new(time_str) }
+          _(actual).must_equal(expected)
+        end
+      end
+    end
+
     describe '#select_prompt' do
       it '二番目の選択肢を選んでエンターキーを押すと、その選択肢の値を返す' do
         title = "選択肢が三件あります。番号を選択してください。"

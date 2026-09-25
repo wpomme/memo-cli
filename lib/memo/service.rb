@@ -27,6 +27,18 @@ module Memo
         end
     end
 
+    # マークダウンファイルについて、yaml形式で書かれたfront matterをパースする
+    #
+    # @params markdown[String]
+    # @return [String]
+    def parse_yaml_front_matter(markdown)
+      return "" unless markdown =~ /\A(---\s*\n.*?\n?)^---\s*$\n?/m
+
+      front_matter_yaml = ::Regexp.last_match(1)
+
+      YAML.safe_load(front_matter_yaml, permitted_classes: [Time])
+    end
+
     # ターミナルに表示するタイトルと選択肢のハッシュを受け取り、選択したキーの値を返す
     # 選択したキーが無効であれば、もう一度やり直す
     #
