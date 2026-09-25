@@ -211,7 +211,7 @@ class TestRepository < Minitest::Test
           # NOTE: actualは次のような一次元配列である。
           # parent_dirはnilであるようなSeedが一つだけ入っている
           # 例: [#<struct Memo::Model::Seed full_path="/Users/hy/var/test-memo-dir", rel_path=".", parent_dir=nil, basename="test-memo-dir", type=:directory]
-          _(1).must_equal(actual.length)
+          _(actual.one?).must_equal(true)
           _(actual[0]).must_be_instance_of Memo::Model::Seed
           _(actual[0].parent_dir).must_be_nil
         end

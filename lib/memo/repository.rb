@@ -44,12 +44,7 @@ module Memo
     #
     # @return [Hash<String | nil, Memo::Model::Seed>]
     def walk_seed_hash
-      grouped_seeds = @seeds.group_by(&:parent_dir)
-      grouped_dir_seeds = @dir_seeds.group_by(&:parent_dir)
-
-      grouped_dir_seeds.merge(grouped_seeds) do |_, dirs, files|
-        dirs.concat(files)
-      end
+      (@dir_seeds + @seeds).group_by(&:parent_dir)
     end
 
     # 検索文字列と一致するファイル名の配列を返す
