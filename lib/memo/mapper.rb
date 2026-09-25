@@ -29,6 +29,26 @@ module Memo
       @repo.dir_set.to_a.map { |dir| Rainbow(dir).green }
     end
 
+    # 指定されたディレクトリについて、そのディレクトリの中にあるディレクトリとファイル名を返す関数
+    # Viewに渡す前に、ディレクトリ名には色付けをする
+    #
+    # @return [Array<String> | String]
+    def grouped_ls_to_view(dir = nil)
+      dir_set = @repo.dir_set
+      grouped_ls = @repo.grouped_ls
+
+      if dir
+        return Memo::Message::NO_DIRECTORIES.sub('dir', dir) << dir_set.join(' ') unless dir_set.include?(dir)
+
+        [Rainbow(dir).green].concat(grouped_ls[dir].map(&:basename))
+      else
+        grouped_ls.inject([]) do |result, (dir, seeds)|
+          result << Rainbow(dir).green
+          result.concat(seeds.map(&:basename))
+        end
+      end
+    end
+
     # ファイル名の一覧をViewに渡す前に加工するための関数
     #
     # @return [Array | String]

@@ -43,7 +43,7 @@ module Memo
     # キーがnilの場合の値は、最上位を示すディレクトリのSeedが一つだけ入った配列がその値となる
     #
     # @return [Hash<String | nil, Memo::Model::Seed>]
-    def walk_seed_hash
+    def grouped_ls
       (@dir_seeds + @seeds).group_by(&:parent_dir)
     end
 
@@ -61,7 +61,10 @@ module Memo
     #
     # @return [Set<String>]
     def dir_set
-      Set.new(@dir_seeds.map(&:rel_path))
+      dirs = @dir_seeds
+        .map(&:rel_path)
+        .map { |dir| dir.rstrip("/") }
+      Set.new(dirs)
     end
 
     private
@@ -70,7 +73,7 @@ module Memo
     #
     # @return [Array<String>]
     def load_dirs(root_dir)
-      dir_seeds = Dir.glob("**/*/", base: root_dir).map do |rel_path|
+      Dir.glob("**/*/", base: root_dir).map do |rel_path|
         full_path = File.join(root_dir, rel_path)
 
         target_dir = rel_path.rstrip("/")
@@ -84,15 +87,6 @@ module Memo
           type: :directory
         )
       end
-
-      # root_dirのSeedも作成する
-      dir_seeds << Memo::Model::Seed.new(
-        full_path: root_dir,
-        rel_path: File.basename(root_dir),
-        parent_dir: nil,
-        basename: File.basename(root_dir),
-        type: :directory
-      )
     end
 
     # 対象のディレクトリ内をglobで捜索して、ファイルの読み取りや検索に必要な情報を取得する
