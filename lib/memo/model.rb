@@ -16,7 +16,7 @@ module Memo
     #   @return [:file | :directory] 対象のファイルがディレクトリかどうか
     Seed = Struct.new(:full_path, :rel_path, :parent_dir, :basename, :type)
 
-    # 削除予定
+    # TODO: 削除予定
     DirSeed = Struct.new(:basename, :parent_dir, :dir) do
       def initialize(target_dir, root_dirname)
         if target_dir == root_dirname

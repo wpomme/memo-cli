@@ -67,8 +67,9 @@ module Memo
           end
         end
       else
-        grouped_file_list_hash.each do |dir, filenames|
-          [Rainbow(dir).green].concat(filenames)
+        grouped_file_list_hash.inject([]) do |result, (dir, filenames)|
+          result << Rainbow(dir).green
+          result.concat(filenames)
         end
       end
     end

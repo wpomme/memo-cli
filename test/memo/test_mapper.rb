@@ -40,18 +40,41 @@ class TestMapper < Minitest::Test
       end
     end
 
-    describe "grouped_file_list_hash" do
-      it "引数を取らなかった場合は、色付けされたディレクトリとそれに紐付くファイル名のリストを返す" do
-        actual = Memo::Mapper.new(@test_repo).file_list_hash_to_view
+    describe "#file_list_hash_to_view" do
+      describe "引数を取らない場合" do
+        describe "戻り値の型検査" do
+          it "戻り値は文字列の一次元配列となる" do
+            ret = Memo::Mapper.new(@test_repo).file_list_hash_to_view
 
-        expected = @test_repo.grouped_file_list_hash.each do |dir, filenames|
-          [Rainbow(dir).green].concat(filenames)
+            actual = ret.all?(String)
+
+            _(actual).must_equal(true)
+          end
         end
 
-        _(actual).must_equal(expected)
+        describe "戻り値の値検査" do
+          it "色付けされたディレクトリとそれに紐付くファイル名の配列を返す" do
+            actual = Memo::Mapper.new(@test_repo).file_list_hash_to_view
+
+            expected = @test_repo.grouped_file_list_hash.inject([]) do |result, (dir, filenames)|
+              result << Rainbow(dir).green
+              result.concat(filenames)
+            end
+
+            _(actual).must_equal(expected)
+          end
+        end
       end
 
-      describe "引数にディレクトリ名を取った場合" do
+      describe "引数にディレクトリ名を取り、その引数に紐付くキーが存在する場合" do
+        describe "戻り値の型検査" do
+          it "戻り値は文字列の一次元配列となる" do
+            target_dir = "cli"
+            actual = Memo::Mapper.new(@test_repo).file_list_hash_to_view(target_dir)
+
+            _(actual).must_be_instance_of(Array)
+          end
+        end
         it "その引数がキーに存在するならば、そのディレクトリ名を色付けして、さらにそれに紐付くファイル名のリストを返す" do
           target_dir = "cli"
           actual = Memo::Mapper.new(@test_repo).file_list_hash_to_view(target_dir)
