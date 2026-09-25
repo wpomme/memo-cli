@@ -6,40 +6,6 @@ class TestMapper < Minitest::Test
   describe 'Mapper' do
     include MemoTestLifecycleHooks
 
-    describe '#file_list_to_view' do
-      it "グループ化されたファイル名の一覧をViewで表示しやすくする" do
-        expected = Memo::Mapper.new(@test_repo).file_list_to_view
-
-        actual = @test_repo.grouped_file_list
-          .map do |struct|
-            [Rainbow(struct[:dir]).green] + struct[:filenames]
-          end
-
-        _(actual).must_equal(expected)
-      end
-
-      it "有効なディレクトリ名を受け取った場合は、そのディレクトリとその中のファイル名を表示する" do
-        valid_dir = 'cli'
-        expected = Memo::Mapper.new(@test_repo).file_list_to_view(valid_dir)
-
-        actual = @test_repo.grouped_file_list
-          .filter_map do |struct|
-            [Rainbow(struct[:dir]).green] + struct[:filenames] if struct[:dir] == valid_dir
-          end
-
-        _(actual).must_equal(expected)
-      end
-
-      it "存在しないディレクトリ名を受け取った場合は、その旨を知らせる文字列を返す" do
-        invalid_dir = 'invalid_dir'
-        mapper = Memo::Mapper.new(@test_repo)
-        expected = mapper.file_list_to_view(invalid_dir)
-        actual = Memo::Message::NO_DIRECTORIES.sub('dir', invalid_dir) << mapper.colored_dirs.join(' ')
-
-        _(actual).must_equal(expected)
-      end
-    end
-
     describe "#grouped_ls_to_view" do
       describe "引数を取らない場合" do
         describe "戻り値の型検査" do
@@ -90,64 +56,6 @@ class TestMapper < Minitest::Test
         it "そのようなディレクトリが存在しないというメッセージを表示させる" do
           target_dir = "not_exist_dir"
           actual = Memo::Mapper.new(@test_repo).grouped_ls_to_view(target_dir)
-
-          expected = Memo::Message::NO_DIRECTORIES.sub('dir', target_dir) << @test_repo.dir_set.join(' ')
-
-          _(actual).must_equal(expected)
-        end
-      end
-    end
-
-    describe "#file_list_hash_to_view" do
-      describe "引数を取らない場合" do
-        describe "戻り値の型検査" do
-          it "戻り値は文字列の一次元配列となる" do
-            ret = Memo::Mapper.new(@test_repo).file_list_hash_to_view
-
-            actual = ret.all?(String)
-
-            _(actual).must_equal(true)
-          end
-        end
-
-        describe "戻り値の値検査" do
-          it "色付けされたディレクトリとそれに紐付くファイル名の配列を返す" do
-            actual = Memo::Mapper.new(@test_repo).file_list_hash_to_view
-
-            expected = @test_repo.grouped_file_list_hash.inject([]) do |result, (dir, filenames)|
-              result << Rainbow(dir).green
-              result.concat(filenames)
-            end
-
-            _(actual).must_equal(expected)
-          end
-        end
-      end
-
-      describe "引数にディレクトリ名を取り、その引数に紐付くキーが存在する場合" do
-        describe "戻り値の型検査" do
-          it "戻り値は文字列の一次元配列となる" do
-            target_dir = "cli"
-            actual = Memo::Mapper.new(@test_repo).file_list_hash_to_view(target_dir)
-
-            _(actual).must_be_instance_of(Array)
-          end
-        end
-        it "その引数がキーに存在するならば、そのディレクトリ名を色付けして、さらにそれに紐付くファイル名のリストを返す" do
-          target_dir = "cli"
-          actual = Memo::Mapper.new(@test_repo).file_list_hash_to_view(target_dir)
-
-          expected = @test_repo.grouped_file_list_hash[target_dir].map do |filename|
-            (ret ||= [Rainbow(target_dir).green]) << filename
-            ret
-          end
-
-          _(actual).must_equal(expected)
-        end
-
-        it "メモの中に存在しないディレクトリ名を受け取った場合は、その旨をユーザーに表示するメッセージを返す" do
-          target_dir = "not_exist_dir"
-          actual = Memo::Mapper.new(@test_repo).file_list_hash_to_view(target_dir)
 
           expected = Memo::Message::NO_DIRECTORIES.sub('dir', target_dir) << @test_repo.dir_set.join(' ')
 

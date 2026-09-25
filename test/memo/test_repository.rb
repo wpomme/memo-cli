@@ -112,76 +112,6 @@ class TestRepository < Minitest::Test
       end
     end
 
-    describe '#grouped_file_list' do
-      describe '戻り値の型検査' do
-        it "GroupedFileListの一次元配列を返す" do
-          ret = @test_repo.grouped_file_list
-          expected = ret.all?(Memo::Model::GroupedFileList)
-
-          _(true).must_equal(expected)
-        end
-      end
-
-      describe '戻り値の値検査' do
-        it "モックデータの値と同じであること" do
-          expected = @test_repo.grouped_file_list
-
-          actual = @test_seeds.group_by(&:parent_dir).map do |dir, seed|
-            Memo::Model::GroupedFileList.new(
-              dir: dir,
-              filenames: seed.map(&:basename)
-            )
-          end
-
-          _(actual).must_equal(expected)
-        end
-      end
-
-      describe "GroupedFileList#to_view" do
-        describe "引数を取らず、mapで#to_viewを使用する場合" do
-          it "戻り値は文字列型の二次元配列ある" do
-            result = @test_repo.grouped_file_list.map(&:to_view)
-
-            expected = result.all? do |grouped|
-              grouped.all?(String)
-            end
-
-            _(true).must_equal(expected)
-          end
-
-          it "ディレクトリ名に色付けをしてディレクトリとファイル名の配列を返す" do
-            expected = @test_repo.grouped_file_list.map(&:to_view)
-
-            actual = @test_seeds.group_by(&:parent_dir).map do |dir, grouped|
-              [Rainbow(dir).green] + grouped.map(&:basename)
-            end
-
-            _(actual).must_equal(expected)
-          end
-        end
-
-        describe "引数にディレクトリ名を取り、filter_mapで#to_viewを使用する場合" do
-          it "引数と同じディレクトリ名を色付けして、その中のファイル名と一緒に値を返す" do
-            target_dir = "cli"
-            expected = @test_repo.grouped_file_list.filter_map { |grouped| grouped.to_view(target_dir) }
-
-            actual = @test_seeds.group_by(&:parent_dir).filter_map do |dir, grouped|
-              [Rainbow(dir).green] + grouped.map(&:basename) if dir == target_dir
-            end
-
-            _(actual).must_equal(expected)
-          end
-
-          it "メモの中に存在しないディレクトリ名を受け取った場合は、空の配列を返す" do
-            target_dir = "not_exist_dir"
-            expected = @test_repo.grouped_file_list.filter_map { |grouped| grouped.to_view(target_dir) }
-
-            _([]).must_equal(expected)
-          end
-        end
-      end
-    end
-
     describe "#grouped_ls" do
       describe "戻り値の型検査" do
         it "戻り値はHashである" do
@@ -220,33 +150,6 @@ class TestRepository < Minitest::Test
           end
 
           _(true).must_equal(actual)
-        end
-      end
-    end
-
-    describe '#grouped_file_list_hash' do
-      describe '戻り値の型検査' do
-        it "キーがディレクトリを示す文字列で、値がファイル名を示す文字列の配列となるHashを返す" do
-          result = @test_repo.grouped_file_list_hash
-
-          keys_type = result.keys.all?(String)
-          values_type = result.values.all? do |filenames|
-            filenames.all?(String)
-          end
-
-          _(result).must_be_instance_of Hash
-          _(true).must_equal keys_type
-          _(true).must_equal values_type
-        end
-      end
-
-      describe '戻り値の値検査' do
-        it "モックデータの値と同じであること" do
-          actual = @test_repo.grouped_file_list_hash
-
-          expected = @test_seeds.group_by(&:parent_dir).transform_values { |seeds| seeds.map(&:basename) }
-
-          _(actual).must_equal(expected)
         end
       end
     end

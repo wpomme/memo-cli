@@ -21,22 +21,6 @@ module Memo
       end
     end
 
-    # Seeds -> GroupedFileListに変換する関数
-    # @return [Array<Memo::Model::GroupedFileList>]
-    def grouped_file_list
-      @seeds.group_by(&:parent_dir).map do |dir, seed|
-        Memo::Model::GroupedFileList.new(
-          dir: dir,
-          filenames: seed.map(&:basename)
-        )
-      end
-    end
-
-    # grouped_file_listを代替するためのHashを返す関数
-    def grouped_file_list_hash
-      @seeds.group_by(&:parent_dir).transform_values { |seeds| seeds.map(&:basename) }
-    end
-
     # memo walk CLIに使用するためのseed Hash
     #
     # キーはディレクトリを示す文字列かnilとなる

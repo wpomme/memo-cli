@@ -10,12 +10,6 @@
 - DB連携=>タグ作成で同様のコマンドが作成できるはず
     - DB連携より先に作成する
 
-- 設計案
-    - Repositoryでseedにフォルダ階層の追加情報を持たせる？
-        - memo => parent_dir: nil
-        - cli => parent_dir: memo
-        - cli/old => parent_dir: cli
-            - スラッシュの数で階層が分かる
 ### 2. DB連携
 - sqlite3とSequelを使う
     - ファイルにタグ付けをする
@@ -30,22 +24,17 @@
 - その他DB構築に関する設計について
     - DBと接続するための設定をMemo::Configに入れる
 
+### 3. memoフォルダ以外のフォルダも指定できるようにする
+    - プライベート用のメモフォルダを作成して、その中に英語など公開したくないメモを入れたい
 
 ### その他
 # テスト系
-## 型検査・型のテスト
-- Rdocかyard、型検査の導入
-
-## Memo::Modelの整理
-- GroupedFileListを廃止し、Repository#grouped_file_list_hashを使う
-    - 独自のデータ型を減らしてみる
-- DirSeedを削除する
-
-## テスト拡張
-- coverageを取得する
+## 型検査・型のテスト・テスト拡張
+- Rdocかyard、型検査の導入、coverageの取得
 
 ## モックデータ
     - 欲しいモックデータ
+        - @fixed_mock_directory = 'cli'
         - @fixed_mock_duplicated_file = 'mise'
             - 別のsetup, teardownを作成するべきだろうか
         - @fixed_mock_file_under_root_dir = 'ANSI-escape-code-and-set-color'
@@ -72,5 +61,3 @@
             - `Rainbow.enabled`の設定変更が必要？ -> パス名・環境変数系へ
 
 #### CLIの自動補完機能
-#### memoフォルダ以外のフォルダも指定できるようにしたい
-    - プライベート用のメモフォルダを作成して、その中に英語など公開したくないメモを入れたい

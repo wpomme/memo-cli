@@ -29,24 +29,6 @@ module Memo
       end
     end
 
-    # 対象のディレクトリの中にあるファイル名の配列を保存する
-    # :dirは文字列、:filenamesは文字列の配列が入る
-    # NOTE: :dirがキーで:filenamesが値となるHashで良さそう
-    GroupedFileList = Struct.new(:dir, :filenames) do
-      def initialize(...)
-        super
-        freeze
-      end
-
-      def to_view(target_dir = nil)
-        if target_dir
-          [Rainbow(dir).green] + filenames if dir == target_dir
-        else
-          [Rainbow(dir).green] + filenames
-        end
-      end
-    end
-
     # 対象のディレクトリを文字列で検索してヒットしたときに返す値
     SearchLine = Struct.new(:path, :line_number, :line) do
       def initialize(...)
