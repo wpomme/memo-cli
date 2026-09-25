@@ -1,21 +1,15 @@
 ## TODO・IDEA
 ### TODO
-### 1. DB連携 or yamlかfrontmatterでタグ付け
-<- やはりfrontmatterが良さそう。tags: [CLI, bash, ...]といった感じにするか
-- sqlite3とSequelを使う
-    - ファイルにタグ付けをする
-        - yamlやfrontmatterでtagを再現する案もある
-        - タグ付けでネットワークのようなデータ構造を作成できないだろうか
-        - タグ名の候補
-            - CLI, bash, git, bulk, setting, TUI, editor, shell, AI, Application, Package Manager
-            - CLI: File System, Process Management, User Management, Text Processor, Built-in
-- DBモデル案
-    - Memo: memo_id, rel_path, ...
-        - メモのリネームや削除があるためIDは自動採番のものを使う
-- その他DB構築に関する設計について
-    - DBと接続するための設定をMemo::Configに入れる
+1. DB連携 or yamlかfrontmatterでタグ付け
+- ファイルにタグ付けをする
+    - yaml形式のfront matterを使う
+        - タグ付けでグラフ構造を作成できないだろうか
+    - 各メモファイルにcreated_at, updated_atを挿入する
+    - タグ名の候補
+        - CLI, bash, git, bulk, setting, TUI, editor, shell, AI, Application, Package Manager
+        - CLI, File System, Process Management, User Management, Text Processor, Built-in
 
-### 3. memoフォルダ以外のフォルダも指定できるようにする
+2. memoフォルダ以外のフォルダも指定できるようにする
     - プライベート用のメモフォルダを作成して、その中に英語など公開したくないメモを入れたい
 
 ### その他
