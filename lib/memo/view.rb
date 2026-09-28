@@ -16,16 +16,16 @@ module Memo
 
       case found.size
       when 0
-        puts Memo::Message::NO_MEMOS_WEWE_FOUND.sub("word", word)
+        puts Memo::Message::NO_MEMOS_WEWE_FOUND.sub('word', word)
         exit(2)
       when 1
         puts Memo::Service.read(found.first) if found.size == 1
       when (2...)
         choices = found.to_h { |seed| [seed.rel_path, seed] }
-        choice = Memo::Service.select_prompt(title: Memo::Message::MULTIPLE_MEMOS_WEWE_FOUND.sub("size", found.size.to_s), choices: choices)
+        choice = Memo::Service.select_prompt(title: Memo::Message::MULTIPLE_MEMOS_WEWE_FOUND.sub('size', found.size.to_s), choices: choices)
         puts Memo::Service.read(choice)
       else
-        StandardError "There is something wrong with found.size from Repository.find"
+        StandardError 'There is something wrong with found.size from Repository.find'
         exit(2)
       end
     end

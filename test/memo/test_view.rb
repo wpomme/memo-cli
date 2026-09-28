@@ -1,13 +1,13 @@
 # frozen_string_literal: true
 
-require_relative "../helper"
+require_relative '../helper'
 
 class TestView < Minitest::Test
   describe 'View' do
     include MemoTestLifecycleHooks
 
     describe '#dirs' do
-      it "memoの中のディレクトリの一覧をターミナルに表示する" do
+      it 'memoの中のディレクトリの一覧をターミナルに表示する' do
         out, = capture_io do
           Memo::View.new(@test_repo).dirs
         end
@@ -31,7 +31,7 @@ class TestView < Minitest::Test
       it 'wordが存在するファイルと複数件一致するとき、どのファイルを表示するかのプロンプトを表示し、選択したファイルを全文表示する' do
         word = @fixed_duplicated_filename
         choices = Memo::MockSeed::TEST_MEMO_DATA_SEED.filter_map do |seed|
-          [[seed[:parent_dir], "#{seed[:basename]}.md"].join("/"), seed[:content]] if seed[:basename] == word
+          [[seed[:parent_dir], "#{seed[:basename]}.md"].join('/'), seed[:content]] if seed[:basename] == word
         end.to_h
 
         $stdin = StringIO.new("2\n")
@@ -39,7 +39,7 @@ class TestView < Minitest::Test
           Memo::View.new(@test_repo).read(word)
         end
 
-        title = Memo::Message::MULTIPLE_MEMOS_WEWE_FOUND.sub("size", choices.size.to_s)
+        title = Memo::Message::MULTIPLE_MEMOS_WEWE_FOUND.sub('size', choices.size.to_s)
         choices_out = choices.keys.map.with_index do |key, index|
           "[#{index + 1}] #{key}"
         end
@@ -61,7 +61,7 @@ class TestView < Minitest::Test
           assert_equal 2, exception.status
         end
 
-        _(out).must_equal(Memo::Message::NO_MEMOS_WEWE_FOUND.sub("word", word) << "\n")
+        _(out).must_equal(Memo::Message::NO_MEMOS_WEWE_FOUND.sub('word', word) << "\n")
       end
     end
 
@@ -80,7 +80,7 @@ class TestView < Minitest::Test
         _(actual).must_equal(expected)
       end
 
-      it "有効なディレクトリ名を受け取った場合は、そのディレクトリとその中のファイル名を表示する" do
+      it '有効なディレクトリ名を受け取った場合は、そのディレクトリとその中のファイル名を表示する' do
         valid_dir = 'cli'
 
         out, = capture_io do
@@ -97,7 +97,7 @@ class TestView < Minitest::Test
       end
 
       # TODO: exit 2としたい
-      it "存在しないディレクトリ名を受け取った場合は、その旨を知らせる文字列を返す" do
+      it '存在しないディレクトリ名を受け取った場合は、その旨を知らせる文字列を返す' do
         invalid_dir = 'invalid_dir'
 
         out, = capture_io do
@@ -111,7 +111,7 @@ class TestView < Minitest::Test
     end
 
     describe '#tags' do
-      it "色付けされたタグ名とそのタグが付いたファイル名の一覧を表示する" do
+      it '色付けされたタグ名とそのタグが付いたファイル名の一覧を表示する' do
         actual, = capture_io do
           Memo::View.new(@test_repo).tags
         end
@@ -123,7 +123,7 @@ class TestView < Minitest::Test
     end
 
     describe '#search' do
-      it "受け取った文字列で全てのメモをで検索して、ヒットした行をgrep風に出力する" do
+      it '受け取った文字列で全てのメモをで検索して、ヒットした行をgrep風に出力する' do
         search_word = @fixed_search_word
 
         out, = capture_io do
@@ -136,8 +136,8 @@ class TestView < Minitest::Test
         _(out).must_equal(actual)
       end
 
-      it "受け取った文字列で一件もヒットしなかった場合は、その旨を知らせるメッセージを表示する" do
-        search_word = "hikkakaranasounakotoba"
+      it '受け取った文字列で一件もヒットしなかった場合は、その旨を知らせるメッセージを表示する' do
+        search_word = 'hikkakaranasounakotoba'
 
         out, = capture_io do
           Memo::View.new(@test_repo).search(search_word)

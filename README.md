@@ -8,6 +8,9 @@
 ```bash
 # memo cliの使い方を調べる
 memo help
+
+# memoだけでもいい
+memo
 ```
 
 ## セットアップ
@@ -23,7 +26,7 @@ bundle exec rake install:local
 # mise も使っているのでmise trust も必要
 mise trust
 
-# Result: どこからでもmemo が実行できるはず
+# どこからでもmemo が実行できるはず
 memo list
 ```
 

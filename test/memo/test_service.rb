@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-require_relative "../helper"
+require_relative '../helper'
 
 class TestService < Minitest::Test
   describe 'Service' do
@@ -8,8 +8,8 @@ class TestService < Minitest::Test
     include Memo::Service
 
     describe '#read' do
-      describe "戻り値の型検査" do
-        it "文字列型の一次元配列を返す" do
+      describe '戻り値の型検査' do
+        it '文字列型の一次元配列を返す' do
           target_file = @fixed_mock_file
           expected_seed = @test_seeds.find { |seed| seed.basename == target_file }
           ret = read(expected_seed)
@@ -20,7 +20,7 @@ class TestService < Minitest::Test
         end
       end
 
-      it "与えられたseedにしたがい、そのSeedの元となっているファイルを全文表示する。、" do
+      it '与えられたseedにしたがい、そのSeedの元となっているファイルを全文表示する。、' do
         target_file = @fixed_mock_file
         expected_seed = @test_seeds.find { |seed| seed.basename == target_file }
         expected = read(expected_seed)
@@ -32,7 +32,7 @@ class TestService < Minitest::Test
     end
 
     describe '#search' do
-      describe "戻り値の型検査" do
+      describe '戻り値の型検査' do
         it '読み込んだファイルの中に該当の文字列が含まれている場合は、SearchLineの配列を返す' do
           target_file = @fixed_mock_file
           ## NOTE: target_fileと同じワードで検索すれば複数行ヒットする
@@ -47,7 +47,7 @@ class TestService < Minitest::Test
         it '読み込んだファイルの中に該当の文字列が含まれていない場合は、空の配列を返す' do
           target_file = @fixed_mock_file
           ## target_fileと同じワードで検索すれば複数行ヒットするので都合がいい
-          search_word = "hikkakaranasounakotoba"
+          search_word = 'hikkakaranasounakotoba'
           target_seed = @test_seeds.find { |seed| seed.basename == target_file }
           expected = search(target_seed, search_word)
 
@@ -55,7 +55,7 @@ class TestService < Minitest::Test
         end
       end
 
-      describe "戻り値の値検査" do
+      describe '戻り値の値検査' do
         it '読み込んだファイルの中に該当の文字列が含まれている場合は、SearchLineの配列を返す' do
           target_file = @fixed_mock_file
           search_word = target_file
@@ -77,7 +77,7 @@ class TestService < Minitest::Test
     describe '#parse_yaml_front_matter' do
       describe 'yaml形式のフロントマターが付いたマークダウン形式の文字列を読み取って、フロントマターの値を返す' do
         it '文字列、boolean、文字列型の一次元配列をパースして、ハッシュで返す' do
-          title = "RubyでYAMLを扱う"
+          title = 'RubyでYAMLを扱う'
           markdown = <<~MARKDOWN
             ---
             # title: 文字列
@@ -98,13 +98,13 @@ class TestService < Minitest::Test
 
           actual = parse_yaml_front_matter(markdown)
 
-          expected = { "title" => "RubyでYAMLを扱う", "draft" => false, "tags1" => ["CLI", "Text Process", "Built-in"],
-                       "tags2" => ["TUI", "Editor", "File System"] }
+          expected = { 'title' => 'RubyでYAMLを扱う', 'draft' => false, 'tags1' => ['CLI', 'Text Process', 'Built-in'],
+                       'tags2' => ['TUI', 'Editor', 'File System'] }
           _(actual).must_equal(expected)
         end
 
         it 'Timeをパースして、ハッシュで返す' do
-          time_str = "2024-02-15 10:20:30+09:00"
+          time_str = '2024-02-15 10:20:30+09:00'
           markdown = <<~MARKDOWN
             ---
             # Time
@@ -116,7 +116,7 @@ class TestService < Minitest::Test
 
           actual = parse_yaml_front_matter(markdown)
 
-          expected = { "time" => Time.new(time_str) }
+          expected = { 'time' => Time.new(time_str) }
           _(actual).must_equal(expected)
         end
 
@@ -136,9 +136,9 @@ class TestService < Minitest::Test
 
     describe '#select_prompt' do
       it '二番目の選択肢を選んでエンターキーを押すと、その選択肢の値を返す' do
-        title = "選択肢が三件あります。番号を選択してください。"
+        title = '選択肢が三件あります。番号を選択してください。'
 
-        choices = { foo: "return 1", bar: "return 2", baz: "return 3" }
+        choices = { foo: 'return 1', bar: 'return 2', baz: 'return 3' }
 
         $stdin = StringIO.new("2\n")
         out, = capture_io do
@@ -156,9 +156,9 @@ class TestService < Minitest::Test
       end
 
       it '二回無効な値を選んで、三回目で三番目の選択肢を選択してエンターキーを押すと、その選択肢の値を返す' do
-        title = "選択肢が三件あります。番号を選択してください。"
+        title = '選択肢が三件あります。番号を選択してください。'
 
-        choices = { foo: "return 1", bar: "return 2", baz: "return 3" }
+        choices = { foo: 'return 1', bar: 'return 2', baz: 'return 3' }
 
         $stdin = StringIO.new("5\n4\n3\n")
         out, = capture_io do

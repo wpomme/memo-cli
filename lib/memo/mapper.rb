@@ -2,7 +2,7 @@
 
 module Memo
   class Mapper
-    INDENT = " "
+    INDENT = ' '
 
     def initialize(repo)
       @repo = repo

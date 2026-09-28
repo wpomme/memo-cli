@@ -2,13 +2,13 @@
 
 module Memo
   module Config
-    CONFIG_PATH = File.expand_path("../../config/config.yml", __dir__)
+    CONFIG_PATH = File.expand_path('../../config/config.yml', __dir__)
 
     class << self
       def memo_dir
         load if @config.nil?
 
-        File.join(Dir.home, @config["memo_dir"])
+        File.join(Dir.home, @config['memo_dir'])
       end
 
       def load(config_path = CONFIG_PATH)

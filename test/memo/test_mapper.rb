@@ -1,15 +1,15 @@
 # frozen_string_literal: true
 
-require_relative "../helper"
+require_relative '../helper'
 
 class TestMapper < Minitest::Test
   describe 'Mapper' do
     include MemoTestLifecycleHooks
 
-    describe "#grouped_ls_to_view" do
-      describe "引数を取らない場合" do
-        describe "戻り値の型検査" do
-          it "戻り値は文字列の一次元配列となる" do
+    describe '#grouped_ls_to_view' do
+      describe '引数を取らない場合' do
+        describe '戻り値の型検査' do
+          it '戻り値は文字列の一次元配列となる' do
             ret = Memo::Mapper.new(@test_repo).grouped_ls_to_view
 
             actual = ret.all?(String)
@@ -18,8 +18,8 @@ class TestMapper < Minitest::Test
           end
         end
 
-        describe "戻り値の値検査" do
-          it "色付けされたディレクトリ名とそれに紐付くファイル名の配列を返す" do
+        describe '戻り値の値検査' do
+          it '色付けされたディレクトリ名とそれに紐付くファイル名の配列を返す' do
             actual = Memo::Mapper.new(@test_repo).grouped_ls_to_view
 
             expected = @test_repo.grouped_ls.inject([]) do |result, (dir, seeds)|
@@ -33,19 +33,19 @@ class TestMapper < Minitest::Test
         end
       end
 
-      describe "引数にディレクトリ名を取り、その引数に紐付くキーが存在する場合" do
-        describe "戻り値の型検査" do
-          it "戻り値は文字列の一次元配列となる" do
-            target_dir = "cli"
+      describe '引数にディレクトリ名を取り、その引数に紐付くキーが存在する場合' do
+        describe '戻り値の型検査' do
+          it '戻り値は文字列の一次元配列となる' do
+            target_dir = 'cli'
             actual = Memo::Mapper.new(@test_repo).grouped_ls_to_view(target_dir)
 
             _(actual).must_be_instance_of(Array)
           end
         end
 
-        describe "戻り値の値検査" do
-          it "色付けされたディレクトリ名とそれに紐付くファイル名の配列を返す" do
-            target_dir = "cli"
+        describe '戻り値の値検査' do
+          it '色付けされたディレクトリ名とそれに紐付くファイル名の配列を返す' do
+            target_dir = 'cli'
             actual = Memo::Mapper.new(@test_repo).grouped_ls_to_view(target_dir)
 
             _(actual).must_be_instance_of(Array)
@@ -53,9 +53,9 @@ class TestMapper < Minitest::Test
         end
       end
 
-      describe "与えられた引数に紐付くキーが存在しない場合" do
-        it "そのようなディレクトリが存在しないというメッセージを表示させる" do
-          target_dir = "not_exist_dir"
+      describe '与えられた引数に紐付くキーが存在しない場合' do
+        it 'そのようなディレクトリが存在しないというメッセージを表示させる' do
+          target_dir = 'not_exist_dir'
           actual = Memo::Mapper.new(@test_repo).grouped_ls_to_view(target_dir)
 
           expected = Memo::Message::NO_DIRECTORIES.sub('dir', target_dir) << @test_repo.dir_set.join(' ')
@@ -66,7 +66,7 @@ class TestMapper < Minitest::Test
     end
 
     describe '#dirs_to_view' do
-      it "戻り値は文字列型となり、モックデータと値が同じであることを確かめる" do
+      it '戻り値は文字列型となり、モックデータと値が同じであることを確かめる' do
         actual = Memo::Mapper.new(@test_repo).dirs_to_view
         expected = @test_repo.dir_set.join(Memo::Mapper::INDENT)
 
@@ -76,16 +76,16 @@ class TestMapper < Minitest::Test
     end
 
     describe '#tag_list_to_view' do
-      describe "戻り値の型検査" do
-        it "戻り値は文字列型となる" do
+      describe '戻り値の型検査' do
+        it '戻り値は文字列型となる' do
           actual = Memo::Mapper.new(@test_repo).tag_list_to_view
 
           _(actual).must_be_instance_of(String)
         end
       end
 
-      describe "戻り値の値検査" do
-        it "タグ名の一覧を文字列として返す" do
+      describe '戻り値の値検査' do
+        it 'タグ名の一覧を文字列として返す' do
           actual = Memo::Mapper.new(@test_repo).tag_list_to_view
 
           expected = @test_repo.tag_list.join("\n")
@@ -96,8 +96,8 @@ class TestMapper < Minitest::Test
     end
 
     describe '#tag_and_filenames_to_view' do
-      describe "戻り値の型検査" do
-        it "戻り値は文字列の一次元配列となる" do
+      describe '戻り値の型検査' do
+        it '戻り値は文字列の一次元配列となる' do
           ret = Memo::Mapper.new(@test_repo).tag_and_filenames_to_view
 
           actual = ret.all?(String)
@@ -106,8 +106,8 @@ class TestMapper < Minitest::Test
         end
       end
 
-      describe "戻り値の値検査" do
-        it "色付けされたタグ名とそれに紐付くファイル名の配列を返す" do
+      describe '戻り値の値検査' do
+        it '色付けされたタグ名とそれに紐付くファイル名の配列を返す' do
           actual = Memo::Mapper.new(@test_repo).tag_and_filenames_to_view
 
           expected = @test_repo.tag_seeds_hash.inject([]) do |result, (tag, seeds)|

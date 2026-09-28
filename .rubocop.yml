@@ -36,13 +36,13 @@ Metrics:
 Style/Documentation:
   Enabled: false
 
-# frozen_string_literalのコメント必須を無効化
+# frozen_string_literalのコメント必須とする
 Style/FrozenStringLiteralComment:
   Enabled: true
 
-# 文字列についてシングルクオート強制を無効化
+# 文字列について引用符を場合によってフォーマットするようにする
 Style/StringLiterals:
-  Enabled: false
+  Enabled: true
 
 # メソッドの引数名は最低三文字以上でなくてもいい
 Naming/MethodParameterName:

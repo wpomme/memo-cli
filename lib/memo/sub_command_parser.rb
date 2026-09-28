@@ -2,20 +2,20 @@
 
 module Memo
   class SubCommandParser
-    HELP_COMMAND_SPEC = Memo::Model::SUB_COMMAND_SPEC.new("help", "--help", "-h", "memoコマンドのヘルプ", :none, nil, nil)
-    READ_COMMAND_SPEC = Memo::Model::SUB_COMMAND_SPEC.new("read", "--read", "-r", "対象のメモを全文表示する", :required, "--read WORD", proc do |word|
+    HELP_COMMAND_SPEC = Memo::Model::SUB_COMMAND_SPEC.new('help', '--help', '-h', 'memoコマンドのヘルプ', :none, nil, nil)
+    READ_COMMAND_SPEC = Memo::Model::SUB_COMMAND_SPEC.new('read', '--read', '-r', '対象のメモを全文表示する', :required, '--read WORD', proc do |word|
       self.parsed = [:read, word]
     end)
-    LIST_COMMAND_SPEC = Memo::Model::SUB_COMMAND_SPEC.new("list", "--list", "-l", "メモの一覧を表示する", :optional, "--list [DIRS]", proc do |dirs|
+    LIST_COMMAND_SPEC = Memo::Model::SUB_COMMAND_SPEC.new('list', '--list', '-l', 'メモの一覧を表示する', :optional, '--list [DIRS]', proc do |dirs|
       self.parsed = dirs ? [:list, dirs] : [:list]
     end)
-    DIRS_COMMAND_SPEC = Memo::Model::SUB_COMMAND_SPEC.new("dirs", "--dirs", "-d", "メモの中のディレクトリの一覧を表示する", :none, nil, proc do
+    DIRS_COMMAND_SPEC = Memo::Model::SUB_COMMAND_SPEC.new('dirs', '--dirs', '-d', 'メモの中のディレクトリの一覧を表示する', :none, nil, proc do
       self.parsed = [:dirs]
     end)
-    SEARCH_COMMAND_SPEC = Memo::Model::SUB_COMMAND_SPEC.new("search", "--search", "-s", "検索した文字列で全てのメモを全文検索する", :required, "--search WORD", proc do |word|
+    SEARCH_COMMAND_SPEC = Memo::Model::SUB_COMMAND_SPEC.new('search', '--search', '-s', '検索した文字列で全てのメモを全文検索する', :required, '--search WORD', proc do |word|
       self.parsed = [:search, word]
     end)
-    TAGS_COMMAND_SPEC = Memo::Model::SUB_COMMAND_SPEC.new("tags", "--tags", "-t", "タグ名とそのタグ名が付いたファイル名の一覧を表示する", :none, nil, proc do |_word|
+    TAGS_COMMAND_SPEC = Memo::Model::SUB_COMMAND_SPEC.new('tags', '--tags', '-t', 'タグ名とそのタグ名が付いたファイル名の一覧を表示する', :none, nil, proc do |_word|
       self.parsed = [:tags]
     end)
 
@@ -56,20 +56,20 @@ module Memo
 
     def self.parser
       OptionParser.new do |opts|
-        opts.banner = "memo CLI: ローカルのメモフォルダをコマンドで閲覧、検索するためのコマンド"
-        opts.separator ""
-        opts.separator "使い方: memo subcommand [arguments]"
-        opts.separator "例: memo list cli => memoフォルダ内のcliフォルダの中のメモの一覧を返す"
-        opts.separator "サブコマンドの--は省略可能"
-        opts.separator "また、サブコマンドを省略した場合はmemo readを実行するものとみなされる"
-        opts.separator "例: memo ls => フォルダ内のls.mdを検索して、あればls.mdを全文表示する"
+        opts.banner = 'memo CLI: ローカルのメモフォルダをコマンドで閲覧、検索するためのコマンド'
+        opts.separator ''
+        opts.separator '使い方: memo subcommand [arguments]'
+        opts.separator '例: memo list cli => memoフォルダ内のcliフォルダの中のメモの一覧を返す'
+        opts.separator 'サブコマンドの--は省略可能'
+        opts.separator 'また、サブコマンドを省略した場合はmemo readを実行するものとみなされる'
+        opts.separator '例: memo ls => フォルダ内のls.mdを検索して、あればls.mdを全文表示する'
 
-        opts.separator ""
-        opts.separator "サブコマンド(subcommand)のリスト:"
+        opts.separator ''
+        opts.separator 'サブコマンド(subcommand)のリスト:'
 
         # OptionParserにそれぞれのサブコマンドを登録する
         SUB_COMMANDS_SPEC.each do |spec|
-          if spec.sub_command_form == "help"
+          if spec.sub_command_form == 'help'
             # helpコマンドを呼び出したときの処理がopts.on_tailのブロックに記載がある。
             opts.on(spec.short_form, spec.long_form, spec.desc) do
               puts opts
@@ -87,7 +87,7 @@ module Memo
     # とりあえず作成
     def self.to_error_message(symbol)
       error_message_map = {
-        requires_argv: "引数が足りません。"
+        requires_argv: '引数が足りません。'
       }
       puts error_message_map[symbol]
       exit 2
