@@ -22,5 +22,25 @@ class TestConfig < Minitest::Test
         _(FileTest.directory?(test_memo_dir)).must_equal(true)
       end
     end
+
+    describe '#target_dirs' do
+      it '#target_dirsが文字列型の一次元配列であること' do
+        test_target_dir = Memo::Config.target_dirs
+
+        actual = test_target_dir.all?(String)
+
+        _(actual).must_equal(true)
+      end
+
+      it '#target_dirsの全ての値がディレクトリであること' do
+        test_target_dir = Memo::Config.target_dirs
+
+        actual = test_target_dir.all? do |dir|
+          FileTest.directory?(dir)
+        end
+
+        _(actual).must_equal(true)
+      end
+    end
   end
 end
