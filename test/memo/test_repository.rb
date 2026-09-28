@@ -154,6 +154,27 @@ class TestRepository < Minitest::Test
       end
     end
 
+    describe '#tag_list' do
+      describe '戻り値の型検査' do
+        it '文字列型の一次元配列を返す' do
+          tag_list = @test_repo.tag_list
+          actual = tag_list.all?(String)
+
+          _(actual).must_equal(true)
+        end
+      end
+
+      describe '戻り値の値検査' do
+        it 'モックデータから作成したタグの一覧と、Repository#tag_listの値が同じであること' do
+          actual = @test_repo.tag_list
+
+          expected = @test_seeds.map(&:tags).flatten.uniq
+
+          _(actual).must_equal(expected)
+        end
+      end
+    end
+
     describe '#search_all' do
       describe '戻り値の型検査' do
         it "検索結果は二重配列で要素はMemo::Model::SearchLineである" do

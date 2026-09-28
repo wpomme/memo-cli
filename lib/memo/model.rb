@@ -14,7 +14,9 @@ module Memo
     #   @return [String] 対象のファイルのファイル名
     # @!attribute [w] type
     #   @return [:file | :directory] 対象のファイルがディレクトリかどうか
-    Seed = Struct.new(:full_path, :rel_path, :parent_dir, :basename, :type)
+    # @!attribute [w] tags
+    #   @return [Array<String>] 対象のファイルのフロントマター部分のtagsの値
+    Seed = Struct.new(:full_path, :rel_path, :parent_dir, :basename, :type, :tags)
 
     # TODO: 削除予定
     DirSeed = Struct.new(:basename, :parent_dir, :dir) do

@@ -21,6 +21,13 @@ module Memo
       end
     end
 
+    # 対象のファイルで使われているtagの一覧を返す
+    #
+    # @return [Array<String>]
+    def tag_list
+      @seeds.map(&:tags).flatten.uniq
+    end
+
     # 対象のディレクトリ配下にあるディレクトリとファイルのSeedを、ディレクトリごとにグループ化しハッシュとして返す
     #
     # キーはディレクトリを示す文字列となる
@@ -68,7 +75,8 @@ module Memo
           rel_path: rel_path,
           parent_dir: parent_dir == "." ? File.basename(root_dir) : parent_dir,
           basename: File.basename(rel_path),
-          type: :directory
+          type: :directory,
+          tags: []
         )
       end
     end
@@ -86,12 +94,19 @@ module Memo
         # トップディレクトリにあるメモのdirは"."となってしまうため、引数として受け取ったディレクトリの末尾を使う
         parent_dir = File.dirname(rel_path) == "." ? File.basename(root_dir) : File.dirname(rel_path)
 
+        # 各ファイルからフロントマターを読み取って、tagsの値をSeedにセットする。
+        # tagsの値がnilなら、tagsには空の配列を入れる
+        content = File.readlines(full_path, chomp: true)
+
+        front_matter = Memo::Service.parse_yaml_front_matter(content.join("\n"))
+
         Memo::Model::Seed.new(
           full_path: full_path,
           rel_path: rel_path,
           parent_dir: parent_dir,
           basename: basename(full_path),
-          type: :file
+          type: :file,
+          tags: front_matter["tags"].nil? ? [] : front_matter["tags"]
         )
       end
     end

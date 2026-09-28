@@ -1,16 +1,27 @@
 ## TODO・IDEA
 ### TODO
-1. DB連携 or yamlかfrontmatterでタグ付け
-- ファイルにタグ付けをする
-    - yaml形式のfront matterを使う
-        - タグ付けでグラフ構造を作成できないだろうか
-    - 各メモファイルにcreated_at, updated_atを挿入する
-    - タグ名の候補
-        - CLI, bash, git, bulk, setting, TUI, editor, shell, AI, Application, Package Manager
-        - CLI, File System, Process Management, User Management, Text Processor, Built-in
+1. yaml形式のfrontmatterでタグ付け
+- タグ付けによって欲しい機能(WIP)
+    1. memo tags => タグの一覧を返す
+        a. タグごとに紐付いているファイル名もほしい
+            - 次のイメージ
+              ```
+              CLI
+              ls find cut ...
+              ```
+    2. memo tags freq => タグごとの出現頻度の一覧を返す
+    3. memo tags freq [tags] => そのタグの出現回数と、そのタグが紐付いているファイルパスなどを返す
+    4. それぞれのタグによって、特定の機能が欲しい
+        a. 例えばタグにCLIとついている場合は、それに紐付くCLIの一覧が見れたら嬉しい
+    5. タグの付いていないメモの一覧を出力する機能
+        memo tagsのオプションにする？
+    6. タグ名のTypoを検出する機能
+        a. Settingとsetting, settingsなどの表記ゆれを検出する機能
+        b. タグの出現頻度が１程度のものについて、そのタグの命名規則や単語に間違いがないか
 
 2. memoフォルダ以外のフォルダも指定できるようにする
     - プライベート用のメモフォルダを作成して、その中に英語など公開したくないメモを入れたい
+    - memo_dir => target_dirs: ["/repo/memo", "/repo/private-memo"]のようにする
 
 ### その他
 # テスト系
@@ -22,12 +33,13 @@
         - @fixed_mock_directory = 'cli'
         - @fixed_mock_duplicated_file = 'mise'
             - 別のsetup, teardownを作成するべきだろうか
-        - @fixed_mock_file_under_root_dir = 'ANSI-escape-code-and-set-color'
-            - ルートディレクトリ直下に保存されているファイルのモックデータを固定したい
 
 ## expected, actual
 - expected, actualを意味的に逆に使っている箇所があるかもしれない
     - 洗い出す
+
+## 機能追加
+- 各メモファイルのfront matterにcreated_at, updated_atを挿入する
 
 ## 修正するところ
 - memo listにて、次のように表示したい

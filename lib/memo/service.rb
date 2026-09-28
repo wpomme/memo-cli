@@ -30,9 +30,9 @@ module Memo
     # マークダウンファイルについて、yaml形式で書かれたfront matterをパースする
     #
     # @params markdown[String]
-    # @return [String]
+    # @return [Hash<String, Object>]
     def parse_yaml_front_matter(markdown)
-      return "" unless markdown =~ /\A(---\s*\n.*?\n?)^---\s*$\n?/m
+      return {} unless markdown =~ /\A(---\s*\n.*?\n?)^---\s*$\n?/m
 
       front_matter_yaml = ::Regexp.last_match(1)
 

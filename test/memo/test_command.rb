@@ -86,7 +86,7 @@ class TestCommand < Minitest::Test
           choices_out = choices.keys.map.with_index do |key, index|
             "[#{index + 1}] #{key}"
           end
-          content = Memo::MockSeed::TEST_MISE_FILE_CONTENT_2
+          content = Memo::MockSeed::TEST_SETTING_MISE_FILE_CONTENT
 
           _(out).must_equal([title].concat(choices_out).push(content).join("\n"))
         ensure

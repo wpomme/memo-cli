@@ -26,3 +26,15 @@ mise trust
 # Result: どこからでもmemo が実行できるはず
 memo list
 ```
+
+## モックファイルの作り方
+```bash
+# モックを作成
+rake mock:make
+
+# モックデータをフォーマットする
+rake format:fix
+
+## lintで何もなければOK
+rake format:lint
+```

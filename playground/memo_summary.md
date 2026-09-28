@@ -2,20 +2,11 @@
 
 ### 重複の集計
 ```ruby
-## Repositoryからファイル名と親ディレクトリを配列の組で抜き出す
-file_seed = repo.map {|e| [e.filename, e.dir] }
-
-## 配列の最初の方でmapしてcountを使うと重複しているファイルがわかる
-## * 現在、mise.mdは二つある
-file_seed.map(&:first).count("mise")
-# > return 2
-
 ## filenameだけの配列も作っておく
-filenames = file_seed.map(&:first)
+filenames = seeds.map(&:basename)
 
-## これで重複しているファイル名と、そのファイルが所属するディレクトリが取り出せる
-file_seed.filter{|e| filenames.count(e.first) > 1 }
-## > return [["diff", "cli"], ["mise", "cli"], ["diff", "git"], ["mise", "setting"]]
+## 重複しているファイル名と、重複しているSeedを抽出する
+seeds.filter{|seed| filenames.count(seed["basename"]) > 1 }
 ```
 
 ### グループ化したファイルの数をHashで取得する

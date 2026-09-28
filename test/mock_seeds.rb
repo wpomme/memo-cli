@@ -2,6 +2,71 @@
 
 module Memo
   module MockSeed
+    TEST_CLI_THIRD_PARTY_MISE_FILE_CONTENT = <<~CLI_THIRD_PARTY_MISE_FILE
+      ---
+      tags: ["CLI", "External Command", "Package Manager", "Runtime Version Manager"]
+      ---
+      # mise.md
+      # TODO: mise の設定に関することは docs/setting/mise.md に書く
+      ## mise
+      - nodejsやpythonなど、ランタイムのバージョンを管理できるツール
+          - 他にも使い出がありそう
+
+      ### 例
+      ```bash
+      # サブコマンドの一覧を表示
+      mise
+
+      # サブコマンドのヘルプを表示
+      mise help <subcommand>
+
+      # パッケージをインストールしてmise.toml. にパッケージを追加するコマンド
+      # mise で利用できるパッケージの一覧が見れる
+      mise use
+
+      # 利用できるRubyのランタイムを全て表示
+      mise ls-remote ruby
+
+      # 利用できるRubyのランタイムのうち、バージョンが4系のものを表示する
+      mise ls-remote ruby@4
+      ```
+
+      - miseのconfigファイルを管理する
+      ```bash
+      # miseのコンフィグファイルの一覧を見る
+      mise config
+      ```
+
+      - 管理しているランタイムやパッケージの詳細情報を確認
+      ```
+      mise ls
+      ```
+
+      - nodejsの最新のLTSをインストールする
+      ```
+      mise use -g node@lts
+
+      # mise で管理できるプラグインの一覧をみる
+      mise registry
+      ```
+    CLI_THIRD_PARTY_MISE_FILE
+
+    TEST_SETTING_MISE_FILE_CONTENT = <<~SETTING_MISE_FILE
+      # mise.md
+      ## mise.toml
+      - mise.tomlを読み取る順番(抜粋)
+          - ~
+          - .config/mise.toml        (local)
+          - .cinfig/mise/config.toml (dotfiles)
+          - ~
+
+      - install
+      ```bash
+      # mise install でそれぞれのmise.toml をみてパッケージをインストールする
+      mise install
+      ```
+    SETTING_MISE_FILE
+
     TEST_ANSI_ESCAPE_CODE_AND_SET_COLOR_FILE_CONTENT = <<~ANSI_ESCAPE_CODE_AND_SET_COLOR_FILE
       - ANSI escape code and set color to terminal
           - `RED='\033[31m'`のそれぞれの文字列の意味について
@@ -52,6 +117,9 @@ module Memo
     ANSI_ESCAPE_CODE_AND_SET_COLOR_FILE
 
     TEST_ALIAS_FILE_CONTENT = <<~ALIAS_FILE
+      ---
+      tags: ["bash", "CLI", "builtin", "Command inspection"]
+      ---
       ## alias: CLIにエイリアスを付ける
       ```bash
       ## aliasを実行すると、その環境のエイリアスの一覧が見れる
@@ -59,147 +127,224 @@ module Memo
       ```
     ALIAS_FILE
 
-    TEST_BUILTIN_FILE_CONTENT = <<~BUILTIN_FILE
-      ## builtin: そのコマンドがbuiltinかどうかを判別する
-      - 組み込みだと正常終了し、何も帰ってこない
-      - それ以外だと何かが帰ってくる
-      - cdがカスタマイズされてないかどうかを調べたりするのに使うらしい
-    BUILTIN_FILE
+    TEST_COMMAND_FILE_CONTENT = <<~COMMAND_FILE
+      ---
+      tags: ["bash", "CLI", "builtin", "Command inspection"]
+      ---
+      ## command (bash builtin command)
 
-    TEST_HASH_FILE_CONTENT = <<~HASH_FILE
-      ## hash: bash builtinコマンド
-      ```bash
-      ## hashを実行すると、その環境で実行できるコマンドと、そのパスの一覧が見れる
-      hash | wc -l
-      > 2692
+      ### 例
       ```
-    HASH_FILE
+      # シェル関数やエイリアスを無視して、元のコマンドや、外部プログラムを直接実行するために使う
+      ## 例
+      ## エイリアスなしのls を実行する
+      command ls
 
-    TEST_LS_FILE_CONTENT = <<~LS_FILE
-      ## ls: list directory contents
-      ```bash
-      ## 再帰的にファイル名を表示する
-      ls -R memo/
-
-      ## memo/フォルダの全てのファイルの詳細を表示する
-      ## totalや空行は他のコマンドと組み合わせて消すのが一番良さそう
-      ls -Rl memo/
-
-      ## -Tは-lと組み合わせると年数も表示できる
-      ls -RlT memo/
-
-      ## さらに-tと組み合わせて、最終更新日時(mtime)が新しい順に表示することができる
-      ls -RTlt memo/
-
-      ## なお、-uも付けると、最終アクセス日時(atime)が新しい順に表示することができる
-      ### 最終更新時間 -> Last Modified Time, 最終アクセス時間 -> Last Access Time
-      ls -RTltu memo/
-
-      ## aliasで定義されているlsの情報を確認
-      ## -G: 色付け -F: ファイルの種別によって末尾に色々つける -p: ディレクトリの末尾にスラッシュを付ける
-      ## * OSによってオプションの意味が結構変わるコマンドだったような...
-      command -v
+      ## -v エイリアスなどがあれば、その情報を表示する
+      command -v ls
       > alias ls='ls -GpF'
 
-      ## aliasで定義されているllの情報も確認
-      ## -a: ドットファイルも表示する -l: 詳細表示（下記参照）
-      command -v ll
-      > alias ll='ls -alGpF'
 
-      ## よく使うコマンド
-      ### 更新順に表示するとき
-      ls -lt
 
-      ### 容量順に表示するときは-Sオプションを使う
-      ### さらに、-hで容量に単位がつく
-      ### なお、-sオプションは、使用しているブロック数を表示する
-      ls -lS
+      ## -V そのコマンドが組み込み関数かどうかの情報を取得する
+      ### 例1: cd
+      command -V cd
+      > cd is a shell builtin
+
+      ### 例2: gs
+      command -V gs
+      gs is an alias for git status
       ```
+    COMMAND_FILE
 
-      ## -lオプションについて
+    TEST_CHMOD_FILE_CONTENT = <<~CHMOD_FILE
+      ---
+      tags: ["bash", "CLI", "File and Directory", "display"]
+      ---
+      ## chmod: ファイルモードとアクセス権限を変更するコマンド
 
-      - `-l`: 詳細表示
-         以下のデータを表示する
-         file mode, number of links, owner name, group name,
-         number of bytes in the file, abbreviated month, day-of-month file was last modified, hour file last modified, minute file last modified,
-         and the pathname.
-    LS_FILE
+      ### ZSH でのchmod のオプション補完
+      - chmodと入力した後にTABを入力すると次のようなオプションの一覧が表示される。 便利。
 
-    TEST_GROUPS_FILE_CONTENT = <<~GROUPS_FILE
-      - groups: グループを表示する
-          - idコマンドにより廃止された
-          - `id -Gn [user]`と同等である
-    GROUPS_FILE
+      ```
+      a  -- all
+      g  -- group
+      o  -- others
+      u  -- owner
+      -   +   =
+      ```
+    CHMOD_FILE
 
-    TEST_LSOF_FILE_CONTENT = <<~LSOF_FILE
-      ## lsof: list open files - オープン中のファイルについて、その情報を得るためのコマンド
-
-      ### 例: ポート8080によって開かれているファイルの情報を得るには
+    TEST_REALPATH_FILE_CONTENT = <<~REALPATH_FILE
+      ---
+      tags: ["bash", "CLI", "File and Directory", "display"]
+      ---
+      ## realpath: 実体の方のパスを返す
+      - How to
       ```bash
-      lsof -i:8080
-      # 次のような値が返ってくる
-      # COMMAND   PID USER   FD   TYPE             DEVICE SIZE/OFF NODE NAME
-      # node    25789   hy   32u  IPv6 0xc355a48837ad9ec6      0t0  TCP localhost:rwhois (LISTEN)
+      realpath <filename>
       ```
 
-      ### 例: 特定のuserが開いているファイルの情報を得るには
+      - ユースケース
       ```bash
-      lsof -u <USER>
-
-      ## USERが開いているプロセス名の一覧を取得するには
-      lsof -u <USER> | cut -w -f1 | sort | uniq
+      # フルパスを取得してpbcopyに渡す
+      realpath <filename> | pbcopy
       ```
-    LSOF_FILE
+    REALPATH_FILE
 
-    TEST_FIND_FILE_CONTENT = <<~FIND_FILE
-      ## find: フォルダの階層を巡回する
+    TEST_KILL_FILE_CONTENT = <<~KILL_FILE
+      ---
+      tags: ["bash", "CLI", "process", "terminate"]
+      ---
+      ## kill: プロセスを終了させるか、プロセスにシグナルを送信する
+
+      ### 例: プロセスを終了させる
+      ```bash
+      ## -9オプションを使う
+      kill -9 <PID>
+      ```
+    KILL_FILE
+
+    TEST_PS_FILE_CONTENT = <<~PS_FILE
+      ---
+      tags: ["bash", "CLI", "process", "display", "tally"]
+      ---
+      ## ps: プロセスのステータスを確認する
+
+      ### オプション
+      a - 端末のあるプロセス表示
+      c - 実行コマンドのパスを省略する
+      u - 実行ユーザー名表示
+      x - 端末のないプロセス表示
+      e - 環境変数を表示
+
+      ## 例
+      - 子プロセスの確認(PPID)
+      ```bash
+      ## どちらかを使う
+      aux -o ppid
+      aux -ef
+      ```
+
+      ## 実行プロセスの集計
+      ```
+      $ ps aux | cut -w -f11 | xargs basename | sort | uniq -c | sort -r
+      ```
+
+      - basenameを使わなくてもcオプションで同じことができる
+      ```
+      $ ps acux | cut -w -f11 | sort | uniq -c | sort -r
+      ```
+    PS_FILE
+
+    TEST_GREP_FILE_CONTENT = <<~GREP_FILE
+      ---
+      tags: ["bash", "CLI", "search", "bulk", "pipe", "recursive"]
+      ---
+      ## grep: 文字列検索
 
       - 例
       ```bash
-      # 名前に"foo"を含むファイルを検索する
-      find . -type f -name "*foo*"
+      ## 基本形
+      # grep <word> <file>
+      grep ls foo.txt
 
-      # 実行可能なファイルを検索して、中身の文字数などを確認する
-      find . -perm -a+x -type f -exec wc {} ;
+      ## -Rオブションを付ければfindからパイプで渡す必要もない
+      ## -R: ディレクトリの中を再帰的に検索する
+      grep -R "ls" memo/
+
+      ## memoフォルダの中にあるファイルを一括してgrepする
+      ## xargsに渡すからかalias grep='grep --color=auto'が効かない
+      find memo -type f | xargs grep --color=auto "foo"
+
+      ## --includeで特定のファイル名に該当するものだけを検索できる
+      grep -R "ls" --include="*.md" memo/
+
+      ## -cオプションでそのファイルに何回その単語が現れたかを数えることができる
+      grep -Rc "ls" memo/
+
+      ## -lオプションでその単語が現れたファイルだけを表示する
+      grep -Rl "ls" memo/
+      ```
+    GREP_FILE
+
+    TEST_DIFF_FILE_CONTENT = <<~DIFF_FILE
+      ---
+      tags: ["bash", "CLI", "text"]
+      ---
+      ## diff: ファイルやディレクトリの差分を取得する
+
+      - origfileとpatchfileの内容が次の場合、diffの結果は次の通り
+      ```bash
+      cat origfile
+      > 1
+      > 12
+      > 123
+
+      cat patchfile
+      > 123
+      > 123
+      > 123
+
+      diff origfile patchfile
       ```
 
-      - オプション
-          - `-print0`: 改行の代わりにヌル文字を使って入力文字列を区切る
-    FIND_FILE
+      ```diff
+      1,2d0
+      < 1
+      < 12
+      3a2,3
+      > 123
+      > 123
+      ```
 
-    TEST_CUT_FILE_CONTENT = <<~CUT_FILE
-      ## cut: ファイルを適切なところでカットする
+      - a unified diff形式(-uオプション)
+      ```
+      # -u を付けると、 a unified diff の形式で差分を出力する
+      # 先頭の三行に、パッチファイルとパッチを当てるファイルの情報と、差分の概要を出力する
+      # patch コマンドは、この情報をみて、パッチファイルとパッチを当てるファイルを識別する
+      # なお、-c オプションでも同様の情報を出力する。-c の場合は、context diffs の形式でこの情報を出力する
 
-      - 例
+      # a unified diff について
+      # --- が付いている方がパッチを当てる方のファイル("old")
+      # +++ が付いている方がパッチファイル("new")
+
+      diff -u origfile patchfile
+      ```
+
+      ```diff
+      --- origfile	2026-05-22 08:53:21
+      +++ patchfile	2026-05-22 08:53:27
+      @@ -1,3 +1,3 @@
+      -1
+      -12
+       123
+      +123
+      +123
+      ```
+
+      #TODO origfileにパッチファイルを適用する
+      # diff からパイプでpatchに繋げるとreversed patchと判定されるときがある
+      ```bash
+      diff -u origfile patchfile | patch -u
+      ```
+    DIFF_FILE
+
+    TEST_NL_FILE_CONTENT = <<~NL_FILE
+      ---
+      tags: ["bash", "CLI", "text", "display", "count"]
+      ---
+      ## 例
+      - 行番号を付けて表示する
       ```sh
-      # psコマンドの最後の行(COMMAND)を除外する
-      ps aux | cut -w -f1-10
-
-      # スネークケースの最初の文字列だけ切り取る
-      cut -d'-' -f2-
+      nl test.txt
       ```
-
-      - オプション
-          - `-w` : デリミタとしてホワイトスペースを使う
-
-    CUT_FILE
-
-    TEST_ED_FILE_CONTENT = <<~ED_FILE
-      ## ed: classic text editor
-
-      ## 使い方１
-      1. `ed <filename>`でファイルを読み込む
-      2. コマンドを打ちながら修正したい行に移動したり修正する
-      3. wでsave、qでedをexit、数字を打つとその行に移動して表示する、.を打つと現在の行を表示するなど
-
-      ### 例(WIP)
-      ```bash
-      ## ファイルを読み込む
-      ed foo.txt
-      ```
-    ED_FILE
+    NL_FILE
 
     TEST_SED_FILE_CONTENT = <<~SED_FILE.freeze
+      ---
+      tags: ["bash", "CLI", "text", "substitute", "edit"]
+      ---
       ## sed: stream editor
 
       ## 例
@@ -231,57 +376,87 @@ module Memo
 
     SED_FILE
 
-    TEST_UNIQ_FILE_CONTENT = <<~UNIQ_FILE
-      - uniq: 文字の重複排除
-          - 他のコマンドとsortと組み合わせて使うことが多い
-      ```bash
-      # 例: コマンド履歴の集計
-      fc -ln 1 | sort | uniq -c | sort
-      ```
-    UNIQ_FILE
+    TEST_TR_FILE_CONTENT = <<~TR_FILE
+      ---
+      tags: ["bash", "CLI", "text", "substitute", "edit", "filter", "remove"]
+      ---
+      ## tr: 標準出力からの文字列を置換・削除するコマンド
 
-    TEST_XARGS_FILE_CONTENT = <<~XARGS_FILE.freeze
-      ## 例
-      - -Iコマンド
-      ### コマンドに渡す引数の場所を指定する
+      - 例
       ```bash
-      echo 01 Black Rain.aiff | tr " " - | xargs -I{} mv 01 Black Rain.aiff {}
+      ## PATHの一覧を取得する
+      env | grep ^PATH | tr ":" "\n"
+      ```
+    TR_FILE
+
+    TEST_WC_FILE_CONTENT = <<~WC_FILE.freeze
+      ---
+      tags: ["bash", "CLI", "text", "display", "count"]
+      ---
+      ## オプション
+      出力される数値は、行数・単語数・バイト数の順番で並んでいる#{'  '}
+
+      - -l: 行数のみ出力
+      - -c: バイト数のみ出力
+      - -m: 文字数でカウント。通常はUTF-8で数える。日本語も一文字としてカウント
+      - -w: 単語数のみ出力。日本語だと使う意味がそこまでない。
+    WC_FILE
+
+    TEST_IFCONFIG_FILE_CONTENT = <<~IFCONFIG_FILE
+      ## オプション
+      - `-l`: 利用可能な全てのインターフェイスのみを表示する
+
+      - 自機IPの調べ方
+      ```bash
+      # 無線の場合
+      ipconfig getifaddr en0
+
+      # 有線の場合
+      ipconfig getifaddr en1
       ```
 
-      - -nコマンド
-      ### コマンドに渡す引数の数を制御する
-      - できるだけ多くの入力文字列を受け入れる
+      ## ネットワークインターフェイス
+      ### 主なインターフェイス
+
+      | 名前 | 種類 | 説明 |
+      |------|------|------|
+      | `en0` | Ethernet/Wi-Fi | 通常は Wi-Fi（MacBook系） |
+      | `en1` | Ethernet/Wi-Fi | 有線LAN or 2枚目の無線 |
+      | `lo0` | Loopback | ループバック（127.0.0.1）、仮想 |
+      | `utun0〜` | VPN/Tunnel | VPNや内部トンネル |
+      | `bridge0` | Bridge | 仮想ブリッジ（仮想マシン等） |
+      | `awdl0` | AirDrop | AirDrop/Handoff用の無線 |
+
+      - ネットワークインターフェイスの一覧
       ```bash
-      ls | xargs echo
+      ipconfig -l
       ```
 
-      - 一つのechoコマンドにつき一つの引数を渡す
-      ```bash
-      ls | xargs -n1 echo
-      ```
+      - Macなら`networksetup -listallhardwareports`を実行すると全てのネットワークハードウェアの一覧が取得できる
+    IFCONFIG_FILE
 
-      - findとの組み合わせ
-      拡張子のあるファイルパスを取得して、行数を数える#{'  '}
-      findに-print0を指定して、改行の代わりにヌル文字でファイルパスのリストを区切る#{'  '}
-      また、xargsに-0を指定して、空白の代わりにヌル文字を入力セパレーターとして認識する#{'  '}
+    TEST_TCPDUMP_FILE_CONTENT = <<~TCPDUMP_FILE
+      ## tcpdump: ネットワークの交信ログを取得
+      - 使い方
       ```bash
-      $ find . -type f -name "*.*" -print0 | xargs -0 wc -l
+      ## 対象のインターファイスを指定すること
+      tcpdump -i en0
       ```
-    XARGS_FILE
-
-    TEST_SSH_FILE_CONTENT = <<~SSH_FILE
-      ```bash
-      ssh <login name>@<address>
-      ```
-    SSH_FILE
+    TCPDUMP_FILE
 
     TEST_CLAUDE_FILE_CONTENT = <<~CLAUDE_FILE
+      ---
+      tags: ["CLI", "External Command", "AI", "CLI client"]
+      ---
       # claude CLI
       - `/resume`
       過去のセッションを選択して再開する
     CLAUDE_FILE
 
     TEST_GH_FILE_CONTENT = <<~GH_FILE
+      ---
+      tags: ["CLI", "Third Party", "git", "CI/CD", "CLI client"]
+      ---
       ## gh: github CLI
       ```bash
       # 現在のブランチのPR のステータスを確認する場合
@@ -302,53 +477,10 @@ module Memo
       ```
     GH_FILE
 
-    TEST_MISE_FILE_CONTENT_1 = <<~MISE_FILE
-      # mise.md
-      # TODO: mise の設定に関することは docs/setting/mise.md に書く
-      ## mise
-      - nodejsやpythonなど、ランタイムのバージョンを管理できるツール
-          - 他にも使い出がありそう
-
-      ### 例
-      ```bash
-      # サブコマンドの一覧を表示
-      mise
-
-      # サブコマンドのヘルプを表示
-      mise help <subcommand>
-
-      # パッケージをインストールしてmise.toml. にパッケージを追加するコマンド
-      # mise で利用できるパッケージの一覧が見れる
-      mise use
-
-      # 利用できるRubyのランタイムを全て表示
-      mise ls-remote ruby
-
-      # 利用できるRubyのランタイムのうち、バージョンが4系のものを表示する
-      mise ls-remote ruby@4
-      ```
-
-      - miseのconfigファイルを管理する
-      ```bash
-      # miseのコンフィグファイルの一覧を見る
-      mise config
-      ```
-
-      - 管理しているランタイムやパッケージの詳細情報を確認
-      ```
-      mise ls
-      ```
-
-      - nodejsの最新のLTSをインストールする
-      ```
-      mise use -g node@lts
-
-      # mise で管理できるプラグインの一覧をみる
-      mise registry
-      ```
-    MISE_FILE
-
     TEST_NKF_FILE_CONTENT = <<~NKF_FILE
+      ---
+      tags: ["CLI", "External Command", "text", "display", "Character Inspection", "edit"]
+      ---
       - nkf: 文字コードの判定・変換
       ```bash
       # 文字コードを推測する
@@ -369,6 +501,9 @@ module Memo
     UNITS_FILE
 
     TEST_APPLY_FILE_CONTENT = <<~APPLY_FILE
+      ---
+      tags: ["CLI", "git", "Email", "Patching"]
+      ---
       - パッチファイルを適用する
       ```bash
       git apply <filename>
@@ -380,7 +515,120 @@ module Memo
       - patchコマンドでも差分を取り込めるらしい
     APPLY_FILE
 
+    TEST_COMMIT_FILE_CONTENT = <<~COMMIT_FILE
+      ---
+      tags: ["CLI", "git", "Basic Snapshotting"]
+      ---
+      ## commit: コードの変更をコミットする
+
+      ## 例
+      ```bash
+      ## --amendを使うと、ステージ済みの変更を直前のコミットに統合できる
+      git commit --amend
+
+      ## メッセージの変更が不要な場合
+      git commit --amend --no-edit
+      ```
+    COMMIT_FILE
+
+    TEST_CONFLICT_FILE_CONTENT = <<~CONFLICT_FILE
+      ---
+      tags: ["CLI", "git", "Conflict"]
+      ---
+      - fix conflict
+      ```bash
+      $ vimdiff  # alias vimdiff="git mergetool -t vimdiff"
+      ```
+
+      - マージしてきた方のブランチにコードを合わせる場合
+      ```bash
+      # マージしてきた方のブランチを採用する
+      # 注意: file に. を指定すると、マージしてきた方のブランチを全て採用してしまう。
+      # file は個別に指定すること
+      git restore --theirs <file>
+
+      # または、次のコマンドで取り込む
+      # --staged と --worktree の両方を指定してgit add <file> と同様の動作をする
+      git restore --source=MERGE_HEAD --staged --worktree <file>
+
+      # 現在のブランチ(HEAD)の方を採用する
+      git restore --ours <file>
+      ```
+
+      - 特殊なHEADリファレンス
+          - `HEAD`: 現在チェックアウトしているコミット
+          - `MERGE_HEAD`: マージ中の相手ブランチの先頭コミット
+          - `ORIG_HEAD`: merge/rebase/reset実行前のHEADの位置
+          - `FETCH_HEAD`	直前のgit fetchで取得したリモートの先頭
+          - `CHERRY_PICK_HEAD`: cherry-pick中の対象コミット
+          - `REBASE_HEAD`: rebase中に現在適用しているコミット
+
+      - コンフリクトマーカーの見方
+      ```diff
+      <<<<<<< HEAD
+      現在のブランチの内容（ours / stage 2）
+      ||||||| abc1234  ← diff3 スタイルの場合のみ表示
+      共通祖先の内容（base / stage 1）
+      =======
+      マージしてくるブランチの内容（theirs / stage 3）
+      >>>>>>> feature-branch
+      ```
+
+      - diff3スタイルを有効にする
+      ```bash
+      git config --global merge.conflictstyle diff3
+      ```
+    CONFLICT_FILE
+
+    TEST_GIT_FILE_CONTENT = <<~GIT_FILE
+      ---
+      tags: ["CLI", "git", "documentation"]
+      ---
+      - git
+      ## ドキュメント
+      https://git-scm.com/about
+          - git用のTUIなどの一覧が載っている
+    GIT_FILE
+
+    TEST_LOG_FILE_CONTENT = <<~LOG_FILE
+      ---
+      tags: ["CLI", "git", "Branching and Merging", "Inspection Version"]
+      ---
+      - 基本的なログ表示
+      ```bash
+      git log --oneline
+      ```
+
+      - ブランチの分岐を視覚的に表示
+      ```bash
+      git log --graph --oneline --all
+      ```
+
+      - 特定のファイルの変更履歴
+      ```bash
+      git log --follow -- filename
+      ```
+
+      - developにはない現在のブランチのみのコミットを表示する
+      ```bash
+      git log develop..HEAD
+
+      # -p で差分も確認できる
+      git log -p develop..HEAD
+
+      # ここからmergeコミットを取り除くには
+      git log --no-merges develop..HEAD
+
+      # tig でも同様
+      tig -p --no-merges develop..HEAD
+      ```
+    LOG_FILE
+
     TEST_CHECKOUT_FILE_CONTENT = <<~CHECKOUT_FILE
+      ---
+      tags: ["CLI", "git", "Branching and Merging", "legacy"]
+      ---
+      ## git checkout: git restore + git switchの機能があるgit CLI
       ## `git checkout`から`git switch`, `git restore`へ
       - `git checkout`の役割
           - ブランチの切り替え
@@ -391,70 +639,10 @@ module Memo
           -> これらを`git switch`か`git restore`へ
     CHECKOUT_FILE
 
-    TEST_CONFIG_FILE_CONTENT = <<~CONFIG_FILE
-      - gitのアカウント情報などの確認
-      ```bash
-      git config -l
-      ```
-
-      - ローカルのgitアカウント作成
-      ```bash
-      git config --local user.name "<username>"
-      git config --local user.email "<email>"
-      ```
-
-      ```bash
-      # テキストエディタをneovimにする
-      git config --global core.editor 'nvim'
-
-      # テキストエディタをVimにする
-      git config --global core.editor 'vim -c "set fenc=utf-8"'
-      ```
-    CONFIG_FILE
-
-    TEST_DIFF_FILE_CONTENT = <<~DIFF_FILE
-      ## git diff: 差分を取る
-      - 例
-      ```bash
-      # stagedしたファイルのdiff
-      git diff --cached
-
-      # ファイル名だけ取得
-      git diff --name-only
-
-      # git diff を標準出力に書き出す
-      git --no-pager diff
-
-      # なお、`--no-pager`は`git`コマンド全体で使える。
-      git --no-pager <subcommand> <options>
-
-      # 直前のコミットとdiffをとる
-      # patchファイルを作成するときなどに使う
-      git diff HEAD^ HEAD
-
-      # patchファイルを作成
-      git diff HEAD^ HEAD > patch.diff
-      ```
-    DIFF_FILE
-
-    TEST_GITIGNORE_FILE_CONTENT = <<~GITIGNORE_FILE
-      - .gitignore
-      ## ローカル環境だけでgitignoreを設定するには
-      .git/info/excludeに該当のファイル・フォルダ名を書けばいい
-    GITIGNORE_FILE
-
-    TEST_MERGE_FILE_CONTENT = <<~MERGE_FILE
-      - git squash
-      ```bash
-      # git squashしてマージ
-      git merge --squash origin/feature/foo
-
-      # コンフリクトの事前確認
-      git merge --no-commit --no-ff feature/foo
-      ```
-    MERGE_FILE
-
     TEST_PUSH_FILE_CONTENT = <<~PUSH_FILE
+      ---
+      tags: ["CLI", "git", "Sharing and Updating Projects"]
+      ---
       - 現在チェックアウトしているブランチをpushする
       ```bash
       # 最もシンプルな方法
@@ -480,6 +668,10 @@ module Memo
     PUSH_FILE
 
     TEST_RESET_FILE_CONTENT = <<~RESET_FILE
+      ---
+      tags: ["CLI", "git", "Basic Snapshotting"]
+      ---
+      ## git reset
       - resetとrevertの違い
           - reset -> コミットログが残らない
           - revert -> コミットログが残る
@@ -491,6 +683,9 @@ module Memo
     RESET_FILE
 
     TEST_REV_PARSE_FILE_CONTENT = <<~REV_PARSE_FILE
+      ---
+      tags: ["CLI", "git", "Plumbing Commands"]
+      ---
       - rev-parse
           - "Pick out and massage parameters"というporcelain command
 
@@ -519,6 +714,9 @@ module Memo
     REV_PARSE_FILE
 
     TEST_UPSTREAM_FILE_CONTENT = <<~UPSTREAM_FILE
+      ---
+      tags: ["git", "Sharing and Updating Projects", "Branching and Merging", "Option"]
+      ---
       ## upstream: 追跡ブランチ
 
       ```bash
@@ -596,6 +794,9 @@ module Memo
     HOVER_FILE
 
     TEST_CONSOLE_FILE_CONTENT = <<~CONSOLE_FILE
+      ---
+      tags: ["JavaScript", "Debug", "I/O"]
+      ---
       - console
       ```javascript
       # Map オブジェクトにはconsole.table()を使うと中身が見やすい
@@ -609,6 +810,9 @@ module Memo
     CONSOLE_FILE
 
     TEST_MAP_FILE_CONTENT = <<~MAP_FILE.freeze
+      ---
+      tags: ["JavaScript", "Hash", "Data Structure", "Notation"]
+      ---
       - map
       ```javascript
       # 値を得るときはget() を使う
@@ -628,6 +832,9 @@ module Memo
     MAP_FILE
 
     TEST_PACKAGE_JSON_FILE_CONTENT = <<~PACKAGE_JSON_FILE.freeze
+      ---
+      tags: ["JavaScript", "Package Manager", "Setting"]
+      ---
       ## package.json:#{' '}
 
       ### バージョン指定について
@@ -644,6 +851,9 @@ module Memo
     PACKAGE_JSON_FILE
 
     TEST_LUA_FILE_CONTENT = <<~LUA_FILE
+      ---
+      tags: ["lua", "Package Manager", "Linter", "Setting", "Formatter"]
+      ---
       ## lua
 
       ### パッケージマネージャー
@@ -659,13 +869,16 @@ module Memo
           - dotfiles/の下に`.luacheckrc`を作成する
               - globalsに`vim`を設定し、accessing undefined variable vimの警告をなくす
 
-      #### 実行
+      - 実行
       ```bash
       luacheck config/nvim/**/*.lua
       ```
     LUA_FILE
 
     TEST_ONELINER_FILE_CONTENT = <<~ONELINER_FILE
+      ---
+      tags: ["perl", "oneliner", "display", "edit", "substitute", "regex"]
+      ---
       ## Perl one-liners: Perlによるワンライナー
       ```bash
       ## ドキュメント: perlrunにperlコマンドのオプションの解説がある
@@ -681,10 +894,6 @@ module Memo
       ### 特定のフォルダから、"href="か"src="が含まれている行を抜き出すコマンド(正規表現の「選択」)
       find packages/web/src | xargs -I@ perl -ne 'print if /href=|src=/' @
 
-      ###
-      find lib/ test/ -type f | xargs -I@ perl -ne 'print if /\Qseed[:filename]\E|\Qseed.filename/' @
-      find lib/ test/ -type f | xargs -I@ perl -n -e 'print if /seed[:dir]/ or /seed.dir/' @
-      find lib/ test/ -type f | xargs -I@ perl -pi -e 's/seed[:dir]/seed[:parent_dir]/g' @
       ## sed系
       ### 対象ファイルについて、文字列の一括置換を行う場合(in-place編集)
       git grep -l NOT_FOUND_MESSAGE | xargs -I@ perl -pi -e 's/NOT_FOUND_MESSAGE/READ_RESULT_IS_NOT_FOUND/g' @
@@ -713,329 +922,612 @@ module Memo
       - \E: \Qなどのエスケープを\Eが追加された位置で終了させる
     ONELINER_FILE
 
-    TEST_BUNDLE_FILE_CONTENT = <<~BUNDLE_FILE
-      - bundle
-          - プロジェクトごとに使うRubyのパッケージマネージャー
+    TEST_ARRAY_FILE_CONTENT = <<~ARRAY_FILE
+      ---
+      tags: ["ruby", "array", "Creation", "Concatenation", "Data Structure"]
+      ---
+      # Array: 配列について
 
-      - How to use
-      ```bash
-      # Gemfileを作成する
-      bundle init
+      ## 配列の結合
+      - `<<, push, concat, +`について
+          - <<: 配列の末尾に破壊的に要素を追加する
+              ```ruby
+              arr = [1,2,3]
+              # => [1, 2, 3]
+              arr << 4
+              # => [1, 2, 3, 4]
+              ```
 
-      # パッケージのminitestを追加する
-      bundle add minitest
+          - push: 指定された要素を順番に配列の末尾に追加する
+              - docs: https://docs.ruby-lang.org/ja/latest/method/Array/i/append.html
+              ```ruby
+              array = [1, 2, 3]
+              array.push 4
+              array.push [5, 6]
+              array.push 7, 8
+              # => [1, 2, 3, 4, [5, 6], 7, 8]
+              ```
 
-      # そのプロジェクトの全てのgemを確認する
-      bundle show
+          - concat: 配列の末尾に破壊的に配列を追加する
+              ```ruby
+              arr = [1, 2, 3]
+              # => [1, 2, 3]
+              arr.concat([4, 5, 6])
+              # => [1, 2, 3, 4, 5, 6]
+              ```
 
-      # そのプロジェクトのパッケージを読み込んだ状態でirbにログインする
-      bundle exec irb
-      ```
+          - +: 自分と他の配列同士を繋げた配列を生成して返す
+    ARRAY_FILE
 
-      - rakeとbundle exec rake
-          - `rake` -> システムにインストールされた`rake`を使う
-          - `bundle exec rake` -> Gemfile.lockで固定されたバージョンの方の`rake`を使う
+    TEST_CLASS_FILE_CONTENT = <<~CLASS_FILE
+      ## Rubyとクラス
+      - 用語整理のためにメモを作成
 
-      - bundle gem
-      ```bash
-      # rubygem を作るための雛形を作成するコマンド
-      # <name> -> . とすればカレントディレクトリが指定される
-      # Gemfile や README が既にあると、上書きしていいかどうか聞かれる
-      bundle gem <name>
-      ```
+      ## 用語集
+      - クラス
+      クラスが仕様でオブジェクトなどが実装という理解
 
-      - bundler/gem_tasks
+      - オブジェクト、インスタンス、レシーバ
+          - どれもクラスから作成される実装の方をさすという理解
+          - オブジェクトだと意味の範囲が広くなってしまう
+          - インスタンスがちょうどいい
+          - レシーバは呼び出し、受け取りの文脈で使われるのだろう
+
+      - メソッド、メッセージ
+          - オブジェクトの振る舞いのことをさす
+          - ざっくり関数だが、さらに広く手続きとも言えるし...
+          - 他、メッセージというのも使う。先述のレシーバと組み合わせて使うのだろうか？
+
+      - 属性、アトリビュート、プロパティ
+          - オブジェクトに設定あるいは取得できる値のこと
+
+      - インスタンスメソッド
+          - 次のようなよく使うメソッドのこと
+          - インスタンスメソッドからクラスメソッドを呼び出す場合の例も記載した
       ```ruby
-      # Rakefileでbundler/gem_tasksをインポートすると、build, release, installなどが行える
-      require "bundler/gem_tasks"
+      class Klass
+        # クラス変数: クラスメソッドからでも参照できる変数
+        # ライブラリの設定情報を入れる場合などに使う。あまり使わない。
+        @@config = 'develop'
+
+        def foo
+          :foo
+        end
+
+        # インスタンスメソッドからクラスメソッドを呼び出す
+        def call_class_method
+          Klass.bar
+        end
+
+        def self.bar(baz)
+           # クラスメソッドで@fooのように変数を定義した場合は、クラスインスタンス変数と呼ばれ、インスタンス変数と区別される
+           @baz = baz
+          :bar
+        end
+
+        ## クラスの入れ子はクラスの継承とは違う
+        ## 名前空間を作る場合に使うが、モジュールを使う場合の方が多い
+        class SubKlass
+          def initialize(qux)
+            @qux = qux
+          end
+        end
+      end
       ```
-    BUNDLE_FILE
 
-    TEST_COMPARE_FILE_CONTENT = <<~COMPARE_FILE
-      ## Rubyオブジェクトの比較の仕方
-      - 趣旨: 言語やそのオブジェクトによって値の比較方法が特殊だったりするので
-          - JavaScriptの===や!= nullとか...言語によるので
-          - Rubyの中で特筆すべき比較方法を書いておく場所
+      - インスタンス変数
+          - `@foo`のこと
 
-      - Setの比較
-          - ==について
-              1. どちらもSetオブジェクトであること
-              2. 要素が同数であること
-              3. 全ての要素が等しいこと
-    COMPARE_FILE
+      - アクセサメソッド
+          - ゲッター・セッターメソッドの総称
+          - インスタンス変数を外部から読み書きできるようにするには、`attr_accessor <symbol>`を使う
 
-    TEST_MINITEST_FILE_CONTENT = <<~MINITEST_FILE
-      ## minitest: 軽量なテスティングフレームワーク
+      - クラスメソッド
+          - `def self.foo`のこと
+          - そのクラスのインスタンスのデータを使わないでメソッドを定義したい場合に使う
 
-      - expectedとactualの位置
-          - なぜか混同してしまうので
-      ```rb
-      ## spec形式
-      ## この順番！
-      _(expected).must_equal(actual)
+      - 定数
+          - 大文字で書く
 
-      ## assertion形式
-      assert_equal expected, actual
-      ```
-    MINITEST_FILE
+      - super
+          - initializeにsuperと書くと、スーパークラスに引数を全て渡せる
+          - また、super()と書くと、スーパークラスには引数が渡らない
+    CLASS_FILE
 
-    TEST_RAKE_FILE_CONTENT = <<~RAKE_FILE
-      - rake: タスクランナー
+    TEST_GEM_FILE_CONTENT = <<~GEM_FILE
+      - gem
+          - Rubyのパッケージマネージャー
+          - プロジェクトごとにパッケージを管理する場合はbundleを使う
+
+      - 例
       ```bash
-      # タスクの一覧を表示する
-      rake -T
-      ```
-    RAKE_FILE
+      # RubyGems のリポジトリを調べる
+      gem search -r <package>
 
-    TEST_START_PROJECT_FILE_CONTENT = <<~START_PROJECT_FILE
-      ## Start Project with Ruby: Rubyでプロジェクト・リポジトリを作成には
+      ## 例: pryに関係のあるパッケージを調べる
+      gem search -r pry
 
-      ```bash
-      # 1. bundlerでGemfileを作成する
-      bundle init
+      # gem のサブコマンド一覧を表示する
+      gem help commands
 
-      # 2.1. 作成されるGemfileに使いたいパッケージを追加する
-      gem "rails", "~>8.1"
-
-      # 2.1.1. bundle installすればOK
-      bundle install
-
-      # 2.2. bundle addでも良さそう
-      bundle add minitest
+      # gem list のhelp を確認する
+      gem help list
       ```
 
-      - * なお、`bundle gem`コマンドでRubyGemを作成することができる
-    START_PROJECT_FILE
-
-    TEST_TYPE_CHECK_FILE_CONTENT = <<~TYPE_CHECK_FILE
-      ## Ruby型検査
-      - テストコード
+      ## Gemfileのバージョン指定
       ```ruby
-      ## 配列の要素が全て同じなら真が戻り値になる
-      ## Array#all?に検査したい型を入れる
-      require "minitest/expectations"
+      ## バージョンを固定する場合
+      gem "minitest", "6.0.6"
 
-      expected = seeds.all?(Memo::Model::Seed)
+      ## 指定したバージョン以上を使う
+      gem "minitest", ">= 6.0.6"
 
-      _(expected).must_equal(true)
-      # => true
+      ## 6.0.6から6.1.0未満までを使う(悲観的なバージョン指定)
+      ## バージョンの桁数によって指定する範囲が変わる
+      gem "minitest", "~> 6.0.6"
+
+      ## これなら6.0以上7.0未満となる
+      gem "minitest", "~> 6.0"
       ```
-    TYPE_CHECK_FILE
 
-    TEST_TEST_ASSERTION_FILE_CONTENT = <<~TEST_ASSERTION_FILE
-      ## テストアサーションについて
-      - いつもexpectedとactualを逆に書いている気がする......。
-      - 文献がいつもexpectedとactualが逆なような......
+      - 自分でインストールしたgemの一覧
+          - (1)インストール先を指定して確認するコマンドや、(2)インストール場所ごとに分けて確認するコマンドを組み合わせて確認する。
+          1. `gem list -d`
+          2. `gem environment`
+    GEM_FILE
 
-      ### 期待値と実際の値
-      - expected(期待値): テストを実行する側が、こうあるべきとして定義する値
-      - actual(実際の値): テストを実際に実行して得られる値
+    TEST_MODULE_FILE_CONTENT = <<~MODULE_FILE
+      ## Rubyとモジュール
+      - TODO: クラスのときのように一通りまとめてみること
 
-      ### Ruby
-      minitestのassert, specは次の順番でactual, expectedを書く
-      ```ruby
-      ### assert
-      assert_equal expected, actual
+      ## Module#module_function
+      - メソッドをモジュール関数にする
+      - モジュール関数とは、プライベートメソッドかつモジュールの特異メソッドであるメソッドのことをいう
+          - メモ
+              - モジュール内にインスタンスメソッドを定義した場合、includeはできるが、FooModule.bar_methodのようなメソッドの指定ができない
+              - そのため、モジュールをincludeせずに直接指定してモジュールを利用するには特異メソッドにする必要がある
+              - そこでこのmodule_functionを使う
 
-      ### expectation
-      _(actual).must_equal(expected)
-      ```
-    TEST_ASSERTION_FILE
 
-    TEST_MEMO_SUMMARY_FILE_CONTENT = <<~MEMO_SUMMARY_FILE
-      ## summary: memorandumの集計情報
+    MODULE_FILE
+
+    TEST_RUBY_FILE_CONTENT = <<~RUBY_FILE
+      ## Ruby
+      - manコマンドでCLIのrubyコマンドの使い方を見ることができる
+          - テストで何が行われているかとか、ワンライナーの書き方とかで参考になるかも
       ```bash
-      ## 作成したファイルの数
-      ## READMEなども含めた数
-      find memo -type f | wc -l
-      > 92
-
-      ## 作成したファイルの総行数
-      ## 最後のtotalに表示される
-      find memo -type f | xargs wc -l
-      > 1597 total
-
-      ## lsやgrepでも集計情報が取得できそう
+      man ruby
       ```
 
-    MEMO_SUMMARY_FILE
+      - memoに書いておきたいこと
+          - Rubyのエコシステムやツールのこと
+          - Rubyのテスト・デバッグに関するツールのこと
+          - その他、忘れやすい文法など
 
-    TEST_COMMAND_FILE_CONTENT = <<~COMMAND_FILE
-      ## Command Line Mode: neovimのコマンドラインモード
+      - HashとData, Structについて
+      1. Hashの値は数値、文字列、シンボルなどが良く、配列あたりのオブジェクトは望ましくないらしい
+      2. それ以上、複雑なデータ構造を作成するならDataやStructを使う
+      3. でも、その中間のようなデータ構造はあるよなあ...
+    RUBY_FILE
 
-      ## コマンドの詳細を調べたい場合
+    TEST_STRING_FILE_CONTENT = <<~STRING_FILE
+      ---
+      tags: ["ruby", "string", "Creation", "Concatenation", "Data Structure"]
+      ---
+      # String: 文字列クラスについて
+
+      ## 文字列の結合
+      - `+, <<, concat`について、
+          - <<, concatは破壊的変更である
+              - サイズの大きいデータを生成するときなどに使う
+              - `# frozen_string_literal: true`が指定されていると使えない
+
+          1. <<: 文字列を破壊的に連結する
+              ```ruby
+              str = "foo"
+              # => "foo"
+              str << "bar"
+              # => "foobar"
+              ```
+
+          2. concat: 複数の文字列を破壊的に連結する
+              ```ruby
+              str = "foo"
+              # => "foo"
+              str.concat "bar", "baz"
+              # => "foobarbaz"
+              str
+              # => "foobarbaz"
+              ```
+
+          3. +: 元の文字列からその複製を返す
+              - 文字列がfrozenされていても使える
+              - パフォーマンスが悪くなるので、サイズの大きい文字列の生成をする際には注意すること
+
+    STRING_FILE
+
+    TEST_YARD_FILE_CONTENT = <<~YARD_FILE
+      ## yard: ドキュメント生成のためのライブラリ
+
+      ### 記法
+      - 次のドキュメントが参考になる
+          - https://rubydoc.info/gems/yard/file/docs/GettingStarted.md#Declaring_Types
+      - YARD Type Parserというものもある
+          https://yardoc.org/types.html
+
+      #### 例
+      - 戻り値がStringかnilの場合: `@return [String, nil]`
+      - キーが文字列で値がシンボルか数値の場合: `Hash{String => Symbol, Number}`
+    YARD_FILE
+
+    TEST_MARKDOWN_FILE_CONTENT = <<~MARKDOWN_FILE
+      - markdown: markdownの記法に関するメモ
+      # 特殊文字(Special Characters)
+      ## バックスラッシュ(\\)
+      <kbd>option</kbd> + <kbd>¥</kbd>
+
+      - Front Matter
+          - Markdownファイルの先頭に記載されるメタデータのこと
+
+      - textlint
+      ```bash
+      # textlintと日本語のスペース関連のプリセットをグローバルにインストール
+      pnpm add -g textlint textlint-rule-preset-ja-spacing
+
+      # ファイル名は必ず引用符で括る必要がある(自分の環境だけ？)
+      textlint --preset preset-ja-spacing "README.md"
       ```
-      # コマンドラインモードでkeymapの詳細を調べる
-      :verbose command <Command>
-      # 例
-      :verbose command Git
+    MARKDOWN_FILE
+
+    TEST_BUFFER_FILE_CONTENT = <<~BUFFER_FILE
+      ## buffer
+
+      ### バッファの切り替え
       ```
-    COMMAND_FILE
+      # 次のバッファへ
+      :bn(:bnext)
 
-    TEST_KEYMAP_FILE_CONTENT = <<~KEYMAP_FILE
-      ## keymap
+      # 前のバッファへ
+      :bp(:bprevious)
 
-      ## noremap, silentの意味
-      - noremap
-          - 他のショートカットキーの設定に連鎖させないようにする
-      - silent
-          - キーの実行時に、画面下のコマンドラインに実行コマンドやメッセージを表示させない
+      # 直前のバッファへ
+      :b#
 
-      # 例
-      ```
-      -- 次のバッファへ移動 (Tab)
-      vim.api.nvim_set_keymap('n', '<Tab>', ':bnext<CR>', { noremap = true, silent = true })
-      -- 前のバッファへ移動 (Shift+Tab)
-      vim.api.nvim_set_keymap('n', '<S-Tab>', ':bprevious<CR>', { noremap = true, silent = true })
+      # バッファの番号を指定して移動する
+      :b <number>
       ```
 
-      ## keymapの重複を調査する
+      ### バッファの一覧を確認する
       ```
-      # checkhealthを実行すろと、which-keyプラグインの方でkeymapの重複を調べてくれる
-      :checkhealth
-
-      # コマンドラインモードでkeymapの詳細を調べる
-      :verbose map <your-keybinding>
-      # 例
-      :verbose map <C-b>
-      :verbose nmap <leader>f
+      :ls
       ```
-    KEYMAP_FILE
+    BUFFER_FILE
 
-    TEST_NETRW_FILE_CONTENT = <<~NETRW_FILE
-      ## netrw: 組み込みファイラ
-      - 起動
+    TEST_COMMENTING_FILE_CONTENT = <<~COMMENTING_FILE
+      ---
+      tags: ["neovim", "TUI"]
+      ---
+      ## commenting: コメントアウトなどの操作
+          1. ビジュアルモードでgcと打つと大体コメントアウトできる
+          2. ノーマルモードでgccと打つとその行だけコメントアウトできる
+
+      ## ドキュメントの探し方
       ```
-      :Ex
+      # ドキュメントはcommenting で検索する
+      :h commenting
       ```
+    COMMENTING_FILE
 
-      - 表示モード切り替え
-      <kbd>i</kbd>
-          - thin -> long -> wide -> tree
-          - * このdotfilesではデフォルトの表示モードをtreeにしてある
+    TEST_NEO_TREE_FILE_CONTENT = <<~NEO_TREE_FILE
+      ## neo-tree
+      - サイドバーにファイルツリーが表示されるneovimのファイラープラグイン
 
-      - 新しいタブで開く
-      <kbd>t</kbd>
+      ### ファイルツリー内での操作
+      - ヘルプをみる: ?
+      - 隠しファイルを表示/非表示するトグル: H
+      - ファイルツリーの更新: R
+      - ファイルの追加: a
+      - ディレクトリの追加: A
 
-    NETRW_FILE
+      ### ドキュメント
+      - 次のコマンドで確認できる
+      - :h neo-tree | only
 
-    TEST_VIM_PACK_FILE_CONTENT = <<~VIM_PACK_FILE
-      ## vim.pack
-      - neovim組み込みのプラグインマネージャー
+    NEO_TREE_FILE
+
+    TEST_NVIM_SURROUND_FILE_CONTENT = <<~NVIM_SURROUND_FILE
+      - nvim-surround
+          - 文字列を記号で囲ってくれる
+          - https://github.com/kylechui/nvim-surround
+
+      {example}
       - ドキュメント
-      :h vim.pack | only
-    VIM_PACK_FILE
-
-    TEST_READ_ONLY_FILE_CONTENT = <<~READ_ONLY_FILE
-      ## 閲覧モードなど
-      - 編集不許可の`-M`オプションを付けると便利。neovimでも同様。余計なキーを押したときに編集が不可能になる。
-      ```
-      nvim -M error.log
-      ```
-
-      - 読み取り専用にする場合は`-R`オプションを付けるなど。
-      ```
-      vim -R error.log
-      ```
-    READ_ONLY_FILE
-
-    TEST_TEXT_OBJECTS_FILE_CONTENT = <<~TEXT_OBJECTS_FILE
-      ## text objects: テキスト操作のためのコマンド
+      :h nvim-surround | only
+          - ドキュメントに便利なエイリアス集などが載っている
 
       ### 例
-      - 単語を一つだけヤンクするには:
-          `yiw` or `yaw`
-          y: yank operator
-          iw, aw: text objects
+      - 単語をHTMLタグで囲むには
+          `ysiwth1`
+          - タグを変更するには
+              `csth2`
 
-      - 引用符で囲まれた範囲をヤンクするには:
-          `yi"` or `ya"`
+      ## 使い方(ドキュメントから)
 
-      - 検索した単語を置き換えるには:
-          `cgn`
-          => `n`と`.`を組み合わせて検索した単語を順次置き換えられる
+          Old text                    Command         New text
+      --------------------------------------------------------------------------------
+          # 単語単位でスペースを入れずにシンボルでくくる -> ysiw
+          surr*ound_words             ysiw)           (surround_words)
+          surr*ound_words             ysiw(           ( surround_words )
+          # 現在のカーソルから文末までシンボルでくくる
+          *make strings               ys$"            "make strings"
+          # くくってあるシンボルを消す -> ds
+          [delete ar*ound me!]        ds]             delete around me!
+          remove <b>HTML t*ags</b>    dst             remove HTML tags
+          # くくってあるシンボルを変更する -> cs<old-symbol><new-symbol>
+          'change quot*es'            cs'"            "change quotes"
+          <b>or tag* types</b>        csth1<CR>       <h1>or tag types</h1>
+          delete(functi*on calls)     dsf             function callsv
+    NVIM_SURROUND_FILE
 
-
-      ### オペレーター
-      - d: 削除
-      - y: ヤンク
-      - c: 変更
-      - v: 選択
-
-      ### 範囲指定
-      - i: inner - 内側
-      - a: a/around - 外側
-
-      ### オブジェクト
-      - w: word - 一単語
-      - s: sentence - 一行の場合が多い
-      - 引用符、カッコ: 該当の引用符、カッコを指定する
-      - b: block - ブロックという単位を表す。Rubyのブロックと対応していた。
-      - gn: 最後に使われた検索パターンを前方検索しマッチしたものを選択してビジュアルモードを開始する
-          - n: 検索した単語について前方に移動
-          - N: 検索した単語について後方に移動
-          - ref: https://vim-jp.org/vimdoc-ja/visual.html#gn
-
-    TEXT_OBJECTS_FILE
-
-    TEST_VIRTUAL_TEXT_FILE_CONTENT = <<~VIRTUAL_TEXT_FILE
-      ## Virtual Text: 仮想のテキスト表示
-
-      ### yankする方法
-      ```
-        方法1: :luaでdiagnosticメッセージを取得してレジスタに入れる
-        :lua vim.fn.setreg('+', vim.diagnostic.get(0)[1].message)
-
-        カーソル行のdiagnosticを取得する場合：
-        :lua local d = vim.diagnostic.get(0, {lnum = vim.fn.line('.')-1}); vim.fn.setreg('+', d[1].message)
-
-        方法2: Floating windowを開いてそこからyank
-        :lua vim.diagnostic.open_float()
-
-        方法3: :messages 経由（一時的に表示させる場合）
-        1. :lua print(vim.diagnostic.get(0, {lnum = vim.fn.line('.')-1})[1].message)
-        2. :messages で履歴を確認してコピー
-      ```
-    VIRTUAL_TEXT_FILE
-
-    TEST_DOCKER_COMPOSE_FILE_CONTENT = <<~DOCKER_COMPOSE_FILE
-      - docker-compose.yml
-      ## 書式
-      ```
-      ## 左側がホスト側、右側がコンテナ側
-      ## ホスト側のディレクトリ・ファイルをコンテナ側にマウントする
-          volumes:
-            - ./html:/usr/share/nginx/html
-      ```
-    DOCKER_COMPOSE_FILE
-
-    TEST_EDITORCONFIG_FILE_CONTENT = <<~EDITORCONFIG_FILE
-      - editorconfig
-          - リポジトリのトップに.editorconfigを作成しておけばファイルのフォーマットが簡単にできる
-          - サイトURL: https://editorconfig.org/
-          - VimとNeovimは標準でサポートされている
-    EDITORCONFIG_FILE
-
-    TEST_MISE_FILE_CONTENT_2 = <<~MISE_FILE
-      # mise.md
-      ## mise.toml
-      - mise.tomlを読み取る順番(抜粋)
-          - ~
-          - .config/mise.toml        (local)
-          - .cinfig/mise/config.toml (dotfiles)
-          - ~
-
-      - install
+    TEST_READ_HELP_FILE_CONTENT = <<~READ_HELP_FILE
+      ## ドキュメント・help の読み方
+      ### nvim のドキュメント
       ```bash
-      # mise install でそれぞれのmise.toml をみてパッケージをインストールする
-      mise install
+      man nvim
       ```
-    MISE_FILE
+      - neovimのWebドキュメント: https://neovim.io/doc/user/
+
+      ### help の読み方 (vim と共通)
+      - helpを全画面で見る
+      ```
+      :h | only
+      # それか<Ctrl-W> H を押して、高さを最大にする
+      # なお、<Ctrl-W> K を押して、幅を最大にすると、高さが半分になってしまう
+
+      # ユーザーマニュアルの目次を開く
+      :h user-manual
+
+      # 指定した項目を開く
+      :h usr_06.txt
+
+      # キーの表記法(Key Notation) を確認する
+      :h key-notation
+
+      # vim.keymap.set へ移動するには
+      <- :h -> lua の項目だった
+      1. :h | only
+      2. -> vim-script の項目へ移動する
+          - vim が付くものはvim-script の領域みたい
+      3. keymap で検索して、ジャンプしていけば、vim.keymap.set のドキュメントに辿り着く
+
+      # 定義へ移動、元のページに戻る
+      ## Ctrl+] でそのキーワードの詳細へ移動する
+      ## Ctrl+T, Ctrl+O で元の場所に戻る
+      ```
+
+      ### helpgrep
+      ```
+      ## neovim のhelp の中を検索する
+      :helpgrep <word>
+
+      ## 次の検索結果に移動するには
+      :cn, :cne, :cnext
+      -> ]q でも移動できる
+      ```
+
+
+    READ_HELP_FILE
+
+    TEST_SCRIPT_FILE_CONTENT = <<~SCRIPT_FILE
+      ## Neovim のスクリプト作成
+      ```
+      # 組み込み関数のリスト
+      :help function-list
+      # 組み込み関数の詳細
+      :help vimscript-functions
+
+      # 定義へ移動、元のページに戻る
+      ## Ctrl+] でそのキーワードの詳細へ移動する
+      ## Ctrl+T, Ctrl+O で元の場所に戻る
+      ```
+
+      ## スクリプトを実行
+      ```
+      # コマンドラインモードで%lua と打つと、そのバッファがluaで実行される
+      # line() などの組み込みコマンドはvim.fn.line() などとする必要がある
+      :%lua
+
+      # または-l オプションを付けて実行する
+      nvim -l script.lua
+
+      # スクリプトの作成・デバッグ
+      # -u で設定ファイルを指定して読み込む
+      nvim -u script.lua <file_name>
+
+      # 例
+      ## keymap.lua を読み込んで files.js を編集する
+      nvim -u keymap.lua files.js
+      ```
+
+      - 注意: デフォルトの設定ファイルは読み込まれなくなってしまう
+      - swapfileに関する警告が出るので、swapfile = falseを追加しておくといい
+      ```lua
+      vim.opt.swapfile = false
+      ```
+
+    SCRIPT_FILE
+
+    TEST_TIPS_FILE_CONTENT = <<~TIPS_FILE
+      - tips
+      `:messages`で過去のメッセージが見れる
+
+      - グローバル変数vimの中の変数の見方
+      :lua vim.print(vim.<variables>)
+      # 例: vim.pack のパッケージ一覧の見方(WIP)
+      :lua vim.print(vim.pack.get({}, {'name'}))
+
+      - 末尾の半角スペースを消去する
+      `%s/ $//g`
+
+      - undo, redo
+          - undo: u
+          - **redo: <C-R>**
+
+
+      - word-motion: 単語単位の移動
+          - https://vim-jp.org/vimdoc-ja/motion.html#word-motions
+          - `w`だけでなく、`W`や`e`でも移動できる
+
+      - object-motion: オブジェクト単位での移動
+          - https://vim-jp.org/vimdoc-ja/motion.html#object-motions
+          - `)`や`]]`で移動できる
+    TIPS_FILE
+
+    TEST_REACT_FILE_CONTENT = <<~REACT_FILE
+      - React: フロントエンドライブラリ・UIフレームワーク
+
+      ## Container / Presentational Component
+      - Container Component
+          - データ取得・状態管理・ビジネスロジック
+          - UIを持たず、Presenterにpropsを渡して描画を委譲する
+
+      - Presentational Component
+          - UIを担当する
+          - propsでデータとコールバックを受け取り、描画するだけ
+
+      - 組み合わせ方
+      ```
+      # PresenterにContainer Componentを渡さないこと
+      Container
+      └─ Presenter
+      ```
+    REACT_FILE
+
+    TEST_DOCKERFILE_FILE_CONTENT = <<~DOCKERFILE_FILE
+      ## Dockerfile: Dockerイメージをビルドするための設定ファイル
+
+      ### 例
+      ```
+      ## 例: 簡単なlinux環境を作成して、ホームディレクトリと一般ユーザーを設定する
+      ## busyboxはUNIXのCLIが一通り揃っているdockerイメージ
+      FROM busybox:latest
+
+      ## j
+      RUN adduser -h /home/hy -u 1000 /bin/sh hy
+
+      WORKDIR /home/hy
+
+      USER hy
+      ```
+    DOCKERFILE_FILE
+
+    TEST_MAKEFILE_FILE_CONTENT = <<~MAKEFILE_FILE
+      - Makefile: タスクランナーとファイル操作
+      - ドキュメント
+          - Webにあるgnuのドキュメントを参照する
+              - 誰かが個人的に翻訳して？アップロードしたもののようだ
+
+      ## 文法
+      ### 基本
+      ```make
+      # 基本: ルールとターゲット
+      # 次のような定義が基本
+      <targets>: <prerequisites>
+          <command>
+      # <prerequisites>に定められたファイルと最終更新日時を比較することにより、ターゲットの方が古ければコマンドを実行する
+      # また、ターゲットに定められたファイルが存在しない場合も、コマンドが実行される
+      ```
+
+      ### タスクランナーとして
+      ```
+      # タスクランナーとして転用
+      # .PHONYに実行させたいタスクを入れて、そのタスクをtargetsとして記載する
+      # -> ファイル作成のためのMakefileを.PHONYを使ってタスクランナーとして転用している
+
+      # 例
+      clean:
+          rm *.o
+
+      .PHONY: clean
+      ```
+
+      ## Makefileを指定して読み込むには
+      `make -f <Makefile>` ## `Makefile.wip`などを読み込みたい場合に使う
+
+      ## Makefileの作り方
+      ### デバッグ
+      1. `make -n`で実行されるコマンドを出力する
+      - 例
+      ```make
+      make -n clean
+      ```
+      2. 変数の値を表示するには`$(warning ...)`を使う
+      - 例
+      ```make
+      ## $(warning ...)を使う場合
+      $(warning objects: $(objects))
+
+      ## 改行して見やすくするには標準出力にリダイレクトしてtrで整形する
+      make 2>&1 | tr " " "\n"
+
+      ## このようにすると、ルール行やターゲット行をコメントアウトしたときに、`make`と打っただけでtestが実行されてしまう場合がある
+      ## そのため、$(warning ...)を使うこと
+      test:;
+          @echo $(objects)
+      ```
+
+      ## 命名規則
+      - ターゲットと変数は小文字にして、それぞれハイフン、アンダースコアで繋ぐべきとされる
+          - Ref: https://www.gnu.org/software/make/manual/html_node/Standard-Targets.html#Standard-Targets
+      ```make
+      test-files:
+          @echo $(current_files)
+      ```
+
+      ## 変数を定義するには
+      - Makefileのユーティリティ関数を使うこと
+      ```make
+      current_files = $(wildcard *)
+      exclude_files = Makefile
+      objects = $(filter-out $(exclude_files), $(current_files))
+      targets = $(patsubst %,$(HOME)/.%,$(objects))
+      ```
+
+      ## 自動変数
+      - 詳細はドキュメントを確認すること
+          - https://ftp.gnu.org/old-gnu/Manuals/make-3.79.1/html_chapter/make_toc.html#TOC101
+          - どの自動変数もそのディレクトリ名やファイル名だけを取得することが可能
+      - $@: ターゲット名を表す
+      - $<: 最初の依存するファイル名を表す(The name of the first prerequisite)
+      - $?: ターゲットより新しい全ての依存するファイル名を表す
+
+      ## ターゲットごとに適用される依存ファイルを変えたい場合
+      ```make
+      ## パーセント(%)を使う
+      $(HOME)/.%: %
+      	cp $< $@
+      ```
+
+      ## サブディレクトリごとに存在するMakefileを利用するには
+      - Recursive Use of makeを参照すること
+          - https://ftp.gnu.org/old-gnu/Manuals/make-3.79.1/html_chapter/make_5.html#SEC50
+
+      ## その他: コマンドエコーを出力しないようにするには
+      - makeはコマンドの実行前にそのコマンドをターミナルに出力する
+      - その出力を抑えるには、コマンドの前に@をつける
+      ```
+      $(HOME)/.%: %
+      	@echo $< $@
+      ```
+    MAKEFILE_FILE
 
     TEST_BASH_FILE_CONTENT = <<~BASH_FILE.freeze
+      ---
+      tags: ["bash", "documentation", "Tips"]
+      ---
       ## bash: GNU Bourne-Again SHell
 
-      ## ドキュメントについて
+      ## ドキュメントの探し方
       - manページを確認することが基本: `man bash`
       - 特に重要な章を次にリストアップしておく
       ```plain
@@ -1049,7 +1541,11 @@ module Memo
 
       ## bashの章を抜き出すコマンド
       ```bash
+      ## 章だけを抜き出す
       man bash | perl -ne 'print if /^[A-Z]/'
+
+      ## 章と節を抜き出す
+      man bash | perl -ne 'print if /^[A-Z]|^\s{3}[A-Z]/'
       ```
 
       ## Tips
@@ -1060,23 +1556,6 @@ module Memo
       ### コマンドを例示するときのドル記号($)とハッシュ(#)の違い
       - $ -> 一般ユーザー
       - # -> rootユーザー
-
-      ## 条件付きリスト(conditional list)
-      ### &&演算子
-      - cd dirが成功した場合にのみ、touch new.txtを実行
-      ```bash
-      $ cd dir && touch new.txt
-      ```
-
-      ## ||演算子
-      - cd dirが失敗した場合、エラーコード1で終了する
-      ```bash
-      $ cd dir || exit 1
-
-      # 例
-      ## フォルダがなければ作成する
-      [ -d path/to/folder ] || mkdir -p path/to/folder
-      ```
 
       ## 複数の文字列を変数に入れるとき
       - `read`を使う。`while`やパイプと組み合わせる。
@@ -1090,8 +1569,10 @@ module Memo
     BASH_FILE
 
     TEST_EXIT_STATUS_FILE_CONTENT = <<~EXIT_STATUS_FILE
-      - EXIT STATUS
-          - CLIコマンドの終了ステータス
+      ---
+      tags: ["bash", "test", "status"]
+      ---
+      ## EXIT STATUS: CLIコマンドの終了ステータス
 
       man bash -> EXIT STATUSの章に載っている
       0 - 正常終了
@@ -1109,7 +1590,38 @@ module Memo
       ```
     EXIT_STATUS_FILE
 
+    TEST_HISTORY_EXPANSION_FILE_CONTENT = <<~HISTORY_EXPANSION_FILE
+      ---
+      tags: ["bash", "expansion"]
+      ---
+      ## HISTORY EXPANSION: コマンドの履歴を展開する
+      - ドキュメント: HISTORY EXPANSIONという章がある
+      ```
+      man bash
+      /HISTORY EXPANSION
+      ```
+
+      ## コマンドの再実行
+      - 履歴展開 (History Expansion)
+      1. 直前のコマンドを実行する
+      ```bash
+      $ !!
+      ```
+
+      2. インクリメンタルサーチ(Incremental search)
+      - シェルプロンプトで`Ctrl - R`を押すと、コマンド履歴から逆順(Reverse)にインクリメンタル検索を実行できる
+
+      3. 最近のstringで始まるコマンドを実行する
+      ```bash
+      $ !string
+      ```
+
+    HISTORY_EXPANSION_FILE
+
     TEST_FOR_FILE_CONTENT = <<~FOR_FILE
+      ---
+      tags: ["bash", "syntax", "documentation"]
+      ---
       ## bash - for 文
       - 動機: bashだとパイプラインとxargsだけだとfilterのようなものを作成するのが難しかった...
           - xargsの後にbash -c '<command>'とすれば出来そうだったけど
@@ -1132,42 +1644,87 @@ module Memo
       ```
     FOR_FILE
 
-    TEST_PARAMETER_EXPANSION_FILE_CONTENT = <<~PARAMETER_EXPANSION_FILE
-      - Parameter Expansion
-          - `$`がパラメーターの展開に使われる
-
-    PARAMETER_EXPANSION_FILE
-
-    TEST_SHEBANG_FILE_CONTENT = <<~SHEBANG_FILE
-      # シェバン(shebang)
+    TEST_REDIRECTION_FILE_CONTENT = <<~REDIRECTION_FILE
+      ---
+      tags: ["bash", "Redirection", "I/O", "documentation"]
+      ---
+      ## Redirection: 標準出力と標準エラー出力の結果を表示しない場合
+      - ドキュメント
+      ```bash
+      man bash
+      /^REDIRECTION
       ```
-      # 例
-      ## bash
-      #!/usr/bin/env bash
 
-      ## zsh
-      #!/usr/bin/env zsh
+      ### 出力を捨てるとき
+      1. 標準出力だけ捨てる
+      ```bash
+      ls ~/Downloads/ > /dev/null
       ```
-    SHEBANG_FILE
+
+      2. 標準エラー出力だけ捨てる
+      ```bash
+      ls ~/Downloads/do-not-exist-file.txt 2> /dev/null
+      echo $? # will return 1
+
+      ## これは普通にlsの実行結果が表示される
+      ls ~/Downloads/ 2> /dev/null
+      ```
+
+      3. 両方とも捨てる
+      ```bash
+      ## 従来の方法？
+      command -v ls 2>&1 > /dev/null
+
+      ## Bash 4.0だと次の書き方でもOKらしい
+      command -v ls &> /dev/null
+      ```
+    REDIRECTION_FILE
 
     TEST_SPECIAL_PARAMETERS_FILE_CONTENT = <<~SPECIAL_PARAMETERS_FILE.freeze
-      - Special parameters
-      Special Parameterは$ を付けて展開する(Parameter Expansion)
-          - #: スクリプトや関数に渡された引数の数
+      ---
+      tags: ["bash", "Notation", "Tips", "documentation"]
+      ---
+      ## Special Parameters: $?, $!など
+      ### ドキュメントの探し方
+          - ?, !など、それぞれの記号ごとに、$を付けて展開したときの説明が載っている
+      ```bash
+      man bash
+      /Special Parameters
+      ```
+
+      ### 概要
+      - Special Parameterは$ を付けて展開する(Parameter Expansion)
+
+      #### 変数の一覧
+      - $#: スクリプトや関数に渡された引数の数
           - Ref: Expands to the number of positional parameters in decimal
 
-          - ?: 直前に実行したコマンドの実行結果。0 ならTrue である。
+      - $?: 直前に実行したコマンドの実行結果。0ならTrueである。
           - Ref: Expands to the status of the most recently executed foreground pipeline.
 
-          - !: 直前に実行したコマンドのプロセスID#{' '}
+      - $!: 直前に実行したコマンドのプロセスID#{' '}
           - Ref: Expands to the process ID of the most recently executed background (asynchronous) command.
     SPECIAL_PARAMETERS_FILE
 
     TEST_COMMAND_HISTORY_FILE_CONTENT = <<~COMMAND_HISTORY_FILE
-      - Zshのコマンド履歴
+      ---
+      tags: ["zsh", "documentation", "command history"]
+      ---
+      ## Zshのコマンド履歴について
           - fcコマンドを使う
           - コマンド履歴はtmuxだとウィンドウごとである
-          - ドキュメントはman zshbuiltinsからfcで検索すること
+
+      ## ドキュメントの探し方
+      ```zsh
+      man zshbuiltins
+      /fc
+      ```
+
+      ### Tips
+      - /historyで検索すると、"Same as fc -l" と記載がある
+          - zshではhistoryコマンドの代わりにfc -lコマンドを使う
+
+      ## fcコマンドの例
       ```zsh
       # 直前のコマンド履歴を見る
       # fc -l
@@ -1277,7 +1834,70 @@ module Memo
           1. `tmux list-commnads | grep new`
     TMUX_FILE
 
+    TEST_LS_FILE_CONTENT = <<~LS_FILE
+      ---
+      tags: ["bash", "CLI", "File and Directory", "display"]
+      ---
+      ## ls: list directory contents
+      ```bash
+      ## 再帰的にファイル名を表示する
+      ls -R memo/
+
+      ## memo/フォルダの全てのファイルの詳細を表示する
+      ## totalや空行は他のコマンドと組み合わせて消すのが一番良さそう
+      ls -Rl memo/
+
+      ## -Tは-lと組み合わせると年数も表示できる
+      ls -RlT memo/
+
+      ## さらに-tと組み合わせて、最終更新日時(mtime)が新しい順に表示することができる
+      ls -RTlt memo/
+
+      ## なお、-uも付けると、最終アクセス日時(atime)が新しい順に表示することができる
+      ### 最終更新時間 -> Last Modified Time, 最終アクセス時間 -> Last Access Time
+      ls -RTltu memo/
+
+      ## aliasで定義されているlsの情報を確認
+      ## -G: 色付け -F: ファイルの種別によって末尾に色々つける -p: ディレクトリの末尾にスラッシュを付ける
+      ## * OSによってオプションの意味が結構変わるコマンドだったような...
+      command -v
+      > alias ls='ls -GpF'
+
+      ## aliasで定義されているllの情報も確認
+      ## -a: ドットファイルも表示する -l: 詳細表示（下記参照）
+      command -v ll
+      > alias ll='ls -alGpF'
+
+      ## よく使うコマンド
+      ### 更新順に表示するとき
+      ls -lt
+
+      ### 容量順に表示するときは-Sオプションを使う
+      ### さらに、-hで容量に単位がつく
+      ### なお、-sオプションは、使用しているブロック数を表示する
+      ls -lS
+      ```
+
+      ## -lオプションについて
+
+      - `-l`: 詳細表示
+         以下のデータを表示する
+         file mode, number of links, owner name, group name,
+         number of bytes in the file, abbreviated month, day-of-month file was last modified, hour file last modified, minute file last modified,
+         and the pathname.
+    LS_FILE
+
     TEST_MEMO_DATA_SEED = [
+      {
+        parent_dir: "cli/third-party",
+        basename: "mise",
+        content: TEST_CLI_THIRD_PARTY_MISE_FILE_CONTENT
+      },
+      {
+        parent_dir: "setting",
+        basename: "mise",
+        content: TEST_SETTING_MISE_FILE_CONTENT
+      },
       {
         parent_dir: "memo",
         basename: "ANSI-escape-code-and-set-color",
@@ -1290,43 +1910,43 @@ module Memo
       },
       {
         parent_dir: "cli/core/builtin",
-        basename: "builtin",
-        content: TEST_BUILTIN_FILE_CONTENT
-      },
-      {
-        parent_dir: "cli/core/builtin",
-        basename: "hash",
-        content: TEST_HASH_FILE_CONTENT
+        basename: "command",
+        content: TEST_COMMAND_FILE_CONTENT
       },
       {
         parent_dir: "cli/core/file",
-        basename: "ls",
-        content: TEST_LS_FILE_CONTENT
+        basename: "chmod",
+        content: TEST_CHMOD_FILE_CONTENT
       },
       {
-        parent_dir: "cli/core/old",
-        basename: "groups",
-        content: TEST_GROUPS_FILE_CONTENT
+        parent_dir: "cli/core/file",
+        basename: "realpath",
+        content: TEST_REALPATH_FILE_CONTENT
       },
       {
         parent_dir: "cli/core/process",
-        basename: "lsof",
-        content: TEST_LSOF_FILE_CONTENT
+        basename: "kill",
+        content: TEST_KILL_FILE_CONTENT
+      },
+      {
+        parent_dir: "cli/core/process",
+        basename: "ps",
+        content: TEST_PS_FILE_CONTENT
       },
       {
         parent_dir: "cli/core/search",
-        basename: "find",
-        content: TEST_FIND_FILE_CONTENT
+        basename: "grep",
+        content: TEST_GREP_FILE_CONTENT
       },
       {
         parent_dir: "cli/core/text",
-        basename: "cut",
-        content: TEST_CUT_FILE_CONTENT
+        basename: "diff",
+        content: TEST_DIFF_FILE_CONTENT
       },
       {
         parent_dir: "cli/core/text",
-        basename: "ed",
-        content: TEST_ED_FILE_CONTENT
+        basename: "nl",
+        content: TEST_NL_FILE_CONTENT
       },
       {
         parent_dir: "cli/core/text",
@@ -1335,18 +1955,23 @@ module Memo
       },
       {
         parent_dir: "cli/core/text",
-        basename: "uniq",
-        content: TEST_UNIQ_FILE_CONTENT
+        basename: "tr",
+        content: TEST_TR_FILE_CONTENT
       },
       {
         parent_dir: "cli/core/text",
-        basename: "xargs",
-        content: TEST_XARGS_FILE_CONTENT
+        basename: "wc",
+        content: TEST_WC_FILE_CONTENT
       },
       {
         parent_dir: "cli",
-        basename: "ssh",
-        content: TEST_SSH_FILE_CONTENT
+        basename: "ifconfig",
+        content: TEST_IFCONFIG_FILE_CONTENT
+      },
+      {
+        parent_dir: "cli",
+        basename: "tcpdump",
+        content: TEST_TCPDUMP_FILE_CONTENT
       },
       {
         parent_dir: "cli/third-party",
@@ -1357,11 +1982,6 @@ module Memo
         parent_dir: "cli/third-party",
         basename: "gh",
         content: TEST_GH_FILE_CONTENT
-      },
-      {
-        parent_dir: "cli/third-party",
-        basename: "mise",
-        content: TEST_MISE_FILE_CONTENT_1
       },
       {
         parent_dir: "cli/third-party",
@@ -1380,28 +2000,28 @@ module Memo
       },
       {
         parent_dir: "git",
+        basename: "commit",
+        content: TEST_COMMIT_FILE_CONTENT
+      },
+      {
+        parent_dir: "git",
+        basename: "conflict",
+        content: TEST_CONFLICT_FILE_CONTENT
+      },
+      {
+        parent_dir: "git",
+        basename: "git",
+        content: TEST_GIT_FILE_CONTENT
+      },
+      {
+        parent_dir: "git",
+        basename: "log",
+        content: TEST_LOG_FILE_CONTENT
+      },
+      {
+        parent_dir: "git/old",
         basename: "checkout",
         content: TEST_CHECKOUT_FILE_CONTENT
-      },
-      {
-        parent_dir: "git",
-        basename: "config",
-        content: TEST_CONFIG_FILE_CONTENT
-      },
-      {
-        parent_dir: "git",
-        basename: "diff",
-        content: TEST_DIFF_FILE_CONTENT
-      },
-      {
-        parent_dir: "git",
-        basename: "gitignore",
-        content: TEST_GITIGNORE_FILE_CONTENT
-      },
-      {
-        parent_dir: "git",
-        basename: "merge",
-        content: TEST_MERGE_FILE_CONTENT
       },
       {
         parent_dir: "git",
@@ -1465,93 +2085,93 @@ module Memo
       },
       {
         parent_dir: "lang/ruby",
-        basename: "bundle",
-        content: TEST_BUNDLE_FILE_CONTENT
+        basename: "array",
+        content: TEST_ARRAY_FILE_CONTENT
       },
       {
         parent_dir: "lang/ruby",
-        basename: "compare",
-        content: TEST_COMPARE_FILE_CONTENT
+        basename: "class",
+        content: TEST_CLASS_FILE_CONTENT
       },
       {
         parent_dir: "lang/ruby",
-        basename: "minitest",
-        content: TEST_MINITEST_FILE_CONTENT
+        basename: "gem",
+        content: TEST_GEM_FILE_CONTENT
       },
       {
         parent_dir: "lang/ruby",
-        basename: "rake",
-        content: TEST_RAKE_FILE_CONTENT
+        basename: "module",
+        content: TEST_MODULE_FILE_CONTENT
       },
       {
         parent_dir: "lang/ruby",
-        basename: "start-project",
-        content: TEST_START_PROJECT_FILE_CONTENT
+        basename: "ruby",
+        content: TEST_RUBY_FILE_CONTENT
       },
       {
         parent_dir: "lang/ruby",
-        basename: "type-check",
-        content: TEST_TYPE_CHECK_FILE_CONTENT
+        basename: "string",
+        content: TEST_STRING_FILE_CONTENT
       },
       {
-        parent_dir: "lang",
-        basename: "test-assertion",
-        content: TEST_TEST_ASSERTION_FILE_CONTENT
+        parent_dir: "lang/ruby",
+        basename: "yard",
+        content: TEST_YARD_FILE_CONTENT
       },
       {
         parent_dir: "memo",
-        basename: "memo-summary",
-        content: TEST_MEMO_SUMMARY_FILE_CONTENT
+        basename: "markdown",
+        content: TEST_MARKDOWN_FILE_CONTENT
       },
       {
         parent_dir: "neovim",
-        basename: "command",
-        content: TEST_COMMAND_FILE_CONTENT
+        basename: "buffer",
+        content: TEST_BUFFER_FILE_CONTENT
       },
       {
         parent_dir: "neovim",
-        basename: "keymap",
-        content: TEST_KEYMAP_FILE_CONTENT
+        basename: "commenting",
+        content: TEST_COMMENTING_FILE_CONTENT
       },
       {
         parent_dir: "neovim/plugin",
-        basename: "netrw",
-        content: TEST_NETRW_FILE_CONTENT
+        basename: "neo-tree",
+        content: TEST_NEO_TREE_FILE_CONTENT
       },
       {
         parent_dir: "neovim/plugin",
-        basename: "vim-pack",
-        content: TEST_VIM_PACK_FILE_CONTENT
+        basename: "nvim-surround",
+        content: TEST_NVIM_SURROUND_FILE_CONTENT
       },
       {
         parent_dir: "neovim",
-        basename: "read-only",
-        content: TEST_READ_ONLY_FILE_CONTENT
+        basename: "read-help",
+        content: TEST_READ_HELP_FILE_CONTENT
       },
       {
         parent_dir: "neovim",
-        basename: "text-objects",
-        content: TEST_TEXT_OBJECTS_FILE_CONTENT
+        basename: "script",
+        content: TEST_SCRIPT_FILE_CONTENT
       },
       {
         parent_dir: "neovim",
-        basename: "virtual-text",
-        content: TEST_VIRTUAL_TEXT_FILE_CONTENT
+        basename: "tips",
+        content: TEST_TIPS_FILE_CONTENT
+      },
+      {
+        parent_dir: "memo",
+        basename: "react",
+        content: TEST_REACT_FILE_CONTENT
       },
       {
         parent_dir: "setting",
-        basename: "docker-compose",
-        content: TEST_DOCKER_COMPOSE_FILE_CONTENT
+        basename: "dockerfile",
+        content: TEST_DOCKERFILE_FILE_CONTENT
       },
       {
         parent_dir: "setting",
-        basename: "editorconfig",
-        content: TEST_EDITORCONFIG_FILE_CONTENT
-      },
-      {
-        parent_dir: "setting",
-        basename: "mise",
-        content: TEST_MISE_FILE_CONTENT_2
+        basename: "makefile",
+        content: TEST_MAKEFILE_FILE_CONTENT
       },
       {
         parent_dir: "shell/bash",
@@ -1564,19 +2184,19 @@ module Memo
         content: TEST_EXIT_STATUS_FILE_CONTENT
       },
       {
+        parent_dir: "shell/bash/expansion",
+        basename: "history-expansion",
+        content: TEST_HISTORY_EXPANSION_FILE_CONTENT
+      },
+      {
         parent_dir: "shell/bash",
         basename: "for",
         content: TEST_FOR_FILE_CONTENT
       },
       {
         parent_dir: "shell/bash",
-        basename: "parameter-expansion",
-        content: TEST_PARAMETER_EXPANSION_FILE_CONTENT
-      },
-      {
-        parent_dir: "shell/bash",
-        basename: "shebang",
-        content: TEST_SHEBANG_FILE_CONTENT
+        basename: "redirection",
+        content: TEST_REDIRECTION_FILE_CONTENT
       },
       {
         parent_dir: "shell/bash",
@@ -1602,6 +2222,11 @@ module Memo
         parent_dir: "tui",
         basename: "tmux",
         content: TEST_TMUX_FILE_CONTENT
+      },
+      {
+        parent_dir: "cli/core/file",
+        basename: "ls",
+        content: TEST_LS_FILE_CONTENT
       }
     ].freeze
   end

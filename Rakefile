@@ -46,17 +46,30 @@ namespace :mock do
     # Repositoryのオブジェクトを作成する
     repo = Memo::Repository.new(dir)
 
+    # ファイル名の重複しているものを指定する。実際のメモフォルダで重複がなくなったら、この値を変える必要がある。
+    fixed_duplicated_file_name = "mise"
+
+    seeds = repo.instance_variable_get(:@seeds).filter { |seed| seed.basename == fixed_duplicated_file_name }
+
     # モックデータ作成のために実データseedsを任意の倍数で絞り込んで取得する
-    seeds = repo.instance_variable_get(:@seeds).filter.each_with_index { |_e, i| i.modulo(2).zero? }
+    seeds.concat(repo.instance_variable_get(:@seeds).filter.each_with_index { |_e, i| i.modulo(2).zero? })
+      .uniq!
+
     # テストのために固定のseedを作成する
     fixed_mock_file = "ls"
     seeds.concat(repo.find(fixed_mock_file)) if seeds.none? { |seed| seed.basename == fixed_mock_file }
+
+    ## ファイル名の一覧を
+    basenames = seeds.map(&:basename)
+
+    ## 重複しているファイル名と、重複しているSeedを抽出する
+    duplicated_seeds = seeds.filter { |seed| basenames.count(seed["basename"]) > 1 }
 
     ## モックデータ作成用のコマンド
     ## TEST_MEMO_DATA_SEEDの元となるRubyのArray<Hash>とヒアドキュメントを返す
     mock_seeds = seeds.map do |seed|
       content = Memo::Service.read(seed)
-      basename = seed.basename.upcase.tr("-", "_")
+      basename = duplicated_seeds.include?(seed) ? seed.rel_path.sub(".md", "").upcase.sub("-", "_").gsub("/", "_") : seed.basename.upcase.gsub("-", "_")
       val_name = "TEST_#{basename}_FILE_CONTENT"
       label = "#{basename}_FILE"
       heredoc = ["#{val_name} = <<~#{label}"] + content + [label] + ["\n"]

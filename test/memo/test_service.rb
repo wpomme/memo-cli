@@ -119,6 +119,18 @@ class TestService < Minitest::Test
           expected = { "time" => Time.new(time_str) }
           _(actual).must_equal(expected)
         end
+
+        it 'front matterがなければ、空のハッシュを返す' do
+          markdown = <<~MARKDOWN
+            # 本文
+            ここがマークダウンの本文です。
+          MARKDOWN
+
+          actual = parse_yaml_front_matter(markdown)
+
+          expected = {}
+          _(actual).must_equal(expected)
+        end
       end
     end
 
