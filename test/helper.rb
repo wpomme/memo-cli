@@ -11,13 +11,10 @@ require 'minitest/mock'
 
 module MemoTestLifecycleHooks
   def setup
-    # テスト環境ではMemo::Config.memo_dirを使わない
-    # @test_memo_dir = File.join(Dir.home, '/var/test-memo-dir')
-    target_dir_hash = {
-      Memo::Config.target_dirs[0] => '/var/test-target-dir',
-      Memo::Config.target_dirs[1] => '/var-test-private-target-dir'
-    }
-    target_dir_hash.transform_values! { |dir| File.join(Dir.home, dir) }
+    # テスト環境ではMemo::Config.target_dirではないフォルダを作成して、それを使用する
+    target_dir_hash = Memo::Config.target_dirs.map.with_index.to_h do |config_dir, index|
+      [config_dir, File.join(Dir.home, "/var/test-target-dir-#{index}")]
+    end
     @test_target_dirs = target_dir_hash.values
     @test_target_dirs.each do |dir|
       FileUtils.mkdir_p(dir)

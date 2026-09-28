@@ -20,18 +20,6 @@ module Memo
     #   @return [Array<String>] 対象のファイルのフロントマター部分のtagsの値
     Seed = Struct.new(:full_path, :rel_path, :target_dir, :parent_dir, :basename, :type, :tags)
 
-    # 対象のディレクトリを文字列で検索してヒットしたときに返す値
-    SearchLine = Struct.new(:path, :line_number, :line) do
-      def initialize(...)
-        super
-        freeze
-      end
-
-      def to_view(word)
-        "#{path}:#{line_number}:#{line.sub(word, Rainbow(word).red)}"
-      end
-    end
-
     # サブコマンドの詳細を作成するための構造体
     #
     # @!attribute [r] :sub_command_form
@@ -68,6 +56,18 @@ module Memo
       # @return [<String>]
       def to_opts(word)
         short_form if deconstruct_keys(%i[sub_command_form long_form short_form]).values.include?(word)
+      end
+    end
+
+    # 対象のディレクトリを文字列で検索してヒットしたときに返す値
+    SearchLine = Struct.new(:path, :line_number, :line) do
+      def initialize(...)
+        super
+        freeze
+      end
+
+      def to_view(word)
+        "#{path}:#{line_number}:#{line.sub(word, Rainbow(word).red)}"
       end
     end
   end

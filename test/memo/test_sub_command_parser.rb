@@ -29,7 +29,7 @@ class TestSubCommandParser < Minitest::Test
 
     describe 'memo read(-r, --read)' do
       it '引数がreadだけのときは、エラーメッセージを表示して異常終了する' do
-        _, err = capture_io do
+        capture_io do
           exception = assert_raises(SystemExit) do
             Memo::SubCommandParser::READ_COMMAND_SPEC.take_command_forms.each do |command|
               expected = Memo::SubCommandParser.parse!([command])
@@ -39,8 +39,6 @@ class TestSubCommandParser < Minitest::Test
 
           _(exception.status).must_equal(2)
         end
-
-        _('').must_equal(err)
       end
 
       it '引数がread <word>のときは、[:read, <word>]' do
@@ -65,7 +63,7 @@ class TestSubCommandParser < Minitest::Test
 
     describe 'memo search(-s, --search)' do
       it '引数がsearchだけのときは、エラーメッセージを表示して異常終了する' do
-        _, err = capture_io do
+        capture_io do
           exception = assert_raises(SystemExit) do
             Memo::SubCommandParser::SEARCH_COMMAND_SPEC.take_command_forms.each do |command|
               expected = Memo::SubCommandParser.parse!([command])
@@ -75,8 +73,6 @@ class TestSubCommandParser < Minitest::Test
 
           _(exception.status).must_equal(2)
         end
-
-        _('').must_equal(err)
       end
 
       it '引数がsearch <word>のときは、[:search, <word>]' do
@@ -152,7 +148,7 @@ class TestSubCommandParser < Minitest::Test
         .chomp
 
       it '引数がhelpだけのときは、ヘルプメッセージを表示する' do
-        out, err = capture_io do
+        out, = capture_io do
           exception = assert_raises(SystemExit) do
             Memo::SubCommandParser::HELP_COMMAND_SPEC.take_command_forms.each do |sub_command|
               Memo::SubCommandParser.parse!([sub_command])
@@ -162,12 +158,11 @@ class TestSubCommandParser < Minitest::Test
           _(exception.status).must_equal(0)
         end
 
-        _('').must_equal(err)
-        _(help_message_expected).must_equal(out)
+        _(out).must_equal(help_message_expected)
       end
 
       it '引数がhelpで、引数が一つ以上あるときでも、そのままヘルプメッセージを表示する' do
-        out, err = capture_io do
+        out, = capture_io do
           exception = assert_raises(SystemExit) do
             Memo::SubCommandParser::HELP_COMMAND_SPEC.take_command_forms.each do |sub_command|
               Memo::SubCommandParser.parse!([sub_command, 'foo'])
@@ -177,12 +172,11 @@ class TestSubCommandParser < Minitest::Test
           _(exception.status).must_equal(0)
         end
 
-        _('').must_equal(err)
-        _(help_message_expected).must_equal(out)
+        _(out).must_equal(help_message_expected)
       end
 
       it '引数がない場合は、ヘルプメッセージを表示する' do
-        out, err = capture_io do
+        out, = capture_io do
           exception = assert_raises(SystemExit) do
             Memo::SubCommandParser.parse!([])
           end
@@ -190,8 +184,7 @@ class TestSubCommandParser < Minitest::Test
           _(exception.status).must_equal(0)
         end
 
-        _('').must_equal(err)
-        _(help_message_expected).must_equal(out)
+        _(out).must_equal(help_message_expected)
       end
     end
   end

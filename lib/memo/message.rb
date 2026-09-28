@@ -17,5 +17,16 @@ module Memo
       memo tagには引数が必要です。
       memo tagの後にタグ名を指定してください。
     NO_G
+    OPT_BANNER = 'memo CLI: ローカルのメモフォルダをコマンドで閲覧、検索するためのコマンド'
+    OPT_SEPARATOR_HEREDOCS = <<~SEPT
+      new_line
+      使い方: memo subcommand [arguments]
+      例: memo list cli => memoフォルダ内のcliフォルダの中のメモの一覧を返す
+      サブコマンドの--は省略可能
+      また、サブコマンドを省略した場合はmemo readを実行するものとみなされる
+      例: memo ls => フォルダ内のls.mdを検索して、あればls.mdを全文表示する
+      new_line
+      サブコマンド(subcommand)のリスト:
+    SEPT
   end
 end

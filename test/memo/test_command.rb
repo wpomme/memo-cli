@@ -22,7 +22,7 @@ class TestCommand < Minitest::Test
         end
 
         describe 'argv: list' do
-          it "['list']を受け取ったときは、memo_dirの中のディレクトリとその中にあるメモファイルを全て表示する" do
+          it "['list']を受け取ったときは、対象ディレクトリの中のディレクトリとその中にあるメモファイルを全て表示する" do
             out, = capture_io do
               Memo::Command.new(@test_repo).execute(['list'])
             end
@@ -36,7 +36,7 @@ class TestCommand < Minitest::Test
             _(actual).must_equal(expected)
           end
 
-          it "['list', 'cli']を受け取ったときは、memo_dirの中のcliディレクトリの中にあるメモファイルとディレクトリを全て表示する" do
+          it "['list', 'cli']を受け取ったときは、対象ディレクトリの中のcliディレクトリの中にあるメモファイルとディレクトリを全て表示する" do
             valid_dir = 'cli'
 
             out, = capture_io do
