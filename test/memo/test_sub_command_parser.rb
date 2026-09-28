@@ -110,6 +110,22 @@ class TestSubCommandParser < Minitest::Test
       end
     end
 
+    describe 'memo tags(-t, --tags)' do
+      it '引数がtagsだけのときは、:tagsを返す' do
+        Memo::SubCommandParser::TAGS_COMMAND_SPEC.take_command_forms.each do |command|
+          expected = Memo::SubCommandParser.parse!([command])
+          _([:tags]).must_equal(expected)
+        end
+      end
+
+      it '引数がtagsで、その後に続く引数があってもそのまま:tagsを返す' do
+        Memo::SubCommandParser::TAGS_COMMAND_SPEC.take_command_forms.each do |command|
+          expected = Memo::SubCommandParser.parse!([command, "foo"])
+          _([:tags]).must_equal(expected)
+        end
+      end
+    end
+
     describe 'memo help(-h, --help)' do
       parser = Memo::SubCommandParser.parser
       help_message_expected = parser.on.to_a.each.with_index.reduce("") do |result, (line, index)|

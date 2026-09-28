@@ -4,6 +4,8 @@ require 'rainbow'
 
 module Memo
   class Mapper
+    INDENT = " "
+
     def initialize(repo)
       @repo = repo
     end
@@ -23,7 +25,22 @@ module Memo
       end
     end
 
+    # タグ名の一覧を返す
+    #
+    # @return [String]
+    def tag_list_to_view
+      @repo.tag_list.join("\n")
+    end
+
+    # 色付けしたタグ名とそのタグが付いたファイル名の一覧を返す
+    #
+    # @return [String]
+    def tag_and_filenames_to_view
+      seeds_hash_to_view(@repo.tag_seeds_hash, :aqua)
+    end
+
     # memo_dirの中にあるディレクトリに色をつける
+    #
     # return [Array<>]
     def colored_dirs
       @repo.dir_set.to_a.map { |dir| Rainbow(dir).green }
@@ -42,10 +59,17 @@ module Memo
 
         [Rainbow(dir).green].concat(grouped_ls[dir].map(&:basename))
       else
-        grouped_ls.inject([]) do |result, (dir, seeds)|
-          result << Rainbow(dir).green
-          result.concat(seeds.map(&:basename))
-        end
+        seeds_hash_to_view(grouped_ls, :green)
+      end
+    end
+
+    private
+
+    def seeds_hash_to_view(seeds_hash, color_symbol)
+      seeds_hash.inject([]) do |result, (key, seeds)|
+        result << Rainbow(key).color(color_symbol)
+        filenames = seeds.map(&:basename).join(INDENT)
+        result << filenames
       end
     end
   end

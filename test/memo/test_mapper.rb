@@ -24,7 +24,8 @@ class TestMapper < Minitest::Test
 
             expected = @test_repo.grouped_ls.inject([]) do |result, (dir, seeds)|
               result << Rainbow(dir).green
-              result.concat(seeds.map(&:basename))
+              filename_to_view = seeds.map(&:basename).join(Memo::Mapper::INDENT)
+              result << filename_to_view
             end
 
             _(actual).must_equal(expected)
@@ -58,6 +59,52 @@ class TestMapper < Minitest::Test
           actual = Memo::Mapper.new(@test_repo).grouped_ls_to_view(target_dir)
 
           expected = Memo::Message::NO_DIRECTORIES.sub('dir', target_dir) << @test_repo.dir_set.join(' ')
+
+          _(actual).must_equal(expected)
+        end
+      end
+    end
+
+    describe '#tag_list_to_view' do
+      describe "戻り値の型検査" do
+        it "戻り値は文字列型となる" do
+          actual = Memo::Mapper.new(@test_repo).tag_list_to_view
+
+          _(actual).must_be_instance_of(String)
+        end
+      end
+
+      describe "戻り値の値検査" do
+        it "タグ名の一覧を文字列として返す" do
+          actual = Memo::Mapper.new(@test_repo).tag_list_to_view
+
+          expected = @test_repo.tag_list.join("\n")
+
+          _(actual).must_equal(expected)
+        end
+      end
+    end
+
+    describe '#tag_and_filenames_to_view' do
+      describe "戻り値の型検査" do
+        it "戻り値は文字列の一次元配列となる" do
+          ret = Memo::Mapper.new(@test_repo).tag_and_filenames_to_view
+
+          actual = ret.all?(String)
+
+          _(actual).must_equal(true)
+        end
+      end
+
+      describe "戻り値の値検査" do
+        it "色付けされたタグ名とそれに紐付くファイル名の配列を返す" do
+          actual = Memo::Mapper.new(@test_repo).tag_and_filenames_to_view
+
+          expected = @test_repo.tag_seeds_hash.inject([]) do |result, (tag, seeds)|
+            result << Rainbow(tag).aqua
+            filename_to_view = seeds.map(&:basename).join(Memo::Mapper::INDENT)
+            result << filename_to_view
+          end
 
           _(actual).must_equal(expected)
         end

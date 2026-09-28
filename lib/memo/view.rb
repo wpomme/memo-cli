@@ -30,6 +30,10 @@ module Memo
       end
     end
 
+    def tags
+      puts @mapper.tag_and_filenames_to_view
+    end
+
     def list(dir = nil)
       puts @mapper.grouped_ls_to_view(dir)
     end

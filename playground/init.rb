@@ -13,7 +13,8 @@ repo = Memo::Repository.new(dir)
 
 # Repository.seedsも取得しておく
 seeds = repo.instance_variable_get(:@seeds)
-
 dir_seeds = repo.instance_variable_get(:@dir_seeds)
+
+Memo::Mapper.new(repo)
 
 p seeds, dir_seeds

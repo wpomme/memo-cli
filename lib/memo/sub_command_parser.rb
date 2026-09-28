@@ -60,8 +60,11 @@ module Memo
     SEARCH_COMMAND_SPEC = SUB_COMMAND_SPEC.new("search", "--search", "-s", "検索した文字列で全てのメモを全文検索する", :required, "--search WORD", proc do |word|
       self.parsed = [:search, word]
     end)
+    TAGS_COMMAND_SPEC = SUB_COMMAND_SPEC.new("tags", "--tags", "-t", "タグ名とそのタグ名が付いたファイル名の一覧を表示する", :none, nil, proc do |_word|
+      self.parsed = [:tags]
+    end)
 
-    SUB_COMMANDS_SPEC = [READ_COMMAND_SPEC, LIST_COMMAND_SPEC, DIRS_COMMAND_SPEC, SEARCH_COMMAND_SPEC, HELP_COMMAND_SPEC].freeze
+    SUB_COMMANDS_SPEC = [READ_COMMAND_SPEC, LIST_COMMAND_SPEC, DIRS_COMMAND_SPEC, SEARCH_COMMAND_SPEC, TAGS_COMMAND_SPEC, HELP_COMMAND_SPEC].freeze
 
     # 引数が登録されているサブコマンドであれば、そのサブコマンドの構造体SPECを返す
     #

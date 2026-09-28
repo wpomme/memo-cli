@@ -156,6 +156,19 @@ class TestCommand < Minitest::Test
           end
         end
       end
+
+      describe 'argv: tags' do
+        it "[tags]を受け取ったときは、色付けされたタグ名とそのタグが付いたファイル名の一覧を表示する" do
+          actual, = capture_io do
+            Memo::Command.new(@test_repo).execute(["tags"])
+          end
+
+          expected = Memo::Mapper.new(@test_repo).tag_and_filenames_to_view
+            .join("\n") << "\n"
+
+          _(actual).must_equal(expected)
+        end
+      end
     end
   end
 end

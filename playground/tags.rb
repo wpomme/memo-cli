@@ -4,6 +4,9 @@
 # キーがrel_path、値がtagsのハッシュを作成する
 total_tag_list = seeds.map(&:tags).flatten.uniq
 
+# タグの付いていないファイルの一覧を抽出する
+seeds.filter {|seed| seed["tags"].empty? }
+
 # タグとそれに紐付くSeedのリストのハッシュを返す
 tag_seeds_hash = total_tag_list.to_h do |tag|
   [

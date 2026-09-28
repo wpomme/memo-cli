@@ -111,6 +111,18 @@ class TestView < Minitest::Test
       end
     end
 
+    describe '#tags' do
+      it "色付けされたタグ名とそのタグが付いたファイル名の一覧を表示する" do
+        actual, = capture_io do
+          Memo::View.new(@test_repo).tags
+        end
+
+        expected = Memo::Mapper.new(@test_repo).tag_and_filenames_to_view.join("\n") << "\n"
+
+        _(actual).must_equal(expected)
+      end
+    end
+
     describe '#search' do
       it "受け取った文字列で全てのメモをで検索して、ヒットした行をgrep風に出力する" do
         search_word = @fixed_search_word
