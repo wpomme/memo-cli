@@ -8,13 +8,13 @@ class TestCommand < Minitest::Test
 
     describe '#execute' do
       describe 'argv: dirs' do
-        it "['dirs']を受け取ったときは、memo_dirの中のディレクトリの一覧を標準出力に表示する" do
+        it "['dirs']を受け取ったときは、対象のディレクトリの中のディレクトリ一覧をターミナルに表示する" do
           out, = capture_io do
             Memo::Command.new(@test_repo).execute(['dirs'])
           end
 
-          expected = Memo::Mapper.new(@test_repo).colored_dirs.to_set
-          assert_equal out.split("\n").to_set, expected
+          expected = Memo::Mapper.new(@test_repo).dirs_to_view << "\n"
+          _(out).must_equal(expected)
         end
       end
 

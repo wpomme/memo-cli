@@ -7,14 +7,13 @@ class TestView < Minitest::Test
     include MemoTestLifecycleHooks
 
     describe '#dirs' do
-      it "memoの中のディレクトリの一覧を標準出力に色付きで表示する" do
+      it "memoの中のディレクトリの一覧をターミナルに表示する" do
         out, = capture_io do
           Memo::View.new(@test_repo).dirs
         end
 
-        expected = Memo::Mapper.new(@test_repo).colored_dirs.to_set
-        # 順番が異なっていても、書き出す内容が同じなら問題ない
-        assert_equal out.split("\n").to_set, expected
+        expected = Memo::Mapper.new(@test_repo).dirs_to_view << "\n"
+        _(out).must_equal(expected)
       end
     end
 

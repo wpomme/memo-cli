@@ -1,7 +1,5 @@
 # frozen_string_literal: true
 
-require 'yaml'
-
 module Memo
   module Config
     CONFIG_PATH = File.expand_path("../../config/config.yml", __dir__)

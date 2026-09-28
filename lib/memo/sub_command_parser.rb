@@ -1,66 +1,21 @@
 # frozen_string_literal: true
 
-require "optparse"
-
 module Memo
-  # NOTE: できればやりたいこと
-  #  1. SUB_COMMAND_SPECをModelに移動してもいいかも
-  #  2. parsedを返す場合と、ヘルプ・ユーザーメッセージを返す場合を明確にする
-  #  3. to_error_message => to_user_messageにしてhelp_messageと共用化してもいい
   class SubCommandParser
-    # サブコマンドの詳細を作成するための構造体
-    #
-    # @!attribute [r] :sub_command_form
-    #   @return [String] memoの後にこの値を指定するとサブコマンドとして機能する文字列
-    # @!attribute [r] :long_form
-    #   @return [String] サブコマンドのロングフォーム。OptionParser#onに準ずる
-    # @!attribute [r] :short_form
-    #   @return [String] サブコマンドのショートフォーム。OptionParser#onに準ずる
-    # @!attribute [r] :desc
-    #   @return [String] サブコマンドの詳細。OptionParser#onに準ずる
-    # @!attribute [r] :argv_type
-    #   @return [Symbol] 該当のサブコマンドの引数の取り方を指定する。
-    #     none: 引数を取らない
-    #     optional: 引数をオブションで取る
-    #     required: 引数を必須で取る
-    # @!attribute [r] :long_form_with_argv
-    #   @return [String | Void] サブコマンドが引数を取る場合に、OptionParser#onのロングフォームに指定する値を定めたもの
-    # @!attribute [r] :parsed_block
-    #   @return [String | Void] OptionsParser#parse!で実行する手続き
-    SUB_COMMAND_SPEC = Struct.new(:sub_command_form, :long_form, :short_form, :desc, :argv_type, :long_form_with_argv, :parsed_block) do
-      def initialize(...)
-        super
-        freeze
-      end
-
-      # サブコマンドのそれぞれの形式を配列で返す。テストコード用
-      # @return [Array<String>]
-      def take_command_forms
-        deconstruct_keys(%i[sub_command_form long_form short_form]).values
-      end
-
-      # サブコマンドを受け取ったら、そのショートフォームを返す
-      # @params word [<String>]
-      # @return [<String>]
-      def to_opts(word)
-        short_form if deconstruct_keys(%i[sub_command_form long_form short_form]).values.include?(word)
-      end
-    end
-
-    HELP_COMMAND_SPEC = SUB_COMMAND_SPEC.new("help", "--help", "-h", "memoコマンドのヘルプ", :none, nil, nil)
-    READ_COMMAND_SPEC = SUB_COMMAND_SPEC.new("read", "--read", "-r", "対象のメモを全文表示する", :required, "--read WORD", proc do |word|
+    HELP_COMMAND_SPEC = Memo::Model::SUB_COMMAND_SPEC.new("help", "--help", "-h", "memoコマンドのヘルプ", :none, nil, nil)
+    READ_COMMAND_SPEC = Memo::Model::SUB_COMMAND_SPEC.new("read", "--read", "-r", "対象のメモを全文表示する", :required, "--read WORD", proc do |word|
       self.parsed = [:read, word]
     end)
-    LIST_COMMAND_SPEC = SUB_COMMAND_SPEC.new("list", "--list", "-l", "メモの一覧を表示する", :optional, "--list [DIRS]", proc do |dirs|
+    LIST_COMMAND_SPEC = Memo::Model::SUB_COMMAND_SPEC.new("list", "--list", "-l", "メモの一覧を表示する", :optional, "--list [DIRS]", proc do |dirs|
       self.parsed = dirs ? [:list, dirs] : [:list]
     end)
-    DIRS_COMMAND_SPEC = SUB_COMMAND_SPEC.new("dirs", "--dirs", "-d", "メモの中のディレクトリの一覧を表示する", :none, nil, proc do
+    DIRS_COMMAND_SPEC = Memo::Model::SUB_COMMAND_SPEC.new("dirs", "--dirs", "-d", "メモの中のディレクトリの一覧を表示する", :none, nil, proc do
       self.parsed = [:dirs]
     end)
-    SEARCH_COMMAND_SPEC = SUB_COMMAND_SPEC.new("search", "--search", "-s", "検索した文字列で全てのメモを全文検索する", :required, "--search WORD", proc do |word|
+    SEARCH_COMMAND_SPEC = Memo::Model::SUB_COMMAND_SPEC.new("search", "--search", "-s", "検索した文字列で全てのメモを全文検索する", :required, "--search WORD", proc do |word|
       self.parsed = [:search, word]
     end)
-    TAGS_COMMAND_SPEC = SUB_COMMAND_SPEC.new("tags", "--tags", "-t", "タグ名とそのタグ名が付いたファイル名の一覧を表示する", :none, nil, proc do |_word|
+    TAGS_COMMAND_SPEC = Memo::Model::SUB_COMMAND_SPEC.new("tags", "--tags", "-t", "タグ名とそのタグ名が付いたファイル名の一覧を表示する", :none, nil, proc do |_word|
       self.parsed = [:tags]
     end)
 

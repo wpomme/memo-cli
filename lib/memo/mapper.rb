@@ -1,7 +1,5 @@
 # frozen_string_literal: true
 
-require 'rainbow'
-
 module Memo
   class Mapper
     INDENT = " "
@@ -39,11 +37,11 @@ module Memo
       seeds_hash_to_view(@repo.tag_seeds_hash, :aqua)
     end
 
-    # memo_dirの中にあるディレクトリに色をつける
+    # 対象のメモフォルダの中にあるディレクトリ一覧を表示用に変換する
     #
-    # return [Array<>]
-    def colored_dirs
-      @repo.dir_set.to_a.map { |dir| Rainbow(dir).green }
+    # return [String]
+    def dirs_to_view
+      @repo.dir_set.join(INDENT)
     end
 
     # 指定されたディレクトリについて、そのディレクトリの中にあるディレクトリとファイル名を返す関数
@@ -55,7 +53,7 @@ module Memo
       grouped_ls = @repo.grouped_ls
 
       if dir
-        return Memo::Message::NO_DIRECTORIES.sub('dir', dir) << dir_set.join(' ') unless dir_set.include?(dir)
+        return Memo::Message::NO_DIRECTORIES.sub('dir', dir) << dirs_to_view unless dir_set.include?(dir)
 
         [Rainbow(dir).green].concat(grouped_ls[dir].map(&:basename))
       else

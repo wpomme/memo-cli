@@ -52,6 +52,10 @@ cli[緑色]
 2. fzfを通すとフォルダの色付けが取れてしまう
 3. Rainbowのconfigで修正できるかもしれない
 
+### sub_command_parser
+1. parsedを返す場合と、ヘルプ・ユーザーメッセージを返す場合を明確にする
+2. to_error_message => to_user_messageにしてhelp_messageと共用化してもいい
+
 #### 調査内容の詳細
 - ** `memo list <dirs> | fzf | xargs -I{} memo read {}`で選択したメモを読むことができる
     - 例: `memo list cli | fzf | xargs -I{} memo read {}`

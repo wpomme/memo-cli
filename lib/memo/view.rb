@@ -8,7 +8,7 @@ module Memo
     end
 
     def dirs
-      puts @mapper.colored_dirs
+      puts @mapper.dirs_to_view
     end
 
     def read(word)

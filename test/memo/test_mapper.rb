@@ -65,6 +65,16 @@ class TestMapper < Minitest::Test
       end
     end
 
+    describe '#dirs_to_view' do
+      it "戻り値は文字列型となり、モックデータと値が同じであることを確かめる" do
+        actual = Memo::Mapper.new(@test_repo).dirs_to_view
+        expected = @test_repo.dir_set.join(Memo::Mapper::INDENT)
+
+        _(actual).must_be_instance_of(String)
+        _(actual).must_equal(expected)
+      end
+    end
+
     describe '#tag_list_to_view' do
       describe "戻り値の型検査" do
         it "戻り値は文字列型となる" do

@@ -43,6 +43,51 @@ class TestRepository < Minitest::Test
       it '対象ディレクトリの最上位にあるメモのdirは、そのメモが保存されているディレクトリ名になる' do
         skip "TODO: @fixed_mock_file_under_root_dirを作成する"
       end
+
+      # File#dirnae: https://docs.ruby-lang.org/ja/latest/method/File/s/dirname.html
+      # File#basename: https://docs.ruby-lang.org/ja/latest/method/File/s/basename.html
+      describe 'dir_seedに入る値を明確にするために、File.dirnameとFile.basenameの動作を説明するためのテストを作成する' do
+        it 'File.dirname("foo")は"."になる' do
+          expected = File.dirname("foo")
+          actual = "."
+          _(actual).must_equal(expected)
+        end
+
+        it 'File.dirname("/foo/bar/baz")は"/foo/bar"になる' do
+          expected = File.dirname("/foo/bar/baz")
+          actual = "/foo/bar"
+          _(actual).must_equal(expected)
+        end
+
+        it 'File.basename("/foo/bar/baz")は"bar"になる。"/foo/bar/baz/"でも同様である。' do
+          expected1 = File.basename("/foo/bar/baz")
+          expected2 = File.basename("/foo/bar/baz/")
+
+          actual = "baz"
+
+          _(actual).must_equal(expected1)
+          _(actual).must_equal(expected2)
+        end
+      end
+
+      describe "@dir_seed" do
+        it 'target_dirの方が"cli"のようにディレクトリの第一階層を示すなら、parent_dirは第二引数と同じになる' do
+          skip "TODO"
+          target_dir = 'cli'
+          target_dir_seed = Memo::Model::DirSeed.new(target_dir, @test_root_dirname)
+          _(target_dir_seed.parent_dir).must_equal(@test_root_dirname)
+        end
+
+        it 'target_dirの方が"aaa/bbb/ccc"のようにディレクトリの第一階層以外を示すなら、parent_dirはaaa/bbbとなる' do
+          skip "TODO"
+          target_dir = 'aaa/bbb/ccc'
+          target_dir_seed = Memo::Model::DirSeed.new(target_dir, @test_root_dirname)
+
+          actual = "aaa/bbb"
+
+          _(actual).must_equal(target_dir_seed.parent_dir)
+        end
+      end
     end
 
     describe '#dir_set' do
