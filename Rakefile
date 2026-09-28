@@ -1,8 +1,8 @@
 # frozen_string_literal: true
 
-require "bundler/gem_tasks"
-require "minitest/test_task"
-require "English"
+require 'bundler/gem_tasks'
+require 'minitest/test_task'
+require 'English'
 
 Minitest::TestTask.create :test
 
@@ -10,13 +10,13 @@ task default: :test
 
 desc 'irbにログインする'
 task :console do
-  sh "bundle exec console"
+  sh 'bundle exec console'
 end
 
 namespace :test do
   desc 'ファイルごとにテストする'
   task :file do
-    Dir.glob("test/**/test_*.rb").each do |path|
+    Dir.glob('test/**/test_*.rb').each do |path|
       puts "TEST: #{path}"
       sh "bundle exec ruby -Itest #{path}"
     end
@@ -47,7 +47,7 @@ namespace :mock do
     repo = Memo::Repository.new(dir)
 
     # ファイル名の重複しているものを指定する。実際のメモフォルダで重複がなくなったら、この値を変える必要がある。
-    fixed_duplicated_filename = "mise"
+    fixed_duplicated_filename = 'mise'
 
     seeds = repo.instance_variable_get(:@seeds).filter { |seed| seed.basename == fixed_duplicated_filename }
 
@@ -56,20 +56,20 @@ namespace :mock do
       .uniq!
 
     # テストのために固定のseedを作成する
-    fixed_mock_file = "ls"
+    fixed_mock_file = 'ls'
     seeds.concat(repo.find(fixed_mock_file)) if seeds.none? { |seed| seed.basename == fixed_mock_file }
 
     ## ファイル名の一覧を
     basenames = seeds.map(&:basename)
 
     ## 重複しているファイル名と、重複しているSeedを抽出する
-    duplicated_seeds = seeds.filter { |seed| basenames.count(seed["basename"]) > 1 }
+    duplicated_seeds = seeds.filter { |seed| basenames.count(seed['basename']) > 1 }
 
     ## モックデータ作成用のコマンド
     ## TEST_MEMO_DATA_SEEDの元となるRubyのArray<Hash>とヒアドキュメントを返す
     mock_seeds = seeds.map do |seed|
       content = Memo::Service.read(seed)
-      basename = duplicated_seeds.include?(seed) ? seed.rel_path.sub(".md", "").upcase.sub("-", "_").gsub("/", "_") : seed.basename.upcase.gsub("-", "_")
+      basename = duplicated_seeds.include?(seed) ? seed.rel_path.sub('.md', '').upcase.sub('-', '_').gsub('/', '_') : seed.basename.upcase.gsub('-', '_')
       val_name = "TEST_#{basename}_FILE_CONTENT"
       label = "#{basename}_FILE"
       heredoc = ["#{val_name} = <<~#{label}"] + content + [label] + ["\n"]
@@ -79,10 +79,10 @@ namespace :mock do
       }
     end
 
-    output = "test/mock_seeds.rb"
+    output = 'test/mock_seeds.rb'
 
-    File.open(output, "w") do |file|
-      file.puts(["module Memo", "module MockSeed"])
+    File.open(output, 'w') do |file|
+      file.puts(['module Memo', 'module MockSeed'])
       mock_seeds.each do |seed|
         file.puts(seed[:heredoc])
       end
@@ -97,7 +97,7 @@ namespace :mock do
         MEMO_DATA
       end
 
-      file.puts ["\n"] + ["TEST_MEMO_DATA_SEED = ["] + test_memo_data_seed + [']', 'end', 'end']
+      file.puts ["\n"] + ['TEST_MEMO_DATA_SEED = ['] + test_memo_data_seed + [']', 'end', 'end']
     end
   end
 end
@@ -105,39 +105,39 @@ end
 cmd_tasks = {
   list: [
     {
-      name: "noargs",
-      cmd: "list"
+      name: 'noargs',
+      cmd: 'list'
     },
     {
-      name: "dirs",
-      cmd: "list cli"
+      name: 'dirs',
+      cmd: 'list cli'
     }
   ],
   dirs: [
     {
-      name: "default",
-      cmd: "dirs"
+      name: 'default',
+      cmd: 'dirs'
     }
   ],
   read: [
     {
-      name: "default",
-      cmd: "read ls"
+      name: 'default',
+      cmd: 'read ls'
     },
     {
-      name: "memo",
-      cmd: "ls"
+      name: 'memo',
+      cmd: 'ls'
     }
   ],
   search: [
     {
-      name: "default",
-      cmd: "search diff"
+      name: 'default',
+      cmd: 'search diff'
     }
   ]
 }
 
-desc "memo cliの正常系が成功するかテストする"
+desc 'memo cliの正常系が成功するかテストする'
 task :e2e do
   cmd_tasks.each do |cmd_name, task_list|
     task_list.each do |task_hash|

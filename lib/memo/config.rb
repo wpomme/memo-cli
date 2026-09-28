@@ -1,7 +1,5 @@
 # frozen_string_literal: true
 
-require 'yaml'
-
 module Memo
   module Config
     CONFIG_PATH = File.expand_path("../../config/config.yml", __dir__)
@@ -11,7 +9,7 @@ module Memo
       def memo_dir
         load if @config.nil?
 
-        File.join(Dir.home, @config["memo_dir"])
+        File.join(Dir.home, @config['memo_dir'])
       end
 
       def target_dirs

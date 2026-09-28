@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-require_relative "../helper"
+require_relative '../helper'
 
 class TestCommand < Minitest::Test
   describe 'Command' do
@@ -8,13 +8,13 @@ class TestCommand < Minitest::Test
 
     describe '#execute' do
       describe 'argv: dirs' do
-        it "['dirs']を受け取ったときは、memo_dirの中のディレクトリの一覧を標準出力に表示する" do
+        it "['dirs']を受け取ったときは、対象のディレクトリの中のディレクトリ一覧をターミナルに表示する" do
           out, = capture_io do
             Memo::Command.new(@test_repo).execute(['dirs'])
           end
 
-          expected = Memo::Mapper.new(@test_repo).colored_dirs.to_set
-          assert_equal out.split("\n").to_set, expected
+          expected = Memo::Mapper.new(@test_repo).dirs_to_view << "\n"
+          _(out).must_equal(expected)
         end
       end
 
@@ -74,7 +74,7 @@ class TestCommand < Minitest::Test
         it "['read', 'mise']を受け取ったときは、プロンプトを表示した後、選択した方のmise.mdを全文表示する" do
           word = @fixed_duplicated_filename
           choices = Memo::MockSeed::TEST_MEMO_DATA_SEED.filter_map do |seed|
-            [[seed[:parent_dir], "#{seed[:basename]}.md"].join("/"), seed[:content]] if seed[:basename] == word
+            [[seed[:parent_dir], "#{seed[:basename]}.md"].join('/'), seed[:content]] if seed[:basename] == word
           end.to_h
           $stdin = StringIO.new("2\n")
 
@@ -82,7 +82,7 @@ class TestCommand < Minitest::Test
             Memo::Command.new(@test_repo).execute(%w[read mise])
           end
 
-          title = Memo::Message::MULTIPLE_MEMOS_WEWE_FOUND.sub("size", choices.size.to_s)
+          title = Memo::Message::MULTIPLE_MEMOS_WEWE_FOUND.sub('size', choices.size.to_s)
           choices_out = choices.keys.map.with_index do |key, index|
             "[#{index + 1}] #{key}"
           end
@@ -104,7 +104,7 @@ class TestCommand < Minitest::Test
             assert_equal 2, exception.status
           end
 
-          _(out).must_equal(Memo::Message::NO_MEMOS_WEWE_FOUND.sub("word", word) << "\n")
+          _(out).must_equal(Memo::Message::NO_MEMOS_WEWE_FOUND.sub('word', word) << "\n")
         end
 
         it "['read', nil]を受け取ったときは、例外を送出する" do
@@ -115,7 +115,7 @@ class TestCommand < Minitest::Test
               Memo::Command.new(@test_repo).execute(['read', word])
             end
 
-            assert_equal "invalid argument: -r ", exception.message
+            assert_equal 'invalid argument: -r ', exception.message
           end
         end
       end
@@ -125,7 +125,7 @@ class TestCommand < Minitest::Test
           search_word = @fixed_search_word
 
           out, = capture_io do
-            Memo::Command.new(@test_repo).execute(["search", search_word])
+            Memo::Command.new(@test_repo).execute(['search', search_word])
           end
 
           actual = Memo::Mapper.new(@test_repo).search_result_to_view(search_word)
@@ -138,7 +138,7 @@ class TestCommand < Minitest::Test
           search_word = 'hikkakaranasounakotoba'
 
           out, = capture_io do
-            Memo::Command.new(@test_repo).execute(["search", search_word])
+            Memo::Command.new(@test_repo).execute(['search', search_word])
           end
 
           assert_equal out, Memo::Message::NO_SEARCH_RESULTS_WERE_FOUND.sub('word', search_word) << "\n"
@@ -152,15 +152,15 @@ class TestCommand < Minitest::Test
               Memo::Command.new(@test_repo).execute(['search', word])
             end
 
-            assert_equal "invalid argument: -s ", exception.message
+            assert_equal 'invalid argument: -s ', exception.message
           end
         end
       end
 
       describe 'argv: tags' do
-        it "[tags]を受け取ったときは、色付けされたタグ名とそのタグが付いたファイル名の一覧を表示する" do
+        it '[tags]を受け取ったときは、色付けされたタグ名とそのタグが付いたファイル名の一覧を表示する' do
           actual, = capture_io do
-            Memo::Command.new(@test_repo).execute(["tags"])
+            Memo::Command.new(@test_repo).execute(['tags'])
           end
 
           expected = Memo::Mapper.new(@test_repo).tag_and_filenames_to_view

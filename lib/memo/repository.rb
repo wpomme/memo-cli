@@ -36,7 +36,7 @@ module Memo
         [
           tag,
           @seeds.filter do |seed|
-            seed["tags"].include?(tag)
+            seed['tags'].include?(tag)
           end
         ]
       end
@@ -68,7 +68,7 @@ module Memo
     def dir_set
       dirs = @dir_seeds
         .map(&:rel_path)
-        .map { |dir| dir.rstrip("/") }
+        .map { |dir| dir.rstrip('/') }
       Set.new(dirs).add(@root_dir)
     end
 
@@ -78,16 +78,16 @@ module Memo
     #
     # @return [Array<String>]
     def load_dirs(root_dir)
-      Dir.glob("**/*/", base: root_dir).map do |rel_path|
+      Dir.glob('**/*/', base: root_dir).map do |rel_path|
         full_path = File.join(root_dir, rel_path)
 
-        target_dir = rel_path.rstrip("/")
+        target_dir = rel_path.rstrip('/')
         parent_dir = File.dirname(target_dir)
 
         Memo::Model::Seed.new(
           full_path: full_path,
           rel_path: rel_path,
-          parent_dir: parent_dir == "." ? File.basename(root_dir) : parent_dir,
+          parent_dir: parent_dir == '.' ? File.basename(root_dir) : parent_dir,
           basename: File.basename(rel_path),
           type: :directory,
           tags: []
@@ -99,14 +99,14 @@ module Memo
     #
     # @return [Array<Seed>]
     def load(root_dir)
-      Dir.glob("**/*.md", base: root_dir).filter_map do |rel_path|
+      Dir.glob('**/*.md', base: root_dir).filter_map do |rel_path|
         # README.mdは読み飛ばす
         next if EXCLUDE_FILES.include?(File.basename(rel_path))
 
         full_path = File.join(root_dir, rel_path)
 
         # トップディレクトリにあるメモのdirは"."となってしまうため、引数として受け取ったディレクトリの末尾を使う
-        parent_dir = File.dirname(rel_path) == "." ? File.basename(root_dir) : File.dirname(rel_path)
+        parent_dir = File.dirname(rel_path) == '.' ? File.basename(root_dir) : File.dirname(rel_path)
 
         # 各ファイルからフロントマターを読み取って、tagsの値をSeedにセットする。
         # tagsの値がnilなら、tagsには空の配列を入れる
@@ -120,7 +120,7 @@ module Memo
           parent_dir: parent_dir,
           basename: basename(full_path),
           type: :file,
-          tags: front_matter["tags"].nil? ? [] : front_matter["tags"]
+          tags: front_matter['tags'].nil? ? [] : front_matter['tags']
         )
       end
     end

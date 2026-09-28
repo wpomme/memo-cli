@@ -5,14 +5,14 @@
 total_tag_list = seeds.map(&:tags).flatten.uniq
 
 # タグの付いていないファイルの一覧を抽出する
-seeds.filter {|seed| seed["tags"].empty? }
+seeds.filter { |seed| seed['tags'].empty? }
 
 # タグとそれに紐付くSeedのリストのハッシュを返す
 tag_seeds_hash = total_tag_list.to_h do |tag|
   [
     tag,
     seeds.filter do |seed|
-      seed["tags"].include?(tag)
+      seed['tags'].include?(tag)
     end
   ]
 end
@@ -30,8 +30,8 @@ p sorted_keys_grouped_by_frequency_hash
 
 # 特定のタグに紐付いているファイル名の一覧を出力する
 # CLIと付いているタグは、そのCLIの一覧を出力してみたい
-tag_seeds_hash["CLI"].map(&:basename)
+tag_seeds_hash['CLI'].map(&:basename)
 # gitと付いているタグは、そのgit commandの一覧を出力してみた
-tag_seeds_hash["git"].map(&:basename)
+tag_seeds_hash['git'].map(&:basename)
 # textと付いているタグをまとめるようなメモファイルが欲しい
-tag_seeds_hash["text"].map(&:basename)
+tag_seeds_hash['text'].map(&:basename)

@@ -1,18 +1,18 @@
 # frozen_string_literal: true
 
-$LOAD_PATH.unshift File.expand_path("../lib", __dir__)
-require "memo"
-require_relative "mock_seeds"
+$LOAD_PATH.unshift File.expand_path('../lib', __dir__)
+require 'memo'
+require_relative 'mock_seeds'
 
-require "minitest/autorun"
-require "minitest/spec"
-require "minitest/expectations"
-require "minitest/mock"
+require 'minitest/autorun'
+require 'minitest/spec'
+require 'minitest/expectations'
+require 'minitest/mock'
 
 module MemoTestLifecycleHooks
   def setup
     # テスト環境ではMemo::Config.memo_dirを使わない
-    @test_memo_dir = File.join(Dir.home, "/var/test-memo-dir")
+    @test_memo_dir = File.join(Dir.home, '/var/test-memo-dir')
     FileUtils.mkdir_p(@test_memo_dir)
 
     @test_root_dirname = File.basename(@test_memo_dir)
