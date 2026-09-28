@@ -29,6 +29,7 @@ module MemoTestLifecycleHooks
 
     @fixed_mock_file = 'ls'
     @fixed_search_word = 'ls'
+    @fixed_duplicated_filename = 'mise'
   end
 
   def teardown

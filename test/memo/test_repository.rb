@@ -73,7 +73,7 @@ class TestRepository < Minitest::Test
           end
 
           it "ファイル名が複数件見つかった場合" do
-            word = 'mise'
+            word = @fixed_duplicated_filename
             ret = @test_repo.find(word)
             expected = ret.all?(Memo::Model::Seed)
 
@@ -102,7 +102,7 @@ class TestRepository < Minitest::Test
           end
 
           it "ファイル名が複数件見つかった場合" do
-            word = 'mise'
+            word = @fixed_duplicated_filename
             expected = @test_repo.find(word)
             actual = @test_seeds.filter { |seed| seed.basename == word }
 
@@ -169,6 +169,41 @@ class TestRepository < Minitest::Test
           actual = @test_repo.tag_list
 
           expected = @test_seeds.map(&:tags).flatten.uniq
+
+          _(actual).must_equal(expected)
+        end
+      end
+    end
+
+    describe '#tag_seeds_hash' do
+      describe '戻り値の型検査' do
+        it 'キーが文字列で、値が要素がSeedの一次元配列となるハッシュを返す' do
+          tag_seeds_hash = @test_repo.tag_seeds_hash
+
+          _(tag_seeds_hash).must_be_instance_of(Hash)
+
+          keys_type = tag_seeds_hash.keys.all?(String)
+          values_type = tag_seeds_hash.values.all? do |value|
+            value.all?(Memo::Model::Seed)
+          end
+
+          _(keys_type).must_equal(true)
+          _(values_type).must_equal(true)
+        end
+      end
+
+      describe '戻り値の値検査' do
+        it 'モックデータから作成したタグの一覧と、Repository#tag_seeds_hashの値が同じであること' do
+          actual = @test_repo.tag_seeds_hash
+
+          expected = @test_repo.tag_list.to_h do |tag|
+            [
+              tag,
+              @test_seeds.filter do |seed|
+                seed["tags"].include?(tag)
+              end
+            ]
+          end
 
           _(actual).must_equal(expected)
         end

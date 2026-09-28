@@ -28,6 +28,20 @@ module Memo
       @seeds.map(&:tags).flatten.uniq
     end
 
+    # それぞれのタグと、そのタグが付いているSeedの配列のハッシュを返す
+    #
+    # @return [Hash<String, Array<String>>]
+    def tag_seeds_hash
+      tag_list.to_h do |tag|
+        [
+          tag,
+          @seeds.filter do |seed|
+            seed["tags"].include?(tag)
+          end
+        ]
+      end
+    end
+
     # 対象のディレクトリ配下にあるディレクトリとファイルのSeedを、ディレクトリごとにグループ化しハッシュとして返す
     #
     # キーはディレクトリを示す文字列となる

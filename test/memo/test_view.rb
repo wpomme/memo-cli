@@ -30,7 +30,7 @@ class TestView < Minitest::Test
       end
 
       it 'wordが存在するファイルと複数件一致するとき、どのファイルを表示するかのプロンプトを表示し、選択したファイルを全文表示する' do
-        word = 'mise'
+        word = @fixed_duplicated_filename
         choices = Memo::MockSeed::TEST_MEMO_DATA_SEED.filter_map do |seed|
           [[seed[:parent_dir], "#{seed[:basename]}.md"].join("/"), seed[:content]] if seed[:basename] == word
         end.to_h

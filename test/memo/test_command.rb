@@ -72,7 +72,7 @@ class TestCommand < Minitest::Test
         end
 
         it "['read', 'mise']を受け取ったときは、プロンプトを表示した後、選択した方のmise.mdを全文表示する" do
-          word = 'mise'
+          word = @fixed_duplicated_filename
           choices = Memo::MockSeed::TEST_MEMO_DATA_SEED.filter_map do |seed|
             [[seed[:parent_dir], "#{seed[:basename]}.md"].join("/"), seed[:content]] if seed[:basename] == word
           end.to_h

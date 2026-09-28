@@ -2,20 +2,21 @@
 ### TODO
 1. yaml形式のfrontmatterでタグ付け
 - タグ付けによって欲しい機能(WIP)
-    1. memo tags => タグの一覧を返す
-        a. タグごとに紐付いているファイル名もほしい
-            - 次のイメージ
-              ```
-              CLI
-              ls find cut ...
-              ```
-    2. memo tags freq => タグごとの出現頻度の一覧を返す
-    3. memo tags freq [tags] => そのタグの出現回数と、そのタグが紐付いているファイルパスなどを返す
-    4. それぞれのタグによって、特定の機能が欲しい
+    1. memo tag, memo tagsのCLIインターフェイス案
+        - memo tag <TAG_NAME>
+            - そのタグ名があれば、まず、そのタグが付いているファイルの数を表示し、次に、そのタグが紐付いてるファイル名を返す
+            - そのタグがなければ、ない旨のメッセージを表示する
+        - memo tags
+            - タグの一覧と、そのタグに紐付いているファイル名の一覧を返す
+        - memo tags --only
+            - タグ名だけを返す
+        - memo tags --empty
+            - タグの付いていないファイル名の一覧を返す
+        - memo tags --tally
+            - タグごとの出現頻度を返す
+    2. それぞれのタグによって、特定の機能が欲しい
         a. 例えばタグにCLIとついている場合は、それに紐付くCLIの一覧が見れたら嬉しい
-    5. タグの付いていないメモの一覧を出力する機能
-        memo tagsのオプションにする？
-    6. タグ名のTypoを検出する機能
+    3. タグ名のTypoを検出する機能
         a. Settingとsetting, settingsなどの表記ゆれを検出する機能
         b. タグの出現頻度が１程度のものについて、そのタグの命名規則や単語に間違いがないか
 
@@ -27,12 +28,6 @@
 # テスト系
 ## 型検査・型のテスト・テスト拡張
 - Rdocかyard、型検査の導入、coverageの取得
-
-## モックデータ
-    - 欲しいモックデータ
-        - @fixed_mock_directory = 'cli'
-        - @fixed_mock_duplicated_file = 'mise'
-            - 別のsetup, teardownを作成するべきだろうか
 
 ## expected, actual
 - expected, actualを意味的に逆に使っている箇所があるかもしれない
