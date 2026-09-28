@@ -3,16 +3,15 @@
 1. yaml形式のfrontmatterでタグ付け
 - タグ付けによって欲しい機能(WIP)
     1. memo tag, memo tagsのCLIインターフェイス案
-        - memo tag <TAG_NAME>
-            - そのタグ名があれば、まず、そのタグが付いているファイルの数を表示し、次に、そのタグが紐付いてるファイル名を返す
-            - そのタグがなければ、ない旨のメッセージを表示する
-        - [OK]: memo tags
-        - memo tags --list
-            - タグ名だけを返す
-        - memo tags --empty
-            - タグの付いていないファイル名の一覧を返す
-        - memo tags --tally
-            - タグごとの出現頻度を返す
+        a. memo tags --OPTION
+            - memo tags --list
+                - タグ名だけを返す
+            - memo tags --empty
+                - タグの付いていないファイル名の一覧を返す
+            - memo tags --tally
+                - タグごとの出現頻度を返す
+        b. memo tags --filter ARGS
+            - ARGS => list, empty, tallyの三つだろうか?
     2. それぞれのタグによって、特定の機能が欲しい
         a. 例えばタグにCLIとついている場合は、それに紐付くCLIの一覧が見れたら嬉しい
     3. タグ名のTypoを検出する機能
@@ -31,14 +30,21 @@
 ## 機能追加
 - 各メモファイルのfront matterにcreated_at, updated_atを挿入する
 
+- memo checkのようなCLIが欲しい
+    - memo tags --empty => memo check tagsなど
+    - memo check duplicate => ファイル名の重複の調査
+
+## 命名など
+- Repository.search_allやfindなどのメソッドの名前を整理したい
+- @seeds => @file_seedsとする
+- load => file_loadとする
+    - loadとdir_loadについて、統合できないだろうか
+
 ## 修正するところ
-- memo listにて、次のように表示したい
-```bash
-cli[緑色]
-  folder1[緑色]
-  file1[デフォルト色]
-```
-- select_promptにて`input = gets.chomp.to_i`がコマンドの引数を読んでいるよな動作をしており、エラーが出てしまうので修正する
+- memo tags --listと打つと、memo listが実行されてしまう
+    - `memo tags --list --dirs --search ls`と打つと、memo search lsとして解釈されてしまう
+- memo list, memo tagsにて、ディレクトリ・タグとファイル名の次に改行を入れたい
+- その他、git grep TODOで出てくるTODOを解消していく
 
 ### gemspecをどうするか
     - gemとして公開する必要がない。gemspecについて調査しておくこと
@@ -51,6 +57,7 @@ cli[緑色]
 ### sub_command_parser
 1. parsedを返す場合と、ヘルプ・ユーザーメッセージを返す場合を明確にする
 2. to_error_message => to_user_messageにしてhelp_messageと共用化してもいい
+3. 引数が足りない場合のエラーメッセージを詳細にする
 
 #### 調査内容の詳細
 - ** `memo list <dirs> | fzf | xargs -I{} memo read {}`で選択したメモを読むことができる

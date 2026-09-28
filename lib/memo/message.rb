@@ -9,5 +9,13 @@ module Memo
       dirというディレクトリはありませんでした。
       ディレクトリの一覧は次の通りです。
     NO_DIRS
+    NO_TAGS = <<~NO_T
+      tagというタグはありませんでした。
+      タグの一覧は次の通りです。
+    NO_T
+    NO_GIVEN_TAGS = <<~NO_G
+      memo tagには引数が必要です。
+      memo tagの後にタグ名を指定してください。
+    NO_G
   end
 end

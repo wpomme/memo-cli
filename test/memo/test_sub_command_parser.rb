@@ -110,6 +110,21 @@ class TestSubCommandParser < Minitest::Test
       end
     end
 
+    describe 'memo tag(-x, --tag)' do
+      it '引数がtagsだけのときは、エラーメッセージを返す' do
+        skip 'TODO'
+      end
+
+      it '引数がtag WORDのときは、[:tag, <word>]を返す' do
+        word = 'foo'
+
+        Memo::SubCommandParser::TAG_COMMAND_SPEC.take_command_forms.each do |command|
+          expected = Memo::SubCommandParser.parse!([command, word])
+          _([:tag, word]).must_equal(expected)
+        end
+      end
+    end
+
     describe 'memo tags(-t, --tags)' do
       it '引数がtagsだけのときは、:tagsを返す' do
         Memo::SubCommandParser::TAGS_COMMAND_SPEC.take_command_forms.each do |command|

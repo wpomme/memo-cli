@@ -30,6 +30,24 @@ module Memo
       @repo.tag_list.join("\n")
     end
 
+    # 引数としてタグ名を取り、そのタグ名と紐付いているファイル名の一覧を返す
+    # 引数として与えられたタグが存在しなければ、その旨を知らせる文字列を返す
+    #
+    # @param tag [String]
+    # @return [String]
+    def tag_and_filenames_by_tag_to_view(tag = '')
+      tag_list = @repo.tag_list
+      tag_seeds_hash = @repo.tag_seeds_hash
+
+      return Memo::Message::NO_GIVEN_TAGS if tag.empty?
+
+      if tag_list.include?(tag)
+        seeds_hash_by_key_to_view(tag_seeds_hash, tag, :aqua)
+      else
+        Message::NO_TAGS.sub('tag', tag) << tag_list.join(INDENT)
+      end
+    end
+
     # 色付けしたタグ名とそのタグが付いたファイル名の一覧を返す
     #
     # @return [String]
@@ -55,7 +73,7 @@ module Memo
       if dir
         return Memo::Message::NO_DIRECTORIES.sub('dir', dir) << dirs_to_view unless dir_set.include?(dir)
 
-        [Rainbow(dir).green].concat(grouped_ls[dir].map(&:basename))
+        seeds_hash_by_key_to_view(grouped_ls, dir, :green)
       else
         seeds_hash_to_view(grouped_ls, :green)
       end
@@ -69,6 +87,10 @@ module Memo
         filenames = seeds.map(&:basename).join(INDENT)
         result << filenames
       end
+    end
+
+    def seeds_hash_by_key_to_view(seeds_hash, key, color_symbol)
+      [Rainbow(key).color(color_symbol)] << seeds_hash[key].map(&:basename).join(INDENT)
     end
   end
 end

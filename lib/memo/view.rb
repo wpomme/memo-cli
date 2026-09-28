@@ -30,6 +30,10 @@ module Memo
       end
     end
 
+    def tag(tag = '')
+      puts @mapper.tag_and_filenames_by_tag_to_view(tag)
+    end
+
     def tags
       puts @mapper.tag_and_filenames_to_view
     end

@@ -112,6 +112,48 @@ class TestView < Minitest::Test
       end
     end
 
+    describe '#tag' do
+      describe '存在するタグ名が与えられた場合' do
+        tag = 'CLI'
+
+        it '色付けされたタグ名とそのタグが付いたファイル名の一覧を表示する' do
+          actual, = capture_io do
+            Memo::View.new(@test_repo).tag(tag)
+          end
+
+          expected = Memo::Mapper.new(@test_repo).tag_and_filenames_by_tag_to_view(tag).join("\n") << "\n"
+
+          _(actual).must_equal(expected)
+        end
+      end
+
+      describe '存在しないタグ名が与えられた場合' do
+        tag = 'does_not_exist_tag_name'
+
+        it 'そのようなタグ名が存在しないことをユーザーに知らせるメッセージを表示する' do
+          actual, = capture_io do
+            Memo::View.new(@test_repo).tag(tag)
+          end
+
+          expected = Memo::Message::NO_TAGS.sub('tag', tag) << @test_repo.tag_list.join(Memo::Mapper::INDENT) << "\n"
+
+          _(actual).must_equal(expected)
+        end
+      end
+
+      describe 'タグ名が与えられなかった場合' do
+        it 'タグ名を与えなければいけないことをユーザーに知らせるメッセージを表示する' do
+          actual, = capture_io do
+            Memo::View.new(@test_repo).tag
+          end
+
+          expected = Memo::Message::NO_GIVEN_TAGS
+
+          _(actual).must_equal(expected)
+        end
+      end
+    end
+
     describe '#tags' do
       it '色付けされたタグ名とそのタグが付いたファイル名の一覧を表示する' do
         actual, = capture_io do

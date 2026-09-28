@@ -26,6 +26,8 @@ module Memo
         view.search(options.shift)
       when :tags
         view.tags
+      when :tag
+        view.tag(options.shift)
       end
     end
   end

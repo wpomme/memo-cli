@@ -160,8 +160,44 @@ class TestCommand < Minitest::Test
           end
         end
 
+        describe 'argv: tag' do
+          it "['tag', 'cli']を受け取ったときは、色付けされたタグ名とそのタグが付いたファイル名の一覧を表示する" do
+            tag = 'CLI'
+
+            actual, = capture_io do
+              Memo::Command.new(@test_repo).execute(%w[tag CLI])
+            end
+
+            expected = Memo::Mapper.new(@test_repo).tag_and_filenames_by_tag_to_view(tag).join("\n") << "\n"
+
+            _(actual).must_equal(expected)
+          end
+
+          it "['tag', 'does_not_exist_tag_name']を受け取ったときは、そのようなタグ名が存在しないことをユーザーに知らせるメッセージを表示する" do
+            tag = 'CLI'
+
+            actual, = capture_io do
+              Memo::Command.new(@test_repo).execute(%w[tag does_not_exist_tag_name])
+            end
+
+            expected = Memo::Message::NO_TAGS.sub('tag', tag) << @test_repo.tag_list.join(Memo::Mapper::INDENT) << "\n"
+
+            _(actual).must_equal(expected)
+          end
+
+          it "['tag']だけを受け取ったときは、タグ名を与えなければいけないことをユーザーに知らせるメッセージを表示する" do
+            actual, = capture_io do
+              Memo::Command.new(@test_repo).execute(['tag'])
+            end
+
+            expected = Memo::Message::NO_GIVEN_TAGS
+
+            _(actual).must_equal(expected)
+          end
+        end
+
         describe 'argv: tags' do
-          it '[tags]を受け取ったときは、色付けされたタグ名とそのタグが付いたファイル名の一覧を表示する' do
+          it "['tags']を受け取ったときは、色付けされたタグ名とそのタグが付いたファイル名の一覧を表示する" do
             actual, = capture_io do
               Memo::Command.new(@test_repo).execute(['tags'])
             end

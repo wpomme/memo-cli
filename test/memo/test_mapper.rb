@@ -46,9 +46,12 @@ class TestMapper < Minitest::Test
         describe '戻り値の値検査' do
           it '色付けされたディレクトリ名とそれに紐付くファイル名の配列を返す' do
             target_dir = 'cli'
+
             actual = Memo::Mapper.new(@test_repo).grouped_ls_to_view(target_dir)
 
-            _(actual).must_be_instance_of(Array)
+            expected = [Rainbow(target_dir).color(:green)] << @test_repo.grouped_ls[target_dir].map(&:basename).join(Memo::Mapper::INDENT)
+
+            _(actual).must_equal(expected)
           end
         end
       end
@@ -89,6 +92,53 @@ class TestMapper < Minitest::Test
           actual = Memo::Mapper.new(@test_repo).tag_list_to_view
 
           expected = @test_repo.tag_list.join("\n")
+
+          _(actual).must_equal(expected)
+        end
+      end
+    end
+    describe '#tag_and_filenames_by_tag_to_view' do
+      describe '引数に存在するタグ名が与えられ場合' do
+        tag = 'CLI'
+
+        describe '戻り値の型検査' do
+          it 'タグ名の一覧を文字列として返す' do
+            ret = Memo::Mapper.new(@test_repo).tag_and_filenames_by_tag_to_view(tag)
+
+            actual = ret.all?(String)
+
+            _(actual).must_equal(true)
+          end
+        end
+
+        describe '戻り値の値検査' do
+          it 'タグ名の一覧を文字列として返す' do
+            actual = Memo::Mapper.new(@test_repo).tag_and_filenames_by_tag_to_view(tag)
+
+            expected = [Rainbow(tag).aqua] << @test_repo.tag_seeds_hash[tag].map(&:basename).join(Memo::Mapper::INDENT)
+
+            _(actual).must_equal(expected)
+          end
+        end
+      end
+
+      describe '引数に存在しないタグ名が与えられ場合' do
+        tag = 'does_not_exist_tag_name'
+
+        it 'そのようなタグ名が存在しないことをユーザーに知らせる文字列を返す' do
+          actual = Memo::Mapper.new(@test_repo).tag_and_filenames_by_tag_to_view(tag)
+
+          expected = Memo::Message::NO_TAGS.sub('tag', tag) << @test_repo.tag_list.join(Memo::Mapper::INDENT)
+
+          _(actual).must_equal(expected)
+        end
+      end
+
+      describe '引数に与えられなかった場合' do
+        it 'タグ名を与えなければいけないことをユーザーに知らせる文字列を返す' do
+          actual = Memo::Mapper.new(@test_repo).tag_and_filenames_by_tag_to_view
+
+          expected = Memo::Message::NO_GIVEN_TAGS
 
           _(actual).must_equal(expected)
         end
