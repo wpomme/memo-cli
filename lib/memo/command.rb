@@ -3,7 +3,7 @@
 module Memo
   class Command
     def self.run(argv)
-      new(Memo::Repository.new(Memo::Config.memo_dir)).execute(argv)
+      new(Memo::Repository.new(Memo::Config.target_dirs)).execute(argv)
     end
 
     def initialize(repo)

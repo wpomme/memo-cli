@@ -15,14 +15,6 @@ class TestConfig < Minitest::Test
       end
     end
 
-    describe '#memo_dir' do
-      it '#memo_dirがディレクトリであること' do
-        test_memo_dir = Memo::Config.memo_dir
-
-        _(FileTest.directory?(test_memo_dir)).must_equal(true)
-      end
-    end
-
     describe '#target_dirs' do
       it '#target_dirsが文字列型の一次元配列であること' do
         test_target_dir = Memo::Config.target_dirs

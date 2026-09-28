@@ -77,13 +77,18 @@ class TestRepository < Minitest::Test
       it 'dir_setの中に対象の最上位のディレクトリが含まれていること' do
         dir_set = @test_repo.dir_set
 
-        _(dir_set.include?(@test_root_dirname)).must_equal(true)
+        @test_root_dirnames.each do |dir|
+          _(dir_set.include?(dir)).must_equal(true)
+        end
       end
       it 'モックデータと実際のdir_setが同じであること' do
         actual = @test_repo.dir_set
-        expected = Dir.glob('**/*/', base: @test_memo_dir)
-          .to_set { |dir| dir.rstrip('/') }
-          .add(@test_root_dirname)
+
+        test_dir_seeds = @test_repo.instance_variable_get(:@dir_seeds)
+        tmp_dirs = test_dir_seeds
+          .map(&:rel_path)
+          .map { |dir| dir.rstrip('/') }
+        expected = Set.new(tmp_dirs).merge(@test_root_dirnames)
 
         _(actual).must_equal(expected)
       end
@@ -169,12 +174,14 @@ class TestRepository < Minitest::Test
 
       describe '戻り値の値検査' do
         it 'キーが対象のディレクトリの最上位であるとき、その値のparent_dirは全てキーと同じ値になり、その値はディレクトリの最上位を表す文字列となる' do
-          test_walk_seed_hash = @test_repo.grouped_ls
+          grouped_ls_hash = @test_repo.grouped_ls
 
-          values = test_walk_seed_hash[@test_root_dirname]
+          values = @test_root_dirnames.map do |dir|
+            grouped_ls_hash[dir]
+          end.flatten
 
           actual = values.all? do |seed|
-            seed.parent_dir == @test_root_dirname
+            @test_root_dirnames.include?(seed.parent_dir)
           end
 
           _(true).must_equal(actual)

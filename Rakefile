@@ -40,11 +40,8 @@ end
 namespace :mock do
   desc '元データからモックデータを作成する'
   task :make do
-    # メモフォルダへの絶対パスを返す
-    dir = Memo::Config.memo_dir
-
     # Repositoryのオブジェクトを作成する
-    repo = Memo::Repository.new(dir)
+    repo = Memo::Repository.new(Memo::Config.target_dirs)
 
     # ファイル名の重複しているものを指定する。実際のメモフォルダで重複がなくなったら、この値を変える必要がある。
     fixed_duplicated_filename = 'mise'
@@ -74,7 +71,7 @@ namespace :mock do
       label = "#{basename}_FILE"
       heredoc = ["#{val_name} = <<~#{label}"] + content + [label] + ["\n"]
       {
-        mock_seed: { parent_dir: seed.parent_dir, basename: seed.basename, content: val_name.to_sym },
+        mock_seed: { target_dir: seed.target_dir, parent_dir: seed.parent_dir, basename: seed.basename, content: val_name.to_sym },
         heredoc: heredoc
       }
     end
@@ -90,6 +87,7 @@ namespace :mock do
       test_memo_data_seed = mock_seeds.map do |seed|
         <<~MEMO_DATA
           {
+            target_dir: "#{seed[:mock_seed][:target_dir]}",
             parent_dir: "#{seed[:mock_seed][:parent_dir]}",
             basename: "#{seed[:mock_seed][:basename]}",
             content: #{seed[:mock_seed][:content]}

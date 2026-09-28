@@ -1,2 +1,5 @@
-# HOMEディレクトリからの相対パスを使用する
-memo_dir: /repo/memorandum/memo/
+# target_dirsはディレクトリのリストを読み込む
+# ディレクトリは、HOMEディレクトリからの相対パスを使用すること
+target_dirs:
+  - /repo/memorandum/memo/
+  - /repo/private-memo/memo/

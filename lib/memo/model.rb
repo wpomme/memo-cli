@@ -8,6 +8,8 @@ module Memo
     #   @return [String] memoディレクトリの中にあるファイルの絶対パス。メモを読み取るために使う
     # @!attribute [w] rel_path
     #   @return [String] 対象のディレクトリからそのファイルへのパス
+    # @!attribute [w] target_dir
+    #   @return [String] このSeedがどのtarget_dirから読み込まれているかを示す値
     # @!attribute [w] parent_dir
     #   @return [String] そのファイルが格納されているディレクトリ
     # @!attribute [w] basename
@@ -16,7 +18,7 @@ module Memo
     #   @return [:file | :directory] 対象のファイルがディレクトリかどうか
     # @!attribute [w] tags
     #   @return [Array<String>] 対象のファイルのフロントマター部分のtagsの値
-    Seed = Struct.new(:full_path, :rel_path, :parent_dir, :basename, :type, :tags)
+    Seed = Struct.new(:full_path, :rel_path, :target_dir, :parent_dir, :basename, :type, :tags)
 
     # 対象のディレクトリを文字列で検索してヒットしたときに返す値
     SearchLine = Struct.new(:path, :line_number, :line) do

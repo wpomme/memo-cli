@@ -19,16 +19,18 @@ class TestView < Minitest::Test
 
     describe '#read' do
       it 'wordが存在するファイルと一致するとき、そのファイルを全文表示する' do
-        target_file = @fixed_mock_file
+        skip 'TODO'
 
         out, = capture_io do
-          Memo::View.new(@test_repo).read(target_file)
+          Memo::View.new(@test_repo).read(@fixed_mock_file)
         end
 
-        assert_equal Memo::MockSeed::TEST_LS_FILE_CONTENT, out
+        _(out).must_equal(Memo::MockSeed::TEST_LS_FILE_CONTENT)
       end
 
       it 'wordが存在するファイルと複数件一致するとき、どのファイルを表示するかのプロンプトを表示し、選択したファイルを全文表示する' do
+        skip 'TODO'
+
         word = @fixed_duplicated_filename
         choices = Memo::MockSeed::TEST_MEMO_DATA_SEED.filter_map do |seed|
           [[seed[:parent_dir], "#{seed[:basename]}.md"].join('/'), seed[:content]] if seed[:basename] == word

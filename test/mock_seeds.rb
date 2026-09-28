@@ -1834,6 +1834,32 @@ module Memo
           1. `tmux list-commnads | grep new`
     TMUX_FILE
 
+    TEST_CHAT_FILE_CONTENT = <<~CHAT_FILE
+      ## Chat: 英語でチャットするとき
+      ### 読み書きの能力を示す
+      1. It's no problem for you to write a review in English
+      2. I have a basic command of reading and writing in English.
+    CHAT_FILE
+
+    TEST_PROMPT_AI_FILE_CONTENT = <<~PROMPT_AI_FILE
+      ## Prompt AI: AIとの対話用
+      ### 修正依頼
+          - エラーがあれば直してほしい
+      1. Please fix any errors. -> 少し丁寧
+      2. Fix any errors if found. -> 自然
+
+      ### 出力して欲しい・AIが読みやすい形で
+          - AIが読みやすいようにpbcopyに渡して
+      - Please pipe the output to pbcopy in an AI-readable format.
+    PROMPT_AI_FILE
+
+    TEST_VOCABULARY_ABOUT_COMPUTER_FILE_CONTENT = <<~VOCABULARY_ABOUT_COMPUTER_FILE
+      ## Vocabulary about computer: 計算機科学に関する英単語
+      - Instance: 例、実例
+          - プログラミングだと具体的なオブジェクトのことをいう
+
+    VOCABULARY_ABOUT_COMPUTER_FILE
+
     TEST_LS_FILE_CONTENT = <<~LS_FILE
       ---
       tags: ["bash", "CLI", "File and Directory", "display"]
@@ -1889,341 +1915,427 @@ module Memo
 
     TEST_MEMO_DATA_SEED = [
       {
+        target_dir: '/Users/hy/repo/memorandum/memo/',
         parent_dir: 'cli/third-party',
         basename: 'mise',
         content: TEST_CLI_THIRD_PARTY_MISE_FILE_CONTENT
       },
       {
+        target_dir: '/Users/hy/repo/memorandum/memo/',
         parent_dir: 'setting',
         basename: 'mise',
         content: TEST_SETTING_MISE_FILE_CONTENT
       },
       {
+        target_dir: '/Users/hy/repo/memorandum/memo/',
         parent_dir: 'memo',
         basename: 'ANSI-escape-code-and-set-color',
         content: TEST_ANSI_ESCAPE_CODE_AND_SET_COLOR_FILE_CONTENT
       },
       {
+        target_dir: '/Users/hy/repo/memorandum/memo/',
         parent_dir: 'cli/core/builtin',
         basename: 'alias',
         content: TEST_ALIAS_FILE_CONTENT
       },
       {
+        target_dir: '/Users/hy/repo/memorandum/memo/',
         parent_dir: 'cli/core/builtin',
         basename: 'command',
         content: TEST_COMMAND_FILE_CONTENT
       },
       {
+        target_dir: '/Users/hy/repo/memorandum/memo/',
         parent_dir: 'cli/core/file',
         basename: 'chmod',
         content: TEST_CHMOD_FILE_CONTENT
       },
       {
+        target_dir: '/Users/hy/repo/memorandum/memo/',
         parent_dir: 'cli/core/file',
         basename: 'realpath',
         content: TEST_REALPATH_FILE_CONTENT
       },
       {
+        target_dir: '/Users/hy/repo/memorandum/memo/',
         parent_dir: 'cli/core/process',
         basename: 'kill',
         content: TEST_KILL_FILE_CONTENT
       },
       {
+        target_dir: '/Users/hy/repo/memorandum/memo/',
         parent_dir: 'cli/core/process',
         basename: 'ps',
         content: TEST_PS_FILE_CONTENT
       },
       {
+        target_dir: '/Users/hy/repo/memorandum/memo/',
         parent_dir: 'cli/core/search',
         basename: 'grep',
         content: TEST_GREP_FILE_CONTENT
       },
       {
+        target_dir: '/Users/hy/repo/memorandum/memo/',
         parent_dir: 'cli/core/text',
         basename: 'diff',
         content: TEST_DIFF_FILE_CONTENT
       },
       {
+        target_dir: '/Users/hy/repo/memorandum/memo/',
         parent_dir: 'cli/core/text',
         basename: 'nl',
         content: TEST_NL_FILE_CONTENT
       },
       {
+        target_dir: '/Users/hy/repo/memorandum/memo/',
         parent_dir: 'cli/core/text',
         basename: 'sed',
         content: TEST_SED_FILE_CONTENT
       },
       {
+        target_dir: '/Users/hy/repo/memorandum/memo/',
         parent_dir: 'cli/core/text',
         basename: 'tr',
         content: TEST_TR_FILE_CONTENT
       },
       {
+        target_dir: '/Users/hy/repo/memorandum/memo/',
         parent_dir: 'cli/core/text',
         basename: 'wc',
         content: TEST_WC_FILE_CONTENT
       },
       {
+        target_dir: '/Users/hy/repo/memorandum/memo/',
         parent_dir: 'cli',
         basename: 'ifconfig',
         content: TEST_IFCONFIG_FILE_CONTENT
       },
       {
+        target_dir: '/Users/hy/repo/memorandum/memo/',
         parent_dir: 'cli',
         basename: 'tcpdump',
         content: TEST_TCPDUMP_FILE_CONTENT
       },
       {
+        target_dir: '/Users/hy/repo/memorandum/memo/',
         parent_dir: 'cli/third-party',
         basename: 'claude',
         content: TEST_CLAUDE_FILE_CONTENT
       },
       {
+        target_dir: '/Users/hy/repo/memorandum/memo/',
         parent_dir: 'cli/third-party',
         basename: 'gh',
         content: TEST_GH_FILE_CONTENT
       },
       {
+        target_dir: '/Users/hy/repo/memorandum/memo/',
         parent_dir: 'cli/third-party',
         basename: 'nkf',
         content: TEST_NKF_FILE_CONTENT
       },
       {
+        target_dir: '/Users/hy/repo/memorandum/memo/',
         parent_dir: 'cli',
         basename: 'units',
         content: TEST_UNITS_FILE_CONTENT
       },
       {
+        target_dir: '/Users/hy/repo/memorandum/memo/',
         parent_dir: 'git',
         basename: 'apply',
         content: TEST_APPLY_FILE_CONTENT
       },
       {
+        target_dir: '/Users/hy/repo/memorandum/memo/',
         parent_dir: 'git',
         basename: 'commit',
         content: TEST_COMMIT_FILE_CONTENT
       },
       {
+        target_dir: '/Users/hy/repo/memorandum/memo/',
         parent_dir: 'git',
         basename: 'conflict',
         content: TEST_CONFLICT_FILE_CONTENT
       },
       {
+        target_dir: '/Users/hy/repo/memorandum/memo/',
         parent_dir: 'git',
         basename: 'git',
         content: TEST_GIT_FILE_CONTENT
       },
       {
+        target_dir: '/Users/hy/repo/memorandum/memo/',
         parent_dir: 'git',
         basename: 'log',
         content: TEST_LOG_FILE_CONTENT
       },
       {
+        target_dir: '/Users/hy/repo/memorandum/memo/',
         parent_dir: 'git/old',
         basename: 'checkout',
         content: TEST_CHECKOUT_FILE_CONTENT
       },
       {
+        target_dir: '/Users/hy/repo/memorandum/memo/',
         parent_dir: 'git',
         basename: 'push',
         content: TEST_PUSH_FILE_CONTENT
       },
       {
+        target_dir: '/Users/hy/repo/memorandum/memo/',
         parent_dir: 'git',
         basename: 'reset',
         content: TEST_RESET_FILE_CONTENT
       },
       {
+        target_dir: '/Users/hy/repo/memorandum/memo/',
         parent_dir: 'git',
         basename: 'rev-parse',
         content: TEST_REV_PARSE_FILE_CONTENT
       },
       {
+        target_dir: '/Users/hy/repo/memorandum/memo/',
         parent_dir: 'git',
         basename: 'upstream',
         content: TEST_UPSTREAM_FILE_CONTENT
       },
       {
+        target_dir: '/Users/hy/repo/memorandum/memo/',
         parent_dir: 'how-to',
         basename: 'data-exchanger',
         content: TEST_DATA_EXCHANGER_FILE_CONTENT
       },
       {
+        target_dir: '/Users/hy/repo/memorandum/memo/',
         parent_dir: 'how-to',
         basename: 'server',
         content: TEST_SERVER_FILE_CONTENT
       },
       {
+        target_dir: '/Users/hy/repo/memorandum/memo/',
         parent_dir: 'lang/css',
         basename: 'hover',
         content: TEST_HOVER_FILE_CONTENT
       },
       {
+        target_dir: '/Users/hy/repo/memorandum/memo/',
         parent_dir: 'lang/javascript',
         basename: 'console',
         content: TEST_CONSOLE_FILE_CONTENT
       },
       {
+        target_dir: '/Users/hy/repo/memorandum/memo/',
         parent_dir: 'lang/javascript',
         basename: 'map',
         content: TEST_MAP_FILE_CONTENT
       },
       {
+        target_dir: '/Users/hy/repo/memorandum/memo/',
         parent_dir: 'lang/javascript',
         basename: 'package-json',
         content: TEST_PACKAGE_JSON_FILE_CONTENT
       },
       {
+        target_dir: '/Users/hy/repo/memorandum/memo/',
         parent_dir: 'lang/lua',
         basename: 'lua',
         content: TEST_LUA_FILE_CONTENT
       },
       {
+        target_dir: '/Users/hy/repo/memorandum/memo/',
         parent_dir: 'lang/perl',
         basename: 'oneliner',
         content: TEST_ONELINER_FILE_CONTENT
       },
       {
+        target_dir: '/Users/hy/repo/memorandum/memo/',
         parent_dir: 'lang/ruby',
         basename: 'array',
         content: TEST_ARRAY_FILE_CONTENT
       },
       {
+        target_dir: '/Users/hy/repo/memorandum/memo/',
         parent_dir: 'lang/ruby',
         basename: 'class',
         content: TEST_CLASS_FILE_CONTENT
       },
       {
+        target_dir: '/Users/hy/repo/memorandum/memo/',
         parent_dir: 'lang/ruby',
         basename: 'gem',
         content: TEST_GEM_FILE_CONTENT
       },
       {
+        target_dir: '/Users/hy/repo/memorandum/memo/',
         parent_dir: 'lang/ruby',
         basename: 'module',
         content: TEST_MODULE_FILE_CONTENT
       },
       {
+        target_dir: '/Users/hy/repo/memorandum/memo/',
         parent_dir: 'lang/ruby',
         basename: 'ruby',
         content: TEST_RUBY_FILE_CONTENT
       },
       {
+        target_dir: '/Users/hy/repo/memorandum/memo/',
         parent_dir: 'lang/ruby',
         basename: 'string',
         content: TEST_STRING_FILE_CONTENT
       },
       {
+        target_dir: '/Users/hy/repo/memorandum/memo/',
         parent_dir: 'lang/ruby',
         basename: 'yard',
         content: TEST_YARD_FILE_CONTENT
       },
       {
+        target_dir: '/Users/hy/repo/memorandum/memo/',
         parent_dir: 'memo',
         basename: 'markdown',
         content: TEST_MARKDOWN_FILE_CONTENT
       },
       {
+        target_dir: '/Users/hy/repo/memorandum/memo/',
         parent_dir: 'neovim',
         basename: 'buffer',
         content: TEST_BUFFER_FILE_CONTENT
       },
       {
+        target_dir: '/Users/hy/repo/memorandum/memo/',
         parent_dir: 'neovim',
         basename: 'commenting',
         content: TEST_COMMENTING_FILE_CONTENT
       },
       {
+        target_dir: '/Users/hy/repo/memorandum/memo/',
         parent_dir: 'neovim/plugin',
         basename: 'neo-tree',
         content: TEST_NEO_TREE_FILE_CONTENT
       },
       {
+        target_dir: '/Users/hy/repo/memorandum/memo/',
         parent_dir: 'neovim/plugin',
         basename: 'nvim-surround',
         content: TEST_NVIM_SURROUND_FILE_CONTENT
       },
       {
+        target_dir: '/Users/hy/repo/memorandum/memo/',
         parent_dir: 'neovim',
         basename: 'read-help',
         content: TEST_READ_HELP_FILE_CONTENT
       },
       {
+        target_dir: '/Users/hy/repo/memorandum/memo/',
         parent_dir: 'neovim',
         basename: 'script',
         content: TEST_SCRIPT_FILE_CONTENT
       },
       {
+        target_dir: '/Users/hy/repo/memorandum/memo/',
         parent_dir: 'neovim',
         basename: 'tips',
         content: TEST_TIPS_FILE_CONTENT
       },
       {
+        target_dir: '/Users/hy/repo/memorandum/memo/',
         parent_dir: 'memo',
         basename: 'react',
         content: TEST_REACT_FILE_CONTENT
       },
       {
+        target_dir: '/Users/hy/repo/memorandum/memo/',
         parent_dir: 'setting',
         basename: 'dockerfile',
         content: TEST_DOCKERFILE_FILE_CONTENT
       },
       {
+        target_dir: '/Users/hy/repo/memorandum/memo/',
         parent_dir: 'setting',
         basename: 'makefile',
         content: TEST_MAKEFILE_FILE_CONTENT
       },
       {
+        target_dir: '/Users/hy/repo/memorandum/memo/',
         parent_dir: 'shell/bash',
         basename: 'bash',
         content: TEST_BASH_FILE_CONTENT
       },
       {
+        target_dir: '/Users/hy/repo/memorandum/memo/',
         parent_dir: 'shell/bash',
         basename: 'exit-status',
         content: TEST_EXIT_STATUS_FILE_CONTENT
       },
       {
+        target_dir: '/Users/hy/repo/memorandum/memo/',
         parent_dir: 'shell/bash/expansion',
         basename: 'history-expansion',
         content: TEST_HISTORY_EXPANSION_FILE_CONTENT
       },
       {
+        target_dir: '/Users/hy/repo/memorandum/memo/',
         parent_dir: 'shell/bash',
         basename: 'for',
         content: TEST_FOR_FILE_CONTENT
       },
       {
+        target_dir: '/Users/hy/repo/memorandum/memo/',
         parent_dir: 'shell/bash',
         basename: 'redirection',
         content: TEST_REDIRECTION_FILE_CONTENT
       },
       {
+        target_dir: '/Users/hy/repo/memorandum/memo/',
         parent_dir: 'shell/bash',
         basename: 'special-parameters',
         content: TEST_SPECIAL_PARAMETERS_FILE_CONTENT
       },
       {
+        target_dir: '/Users/hy/repo/memorandum/memo/',
         parent_dir: 'shell/zsh',
         basename: 'command-history',
         content: TEST_COMMAND_HISTORY_FILE_CONTENT
       },
       {
+        target_dir: '/Users/hy/repo/memorandum/memo/',
         parent_dir: 'tui',
         basename: 'emacs',
         content: TEST_EMACS_FILE_CONTENT
       },
       {
+        target_dir: '/Users/hy/repo/memorandum/memo/',
         parent_dir: 'tui',
         basename: 'lazygit',
         content: TEST_LAZYGIT_FILE_CONTENT
       },
       {
+        target_dir: '/Users/hy/repo/memorandum/memo/',
         parent_dir: 'tui',
         basename: 'tmux',
         content: TEST_TMUX_FILE_CONTENT
       },
       {
+        target_dir: '/Users/hy/repo/private-memo/memo/',
+        parent_dir: 'english',
+        basename: 'chat',
+        content: TEST_CHAT_FILE_CONTENT
+      },
+      {
+        target_dir: '/Users/hy/repo/private-memo/memo/',
+        parent_dir: 'english',
+        basename: 'prompt-ai',
+        content: TEST_PROMPT_AI_FILE_CONTENT
+      },
+      {
+        target_dir: '/Users/hy/repo/private-memo/memo/',
+        parent_dir: 'english',
+        basename: 'vocabulary-about-computer',
+        content: TEST_VOCABULARY_ABOUT_COMPUTER_FILE_CONTENT
+      },
+      {
+        target_dir: '/Users/hy/repo/memorandum/memo/',
         parent_dir: 'cli/core/file',
         basename: 'ls',
         content: TEST_LS_FILE_CONTENT

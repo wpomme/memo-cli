@@ -4,10 +4,10 @@ module Memo
   class Repository
     EXCLUDE_FILES = ['README.md'].to_set.freeze
 
-    def initialize(dir)
-      @seeds = load(dir)
-      @dir_seeds = load_dirs(dir)
-      @root_dir = File.basename(dir)
+    def initialize(dirs)
+      @seeds = dirs.map { |dir| load(dir) }.flatten
+      @dir_seeds = dirs.map { |dir| load_dirs(dir) }.flatten
+      @root_dirs = dirs.map { |dir| File.basename(dir) }
     end
 
     # 対象の全てのファイルに文字列検索を行う
@@ -69,7 +69,7 @@ module Memo
       dirs = @dir_seeds
         .map(&:rel_path)
         .map { |dir| dir.rstrip('/') }
-      Set.new(dirs).add(@root_dir)
+      Set.new(dirs).merge(@root_dirs)
     end
 
     private
@@ -87,6 +87,7 @@ module Memo
         Memo::Model::Seed.new(
           full_path: full_path,
           rel_path: rel_path,
+          target_dir: root_dir,
           parent_dir: parent_dir == '.' ? File.basename(root_dir) : parent_dir,
           basename: File.basename(rel_path),
           type: :directory,
@@ -117,6 +118,7 @@ module Memo
         Memo::Model::Seed.new(
           full_path: full_path,
           rel_path: rel_path,
+          target_dir: root_dir,
           parent_dir: parent_dir,
           basename: basename(full_path),
           type: :file,

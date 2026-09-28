@@ -12,19 +12,29 @@ require 'minitest/mock'
 module MemoTestLifecycleHooks
   def setup
     # テスト環境ではMemo::Config.memo_dirを使わない
-    @test_memo_dir = File.join(Dir.home, '/var/test-memo-dir')
-    FileUtils.mkdir_p(@test_memo_dir)
-
-    @test_root_dirname = File.basename(@test_memo_dir)
-
-    Memo::MockSeed::TEST_MEMO_DATA_SEED.each do |elem|
-      dir_for_file = File.join(@test_memo_dir, elem[:parent_dir])
-      FileUtils.mkdir_p(dir_for_file) unless FileTest.directory?(dir_for_file)
-
-      File.write(File.join(@test_memo_dir, elem[:parent_dir], "#{elem[:basename]}.md"), elem[:content])
+    # @test_memo_dir = File.join(Dir.home, '/var/test-memo-dir')
+    target_dir_hash = {
+      Memo::Config.target_dirs[0] => '/var/test-target-dir',
+      Memo::Config.target_dirs[1] => '/var-test-private-target-dir'
+    }
+    target_dir_hash.transform_values! { |dir| File.join(Dir.home, dir) }
+    @test_target_dirs = target_dir_hash.values
+    @test_target_dirs.each do |dir|
+      FileUtils.mkdir_p(dir)
     end
 
-    @test_repo = Memo::Repository.new(@test_memo_dir)
+    @test_root_dirnames = @test_target_dirs.map { |dir| File.basename(dir) }
+
+    Memo::MockSeed::TEST_MEMO_DATA_SEED.each do |seed|
+      target_dir_hash.each do |orig_dir, test_dir|
+        test_child_dir = File.join(test_dir, seed[:parent_dir])
+        FileUtils.mkdir_p(test_child_dir) unless FileTest.directory?(test_child_dir)
+
+        File.write(File.join(test_dir, seed[:parent_dir], "#{seed[:basename]}.md"), seed[:content]) if orig_dir == seed[:target_dir]
+      end
+    end
+
+    @test_repo = Memo::Repository.new(@test_target_dirs)
     @test_seeds = @test_repo.instance_variable_get(:@seeds)
 
     @fixed_mock_file = 'ls'
@@ -34,6 +44,8 @@ module MemoTestLifecycleHooks
 
   def teardown
     # ~/var/memo-cli-test-dirまでは削除して、~/var/は消さずに残しておく
-    FileUtils.remove_entry_secure(@test_memo_dir)
+    @test_target_dirs.each do |dir|
+      FileUtils.remove_entry_secure(dir)
+    end
   end
 end
