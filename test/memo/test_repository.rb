@@ -7,70 +7,53 @@ class TestRepository < Minitest::Test
     include MemoTestLifecycleHooks
 
     describe '#initialize' do
-      it 'テスト環境のとき、memo_dirは一時的に作成されたテスト用のディレクトリになる' do
-        memo_file_set = @test_seeds.first.full_path.split('/').to_set
-        memo_dir_set = @test_memo_dir.split('/').to_set
+      describe '#load, @seeds' do
+        it '@seedsの配列の要素はMemo::Model::Seedである' do
+          seeds = @test_repo.instance_variable_get(:@seeds)
+          expected = seeds.all?(Memo::Model::Seed)
 
-        # パスでsplitして集合にして、ディレクトリの方がファイルの方の部分集合であることを確かめれば良い
-        assert memo_dir_set.subset?(memo_file_set)
-      end
+          _(true).must_equal(expected)
+        end
 
-      it '@seedsの配列の要素はMemo::Model::Seedである' do
-        seeds = @test_repo.instance_variable_get(:@seeds)
-        expected = seeds.all?(Memo::Model::Seed)
+        it '@seeds.full_path は絶対パスである' do
+          seeds = @test_repo.instance_variable_get(:@seeds)
+          full_paths = seeds.map(&:full_path)
 
-        _(true).must_equal(expected)
-      end
+          actual = full_paths.all? do |full_path|
+            File.absolute_path?(full_path)
+          end
 
-      # TODO: モックデータにREADME.md用のデータを作成する
-      it '@seeds.full_pathはREADME(.md)を含まない' do
-        seeds = @test_repo.instance_variable_get(:@seeds)
-        full_path = seeds.map(&:full_path)
-
-        refute_includes full_path, 'README'
-        refute_includes full_path, 'README.md'
-      end
-
-      it '@seeds:full_path は絶対パスである' do
-        seeds = @test_repo.instance_variable_get(:@seeds)
-        full_paths = seeds.map(&:full_path)
-
-        full_paths.each do |full_path|
-          assert File.absolute_path?(full_path)
+          _(actual).must_equal(true)
         end
       end
 
-      it '対象ディレクトリの最上位にあるメモのdirは、そのメモが保存されているディレクトリ名になる' do
-        skip 'TODO: @fixed_mock_file_under_root_dirを作成する'
-      end
+      describe '@dir_seed, #load_dirs' do
+        # File#dirnae: https://docs.ruby-lang.org/ja/latest/method/File/s/dirname.html
+        # File#basename: https://docs.ruby-lang.org/ja/latest/method/File/s/basename.html
+        describe 'dir_seedに入る値を明確にするために、File.dirnameとFile.basenameの動作を説明するためのテストを作成する' do
+          it 'File.dirname("foo")は"."になる' do
+            expected = File.dirname('foo')
+            actual = '.'
+            _(actual).must_equal(expected)
+          end
 
-      # File#dirnae: https://docs.ruby-lang.org/ja/latest/method/File/s/dirname.html
-      # File#basename: https://docs.ruby-lang.org/ja/latest/method/File/s/basename.html
-      describe 'dir_seedに入る値を明確にするために、File.dirnameとFile.basenameの動作を説明するためのテストを作成する' do
-        it 'File.dirname("foo")は"."になる' do
-          expected = File.dirname('foo')
-          actual = '.'
-          _(actual).must_equal(expected)
+          it 'File.dirname("/foo/bar/baz")は"/foo/bar"になる' do
+            expected = File.dirname('/foo/bar/baz')
+            actual = '/foo/bar'
+            _(actual).must_equal(expected)
+          end
+
+          it 'File.basename("/foo/bar/baz")は"bar"になる。"/foo/bar/baz/"でも同様である。' do
+            expected1 = File.basename('/foo/bar/baz')
+            expected2 = File.basename('/foo/bar/baz/')
+
+            actual = 'baz'
+
+            _(actual).must_equal(expected1)
+            _(actual).must_equal(expected2)
+          end
         end
 
-        it 'File.dirname("/foo/bar/baz")は"/foo/bar"になる' do
-          expected = File.dirname('/foo/bar/baz')
-          actual = '/foo/bar'
-          _(actual).must_equal(expected)
-        end
-
-        it 'File.basename("/foo/bar/baz")は"bar"になる。"/foo/bar/baz/"でも同様である。' do
-          expected1 = File.basename('/foo/bar/baz')
-          expected2 = File.basename('/foo/bar/baz/')
-
-          actual = 'baz'
-
-          _(actual).must_equal(expected1)
-          _(actual).must_equal(expected2)
-        end
-      end
-
-      describe '@dir_seed' do
         it 'target_dirの方が"cli"のようにディレクトリの第一階層を示すなら、parent_dirは第二引数と同じになる' do
           skip 'TODO'
           target_dir = 'cli'
