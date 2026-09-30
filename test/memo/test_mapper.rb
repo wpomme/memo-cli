@@ -98,7 +98,7 @@ class TestMapper < Minitest::Test
       end
     end
     describe '#tag_and_filenames_by_tag_to_view' do
-      describe '引数に存在するタグ名が与えられ場合' do
+      describe '引数に存在するタグ名が与えられた場合' do
         tag = 'CLI'
 
         describe '戻り値の型検査' do
@@ -122,7 +122,7 @@ class TestMapper < Minitest::Test
         end
       end
 
-      describe '引数に存在しないタグ名が与えられ場合' do
+      describe '引数に存在しないタグ名が与えられた場合' do
         tag = 'does_not_exist_tag_name'
 
         it 'そのようなタグ名が存在しないことをユーザーに知らせる文字列を返す' do
@@ -134,7 +134,7 @@ class TestMapper < Minitest::Test
         end
       end
 
-      describe '引数に与えられなかった場合' do
+      describe '引数が与えられなかった場合' do
         it 'タグ名を与えなければいけないことをユーザーに知らせる文字列を返す' do
           actual = Memo::Mapper.new(@test_repo).tag_and_filenames_by_tag_to_view
 

@@ -108,7 +108,14 @@ class TestSubCommandParser < Minitest::Test
 
     describe 'memo tag(-x, --tag)' do
       it '引数がtagsだけのときは、エラーメッセージを返す' do
-        skip 'TODO'
+        # TODO
+        capture_io do
+          exception = assert_raises(SystemExit) do
+            Memo::Command.new(@test_repo).execute(['tag'])
+          end
+
+          _(exception.status).must_equal(2)
+        end
       end
 
       it '引数がtag WORDのときは、[:tag, <word>]を返す' do
