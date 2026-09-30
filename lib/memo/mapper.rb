@@ -12,7 +12,9 @@ module Memo
     #
     # @param word [string]
     # @return [Array<String>, String]
-    def search_result_to_view(word)
+    def search_result_to_view(word = '')
+      return Memo::Message::NO_GIVEN_ARGS.gsub('CLI', 'search') if word.empty?
+
       search_result = @repo.search_all(word)
 
       # 検索結果が空だった場合は、その旨を示すメッセージを表示する
@@ -39,7 +41,7 @@ module Memo
       tag_list = @repo.tag_list
       tag_seeds_hash = @repo.tag_seeds_hash
 
-      return Memo::Message::NO_GIVEN_TAGS if tag.empty?
+      return Memo::Message::NO_GIVEN_ARGS.gsub('CLI', 'tag') if tag.empty?
 
       if tag_list.include?(tag)
         seeds_hash_by_key_to_view(tag_seeds_hash, tag, :aqua)

@@ -34,12 +34,13 @@ module Memo
     #   @return [Symbol] 該当のサブコマンドの引数の取り方を指定する。
     #     none: 引数を取らない
     #     optional: 引数をオブションで取る
+    #     sub_option: 引数にサブオプションを取る
     #     required: 引数を必須で取る
     # @!attribute [r] :long_form_with_argv
     #   @return [String | Void] サブコマンドが引数を取る場合に、OptionParser#onのロングフォームに指定する値を定めたもの
     # @!attribute [r] :parsed_block
     #   @return [String | Void] OptionsParser#parse!で実行する手続き
-    SUB_COMMAND_SPEC = Struct.new(:sub_command_form, :long_form, :short_form, :desc, :argv_type, :long_form_with_argv, :parsed_block) do
+    SubCommandSpec = Struct.new(:sub_command_form, :long_form, :short_form, :desc, :argv_type, :long_form_with_argv, :parsed_block) do
       def initialize(...)
         super
         freeze

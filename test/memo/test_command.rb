@@ -107,16 +107,18 @@ class TestCommand < Minitest::Test
           _(out).must_equal(Memo::Message::NO_MEMOS_WEWE_FOUND.sub('word', word) << "\n")
         end
 
-        it "['read', nil]を受け取ったときは、例外を送出する" do
-          word = nil
-
-          capture_io do
-            exception = assert_raises(OptionParser::InvalidArgument) do
-              Memo::Command.new(@test_repo).execute(['read', word])
+        it '引数が与えられていない場合は、その旨をユーザーに知らせるメッセージを返す' do
+          out, = capture_io do
+            exception = assert_raises(SystemExit) do
+              Memo::Command.new(@test_repo).execute(['read'])
             end
 
-            assert_equal 'invalid argument: -r ', exception.message
+            assert_equal 2, exception.status
           end
+
+          expected = Memo::Message::NO_GIVEN_ARGS.gsub('CLI', 'read')
+
+          _(out).must_equal(expected)
         end
       end
 
@@ -144,16 +146,18 @@ class TestCommand < Minitest::Test
           assert_equal out, Memo::Message::NO_SEARCH_RESULTS_WERE_FOUND.sub('word', search_word) << "\n"
         end
 
-        it "['search', nil]を受け取ったときは、例外を送出する" do
-          word = nil
-
-          capture_io do
-            exception = assert_raises(OptionParser::InvalidArgument) do
-              Memo::Command.new(@test_repo).execute(['search', word])
+        it "['search']を受け取った場合は、引数が足りないことをユーザーに知らせるメッセージを表示する" do
+          out, = capture_io do
+            exception = assert_raises(SystemExit) do
+              Memo::Command.new(@test_repo).execute(['search'])
             end
 
-            assert_equal 'invalid argument: -s ', exception.message
+            assert_equal 2, exception.status
           end
+
+          expected = Memo::Message::NO_GIVEN_ARGS.gsub('CLI', 'search')
+
+          _(out).must_equal(expected)
         end
       end
 
@@ -183,7 +187,7 @@ class TestCommand < Minitest::Test
         end
 
         it "['tag']だけを受け取ったときは、タグ名を与えなければいけないことをユーザーに知らせるメッセージを表示する" do
-          capture_io do
+          out, = capture_io do
             exception = assert_raises(SystemExit) do
               Memo::Command.new(@test_repo).execute(['tag'])
             end
@@ -191,10 +195,9 @@ class TestCommand < Minitest::Test
             _(exception.status).must_equal(2)
           end
 
-          Memo::Message::NO_GIVEN_TAGS
+          expected = Memo::Message::NO_GIVEN_ARGS.gsub('CLI', 'tag')
 
-          # TODO: 引数が足りなかった場合のユーザーメッセージを修正する
-          # _(actual).must_equal(expected)
+          _(out).must_equal(expected)
         end
       end
 

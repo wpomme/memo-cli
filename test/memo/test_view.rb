@@ -52,6 +52,16 @@ class TestView < Minitest::Test
         $stdin = STDIN
       end
 
+      it '引数が与えられていない場合は、その旨をユーザーに知らせるメッセージを返す' do
+        out, = capture_io do
+          Memo::View.new(@test_repo).read
+        end
+
+        expected = Memo::Message::NO_GIVEN_ARGS.gsub('CLI', 'read')
+
+        _(out).must_equal(expected)
+      end
+
       it 'wordが存在しないファイルの場合は、そのwordにあたるメモはないことを表示する' do
         word = 'invalid_memo'
 
@@ -147,7 +157,7 @@ class TestView < Minitest::Test
             Memo::View.new(@test_repo).tag
           end
 
-          expected = Memo::Message::NO_GIVEN_TAGS
+          expected = Memo::Message::NO_GIVEN_ARGS.gsub('CLI', 'tag')
 
           _(actual).must_equal(expected)
         end
@@ -201,8 +211,19 @@ class TestView < Minitest::Test
           Memo::View.new(@test_repo).search(search_word)
         end
 
-        # TODO: とりあえず文字列を返すことを確認する
-        _(out).must_be_instance_of(String)
+        expected = Memo::Message::NO_SEARCH_RESULTS_WERE_FOUND.sub('word', search_word) << "\n"
+
+        _(out).must_equal(expected)
+      end
+
+      it '引数が与えられなかった場合は、その旨を知らせるメッセージを表示する' do
+        out, = capture_io do
+          Memo::View.new(@test_repo).search
+        end
+
+        expected = Memo::Message::NO_GIVEN_ARGS.gsub('CLI', 'search')
+
+        _(out).must_equal(expected)
       end
     end
   end

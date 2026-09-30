@@ -40,8 +40,6 @@
     - loadとdir_loadについて、統合できないだろうか
 
 ## 修正するところ
-- memo tags --listと打つと、memo listが実行されてしまう
-    - `memo tags --list --dirs --search ls`と打つと、memo search lsとして解釈されてしまう
 - memo list, memo tagsにて、ディレクトリ・タグとファイル名の次に改行を入れたい
 - その他、git grep TODOで出てくるTODOを解消していく
 - sub_command_parserについて、memo tags --listを実行すると、memo listが実行されてしまう問題をもっと簡単なロジックで解決できるようにする
@@ -53,11 +51,6 @@
 1. fzfと連携させればファジーにメモを読むことができる
 2. fzfを通すとフォルダの色付けが取れてしまう
 3. Rainbowのconfigで修正できるかもしれない
-
-### sub_command_parser
-1. parsedを返す場合と、ヘルプ・ユーザーメッセージを返す場合を明確にする
-2. to_error_message => to_user_messageにしてhelp_messageと共用化してもいい
-3. 引数が足りない場合のエラーメッセージを詳細にする
 
 #### 調査内容の詳細
 - ** `memo list <dirs> | fzf | xargs -I{} memo read {}`で選択したメモを読むことができる

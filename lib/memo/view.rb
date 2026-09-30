@@ -11,7 +11,10 @@ module Memo
       puts @mapper.dirs_to_view
     end
 
-    def read(word)
+    def read(word = '')
+      # 引数が与えられていない場合は、その旨をユーザーに知らせるメッセージを返す
+      return puts Memo::Message::NO_GIVEN_ARGS.gsub('CLI', 'read') if word.empty?
+
       found = @repo.find(word)
 
       case found.size
@@ -47,7 +50,7 @@ module Memo
       puts @mapper.grouped_ls_to_view(dir)
     end
 
-    def search(word)
+    def search(word = '')
       puts @mapper.search_result_to_view(word)
     end
   end

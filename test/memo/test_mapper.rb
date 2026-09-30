@@ -138,7 +138,7 @@ class TestMapper < Minitest::Test
         it 'タグ名を与えなければいけないことをユーザーに知らせる文字列を返す' do
           actual = Memo::Mapper.new(@test_repo).tag_and_filenames_by_tag_to_view
 
-          expected = Memo::Message::NO_GIVEN_TAGS
+          expected = Memo::Message::NO_GIVEN_ARGS.gsub('CLI', 'tag')
 
           _(actual).must_equal(expected)
         end
@@ -172,6 +172,15 @@ class TestMapper < Minitest::Test
     end
 
     describe '#search_result_to_view' do
+      it '引数が与えられていなかった場合は、その旨をユーザーに伝えるメッセージを返す' do
+        mapper = Memo::Mapper.new(@test_repo)
+
+        actual = mapper.search_result_to_view
+        expected = Memo::Message::NO_GIVEN_ARGS.gsub('CLI', 'search')
+
+        _(actual).must_equal(expected)
+      end
+
       describe '戻り値の型検査' do
         it '色付きの検索結果が含まれている文字列の一次元配列を返す' do
           search_word = @fixed_search_word

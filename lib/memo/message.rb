@@ -13,9 +13,9 @@ module Memo
       tagというタグはありませんでした。
       タグの一覧は次の通りです。
     NO_T
-    NO_GIVEN_TAGS = <<~NO_G
-      memo tagには引数が必要です。
-      memo tagの後にタグ名を指定してください。
+    NO_GIVEN_ARGS = <<~NO_G
+      memo CLIには引数が必要です。
+      memo CLIの後にタグ名を指定してください。
     NO_G
     OPT_BANNER = 'memo CLI: ローカルのメモフォルダをコマンドで閲覧、検索するためのコマンド'
     OPT_SEPARATOR_HEREDOCS = <<~SEPT
