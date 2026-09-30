@@ -34,8 +34,13 @@ module Memo
       puts @mapper.tag_and_filenames_by_tag_to_view(tag)
     end
 
-    def tags
-      puts @mapper.tag_and_filenames_to_view
+    def tags(filter = '')
+      case filter
+      when :list
+        puts @mapper.tag_list_to_view.gsub("\n", ' ')
+      else
+        puts @mapper.tag_and_filenames_to_view
+      end
     end
 
     def list(dir = nil)

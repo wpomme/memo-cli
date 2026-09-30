@@ -155,14 +155,28 @@ class TestView < Minitest::Test
     end
 
     describe '#tags' do
-      it '色付けされたタグ名とそのタグが付いたファイル名の一覧を表示する' do
-        actual, = capture_io do
-          Memo::View.new(@test_repo).tags
+      describe '引数が与えられなかった場合' do
+        it '色付けされたタグ名とそのタグが付いたファイル名の一覧を表示する' do
+          actual, = capture_io do
+            Memo::View.new(@test_repo).tags
+          end
+
+          expected = Memo::Mapper.new(@test_repo).tag_and_filenames_to_view.join("\n") << "\n"
+
+          _(actual).must_equal(expected)
         end
+      end
 
-        expected = Memo::Mapper.new(@test_repo).tag_and_filenames_to_view.join("\n") << "\n"
+      describe '引数が与えられた場合' do
+        it ':listなら、タグ名だけを返す' do
+          actual, = capture_io do
+            Memo::View.new(@test_repo).tags(:list)
+          end
 
-        _(actual).must_equal(expected)
+          expected = @test_repo.tag_list.join(' ') << "\n"
+
+          _(actual).must_equal(expected)
+        end
       end
     end
 

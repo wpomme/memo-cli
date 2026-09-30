@@ -15,8 +15,27 @@ module Memo
     SEARCH_COMMAND_SPEC = Memo::Model::SUB_COMMAND_SPEC.new('search', '--search', '-s', '検索した文字列で全てのメモを全文検索する', :required, '--search WORD', proc do |word|
       self.parsed = [:search, word]
     end)
-    TAGS_COMMAND_SPEC = Memo::Model::SUB_COMMAND_SPEC.new('tags', '--tags', '-t', 'タグ名とそのタグ名が付いたファイル名の一覧を表示する', :none, nil, proc do |_word|
-      self.parsed = [:tags]
+
+    TAGS_SUB_COMMANDS = {
+      list: %w[-l --list],
+      empty: %w[-e --empty],
+      tally: %w[-t --tally]
+    }.freeze
+
+    TAGS_SUB_COMMAND_FIND = lambda { |tags_sub_commands, filter|
+      tags_sub_commands.keys.find do |key|
+        tags_sub_commands[key].include?(filter)
+      end
+    }
+
+    TAGS_COMMAND_SPEC = Memo::Model::SUB_COMMAND_SPEC.new('tags', '--tags', '-t', 'タグ名とそのタグ名が付いたファイル名の一覧を表示する', :optional, '--tags [FILTER]', proc do |filter|
+      found = TAGS_SUB_COMMAND_FIND.call(TAGS_SUB_COMMANDS, filter)
+
+      self.parsed = if found
+                      [:tags, found]
+                    else
+                      [:tags]
+                    end
     end)
     TAG_COMMAND_SPEC = Memo::Model::SUB_COMMAND_SPEC.new('tag', '--tag', '-x', '与えらえたタグ名に対応するファイル名の一覧を表示する', :required, '--tag TAG_NAME', proc do |tag_name|
       self.parsed = [:tag, tag_name]
@@ -52,7 +71,12 @@ module Memo
       else
         return to_error_message(:requires_argv) if found[:argv_type] == :required && argv.empty?
 
-        parser.parse!([found[:short_form]] + argv)
+        if found[:argv_type] == :optional && !argv.empty?
+          parser.parse!(["#{found[:long_form]}=#{argv.first}"])
+          # → ["--tags=--list"]
+        else
+          parser.parse!([found[:short_form]] + argv)
+        end
       end
 
       parsed unless parsed.nil?

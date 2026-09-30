@@ -25,9 +25,11 @@ module Memo
       when :search
         view.search(options.shift)
       when :tags
-        view.tags
+        view.tags(options.shift)
       when :tag
         view.tag(options.shift)
+      else
+        StandardError 'There is something wrong with SubCommandParser.parse! return value from Repository.find'
       end
     end
   end

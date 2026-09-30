@@ -3,20 +3,12 @@
 1. yaml形式のfrontmatterでタグ付け
 - タグ付けによって欲しい機能(WIP)
     1. memo tag, memo tagsのCLIインターフェイス案
-        a. memo tags --OPTION
-            - memo tags --list
-                - タグ名だけを返す
-            - memo tags --empty
-                - タグの付いていないファイル名の一覧を返す
-            - memo tags --tally
-                - タグごとの出現頻度を返す
-        b. memo tags --filter ARGS
-            - ARGS => list, empty, tallyの三つだろうか?
-    2. それぞれのタグによって、特定の機能が欲しい
-        a. 例えばタグにCLIとついている場合は、それに紐付くCLIの一覧が見れたら嬉しい
-    3. タグ名のTypoを検出する機能
-        a. Settingとsetting, settingsなどの表記ゆれを検出する機能
-        b. タグの出現頻度が１程度のものについて、そのタグの命名規則や単語に間違いがないか
+        - [OK]: memo tags --list
+            - タグ名だけを返す
+        - memo tags --empty
+            - タグの付いていないファイル名の一覧を返す
+        - memo tags --tally
+            - タグごとの出現頻度を返す
 
 ### その他
 # テスト系
@@ -34,6 +26,13 @@
     - memo tags --empty => memo check tagsなど
     - memo check duplicate => ファイル名の重複の調査
 
+## タグ系
+1. それぞれのタグによって、特定の機能が欲しい
+    a. 例えばタグにCLIとついている場合は、それに紐付くCLIの一覧が見れたら嬉しい
+2. タグ名のTypoを検出する機能
+    a. Settingとsetting, settingsなどの表記ゆれを検出する機能
+    b. タグの出現頻度が１程度のものについて、そのタグの命名規則や単語に間違いがないか
+
 ## 命名など
 - Repository.search_allやfindなどのメソッドの名前を整理したい
 - @seeds => @file_seedsとする
@@ -45,6 +44,7 @@
     - `memo tags --list --dirs --search ls`と打つと、memo search lsとして解釈されてしまう
 - memo list, memo tagsにて、ディレクトリ・タグとファイル名の次に改行を入れたい
 - その他、git grep TODOで出てくるTODOを解消していく
+- sub_command_parserについて、memo tags --listを実行すると、memo listが実行されてしまう問題をもっと簡単なロジックで解決できるようにする
 
 ### gemspecをどうするか
     - gemとして公開する必要がない。gemspecについて調査しておくこと

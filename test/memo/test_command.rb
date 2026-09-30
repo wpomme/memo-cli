@@ -209,6 +209,21 @@ class TestCommand < Minitest::Test
 
           _(actual).must_equal(expected)
         end
+
+        it "['tags']の次に続く値で、'-l', '--list'を受け取ったときは、タグ名だけを表示する" do
+          test_tags_sub_commands = ['-l', '--list']
+
+          test_tags_sub_commands.each do |sub_command|
+            actual, = capture_io do
+              Memo::Command.new(@test_repo).execute(['tags', sub_command])
+            end
+
+            expected = @test_repo.tag_list
+              .join(' ') << "\n"
+
+            _(actual).must_equal(expected)
+          end
+        end
       end
     end
   end

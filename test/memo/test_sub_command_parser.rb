@@ -136,6 +136,18 @@ class TestSubCommandParser < Minitest::Test
         end
       end
 
+      it '引数がtagsで、その次に続く引数がTAGS_SUB_COMMANDSの値のどれかなら、それに対応するシンボルと一緒に値を返す' do
+        Memo::SubCommandParser::TAGS_COMMAND_SPEC.take_command_forms.each do |command|
+          Memo::SubCommandParser::TAGS_SUB_COMMANDS.values.flatten.each do |sub_command|
+            expected = Memo::SubCommandParser.parse!([command, sub_command])
+
+            found = Memo::SubCommandParser::TAGS_SUB_COMMAND_FIND.call(Memo::SubCommandParser::TAGS_SUB_COMMANDS, sub_command)
+
+            _([:tags, found]).must_equal(expected)
+          end
+        end
+      end
+
       it '引数がtagsで、その後に続く引数があってもそのまま:tagsを返す' do
         Memo::SubCommandParser::TAGS_COMMAND_SPEC.take_command_forms.each do |command|
           expected = Memo::SubCommandParser.parse!([command, 'foo'])
