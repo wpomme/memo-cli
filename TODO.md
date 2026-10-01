@@ -26,12 +26,16 @@
     - memo tags --empty => memo check tagsなど
     - memo check duplicate => ファイル名の重複の調査
 
+- CLIの自動補完機能
+    - bash, zshと連携させてコマンドの自動補完機能を付けてみたい
+
 ## タグ系
 1. それぞれのタグによって、特定の機能が欲しい
     a. 例えばタグにCLIとついている場合は、それに紐付くCLIの一覧が見れたら嬉しい
 2. タグ名のTypoを検出する機能
     a. Settingとsetting, settingsなどの表記ゆれを検出する機能
     b. タグの出現頻度が１程度のものについて、そのタグの命名規則や単語に間違いがないか
+    c. タグの検索は大文字小文字を区別しないようにしたい
 
 ## 命名など
 - Repository.search_allやfindなどのメソッドの名前を整理したい
@@ -59,5 +63,3 @@
         - `memo list`について、pipeやファイルに出力するとカラーコードが落ちてしまう
         - `memo list | xargs -I@ echo @`などで再現する
             - `Rainbow.enabled`の設定変更が必要？ -> パス名・環境変数系へ
-
-#### CLIの自動補完機能

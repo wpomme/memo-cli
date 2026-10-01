@@ -18,34 +18,40 @@ class TestView < Minitest::Test
     end
 
     describe '#read' do
-      it 'wordが存在するファイルと一致するとき、そのファイルを全文表示する' do
-        skip 'TODO'
-
+      it 'target_filenameが存在するファイルと一致するとき、そのファイルを全文表示する' do
+        target_file = @fixed_mock_file
         out, = capture_io do
-          Memo::View.new(@test_repo).read(@fixed_mock_file)
+          Memo::View.new(@test_repo).read(target_file)
         end
 
-        _(out).must_equal(Memo::MockSeed::TEST_LS_FILE_CONTENT)
+        _(out).must_equal(Memo::MockSeed::TEST_MEMO_DATA_SEED.find { |seed| seed[:basename] == target_file }[:content])
       end
 
-      it 'wordが存在するファイルと複数件一致するとき、どのファイルを表示するかのプロンプトを表示し、選択したファイルを全文表示する' do
-        skip 'TODO'
+      it 'target_filenameが存在するファイルと複数件一致するとき、どのファイルを表示するかのプロンプトを表示し、選択したファイルを全文表示する' do
+        target_filename = @fixed_duplicated_filename
 
-        word = @fixed_duplicated_filename
         choices = Memo::MockSeed::TEST_MEMO_DATA_SEED.filter_map do |seed|
-          [[seed[:parent_dir], "#{seed[:basename]}.md"].join('/'), seed[:content]] if seed[:basename] == word
+          [[seed[:parent_dir], "#{seed[:basename]}.md"].join('/'), seed[:content]] if seed[:basename] == target_filename
         end.to_h
 
-        $stdin = StringIO.new("2\n")
+        count = choices.size.to_s
+
+        # 最後の方を選択する
+        $stdin = StringIO.new("#{count}\n")
         out, = capture_io do
-          Memo::View.new(@test_repo).read(word)
+          Memo::View.new(@test_repo).read(target_filename)
         end
 
-        title = Memo::Message::MULTIPLE_MEMOS_WEWE_FOUND.sub('size', choices.size.to_s)
+        title = Memo::Message::MULTIPLE_MEMOS_WEWE_FOUND.sub('size', count)
         choices_out = choices.keys.map.with_index do |key, index|
           "[#{index + 1}] #{key}"
         end
-        content = Memo::MockSeed::TEST_SETTING_MISE_FILE_CONTENT
+
+        target_seeds = Memo::MockSeed::TEST_MEMO_DATA_SEED.filter do |seed|
+          seed[:basename] == target_filename
+        end
+
+        content = target_seeds[-1][:content]
 
         _(out).must_equal([title].concat(choices_out).push(content).join("\n"))
       ensure

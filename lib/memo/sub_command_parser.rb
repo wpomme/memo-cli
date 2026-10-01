@@ -93,7 +93,7 @@ module Memo
           if spec.sub_command_form == 'help'
             # helpコマンドを呼び出したときの処理がopts.on_tailのブロックに記載がある。
             opts.on(spec.short_form, spec.long_form, spec.desc) do
-              puts opts
+              puts opts.help
               exit 0
             end
           elsif spec.argv_type == :none
@@ -116,5 +116,7 @@ module Memo
       puts error_message_map[symbol]
       exit 2
     end
+
+    private_class_method :to_error_message
   end
 end
