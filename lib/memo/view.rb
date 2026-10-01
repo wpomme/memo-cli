@@ -41,6 +41,14 @@ module Memo
       case filter
       when :list
         puts @mapper.tag_list_to_view.gsub("\n", ' ')
+      when :empty
+        file_list = @mapper.empty_tags_file_list_to_view
+
+        if file_list.empty?
+          puts Memo::Message::NO_EMPTY_TAGS_FILE_LIST
+        else
+          puts file_list
+        end
       else
         puts @mapper.tag_and_filenames_to_view
       end

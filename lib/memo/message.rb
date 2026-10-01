@@ -17,6 +17,9 @@ module Memo
       memo CLIには引数が必要です。
       memo CLIの後にタグ名を指定してください。
     NO_ARGS
+    NO_EMPTY_TAGS_FILE_LIST = <<~NO_EMPTY
+      タグ付けされていないファイルはありませんでした。
+    NO_EMPTY
     OPT_BANNER = 'memo CLI: ローカルのメモフォルダをコマンドで閲覧、検索するためのコマンド'
     OPT_SEPARATOR_HEREDOCS = <<~SEPT
       new_line

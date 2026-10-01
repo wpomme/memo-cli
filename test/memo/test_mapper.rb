@@ -68,6 +68,51 @@ class TestMapper < Minitest::Test
       end
     end
 
+    describe '#empty_tags_file_list_to_view' do
+      it 'タグ付けされていないSeedがある場合、文字列の一次元配列を返す' do
+        actual = Memo::Mapper.new(@test_repo).empty_tags_file_list_to_view
+
+        grouped = @test_repo.empty_tags_file_list.group_by(&:parent_dir)
+        color_symbol = :green
+
+        expected = Memo::Mapper.new(@test_repo).seeds_hash_to_view(grouped, color_symbol)
+
+        _(actual).must_equal(expected)
+      end
+    end
+
+    describe '#seeds_hash_to_view' do
+      it 'seeds_hashに値がある場合、文字列の一次元配列を返す' do
+        grouped = @test_seeds.group_by(&:parent_dir)
+        color_symbol = :green
+
+        actual = Memo::Mapper.new(@test_repo).seeds_hash_to_view(grouped, color_symbol)
+
+        expected = grouped.inject([]) do |result, (key, seeds)|
+          result << Rainbow(key).color(color_symbol)
+          filenames = seeds.map(&:basename).join(Memo::Mapper::INDENT)
+          result << filenames
+        end
+
+        _(actual).must_equal(expected)
+      end
+
+      it 'seeds_hashが空の場合、空の配列を返す' do
+        grouped = {}
+        color_symbol = :green
+
+        actual = []
+
+        expected = grouped.inject([]) do |result, (key, seeds)|
+          result << Rainbow(key).color(color_symbol)
+          filenames = seeds.map(&:basename).join(Memo::Mapper::INDENT)
+          result << filenames
+        end
+
+        _(actual).must_equal(expected)
+      end
+    end
+
     describe '#dirs_to_view' do
       it '戻り値は文字列型となり、モックデータと値が同じであることを確かめる' do
         actual = Memo::Mapper.new(@test_repo).dirs_to_view

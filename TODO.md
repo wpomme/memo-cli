@@ -5,7 +5,7 @@
     1. memo tag, memo tagsのCLIインターフェイス案
         - [OK]: memo tags --list
             - タグ名だけを返す
-        - memo tags --empty
+        - [OK]: memo tags --empty
             - タグの付いていないファイル名の一覧を返す
         - memo tags --tally
             - タグごとの出現頻度を返す

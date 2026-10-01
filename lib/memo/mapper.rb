@@ -32,6 +32,15 @@ module Memo
       @repo.tag_list.join("\n")
     end
 
+    # タグの付いていないファイル名の一覧をそのディレクトリと共に返す
+    #
+    # @return [Array<String>]
+    def empty_tags_file_list_to_view
+      grouped = @repo.empty_tags_file_list.group_by(&:parent_dir)
+
+      seeds_hash_to_view(grouped, :green)
+    end
+
     # 引数としてタグ名を取り、そのタグ名と紐付いているファイル名の一覧を返す
     # 引数として与えられたタグが存在しなければ、その旨を知らせる文字列を返す
     #
@@ -52,7 +61,7 @@ module Memo
 
     # 色付けしたタグ名とそのタグが付いたファイル名の一覧を返す
     #
-    # @return [String]
+    # @return [Array<String>]
     def tag_and_filenames_to_view
       seeds_hash_to_view(@repo.tag_seeds_hash, :aqua)
     end
@@ -81,8 +90,11 @@ module Memo
       end
     end
 
-    private
-
+    # グループ化されたSeedのハッシュについて、グループごとのファイル名を文字列にして返す
+    #
+    # @param seeds_hash [Hash<String, Array<Seed>>] 文字列がキーで、値がSeedの配列となるハッシュ
+    # @param color_symbol [Symbol] キーの色付けを指定する
+    # @return [Array<String | nil>]
     def seeds_hash_to_view(seeds_hash, color_symbol)
       seeds_hash.inject([]) do |result, (key, seeds)|
         result << Rainbow(key).color(color_symbol)
@@ -90,6 +102,8 @@ module Memo
         result << filenames
       end
     end
+
+    private
 
     def seeds_hash_by_key_to_view(seeds_hash, key, color_symbol)
       [Rainbow(key).color(color_symbol)] << seeds_hash[key].map(&:basename).join(INDENT)

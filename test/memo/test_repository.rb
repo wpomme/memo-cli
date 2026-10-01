@@ -145,6 +145,16 @@ class TestRepository < Minitest::Test
       end
     end
 
+    describe '#empty_tags_file_list' do
+      it '加工したモックデータと戻り値が同じであること' do
+        actual = @test_repo.empty_tags_file_list
+
+        expected = @test_seeds.filter { |seed| seed['tags'].empty? }
+
+        _(actual).must_equal(expected)
+      end
+    end
+
     describe '#grouped_ls' do
       describe '戻り値の型検査' do
         it '戻り値はHashである' do

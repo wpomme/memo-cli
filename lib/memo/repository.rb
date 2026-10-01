@@ -28,6 +28,13 @@ module Memo
       @seeds.map(&:tags).flatten.uniq
     end
 
+    # タグの付けられていないファイル名の一覧を返す
+    #
+    # @return [Array<Seed>]
+    def empty_tags_file_list
+      @seeds.filter { |seed| seed['tags'].empty? }
+    end
+
     # それぞれのタグと、そのタグが付いているSeedの配列のハッシュを返す
     #
     # @return [Hash<String, Array<String>>]
