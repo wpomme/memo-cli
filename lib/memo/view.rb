@@ -49,6 +49,8 @@ module Memo
         else
           puts file_list
         end
+      when :tally
+        puts @mapper.count_of_each_tag_to_view
       else
         puts @mapper.tag_and_filenames_to_view
       end

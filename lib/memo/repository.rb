@@ -49,6 +49,19 @@ module Memo
       end
     end
 
+    # それぞれのタグの出現回数を返す
+    # 返り値は最初の要素が出現回数で、最後の要素がタグとなるような二次元配列を返す
+    #
+    # @return [Array<Array<Number, String>>]
+    def count_of_each_tag
+      # タグと、そのタグごとの出現回数のハッシュを作成する
+      tag_seeds_hash.transform_values(&:length)
+        .to_a
+        # 出現回数が最初の要素とした方が分かりやすいので、キーと値を逆にする
+        .map { |(first, last)| [last, first] }
+        .sort { |(a_first, _), (b_first, _)| b_first <=> a_first }
+    end
+
     # 対象のディレクトリ配下にあるディレクトリとファイルのSeedを、ディレクトリごとにグループ化しハッシュとして返す
     #
     # キーはディレクトリを示す文字列となる

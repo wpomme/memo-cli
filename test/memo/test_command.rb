@@ -246,6 +246,20 @@ class TestCommand < Minitest::Test
             _(actual).must_equal(expected)
           end
         end
+
+        it "['tags']の次に続く値で、'-t', '--tally'を受け取ったときは、タグの出現回数を表示する" do
+          test_tags_sub_commands = ['-t', '--tally']
+
+          test_tags_sub_commands.each do |sub_command|
+            actual, = capture_io do
+              Memo::Command.new(@test_repo).execute(['tags', sub_command])
+            end
+
+            expected = Memo::Mapper.new(@test_repo).count_of_each_tag_to_view.join("\n") << "\n"
+
+            _(actual).must_equal(expected)
+          end
+        end
       end
     end
   end

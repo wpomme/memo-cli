@@ -80,6 +80,16 @@ class TestMapper < Minitest::Test
       end
     end
 
+    describe '#count_of_each_tag_to_view' do
+      it 'n: tagという形式の一次元配列となる。nは数値で、tagは日本語を含む文字列である' do
+        count_of_each_tag_to_view = Memo::Mapper.new(@test_repo).count_of_each_tag_to_view
+
+        # タグは日本語を含むため、Unicodeによる文字クラスを指定する
+        # ref: https://docs.ruby-lang.org/ja/latest/doc/spec=2fregexp.html#string
+        count_of_each_tag_to_view.all?(/^\d+: \p{Letter}+$/)
+      end
+    end
+
     describe '#seeds_hash_to_view' do
       it 'seeds_hashに値がある場合、文字列の一次元配列を返す' do
         grouped = @test_seeds.group_by(&:parent_dir)

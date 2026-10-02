@@ -41,6 +41,10 @@ module Memo
       seeds_hash_to_view(grouped, :green)
     end
 
+    def count_of_each_tag_to_view
+      @repo.count_of_each_tag.map { |(first, last)| "#{first}: #{last}" }
+    end
+
     # 引数としてタグ名を取り、そのタグ名と紐付いているファイル名の一覧を返す
     # 引数として与えられたタグが存在しなければ、その旨を知らせる文字列を返す
     #

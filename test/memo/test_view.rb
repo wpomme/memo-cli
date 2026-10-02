@@ -215,6 +215,18 @@ class TestView < Minitest::Test
           #   _(actual).must_equal(expected)
           # end
         end
+
+        describe ':tally' do
+          it 'タグの出現回数を表示する' do
+            actual, = capture_io do
+              Memo::View.new(@test_repo).tags(:tally)
+            end
+
+            expected = Memo::Mapper.new(@test_repo).count_of_each_tag_to_view.join("\n") << "\n"
+
+            _(actual).must_equal(expected)
+          end
+        end
       end
     end
 

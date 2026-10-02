@@ -1,21 +1,9 @@
 ## TODO・IDEA
-### TODO
-1. yaml形式のfrontmatterでタグ付け
-- タグ付けによって欲しい機能(WIP)
-    1. memo tag, memo tagsのCLIインターフェイス案
-        - [OK]: memo tags --list
-            - タグ名だけを返す
-        - [OK]: memo tags --empty
-            - タグの付いていないファイル名の一覧を返す
-        - memo tags --tally
-            - タグごとの出現頻度を返す
-
-### その他
-# テスト系
-## 型検査・型のテスト・テスト拡張
+## テスト系
+### 型検査・型のテスト・テスト拡張
 - Rdocかyard、型検査の導入、coverageの取得
 
-## expected, actual
+### expected, actual
 - expected, actualを意味的に逆に使っている箇所があるかもしれない
     - 洗い出す
 
@@ -23,7 +11,6 @@
 - 各メモファイルのfront matterにcreated_at, updated_atを挿入する
 
 - memo checkのようなCLIが欲しい
-    - memo tags --empty => memo check tagsなど
     - memo check duplicate => ファイル名の重複の調査
 
 - CLIの自動補完機能
@@ -40,17 +27,20 @@
 ## 命名など
 - Repository.search_allやfindなどのメソッドの名前を整理したい
 
-## 修正するところ
+## 修正箇所
 - memo list, memo tagsにて、ディレクトリ・タグとファイル名の次に改行を入れたい
 - その他、git grep TODOで出てくるTODOを解消していく
+
+### sub_command_parser
 - sub_command_parserについて、memo tags --listを実行すると、memo listが実行されてしまう問題をもっと簡単なロジックで解決できるようにする
 - SubCommandSpecを作成するためのsub_command_factoryのようなクラスかメソッドが必要かもしれない
+- `memo tags -h`でmemo tagsのヘルプが見れるようにしたい
 - parsed_hashを使用するようになったので、hashの形に合うようにparserの返り値とcommandの受け渡す値を修正したい
     1. parsed_hashで従来のデータに変換している部分を外して、その変換している部分をcommandに持っていく
         - その上で、test_sub_command_parserを書き換える
     2. 次に、commandの部分のデータ変換部分を外して、test_commandを書き換える
 
-### gemspecをどうするか
+### gemspec
     - gemとして公開する必要がない。gemspecについて調査しておくこと
 
 ### CLIの拡張

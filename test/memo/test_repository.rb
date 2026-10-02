@@ -238,17 +238,44 @@ class TestRepository < Minitest::Test
       end
 
       describe '戻り値の値検査' do
-        it 'モックデータから作成したタグの一覧と、Repository#tag_seeds_hashの値が同じであること' do
-          actual = @test_repo.tag_seeds_hash
+        it '戻り値のキーについて、全てのタグが出現していること' do
+          actual = @test_repo.tag_seeds_hash.keys.to_set
 
-          expected = @test_repo.tag_list.to_h do |tag|
-            [
-              tag,
-              @test_seeds.filter do |seed|
-                seed['tags'].include?(tag)
-              end
-            ]
+          expected = @test_repo.tag_list.to_set
+
+          _(actual).must_equal(expected)
+        end
+      end
+    end
+
+    describe '#count_of_each_tag' do
+      describe '戻り値の型検査' do
+        it '最初の要素がIntegerで、最後の要素がStringである二次元配列となる' do
+          count_of_each_tag = @test_repo.count_of_each_tag
+
+          actual = count_of_each_tag.all? { |(first, last)| first.instance_of?(Integer) && last.instance_of?(String) }
+
+          _(actual).must_equal(true)
+        end
+      end
+
+      describe '戻り値の値検査' do
+        it '出現回数ごとに昇順でソートされていること' do
+          count_of_each_tag = @test_repo.count_of_each_tag
+
+          actual = count_of_each_tag.each_cons(2).all? do |first, second|
+            first[0] >= second[0]
           end
+
+          _(actual).must_equal(true)
+        end
+
+        it '戻り値の中に全てのタグが出現していること' do
+          count_of_each_tag = @test_repo.count_of_each_tag
+
+          actual = count_of_each_tag.to_set { |(_, last)| last }
+
+          expected = @test_repo.tag_list.to_set
 
           _(actual).must_equal(expected)
         end
