@@ -10,7 +10,6 @@ module Memo
       dirs
     end)
     DIRS_COMMAND_SPEC = Memo::Model::SubCommandSpec.new('dirs', '--dirs', '-d', 'メモの中のディレクトリの一覧を表示する', :none, nil, proc do
-      nil
     end)
     SEARCH_COMMAND_SPEC = Memo::Model::SubCommandSpec.new('search', '--search', '-s', '検索した文字列で全てのメモを全文検索する', :required, '--search WORD', proc do |word|
       word
@@ -61,9 +60,7 @@ module Memo
 
       if found.nil?
         # firstがどのサブコマンドにも当てはまらなかった場合、memo <word>として処理する
-        parser.parse!(['-r'] + [first], into: parsed_hash)
-
-        return parsed_hash[:read]
+        parser.parse!(['-r', first], into: parsed_hash)
       else
         return to_error_message(found, :no_given_args) if found[:argv_type] == :required && argv.empty?
 
@@ -95,7 +92,9 @@ module Memo
               exit 0
             end
           elsif spec.argv_type == :none
-            opts.on(spec.short_form, spec.long_form, spec.desc, &spec.parsed_block)
+            opts.on(spec.short_form, spec.long_form, spec.desc)
+          elsif %i[optional required].include?(spec.argv_type)
+            opts.on(spec.short_form, spec.long_form_with_argv, String, spec.desc)
           else
             opts.on(spec.short_form, spec.long_form_with_argv, String, spec.desc, &spec.parsed_block)
           end
