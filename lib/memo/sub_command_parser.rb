@@ -3,17 +3,10 @@
 module Memo
   class SubCommandParser
     HELP_COMMAND_SPEC = Memo::Model::SubCommandSpec.new('help', '--help', '-h', 'memoコマンドのヘルプ', :none, nil, nil)
-    READ_COMMAND_SPEC = Memo::Model::SubCommandSpec.new('read', '--read', '-r', '対象のメモを全文表示する', :required, '--read WORD', proc do |word|
-      word
-    end)
-    LIST_COMMAND_SPEC = Memo::Model::SubCommandSpec.new('list', '--list', '-l', 'メモの一覧を表示する', :optional, '--list [DIRS]', proc do |dirs|
-      dirs
-    end)
-    DIRS_COMMAND_SPEC = Memo::Model::SubCommandSpec.new('dirs', '--dirs', '-d', 'メモの中のディレクトリの一覧を表示する', :none, nil, proc do
-    end)
-    SEARCH_COMMAND_SPEC = Memo::Model::SubCommandSpec.new('search', '--search', '-s', '検索した文字列で全てのメモを全文検索する', :required, '--search WORD', proc do |word|
-      word
-    end)
+    READ_COMMAND_SPEC = Memo::Model::SubCommandSpec.new('read', '--read', '-r', '対象のメモを全文表示する', :required, '--read WORD', nil)
+    LIST_COMMAND_SPEC = Memo::Model::SubCommandSpec.new('list', '--list', '-l', 'メモの一覧を表示する', :optional, '--list [DIRS]', nil)
+    DIRS_COMMAND_SPEC = Memo::Model::SubCommandSpec.new('dirs', '--dirs', '-d', 'メモの中のディレクトリの一覧を表示する', :none, nil, nil)
+    SEARCH_COMMAND_SPEC = Memo::Model::SubCommandSpec.new('search', '--search', '-s', '検索した文字列で全てのメモを全文検索する', :required, '--search WORD', nil)
 
     # NOTE: on(pat = /*/)で置き換えられそう
     # ref: https://docs.ruby-lang.org/ja/latest/method/OptionParser/i/on.html
@@ -34,9 +27,7 @@ module Memo
     TAGS_COMMAND_SPEC = Memo::Model::SubCommandSpec.new('tags', '--tags', '-t', 'タグ名とそのタグ名が付いたファイル名の一覧を表示する', :sub_option, '--tags [FILTER]', proc do |filter|
       TAGS_SUB_COMMAND_FIND.call(TAGS_SUB_COMMANDS, filter)
     end)
-    TAG_COMMAND_SPEC = Memo::Model::SubCommandSpec.new('tag', '--tag', '-x', '与えらえたタグ名に対応するファイル名の一覧を表示する', :required, '--tag TAG_NAME', proc do |tag_name|
-      tag_name
-    end)
+    TAG_COMMAND_SPEC = Memo::Model::SubCommandSpec.new('tag', '--tag', '-x', '与えらえたタグ名に対応するファイル名の一覧を表示する', :required, '--tag TAG_NAME', nil)
 
     SUB_COMMANDS_SPEC = [READ_COMMAND_SPEC, LIST_COMMAND_SPEC, DIRS_COMMAND_SPEC, SEARCH_COMMAND_SPEC, TAGS_COMMAND_SPEC, TAG_COMMAND_SPEC,
                          HELP_COMMAND_SPEC].freeze
@@ -74,7 +65,6 @@ module Memo
         end
       end
 
-      # TODO: 配列からハッシュを返すようにテストコードや実装を変更する
       parsed_hash
     end
 
