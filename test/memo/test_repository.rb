@@ -7,17 +7,17 @@ class TestRepository < Minitest::Test
     include MemoTestLifecycleHooks
 
     describe '#initialize' do
-      describe '#load, @seeds' do
-        it '@seedsの配列の要素はMemo::Model::Seedである' do
-          seeds = @test_repo.instance_variable_get(:@seeds)
-          expected = seeds.all?(Memo::Model::Seed)
+      describe '#load_files, @file_seeds' do
+        it '@file_seedsの配列の要素はMemo::Model::Seedである' do
+          file_seeds = @test_repo.instance_variable_get(:@file_seeds)
+          expected = file_seeds.all?(Memo::Model::Seed)
 
           _(true).must_equal(expected)
         end
 
-        it '@seeds.full_path は絶対パスである' do
-          seeds = @test_repo.instance_variable_get(:@seeds)
-          full_paths = seeds.map(&:full_path)
+        it '@file_seeds.full_path は絶対パスである' do
+          file_seeds = @test_repo.instance_variable_get(:@file_seeds)
+          full_paths = file_seeds.map(&:full_path)
 
           actual = full_paths.all? do |full_path|
             File.absolute_path?(full_path)

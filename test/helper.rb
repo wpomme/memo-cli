@@ -32,7 +32,7 @@ module MemoTestLifecycleHooks
     end
 
     @test_repo = Memo::Repository.new(@test_target_dirs)
-    @test_seeds = @test_repo.instance_variable_get(:@seeds)
+    @test_seeds = @test_repo.instance_variable_get(:@file_seeds)
 
     @fixed_mock_file = 'ls'
     @fixed_search_word = 'ls'

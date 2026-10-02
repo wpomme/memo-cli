@@ -46,10 +46,10 @@ namespace :mock do
     # ファイル名の重複しているものを指定する。実際のメモフォルダで重複がなくなったら、この値を変える必要がある。
     fixed_duplicated_filename = 'mise'
 
-    seeds = repo.instance_variable_get(:@seeds).filter { |seed| seed.basename == fixed_duplicated_filename }
+    seeds = repo.instance_variable_get(:@file_seeds).filter { |seed| seed.basename == fixed_duplicated_filename }
 
     # モックデータ作成のために実データseedsを任意の倍数で絞り込んで取得する
-    seeds.concat(repo.instance_variable_get(:@seeds).filter.each_with_index { |_e, i| i.modulo(2).zero? })
+    seeds.concat(repo.instance_variable_get(:@file_seeds).filter.each_with_index { |_e, i| i.modulo(2).zero? })
       .uniq!
 
     # テストのために固定のseedを作成する

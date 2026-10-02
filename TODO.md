@@ -39,14 +39,12 @@
 
 ## 命名など
 - Repository.search_allやfindなどのメソッドの名前を整理したい
-- @seeds => @file_seedsとする
-- load => file_loadとする
-    - loadとdir_loadについて、統合できないだろうか
 
 ## 修正するところ
 - memo list, memo tagsにて、ディレクトリ・タグとファイル名の次に改行を入れたい
 - その他、git grep TODOで出てくるTODOを解消していく
 - sub_command_parserについて、memo tags --listを実行すると、memo listが実行されてしまう問題をもっと簡単なロジックで解決できるようにする
+- SubCommandSpecを作成するためのsub_command_factoryのようなクラスかメソッドが必要かもしれない
 
 ### gemspecをどうするか
     - gemとして公開する必要がない。gemspecについて調査しておくこと

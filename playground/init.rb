@@ -12,7 +12,7 @@ dirs = Memo::Config.target_dirs
 repo = Memo::Repository.new(dirs)
 
 # Repository.seedsも取得しておく
-seeds = repo.instance_variable_get(:@seeds)
+seeds = repo.instance_variable_get(:@file_seeds)
 dir_seeds = repo.instance_variable_get(:@dir_seeds)
 
 mapper = Memo::Mapper.new(repo)
