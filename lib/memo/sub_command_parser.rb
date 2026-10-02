@@ -30,6 +30,8 @@ module Memo
       end
     }
 
+    # 次の正規表現をOptionParserのpatに登録する？
+    # reg1 = /\A-l\Z|\A-e\Z|\A-t\Z|\A--list\Z|\A--empty\Z|\A--tally\Z/
     TAGS_COMMAND_SPEC = Memo::Model::SubCommandSpec.new('tags', '--tags', '-t', 'タグ名とそのタグ名が付いたファイル名の一覧を表示する', :sub_option, '--tags [FILTER]', proc do |filter|
       found = TAGS_SUB_COMMAND_FIND.call(TAGS_SUB_COMMANDS, filter)
 
