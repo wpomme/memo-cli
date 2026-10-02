@@ -85,8 +85,9 @@ class TestMapper < Minitest::Test
         count_of_each_tag_to_view = Memo::Mapper.new(@test_repo).count_of_each_tag_to_view
 
         # タグは日本語を含むため、Unicodeによる文字クラスを指定する
-        # ref: https://docs.ruby-lang.org/ja/latest/doc/spec=2fregexp.html#string
-        count_of_each_tag_to_view.all?(/^\d+: \p{Letter}+$/)
+        # ref1: https://docs.ruby-lang.org/ja/latest/doc/spec=2fregexp.html#string
+        # ref2: https://railsguides.jp/security.html#%E6%AD%A3%E8%A6%8F%E8%A1%A8%E7%8F%BE
+        count_of_each_tag_to_view.all?(/\A\d+: \p{Letter}+\Z/)
       end
     end
 

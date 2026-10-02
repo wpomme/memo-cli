@@ -9,22 +9,30 @@
 ## テスト系
 ### 型検査・型のテスト・テスト拡張
 - Rdocかyard、型検査の導入、coverageの取得
+    - coverage: https://docs.ruby-lang.org/ja/latest/library/coverage.html
 
 ### expected, actual
 - expected, actualを意味的に逆に使っている箇所があるかもしれない
     - 洗い出す
+
+### 値の検査
+- 実装のメソッドをそのままコピーしたテストコードは修正したい
+    - 他、古いテストコードのアップデートなど
 
 ### モックデータの作成
 Rakefileに記載したコードは別のファイルに移動させた方がいいかもしれない
 
 ## 機能追加
 - 各メモファイルのfront matterにcreated_at, updated_atを挿入する
+    - bashと組み合わせてスクリプトのように作成してもいい
 
 - memo checkのようなCLIが欲しい
     - memo check duplicate => ファイル名の重複の調査
 
 - CLIの自動補完機能
     - bash, zshと連携させてコマンドの自動補完機能を付けてみたい
+
+- Messageモジュールについて、メッセージ内の文字列を他の変数に変換するメソッドを追加する
 
 ## タグ系
 1. それぞれのタグによって、特定の機能が欲しい
@@ -40,6 +48,11 @@ Rakefileに記載したコードは別のファイルに移動させた方がい
 ## 修正箇所
 - memo list, memo tagsにて、ディレクトリ・タグとファイル名の次に改行を入れたい
 - その他、git grep TODOで出てくるTODOを解消していく
+- なるべく、コメントに具体的な変数名などを書かないようにしたい
+    - 実装の修正があった場合、そのコメントも修正する必要があるため
+- メソッドの可視性の調査 => 変更、オブジェクトについて、必要なものはfreezeする
+- CommandとViewを統合してもいいかもしれない。テストコードがほぼ同じことをしている
+    - ファイル生成時間などの書き込みが機能として追加されたらreadとwriteは分けたい
 
 ### sub_command_parser
 - sub_command_parserについて、memo tags --listを実行すると、memo listが実行されてしまう問題をもっと簡単なロジックで解決できるようにする

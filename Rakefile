@@ -8,11 +8,6 @@ Minitest::TestTask.create :test
 
 task default: :test
 
-desc 'irbにログインする'
-task :console do
-  sh 'bundle exec console'
-end
-
 namespace :test do
   desc 'ファイルごとにテストする'
   task :file do
