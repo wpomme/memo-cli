@@ -22,11 +22,10 @@ class TestMapper < Minitest::Test
           it '色付けされたディレクトリ名とそれに紐付くファイル名の配列を返す' do
             actual = Memo::Mapper.new(@test_repo).grouped_ls_to_view
 
-            expected = @test_repo.grouped_ls.inject([]) do |result, (dir, seeds)|
-              result << Rainbow(dir).green
-              filename_to_view = seeds.map(&:basename).join(Memo::Mapper::INDENT)
-              result << filename_to_view
-            end
+            grouped_ls = @test_repo.grouped_ls
+            color_symbol = :green
+
+            expected = Memo::Mapper.new(@test_repo).seeds_hash_to_view(grouped_ls, color_symbol)
 
             _(actual).must_equal(expected)
           end
@@ -205,11 +204,10 @@ class TestMapper < Minitest::Test
         it '色付けされたタグ名とそれに紐付くファイル名の配列を返す' do
           actual = Memo::Mapper.new(@test_repo).tag_and_filenames_to_view
 
-          expected = @test_repo.tag_seeds_hash.inject([]) do |result, (tag, seeds)|
-            result << Rainbow(tag).aqua
-            filename_to_view = seeds.map(&:basename).join(Memo::Mapper::INDENT)
-            result << filename_to_view
-          end
+          tag_seeds_hash = @test_repo.tag_seeds_hash
+          color_symbol = :aqua
+
+          expected = Memo::Mapper.new(@test_repo).seeds_hash_to_view(tag_seeds_hash, color_symbol)
 
           _(actual).must_equal(expected)
         end
