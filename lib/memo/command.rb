@@ -11,7 +11,7 @@ module Memo
     end
 
     def execute(argv)
-      options = Memo::SubCommandParser.parse!(argv)
+      options = Memo::SubCommandParser.parse!(argv).to_a.flatten
 
       view = View.new(@repo)
 
