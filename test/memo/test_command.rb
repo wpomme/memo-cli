@@ -7,18 +7,19 @@ class TestCommand < Minitest::Test
     include MemoTestLifecycleHooks
 
     describe '#execute' do
-      describe 'argv: dirs' do
+      describe 'dirs' do
         it "['dirs']を受け取ったときは、対象のディレクトリの中のディレクトリ一覧をターミナルに表示する" do
-          out, = capture_io do
+          actual, = capture_io do
             Memo::Command.new(@test_repo).execute(['dirs'])
           end
 
           expected = Memo::Mapper.new(@test_repo).dirs_to_view << "\n"
-          _(out).must_equal(expected)
+
+          _(actual).must_equal(expected)
         end
       end
 
-      describe 'argv: list' do
+      describe 'list' do
         it "['list']を受け取ったときは、対象ディレクトリの中のディレクトリとその中にあるメモファイルを全て表示する" do
           out, = capture_io do
             Memo::Command.new(@test_repo).execute(['list'])
@@ -26,9 +27,9 @@ class TestCommand < Minitest::Test
 
           grouped_ls_to_view = Memo::Mapper.new(@test_repo).grouped_ls_to_view
 
-          actual = grouped_ls_to_view.to_set
+          actual = out.split("\n").to_set
 
-          expected = out.split("\n").to_set
+          expected = grouped_ls_to_view.to_set
 
           _(actual).must_equal(expected)
         end
@@ -42,9 +43,9 @@ class TestCommand < Minitest::Test
 
           grouped_ls_to_view = Memo::Mapper.new(@test_repo).grouped_ls_to_view(valid_dir)
 
-          actual = grouped_ls_to_view.to_set
+          actual = out.split("\n").to_set
 
-          expected = out.split("\n").to_set
+          expected = grouped_ls_to_view.to_set
 
           _(actual).must_equal(expected)
         end
@@ -52,23 +53,25 @@ class TestCommand < Minitest::Test
         it "['list', 'invalid_dir']の場合、そのようなディレクトリが存在しない旨のメッセージを表示する" do
           invalid_dir = 'invalid_dir'
 
-          out, = capture_io do
+          actual, = capture_io do
             Memo::Command.new(@test_repo).execute(['list', invalid_dir])
           end
 
           expected = Memo::Message::NO_DIRECTORIES.sub('dir', invalid_dir) << @test_repo.dir_set.join(' ') << "\n"
 
-          _(out).must_equal(expected)
+          _(actual).must_equal(expected)
         end
       end
 
-      describe 'argv: read' do
+      describe 'read' do
         it "['read', 'ls']を受け取ったときは、ls.mdを全文表示する" do
-          out, = capture_io do
+          actual, = capture_io do
             Memo::Command.new(@test_repo).execute(%w[read ls])
           end
 
-          assert_equal Memo::MockSeed::TEST_LS_FILE_CONTENT, out
+          expected = Memo::MockSeed::TEST_LS_FILE_CONTENT
+
+          _(actual).must_equal(expected)
         end
 
         it "['read', 'mise']を受け取ったときは、プロンプトを表示した後、選択した方のmise.mdを全文表示する" do
@@ -78,7 +81,7 @@ class TestCommand < Minitest::Test
           end.to_h
           $stdin = StringIO.new("2\n")
 
-          out, = capture_io do
+          actual, = capture_io do
             Memo::Command.new(@test_repo).execute(%w[read mise])
           end
 
@@ -88,7 +91,7 @@ class TestCommand < Minitest::Test
           end
           content = Memo::MockSeed::TEST_SETTING_MISE_FILE_CONTENT
 
-          _(out).must_equal([title].concat(choices_out).push(content).join("\n"))
+          _(actual).must_equal([title].concat(choices_out).push(content).join("\n"))
         ensure
           $stdin = STDIN
         end
@@ -96,72 +99,74 @@ class TestCommand < Minitest::Test
         it "['read', 'invalid_memo']を受け取ったときは、そのようなメモがないことを表示する" do
           word = 'invalid_memo'
 
-          out, = capture_io do
+          actual, = capture_io do
             exception = assert_raises(SystemExit) do
               Memo::Command.new(@test_repo).execute(%w[read invalid_memo])
             end
 
-            assert_equal 2, exception.status
+            _(exception.status).must_equal(2)
           end
 
-          _(out).must_equal(Memo::Message::NO_MEMOS_WEWE_FOUND.sub('word', word) << "\n")
+          _(actual).must_equal(Memo::Message::NO_MEMOS_WEWE_FOUND.sub('word', word) << "\n")
         end
 
         it '引数が与えられていない場合は、その旨をユーザーに知らせるメッセージを返す' do
-          out, = capture_io do
+          actual, = capture_io do
             exception = assert_raises(SystemExit) do
               Memo::Command.new(@test_repo).execute(['read'])
             end
 
-            assert_equal 2, exception.status
+            _(exception.status).must_equal(2)
           end
 
           expected = Memo::Message::NO_GIVEN_ARGS.gsub('CLI', 'read')
 
-          _(out).must_equal(expected)
+          _(actual).must_equal(expected)
         end
       end
 
-      describe 'argv: search' do
+      describe 'search' do
         it "['search', 'ls']を受け取ったときは、全てのメモの中でlsが入っている行を色付きで表示する" do
           search_word = @fixed_search_word
 
-          out, = capture_io do
+          actual, = capture_io do
             Memo::Command.new(@test_repo).execute(['search', search_word])
           end
 
-          actual = Memo::Mapper.new(@test_repo).search_result_to_view(search_word)
+          expected = Memo::Mapper.new(@test_repo).search_result_to_view(search_word)
             .join("\n") << "\n"
 
-          _(out).must_equal(actual)
+          _(actual).must_equal(expected)
         end
 
         it "['search', 'hikkakaranasounakotoba']を受け取ったときは、そのようなメモがないことを表示する" do
           search_word = 'hikkakaranasounakotoba'
 
-          out, = capture_io do
+          actual, = capture_io do
             Memo::Command.new(@test_repo).execute(['search', search_word])
           end
 
-          assert_equal out, Memo::Message::NO_SEARCH_RESULTS_WERE_FOUND.sub('word', search_word) << "\n"
+          expected = Memo::Message::NO_SEARCH_RESULTS_WERE_FOUND.sub('word', search_word) << "\n"
+
+          _(actual).must_equal(expected)
         end
 
         it "['search']を受け取った場合は、引数が足りないことをユーザーに知らせるメッセージを表示する" do
-          out, = capture_io do
+          actual, = capture_io do
             exception = assert_raises(SystemExit) do
               Memo::Command.new(@test_repo).execute(['search'])
             end
 
-            assert_equal 2, exception.status
+            _(exception.status).must_equal(2)
           end
 
           expected = Memo::Message::NO_GIVEN_ARGS.gsub('CLI', 'search')
 
-          _(out).must_equal(expected)
+          _(actual).must_equal(expected)
         end
       end
 
-      describe 'argv: tag' do
+      describe 'tag' do
         it "['tag', 'cli']を受け取ったときは、色付けされたタグ名とそのタグが付いたファイル名の一覧を表示する" do
           tag_name = 'CLI'
 
@@ -187,7 +192,7 @@ class TestCommand < Minitest::Test
         end
 
         it "['tag']だけを受け取ったときは、タグ名を与えなければいけないことをユーザーに知らせるメッセージを表示する" do
-          out, = capture_io do
+          actual, = capture_io do
             exception = assert_raises(SystemExit) do
               Memo::Command.new(@test_repo).execute(['tag'])
             end
@@ -197,11 +202,11 @@ class TestCommand < Minitest::Test
 
           expected = Memo::Message::NO_GIVEN_ARGS.gsub('CLI', 'tag')
 
-          _(out).must_equal(expected)
+          _(actual).must_equal(expected)
         end
       end
 
-      describe 'argv: tags' do
+      describe 'tags' do
         it "['tags']を受け取ったときは、色付けされたタグ名とそのタグが付いたファイル名の一覧を表示する" do
           actual, = capture_io do
             Memo::Command.new(@test_repo).execute(['tags'])
