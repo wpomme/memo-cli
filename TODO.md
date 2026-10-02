@@ -7,6 +7,9 @@
 - expected, actualを意味的に逆に使っている箇所があるかもしれない
     - 洗い出す
 
+### モックデータの作成
+Rakefileに記載したコードは別のファイルに移動させた方がいいかもしれない
+
 ## 機能追加
 - 各メモファイルのfront matterにcreated_at, updated_atを挿入する
 
