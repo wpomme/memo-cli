@@ -4,16 +4,16 @@ module Memo
   class SubCommandParser
     HELP_COMMAND_SPEC = Memo::Model::SubCommandSpec.new('help', '--help', '-h', 'memoコマンドのヘルプ', :none, nil, nil)
     READ_COMMAND_SPEC = Memo::Model::SubCommandSpec.new('read', '--read', '-r', '対象のメモを全文表示する', :required, '--read WORD', proc do |word|
-      [:read, word]
+      word
     end)
     LIST_COMMAND_SPEC = Memo::Model::SubCommandSpec.new('list', '--list', '-l', 'メモの一覧を表示する', :optional, '--list [DIRS]', proc do |dirs|
-      dirs ? [:list, dirs] : [:list]
+      dirs
     end)
     DIRS_COMMAND_SPEC = Memo::Model::SubCommandSpec.new('dirs', '--dirs', '-d', 'メモの中のディレクトリの一覧を表示する', :none, nil, proc do
-      [:dirs]
+      nil
     end)
     SEARCH_COMMAND_SPEC = Memo::Model::SubCommandSpec.new('search', '--search', '-s', '検索した文字列で全てのメモを全文検索する', :required, '--search WORD', proc do |word|
-      [:search, word]
+      word
     end)
 
     # NOTE: on(pat = /*/)で置き換えられそう
@@ -31,12 +31,10 @@ module Memo
     }
 
     TAGS_COMMAND_SPEC = Memo::Model::SubCommandSpec.new('tags', '--tags', '-t', 'タグ名とそのタグ名が付いたファイル名の一覧を表示する', :sub_option, '--tags [FILTER]', proc do |filter|
-      found = TAGS_SUB_COMMAND_FIND.call(TAGS_SUB_COMMANDS, filter)
-
-      found ? [:tags, found] : [:tags]
+      TAGS_SUB_COMMAND_FIND.call(TAGS_SUB_COMMANDS, filter)
     end)
     TAG_COMMAND_SPEC = Memo::Model::SubCommandSpec.new('tag', '--tag', '-x', '与えらえたタグ名に対応するファイル名の一覧を表示する', :required, '--tag TAG_NAME', proc do |tag_name|
-      [:tag, tag_name]
+      tag_name
     end)
 
     SUB_COMMANDS_SPEC = [READ_COMMAND_SPEC, LIST_COMMAND_SPEC, DIRS_COMMAND_SPEC, SEARCH_COMMAND_SPEC, TAGS_COMMAND_SPEC, TAG_COMMAND_SPEC,
@@ -78,7 +76,7 @@ module Memo
       end
 
       # TODO: 配列からハッシュを返すようにテストコードや実装を変更する
-      parsed_hash[found[:sub_command_form].intern]
+      parsed_hash
     end
 
     def self.parser
