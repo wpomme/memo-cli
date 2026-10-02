@@ -75,5 +75,6 @@ bundle exec ruby -Itest test/memo/test_view.rb
 rake e2e
 ```
 
-### TODO・アイディアリスト
-- `TODO.md`に記載した
+### TODO・アイディアリスト・アーキテクチャ
+- `TODO.md`に記載
+- アーキテクチャは`architecture.md`に記載

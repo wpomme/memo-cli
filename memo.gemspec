@@ -1,23 +1,23 @@
 # frozen_string_literal: true
 
-require_relative "lib/memo"
+require_relative 'lib/memo'
 
 Gem::Specification.new do |spec|
-  spec.name = "memo"
+  spec.name = 'memo'
   spec.version = Memo::VERSION
-  spec.authors = ["yuya hashimoto"]
-  spec.email = ["ne25qc3b@gmail.com"]
+  spec.authors = ['yuya hashimoto']
+  spec.email = ['yuyahashimoto.wpomme@gmail.com']
 
-  spec.summary = "my memo docs CLI"
-  spec.description = "my memo docs CLI"
-  spec.homepage = "https://github.com/wpomme/memo"
-  spec.license = "MIT"
-  spec.required_ruby_version = ">= 4.0.0"
+  spec.summary = 'my memo docs CLI'
+  spec.description = 'my memo docs CLI'
+  spec.homepage = 'https://github.com/wpomme/memo'
+  spec.license = 'MIT'
+  spec.required_ruby_version = '>= 4.0.0'
 
-  spec.metadata["allowed_push_host"] = "https://github.com/wpomme/memo"
-  spec.metadata["homepage_uri"] = spec.homepage
-  spec.metadata["source_code_uri"] = spec.homepage
-  spec.metadata["changelog_uri"] = spec.homepage
+  spec.metadata['allowed_push_host'] = 'https://github.com/wpomme/memo'
+  spec.metadata['homepage_uri'] = spec.homepage
+  spec.metadata['source_code_uri'] = spec.homepage
+  spec.metadata['changelog_uri'] = spec.homepage
   spec.metadata['rubygems_mfa_required'] = 'true'
 
   # Specify which files should be added to the gem when it is released.
@@ -30,10 +30,10 @@ Gem::Specification.new do |spec|
         f.start_with?(*%w[bin/ Gemfile .gitignore test/ .rubocop.yml config/])
     end
   end
-  spec.files << "config/config.yml"
-  spec.bindir = "exe"
+  spec.files << 'config/config.yml'
+  spec.bindir = 'exe'
   spec.executables = spec.files.grep(%r{\Aexe/}) { |f| File.basename(f) }
-  spec.require_paths = ["lib"]
+  spec.require_paths = ['lib']
 
   # Uncomment to register a new dependency of your gem
   # spec.add_dependency "example-gem", "~> 1.0"

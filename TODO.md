@@ -1,4 +1,11 @@
 ## TODO・IDEA
+## TODO
+### gemspec
+    - gemとして公開する必要がない。gemspecについて調査しておくこと
+
+### バージョン
+    - gemspecの件が終了したらバージョンを1.0.0にする
+
 ## テスト系
 ### 型検査・型のテスト・テスト拡張
 - Rdocかyard、型検査の導入、coverageの取得
@@ -42,9 +49,6 @@ Rakefileに記載したコードは別のファイルに移動させた方がい
     1. parsed_hashで従来のデータに変換している部分を外して、その変換している部分をcommandに持っていく
         - その上で、test_sub_command_parserを書き換える
     2. 次に、commandの部分のデータ変換部分を外して、test_commandを書き換える
-
-### gemspec
-    - gemとして公開する必要がない。gemspecについて調査しておくこと
 
 ### CLIの拡張
 1. fzfと連携させればファジーにメモを読むことができる
