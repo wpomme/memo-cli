@@ -2,30 +2,29 @@
 
 module Memo
   class SubCommandParser
-    HELP_COMMAND_SPEC = Memo::Model::SubCommandSpec.new('help', '--help', '-h', 'memoコマンドのヘルプ', :none, nil, nil)
-    READ_COMMAND_SPEC = Memo::Model::SubCommandSpec.new('read', '--read', '-r', '対象のメモを全文表示する', :required, '--read WORD', nil)
-    LIST_COMMAND_SPEC = Memo::Model::SubCommandSpec.new('list', '--list', '-l', 'メモの一覧を表示する', :optional, '--list [DIRS]', nil)
-    DIRS_COMMAND_SPEC = Memo::Model::SubCommandSpec.new('dirs', '--dirs', '-d', 'メモの中のディレクトリの一覧を表示する', :none, nil, nil)
-    SEARCH_COMMAND_SPEC = Memo::Model::SubCommandSpec.new('search', '--search', '-s', '検索した文字列で全てのメモを全文検索する', :required, '--search WORD', nil)
+    HELP_COMMAND_SPEC = Memo::Model::SubCommandSpec.new('help', '--help', '-h', 'memoコマンドのヘルプ', nil, nil)
+    READ_COMMAND_SPEC = Memo::Model::SubCommandSpec.new('read', '--read', '-r', '対象のメモを全文表示する', 'WORD', nil)
+    LIST_COMMAND_SPEC = Memo::Model::SubCommandSpec.new('list', '--list', '-l', 'メモの一覧を表示する', '[DIRS]', nil)
+    DIRS_COMMAND_SPEC = Memo::Model::SubCommandSpec.new('dirs', '--dirs', '-d', 'メモの中のディレクトリの一覧を表示する', nil, nil)
+    SEARCH_COMMAND_SPEC = Memo::Model::SubCommandSpec.new('search', '--search', '-s', '検索した文字列で全てのメモを全文検索する', 'WORD', nil)
 
-    # NOTE: on(pat = /*/)で置き換えられそう
-    # ref: https://docs.ruby-lang.org/ja/latest/method/OptionParser/i/on.html
-    TAGS_SUB_COMMANDS = {
-      list: %w[-l --list],
-      empty: %w[-e --empty],
-      tally: %w[-t --tally]
-    }.freeze
+    # memo tagsは引数ごとにさらにパースする必要がある
+    TAGS_SUB_COMMAND_LIST_SPEC = Model::SubCommandSubSpec.new('list', '--list', '-l')
+    TAGS_SUB_COMMAND_EMPTY_SPEC = Model::SubCommandSubSpec.new('empty', '--empty', '-e')
+    TAGS_SUB_COMMAND_TALLY_SPEC = Model::SubCommandSubSpec.new('tally', '--tally', '-t')
 
-    TAGS_SUB_COMMAND_FIND = lambda { |tags_sub_commands, filter|
-      tags_sub_commands.keys.find do |key|
-        tags_sub_commands[key].include?(filter)
+    TAGS_SUB_COMMANDS_SPEC = [TAGS_SUB_COMMAND_LIST_SPEC, TAGS_SUB_COMMAND_EMPTY_SPEC, TAGS_SUB_COMMAND_TALLY_SPEC].freeze
+
+    TAGS_SUB_COMMAND_FIND = lambda do |tags_sub_commands, word|
+      tags_sub_commands.filter_map do |spec|
+        spec.to_sym(word)
       end
-    }
+    end
 
-    TAGS_COMMAND_SPEC = Memo::Model::SubCommandSpec.new('tags', '--tags', '-t', 'タグ名とそのタグ名が付いたファイル名の一覧を表示する', :sub_option, '--tags [FILTER]', proc do |filter|
-      TAGS_SUB_COMMAND_FIND.call(TAGS_SUB_COMMANDS, filter)
+    TAGS_COMMAND_SPEC = Memo::Model::SubCommandSpec.new('tags', '--tags', '-t', 'タグ名とそのタグ名が付いたファイル名の一覧を表示する', '[FILTER]', proc do |filter|
+      TAGS_SUB_COMMAND_FIND.call(TAGS_SUB_COMMANDS_SPEC, filter)
     end)
-    TAG_COMMAND_SPEC = Memo::Model::SubCommandSpec.new('tag', '--tag', '-x', '与えらえたタグ名に対応するファイル名の一覧を表示する', :required, '--tag TAG_NAME', nil)
+    TAG_COMMAND_SPEC = Memo::Model::SubCommandSpec.new('tag', '--tag', '-x', '与えらえたタグ名に対応するファイル名の一覧を表示する', 'TAG_NAME', nil)
 
     SUB_COMMANDS_SPEC = [READ_COMMAND_SPEC, LIST_COMMAND_SPEC, DIRS_COMMAND_SPEC, SEARCH_COMMAND_SPEC, TAGS_COMMAND_SPEC, TAG_COMMAND_SPEC,
                          HELP_COMMAND_SPEC].freeze
@@ -38,7 +37,7 @@ module Memo
     }
 
     def self.parse!(argv)
-      first = argv.shift
+      first = argv[0]
 
       parser
 
@@ -53,13 +52,15 @@ module Memo
         # firstがどのサブコマンドにも当てはまらなかった場合、memo <word>として処理する
         parser.parse!(['-r', first], into: parsed_hash)
       else
-        return to_error_message(found, :no_given_args) if found[:argv_type] == :required && argv.empty?
+        second = argv[1]
 
-        if found[:argv_type] == :sub_option && !argv.first.nil?
-          # ["--tags=--list"]のような形式に変換してからparse!に渡す
-          parser.parse!(["#{found[:long_form]}=#{argv.first}"], into: parsed_hash)
+        return to_error_message(found, :no_given_args) if found.required? && second.nil?
+
+        if found[:parsed_block].nil?
+          parser.parse!([found[:short_form], second], into: parsed_hash)
         else
-          parser.parse!([found[:short_form], argv.first], into: parsed_hash)
+          # ["--tags=--list"]のような形式に変換してからparse!に渡す
+          parser.parse!(["#{found[:long_form]}=#{second}"], into: parsed_hash)
         end
       end
 
@@ -81,12 +82,12 @@ module Memo
               puts opts.help
               exit 0
             end
-          elsif spec.argv_type == :none
-            opts.on(spec.short_form, spec.long_form, spec.desc)
-          elsif %i[optional required].include?(spec.argv_type)
-            opts.on(spec.short_form, spec.long_form_with_argv, String, spec.desc)
+          elsif spec.parsed_block.nil?
+            long_form = spec.option_argv.nil? ? spec.long_form : spec.long_form_with_argv
+
+            opts.on(spec.short_form, long_form, spec.desc)
           else
-            opts.on(spec.short_form, spec.long_form_with_argv, String, spec.desc, &spec.parsed_block)
+            opts.on(spec.short_form, spec.long_form_with_argv, spec.desc, &spec.parsed_block)
           end
         end
       end
