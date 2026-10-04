@@ -227,7 +227,7 @@ class TestCommand < Minitest::Test
             end
 
             expected = @test_repo.tag_list
-              .join(' ') << "\n"
+              .join("\n") << "\n"
 
             _(actual).must_equal(expected)
           end

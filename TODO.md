@@ -31,6 +31,7 @@ Rakefileに記載したコードは別のファイルに移動させた方がい
 
 - CLIの自動補完機能
     - bash, zshと連携させてコマンドの自動補完機能を付けてみたい
+    - ref?: https://docs.ruby-lang.org/ja/latest/method/OptionParser/i/candidate.html
 
 - Messageモジュールについて、メッセージ内の文字列を他の変数に変換するメソッドを追加する
 

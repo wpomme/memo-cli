@@ -50,7 +50,7 @@ module Memo
 
       if found.nil?
         # firstがどのサブコマンドにも当てはまらなかった場合、memo <word>として処理する
-        parser.parse!(['-r', first], into: parsed_hash)
+        parser.parse(['-r', first], into: parsed_hash)
       else
         second = argv[1]
 
@@ -61,10 +61,10 @@ module Memo
           # foundがヘルプの場合は、ヘルプメッセージを表示する
           return to_help_message(parser.help) if found[:short_form] == '-h'
 
-          parser.parse!([found[:short_form], second], into: parsed_hash)
+          parser.parse([found[:short_form], second], into: parsed_hash)
         else
           # foundにブロックが登録されている場合は、["--tags=--list"]のような形式に変換してからparse!に渡す
-          parser.parse!(["#{found[:long_form]}=#{second}"], into: parsed_hash)
+          parser.parse(["#{found[:long_form]}=#{second}"], into: parsed_hash)
         end
       end
 

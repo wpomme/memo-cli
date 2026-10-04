@@ -40,7 +40,7 @@ module Memo
     def tags(filter = '')
       case filter
       when :list
-        puts @mapper.tag_list_to_view.gsub("\n", ' ')
+        puts @mapper.tag_list_to_view
       when :empty
         file_list = @mapper.empty_tags_file_list_to_view
 

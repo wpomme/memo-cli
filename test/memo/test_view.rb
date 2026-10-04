@@ -189,7 +189,7 @@ class TestView < Minitest::Test
             Memo::View.new(@test_repo).tags(:list)
           end
 
-          expected = @test_repo.tag_list.join(' ') << "\n"
+          expected = @test_repo.tag_list.join("\n") << "\n"
 
           _(actual).must_equal(expected)
         end
