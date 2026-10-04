@@ -30,17 +30,11 @@ module Memo
     #   @return [String] サブコマンドのショートフォーム。OptionParser#onに準ずる
     # @!attribute [r] :desc
     #   @return [String] サブコマンドの詳細。OptionParser#onに準ずる
-    # @!attribute [r] :argv_type
-    #   @return [Symbol] 該当のサブコマンドの引数の取り方を指定する。
-    #     none: 引数を取らない
-    #     optional: 引数をオブションで取る
-    #     sub_option: 引数にサブオプションを取る
-    #     required: 引数を必須で取る
-    # @!attribute [r] :long_form_with_argv
+    # @!attribute [r] :option_argv
     #   @return [String | Void] サブコマンドが引数を取る場合に、OptionParser#onのロングフォームに指定する値を定めたもの
     # @!attribute [r] :parsed_block
     #   @return [String | Void] OptionsParser#parse!で実行する手続き
-    SubCommandSpec = Struct.new(:sub_command_form, :long_form, :short_form, :desc, :argv_type, :long_form_with_argv, :parsed_block) do
+    SubCommandSpec = Struct.new(:sub_command_form, :long_form, :short_form, :desc, :option_argv, :parsed_block) do
       def initialize(...)
         super
         freeze
@@ -52,11 +46,41 @@ module Memo
         deconstruct_keys(%i[sub_command_form long_form short_form]).values
       end
 
+      def long_form_with_argv
+        "#{long_form} #{option_argv}"
+      end
+
+      def optional?
+        /\A\[\w+\]\Z/.match?(option_argv)
+      end
+
+      def required?
+        /\A\w+\Z/.match?(option_argv)
+      end
+
       # サブコマンドを受け取ったら、そのショートフォームを返す
       # @params word [<String>]
       # @return [<String>]
       def to_opts(word)
         short_form if deconstruct_keys(%i[sub_command_form long_form short_form]).values.include?(word)
+      end
+    end
+
+    SubCommandSubSpec = Struct.new(:sub_command_form, :long_form, :short_form) do
+      def initialize(...)
+        super
+        freeze
+      end
+
+      # サブコマンドのそれぞれの形式を配列で返す。テストコード用
+      # @return [Array<String>]
+      def take_command_forms
+        deconstruct_keys(%i[sub_command_form long_form short_form]).values
+      end
+
+      # サブコマンドを受け取ったら、そのサブコマンドのシンボルを返す
+      def to_sym(word)
+        sub_command_form.intern if deconstruct_keys(%i[sub_command_form long_form short_form]).values.include?(word)
       end
     end
 
