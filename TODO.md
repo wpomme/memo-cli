@@ -58,10 +58,6 @@ Rakefileに記載したコードは別のファイルに移動させた方がい
 - sub_command_parserについて、memo tags --listを実行すると、memo listが実行されてしまう問題をもっと簡単なロジックで解決できるようにする
 - SubCommandSpecを作成するためのsub_command_factoryのようなクラスかメソッドが必要かもしれない
 - `memo tags -h`でmemo tagsのヘルプが見れるようにしたい
-- parsed_hashを使用するようになったので、hashの形に合うようにparserの返り値とcommandの受け渡す値を修正したい
-    1. parsed_hashで従来のデータに変換している部分を外して、その変換している部分をcommandに持っていく
-        - その上で、test_sub_command_parserを書き換える
-    2. 次に、commandの部分のデータ変換部分を外して、test_commandを書き換える
 
 ### CLIの拡張
 1. fzfと連携させればファジーにメモを読むことができる

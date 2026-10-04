@@ -177,11 +177,11 @@ class TestSubCommandParser < Minitest::Test
 
       it '引数がtagsで、その次に続く引数がTAGS_SUB_COMMANDSの値のどれかなら、それに対応するシンボルと一緒に値を返す' do
         Memo::SubCommandParser::TAGS_COMMAND_SPEC.take_command_forms.each do |command|
-          Memo::SubCommandParser::TAGS_SUB_COMMANDS_SPEC.each do |sub_command_spec|
+          Memo::SubCommandParser::TAGS_SUB_COMMAND_SPEC_LIST.each do |sub_command_spec|
             sub_command_spec.take_command_forms.each do |sub_command|
               actual = Memo::SubCommandParser.parse!([command, sub_command])
 
-              found = Memo::SubCommandParser::TAGS_SUB_COMMAND_FIND.call(Memo::SubCommandParser::TAGS_SUB_COMMANDS_SPEC, sub_command)
+              found = Memo::SubCommandParser::TAGS_SUB_COMMAND_FIND.call(Memo::SubCommandParser::TAGS_SUB_COMMAND_SPEC_LIST, sub_command)
 
               expected = { tags: found }
 
