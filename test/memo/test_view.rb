@@ -205,15 +205,17 @@ class TestView < Minitest::Test
             _(actual).must_equal(expected)
           end
 
-          # it 'タグ付けされていないファイル名がなければ、その旨のメッセージを返す' do
-          #   actual, = capture_io do
-          #     Memo::View.new(@test_repo).tags(:empty)
-          #   end
-          #
-          #   expected = "#{Memo::Message::NO_EMPTY_TAGS_FILE_LIST}\n"
-          #
-          #   _(actual).must_equal(expected)
-          # end
+          # TODO Mockのhooksのsetupあたりを修正して、タグ付けファイルがゼロの状態を作成する
+          it 'タグ付けされていないファイル名がなければ、その旨のメッセージを返す' do
+            skip 'TODO'
+            actual, = capture_io do
+              Memo::View.new(@test_repo).tags(:empty)
+            end
+
+            expected = "#{Memo::Message::NO_EMPTY_TAGS_FILE_LIST}\n"
+
+            _(actual).must_equal(expected)
+          end
         end
 
         describe ':tally' do

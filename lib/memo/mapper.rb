@@ -38,7 +38,11 @@ module Memo
     def empty_tags_file_list_to_view
       grouped = @repo.empty_tags_file_list.group_by(&:parent_dir)
 
-      seeds_hash_to_view(grouped, :green)
+      file_list = seeds_hash_to_view(grouped, :green)
+
+      return Memo::Message::NO_EMPTY_TAGS_FILE_LIST if file_list.empty?
+
+      file_list
     end
 
     def count_of_each_tag_to_view

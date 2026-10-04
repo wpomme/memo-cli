@@ -7,7 +7,7 @@ module Memo
       @mapper = Memo::Mapper.new(repo)
     end
 
-    def dirs
+    def dirs(_argv = '')
       puts @mapper.dirs_to_view
     end
 
@@ -42,13 +42,7 @@ module Memo
       when :list
         puts @mapper.tag_list_to_view
       when :empty
-        file_list = @mapper.empty_tags_file_list_to_view
-
-        if file_list.empty?
-          puts Memo::Message::NO_EMPTY_TAGS_FILE_LIST
-        else
-          puts file_list
-        end
+        puts @mapper.empty_tags_file_list_to_view
       when :tally
         puts @mapper.count_of_each_tag_to_view
       else
