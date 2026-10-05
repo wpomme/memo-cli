@@ -184,9 +184,9 @@ class TestView < Minitest::Test
       end
 
       describe '引数が与えられた場合' do
-        it ':listなら、タグ名だけを返す' do
+        it ':nameなら、タグ名だけを返す' do
           actual, = capture_io do
-            Memo::View.new(@test_repo).tags(:list)
+            Memo::View.new(@test_repo).tags(:name)
           end
 
           expected = @test_repo.tag_list.join("\n") << "\n"
@@ -205,7 +205,7 @@ class TestView < Minitest::Test
             _(actual).must_equal(expected)
           end
 
-          # TODO Mockのhooksのsetupあたりを修正して、タグ付けファイルがゼロの状態を作成する
+          # TODO: Mockのhooksのsetupあたりを修正して、タグ付けファイルがゼロの状態を作成する
           it 'タグ付けされていないファイル名がなければ、その旨のメッセージを返す' do
             skip 'TODO'
             actual, = capture_io do
@@ -218,10 +218,10 @@ class TestView < Minitest::Test
           end
         end
 
-        describe ':tally' do
+        describe ':count' do
           it 'タグの出現回数を表示する' do
             actual, = capture_io do
-              Memo::View.new(@test_repo).tags(:tally)
+              Memo::View.new(@test_repo).tags(:count)
             end
 
             expected = Memo::Mapper.new(@test_repo).count_of_each_tag_to_view.join("\n") << "\n"

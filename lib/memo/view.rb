@@ -39,11 +39,11 @@ module Memo
 
     def tags(filter = '')
       case filter
-      when :list
+      when :name
         puts @mapper.tag_list_to_view
       when :empty
         puts @mapper.empty_tags_file_list_to_view
-      when :tally
+      when :count
         puts @mapper.count_of_each_tag_to_view
       else
         puts @mapper.tag_and_filenames_to_view

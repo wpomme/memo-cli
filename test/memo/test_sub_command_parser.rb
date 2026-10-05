@@ -4,6 +4,22 @@ require_relative '../helper'
 
 class TestSubCommandParser < Minitest::Test
   describe '"#parse!' do
+    describe '引数の数が多すぎる場合' do
+      it '引数が三つ以上の場合は、エラーメッセージを表示する' do
+        actual, = capture_io do
+          exception = assert_raises(SystemExit) do
+            Memo::SubCommandParser.parse!(%w[foo bar baz])
+          end
+
+          _(exception.status).must_equal(2)
+        end
+
+        expected = Memo::Message::TOO_MANY_ARGS
+
+        _(actual).must_equal(expected)
+      end
+    end
+
     describe 'memo list(-l, --list)' do
       it '引数がlistのときは、[:list]を返す' do
         Memo::SubCommandParser::LIST_COMMAND_SPEC.take_command_forms.each do |command|
@@ -18,16 +34,6 @@ class TestSubCommandParser < Minitest::Test
       it '引数がlist <word>のときは、[:list, <word>]を返す' do
         Memo::SubCommandParser::LIST_COMMAND_SPEC.take_command_forms.each do |command|
           actual = Memo::SubCommandParser.parse!([command, 'foo'])
-
-          expected = { list: 'foo' }
-
-          _(actual).must_equal(expected)
-        end
-      end
-
-      it '引数がlistで、その後に続く引数が二つ以上あるときは、listの次の引数を返す' do
-        Memo::SubCommandParser::LIST_COMMAND_SPEC.take_command_forms.each do |command|
-          actual = Memo::SubCommandParser.parse!([command, 'foo', 'bar'])
 
           expected = { list: 'foo' }
 
@@ -53,16 +59,6 @@ class TestSubCommandParser < Minitest::Test
       it '引数がread <word>のときは、[:read, <word>]' do
         Memo::SubCommandParser::READ_COMMAND_SPEC.take_command_forms.each do |command|
           actual = Memo::SubCommandParser.parse!([command, 'foo'])
-
-          expected = { read: 'foo' }
-
-          _(actual).must_equal(expected)
-        end
-      end
-
-      it '引数がreadで、その後に続く引数が二つ以上あるときは、readの次の引数を返す' do
-        Memo::SubCommandParser::READ_COMMAND_SPEC.take_command_forms.each do |command|
-          actual = Memo::SubCommandParser.parse!([command, 'foo', 'bar'])
 
           expected = { read: 'foo' }
 
@@ -105,32 +101,12 @@ class TestSubCommandParser < Minitest::Test
           _(actual).must_equal(expected)
         end
       end
-
-      it '引数がsearchで、その後に続く引数が二つ以上あるときは、searchの次の引数を返す' do
-        Memo::SubCommandParser::SEARCH_COMMAND_SPEC.take_command_forms.each do |command|
-          actual = Memo::SubCommandParser.parse!([command, 'foo', 'bar'])
-
-          expected = { search: 'foo' }
-
-          _(actual).must_equal(expected)
-        end
-      end
     end
 
     describe 'memo dirs(-d, --dirs)' do
       it '引数がdirsだけのときは、:dirsを返す' do
         Memo::SubCommandParser::DIRS_COMMAND_SPEC.take_command_forms.each do |command|
           actual = Memo::SubCommandParser.parse!([command])
-
-          expected = { dirs: true }
-
-          _(actual).must_equal(expected)
-        end
-      end
-
-      it '引数がdirsで、その後に続く引数があってもそのまま:dirsを返す' do
-        Memo::SubCommandParser::DIRS_COMMAND_SPEC.take_command_forms.each do |command|
-          actual = Memo::SubCommandParser.parse!([command, 'foo'])
 
           expected = { dirs: true }
 
@@ -191,7 +167,7 @@ class TestSubCommandParser < Minitest::Test
         end
       end
 
-      it '引数がtagsで、その後に続く引数があってもそのまま:tagsを返す' do
+      it '引数がtagsで、その後に続く引数があったら空の配列を返す' do
         Memo::SubCommandParser::TAGS_COMMAND_SPEC.take_command_forms.each do |command|
           actual = Memo::SubCommandParser.parse!([command, 'foo'])
 
@@ -217,20 +193,6 @@ class TestSubCommandParser < Minitest::Test
           exception = assert_raises(SystemExit) do
             Memo::SubCommandParser::HELP_COMMAND_SPEC.take_command_forms.each do |sub_command|
               Memo::SubCommandParser.parse!([sub_command])
-            end
-          end
-
-          _(exception.status).must_equal(0)
-        end
-
-        _(actual).must_equal(help_message_expected)
-      end
-
-      it '引数がhelpで、引数が一つ以上あるときでも、そのままヘルプメッセージを表示する' do
-        actual, = capture_io do
-          exception = assert_raises(SystemExit) do
-            Memo::SubCommandParser::HELP_COMMAND_SPEC.take_command_forms.each do |sub_command|
-              Memo::SubCommandParser.parse!([sub_command, 'foo'])
             end
           end
 

@@ -62,6 +62,12 @@ Rakefileに記載したコードは別のファイルに移動させた方がい
 
 ### sub_command_parser
 - sub_command_parserについて、memo tags --listを実行すると、memo listが実行されてしまう問題をもっと簡単なロジックで解決できるようにする
+    - memo tags list => {tags: nil, list: nil}が返ってくる
+        - これを生かした方が良さそうな気がする
+        - --name, --count, --emptyはサブコマンドにする必要がないかもしれない
+        - self.parse!の処理を一つ一つの引数ごとに処理するともしかしたら見通しが良くなるかも？
+            - self.parse!(argv, count)のイメージ？
+    - optionを読み取るとき、ハイフンなしの文字列を読み取るようにしたロジックがあるので、そこを考慮してコマンドのUIを改修する
 - SubCommandSpecを作成するためのsub_command_factoryのようなクラスかメソッドが必要かもしれない
 - `memo tags -h`でmemo tagsのヘルプが見れるようにしたい
 

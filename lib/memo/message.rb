@@ -17,6 +17,14 @@ module Memo
       memo CLIには引数が必要です。
       memo CLIの後にタグ名を指定してください。
     NO_ARGS
+    TOO_MANY_ARGS = <<~TOO_ARGS
+      memo CLIに必要な引数の数を超えています。
+      適切な数の引数を指定してください。
+    TOO_ARGS
+    UNKNOWN_COMMAND = <<~UNKNOWN
+      memo CLIにそのようなサブコマンドはありません。
+      適切なサブコマンドを指定してください。
+    UNKNOWN
     NO_EMPTY_TAGS_FILE_LIST = <<~NO_EMPTY
       タグ付けされていないファイルはありませんでした。
     NO_EMPTY

@@ -50,6 +50,10 @@ module Memo
         "#{long_form} #{option_argv}"
       end
 
+      def no_args?
+        option_argv.nil?
+      end
+
       def optional?
         /\A\[\w+\]\Z/.match?(option_argv)
       end

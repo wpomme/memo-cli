@@ -218,8 +218,8 @@ class TestCommand < Minitest::Test
           _(actual).must_equal(expected)
         end
 
-        it "['tags']の次に続く値で、'-l', '--list'を受け取ったときは、タグ名だけを表示する" do
-          test_tags_sub_commands = ['-l', '--list']
+        it "['tags']の次に続く値で、'-n', '--name'を受け取ったときは、タグ名だけを表示する" do
+          test_tags_sub_commands = ['-n', '--name']
 
           test_tags_sub_commands.each do |sub_command|
             actual, = capture_io do
@@ -247,8 +247,8 @@ class TestCommand < Minitest::Test
           end
         end
 
-        it "['tags']の次に続く値で、'-t', '--tally'を受け取ったときは、タグの出現回数を表示する" do
-          test_tags_sub_commands = ['-t', '--tally']
+        it "['tags']の次に続く値で、'-c', '--count'を受け取ったときは、タグの出現回数を表示する" do
+          test_tags_sub_commands = ['-c', '--count']
 
           test_tags_sub_commands.each do |sub_command|
             actual, = capture_io do
