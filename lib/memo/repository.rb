@@ -15,7 +15,7 @@ module Memo
     #
     # @param seed [Memo::Model::Seed]
     # @return [Array<Array<Memo::Model::SearchLine>>, nil]
-    def search_all(word)
+    def search(word)
       @file_seeds.filter_map do |seed|
         Memo::Service.search(seed, word)
       end
@@ -77,7 +77,7 @@ module Memo
     #
     # @param word [String]
     # @return [Array<Seed>]
-    def find(word)
+    def find_files(word)
       @file_seeds.filter { |seed| seed.basename == word }
     end
 

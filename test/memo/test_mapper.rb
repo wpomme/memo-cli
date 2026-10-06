@@ -265,7 +265,7 @@ class TestMapper < Minitest::Test
           search_word = @fixed_search_word
           expected = Memo::Mapper.new(@test_repo).search_result_to_view(search_word)
 
-          actual = @test_repo.search_all(search_word).flatten.map do |line|
+          actual = @test_repo.search(search_word).flatten.map do |line|
             line.to_view(search_word)
           end
 

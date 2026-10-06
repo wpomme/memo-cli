@@ -15,7 +15,7 @@ module Memo
       # 引数が与えられていない場合は、その旨をユーザーに知らせるメッセージを返す
       return puts Memo::Message::NO_GIVEN_ARGS.gsub('CLI', 'read') if word.empty?
 
-      found = @repo.find(word)
+      found = @repo.find_files(word)
 
       case found.size
       when 0
@@ -28,7 +28,7 @@ module Memo
         choice = Memo::Service.select_prompt(title: Memo::Message::MULTIPLE_MEMOS_WEWE_FOUND.sub('size', found.size.to_s), choices: choices)
         puts Memo::Service.read(choice)
       else
-        StandardError 'There is something wrong with found.size from Repository.find'
+        StandardError 'There is something wrong with found.size from Repository.find_files'
         exit(2)
       end
     end

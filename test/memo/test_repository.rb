@@ -94,12 +94,12 @@ class TestRepository < Minitest::Test
       end
     end
 
-    describe '#find' do
+    describe '#find_files' do
       describe '戻り値の型検査' do
         describe '検索文字列と一致するファイル名が見つかった場合は、Seedの一次元配列を返す' do
           it 'ファイル名が一件見つかった場合' do
             word = @fixed_search_word
-            ret = @test_repo.find(word)
+            ret = @test_repo.find_files(word)
             expected = ret.all?(Memo::Model::Seed)
 
             _(true).must_equal(expected)
@@ -107,7 +107,7 @@ class TestRepository < Minitest::Test
 
           it 'ファイル名が複数件見つかった場合' do
             word = @fixed_duplicated_filename
-            ret = @test_repo.find(word)
+            ret = @test_repo.find_files(word)
             expected = ret.all?(Memo::Model::Seed)
 
             _(true).must_equal(expected)
@@ -117,7 +117,7 @@ class TestRepository < Minitest::Test
         describe '検索文字列と一致するファイル名が見つからなかった場合は、空の配列を返す' do
           it 'メモの中に存在しない検索文字列が入力された場合' do
             word = 'invalid_word'
-            expected = @test_repo.find(word)
+            expected = @test_repo.find_files(word)
 
             _([]).must_equal(expected)
           end
@@ -128,7 +128,7 @@ class TestRepository < Minitest::Test
         describe '検索文字列と一致するファイル名が見つかった場合は、そのSeedの一次元配列を返す' do
           it 'ファイル名が一件見つかった場合' do
             word = @fixed_search_word
-            expected = @test_repo.find(word)
+            expected = @test_repo.find_files(word)
             actual = @test_seeds.filter { |seed| seed.basename == word }
 
             _(actual).must_equal(expected)
@@ -136,7 +136,7 @@ class TestRepository < Minitest::Test
 
           it 'ファイル名が複数件見つかった場合' do
             word = @fixed_duplicated_filename
-            expected = @test_repo.find(word)
+            expected = @test_repo.find_files(word)
             actual = @test_seeds.filter { |seed| seed.basename == word }
 
             _(actual).must_equal(expected)
@@ -282,11 +282,11 @@ class TestRepository < Minitest::Test
       end
     end
 
-    describe '#search_all' do
+    describe '#search' do
       describe '戻り値の型検査' do
         it '検索結果は二重配列で要素はMemo::Model::SearchLineである' do
           search_word = @fixed_search_word
-          result = @test_repo.search_all(search_word)
+          result = @test_repo.search(search_word)
 
           expected = result.all? do |memo|
             memo.all?(Memo::Model::SearchLine)
@@ -297,7 +297,7 @@ class TestRepository < Minitest::Test
 
         it '検索結果が空の場合は、空の二重配列を返す' do
           search_word = 'hikkakaranasounakotoba'
-          result = @test_repo.search_all(search_word)
+          result = @test_repo.search(search_word)
 
           expected = result.all? do |memo|
             memo.all?(&:empty?)
@@ -310,7 +310,7 @@ class TestRepository < Minitest::Test
       describe '戻り値の値検査' do
         it 'モックデータから作成した検索結果と要素が同じである' do
           search_word = @fixed_search_word
-          expected = @test_repo.search_all(search_word)
+          expected = @test_repo.search(search_word)
 
           actual = Memo::MockSeed::TEST_MEMO_DATA_SEED.filter_map do |seed|
             rel_path = File.join(seed[:parent_dir], "#{seed[:basename]}.md")
