@@ -6,10 +6,16 @@ class TestView < Minitest::Test
   describe 'View' do
     include MemoTestLifecycleHooks
 
+    def setup
+      super
+
+      @view = Memo::View.new(@test_repo)
+    end
+
     describe '#dirs' do
       it 'memoの中のディレクトリの一覧をターミナルに表示する' do
         out, = capture_io do
-          Memo::View.new(@test_repo).dirs
+          @view.dirs
         end
 
         expected = Memo::Mapper.new(@test_repo).dirs_to_view << "\n"
@@ -21,7 +27,7 @@ class TestView < Minitest::Test
       it 'target_filenameが存在するファイルと一致するとき、そのファイルを全文表示する' do
         target_file = @fixed_mock_file
         out, = capture_io do
-          Memo::View.new(@test_repo).read(target_file)
+          @view.read(target_file)
         end
 
         _(out).must_equal(Memo::MockSeed::TEST_MEMO_DATA_SEED.find { |seed| seed[:basename] == target_file }[:content])
@@ -39,7 +45,7 @@ class TestView < Minitest::Test
         # 最後の方を選択する
         $stdin = StringIO.new("#{count}\n")
         out, = capture_io do
-          Memo::View.new(@test_repo).read(target_filename)
+          @view.read(target_filename)
         end
 
         title = Memo::Message::MULTIPLE_MEMOS_WEWE_FOUND.sub('size', count)
@@ -60,7 +66,7 @@ class TestView < Minitest::Test
 
       it '引数が与えられていない場合は、その旨をユーザーに知らせるメッセージを返す' do
         out, = capture_io do
-          Memo::View.new(@test_repo).read
+          @view.read
         end
 
         expected = Memo::Message::NO_GIVEN_ARGS.gsub('CLI', 'read')
@@ -73,7 +79,7 @@ class TestView < Minitest::Test
 
         out, = capture_io do
           exception = assert_raises(SystemExit) do
-            Memo::View.new(@test_repo).read(word)
+            @view.read(word)
           end
 
           assert_equal 2, exception.status
@@ -86,7 +92,7 @@ class TestView < Minitest::Test
     describe '#list' do
       it '引数がlistだけのときは、色のついたディレクトリと、そのディレクトリの中のファイルの一覧を表示する' do
         out, = capture_io do
-          Memo::View.new(@test_repo).list
+          @view.list
         end
 
         grouped_ls_to_view = Memo::Mapper.new(@test_repo).grouped_ls_to_view
@@ -102,7 +108,7 @@ class TestView < Minitest::Test
         valid_dir = 'cli'
 
         out, = capture_io do
-          Memo::View.new(@test_repo).list(valid_dir)
+          @view.list(valid_dir)
         end
 
         grouped_ls_to_view = Memo::Mapper.new(@test_repo).grouped_ls_to_view(valid_dir)
@@ -119,7 +125,7 @@ class TestView < Minitest::Test
         invalid_dir = 'invalid_dir'
 
         out, = capture_io do
-          Memo::View.new(@test_repo).list(invalid_dir)
+          @view.list(invalid_dir)
         end
 
         expected = Memo::Message::NO_DIRECTORIES.sub('dir', invalid_dir) << @test_repo.dir_set.join(' ') << "\n"
@@ -134,7 +140,7 @@ class TestView < Minitest::Test
 
         it '色付けされたタグ名とそのタグが付いたファイル名の一覧を表示する' do
           actual, = capture_io do
-            Memo::View.new(@test_repo).tag(tag)
+            @view.tag(tag)
           end
 
           expected = Memo::Mapper.new(@test_repo).tag_and_filenames_by_tag_to_view(tag).join("\n") << "\n"
@@ -148,7 +154,7 @@ class TestView < Minitest::Test
 
         it 'そのようなタグ名が存在しないことをユーザーに知らせるメッセージを表示する' do
           actual, = capture_io do
-            Memo::View.new(@test_repo).tag(tag)
+            @view.tag(tag)
           end
 
           expected = Memo::Message::NO_TAGS.sub('tag', tag) << @test_repo.tag_list.join(Memo::Mapper::INDENT) << "\n"
@@ -160,7 +166,7 @@ class TestView < Minitest::Test
       describe 'タグ名が与えられなかった場合' do
         it 'タグ名を与えなければいけないことをユーザーに知らせるメッセージを表示する' do
           actual, = capture_io do
-            Memo::View.new(@test_repo).tag
+            @view.tag
           end
 
           expected = Memo::Message::NO_GIVEN_ARGS.gsub('CLI', 'tag')
@@ -174,7 +180,7 @@ class TestView < Minitest::Test
       describe '引数が与えられなかった場合' do
         it '色付けされたタグ名とそのタグが付いたファイル名の一覧を表示する' do
           actual, = capture_io do
-            Memo::View.new(@test_repo).tags
+            @view.tags
           end
 
           expected = Memo::Mapper.new(@test_repo).tag_and_filenames_to_view.join("\n") << "\n"
@@ -186,7 +192,7 @@ class TestView < Minitest::Test
       describe '引数が与えられた場合' do
         it ':nameなら、タグ名だけを返す' do
           actual, = capture_io do
-            Memo::View.new(@test_repo).tags(:name)
+            @view.tags(:name)
           end
 
           expected = @test_repo.tag_list.join("\n") << "\n"
@@ -197,7 +203,7 @@ class TestView < Minitest::Test
         describe ':empty' do
           it 'タグ付けされていないファイル名の一覧を返す' do
             actual, = capture_io do
-              Memo::View.new(@test_repo).tags(:empty)
+              @view.tags(:empty)
             end
 
             expected = Memo::Mapper.new(@test_repo).empty_tags_file_list_to_view.join("\n") << "\n"
@@ -209,7 +215,7 @@ class TestView < Minitest::Test
           it 'タグ付けされていないファイル名がなければ、その旨のメッセージを返す' do
             skip 'TODO'
             actual, = capture_io do
-              Memo::View.new(@test_repo).tags(:empty)
+              @view.tags(:empty)
             end
 
             expected = "#{Memo::Message::NO_EMPTY_TAGS_FILE_LIST}\n"
@@ -221,7 +227,7 @@ class TestView < Minitest::Test
         describe ':count' do
           it 'タグの出現回数を表示する' do
             actual, = capture_io do
-              Memo::View.new(@test_repo).tags(:count)
+              @view.tags(:count)
             end
 
             expected = Memo::Mapper.new(@test_repo).count_of_each_tag_to_view.join("\n") << "\n"
@@ -237,7 +243,7 @@ class TestView < Minitest::Test
         search_word = @fixed_search_word
 
         out, = capture_io do
-          Memo::View.new(@test_repo).search(search_word)
+          @view.search(search_word)
         end
 
         actual = Memo::Mapper.new(@test_repo).search_result_to_view(search_word)
@@ -250,7 +256,7 @@ class TestView < Minitest::Test
         search_word = 'hikkakaranasounakotoba'
 
         out, = capture_io do
-          Memo::View.new(@test_repo).search(search_word)
+          @view.search(search_word)
         end
 
         expected = Memo::Message::NO_SEARCH_RESULTS_WERE_FOUND.sub('word', search_word) << "\n"
@@ -260,7 +266,7 @@ class TestView < Minitest::Test
 
       it '引数が与えられなかった場合は、その旨を知らせるメッセージを表示する' do
         out, = capture_io do
-          Memo::View.new(@test_repo).search
+          @view.search
         end
 
         expected = Memo::Message::NO_GIVEN_ARGS.gsub('CLI', 'search')
