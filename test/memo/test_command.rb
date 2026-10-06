@@ -6,14 +6,21 @@ class TestCommand < Minitest::Test
   describe 'Command' do
     include MemoTestLifecycleHooks
 
+    def setup
+      super
+
+      @mapper = Memo::Mapper.new(@test_repo)
+      @command = Memo::Command.new(@test_repo)
+    end
+
     describe '#execute' do
       describe 'dirs' do
         it "['dirs']を受け取ったときは、対象のディレクトリの中のディレクトリ一覧をターミナルに表示する" do
           actual, = capture_io do
-            Memo::Command.new(@test_repo).execute(['dirs'])
+            @command.execute(['dirs'])
           end
 
-          expected = Memo::Mapper.new(@test_repo).dirs_to_view << "\n"
+          expected = @mapper.dirs_to_view << "\n"
 
           _(actual).must_equal(expected)
         end
@@ -22,10 +29,10 @@ class TestCommand < Minitest::Test
       describe 'list' do
         it "['list']を受け取ったときは、対象ディレクトリの中のディレクトリとその中にあるメモファイルを全て表示する" do
           out, = capture_io do
-            Memo::Command.new(@test_repo).execute(['list'])
+            @command.execute(['list'])
           end
 
-          grouped_ls_to_view = Memo::Mapper.new(@test_repo).grouped_ls_to_view
+          grouped_ls_to_view = @mapper.grouped_ls_to_view
 
           actual = out.split("\n").to_set
 
@@ -38,10 +45,10 @@ class TestCommand < Minitest::Test
           valid_dir = 'cli'
 
           out, = capture_io do
-            Memo::Command.new(@test_repo).execute(['list', valid_dir])
+            @command.execute(['list', valid_dir])
           end
 
-          grouped_ls_to_view = Memo::Mapper.new(@test_repo).grouped_ls_to_view(valid_dir)
+          grouped_ls_to_view = @mapper.grouped_ls_to_view(valid_dir)
 
           actual = out.split("\n").to_set
 
@@ -54,7 +61,7 @@ class TestCommand < Minitest::Test
           invalid_dir = 'invalid_dir'
 
           actual, = capture_io do
-            Memo::Command.new(@test_repo).execute(['list', invalid_dir])
+            @command.execute(['list', invalid_dir])
           end
 
           expected = Memo::Message::NO_DIRECTORIES.sub('dir', invalid_dir) << @test_repo.dir_set.join(' ') << "\n"
@@ -66,7 +73,7 @@ class TestCommand < Minitest::Test
       describe 'read' do
         it "['read', 'ls']を受け取ったときは、ls.mdを全文表示する" do
           actual, = capture_io do
-            Memo::Command.new(@test_repo).execute(%w[read ls])
+            @command.execute(%w[read ls])
           end
 
           expected = Memo::MockSeed::TEST_LS_FILE_CONTENT
@@ -82,7 +89,7 @@ class TestCommand < Minitest::Test
           $stdin = StringIO.new("2\n")
 
           actual, = capture_io do
-            Memo::Command.new(@test_repo).execute(%w[read mise])
+            @command.execute(%w[read mise])
           end
 
           title = Memo::Message::MULTIPLE_MEMOS_WEWE_FOUND.sub('size', choices.size.to_s)
@@ -101,7 +108,7 @@ class TestCommand < Minitest::Test
 
           actual, = capture_io do
             exception = assert_raises(SystemExit) do
-              Memo::Command.new(@test_repo).execute(%w[read invalid_memo])
+              @command.execute(%w[read invalid_memo])
             end
 
             _(exception.status).must_equal(2)
@@ -113,7 +120,7 @@ class TestCommand < Minitest::Test
         it '引数が与えられていない場合は、その旨をユーザーに知らせるメッセージを返す' do
           actual, = capture_io do
             exception = assert_raises(SystemExit) do
-              Memo::Command.new(@test_repo).execute(['read'])
+              @command.execute(['read'])
             end
 
             _(exception.status).must_equal(2)
@@ -130,10 +137,10 @@ class TestCommand < Minitest::Test
           search_word = @fixed_search_word
 
           actual, = capture_io do
-            Memo::Command.new(@test_repo).execute(['search', search_word])
+            @command.execute(['search', search_word])
           end
 
-          expected = Memo::Mapper.new(@test_repo).search_result_to_view(search_word)
+          expected = @mapper.search_result_to_view(search_word)
             .join("\n") << "\n"
 
           _(actual).must_equal(expected)
@@ -143,7 +150,7 @@ class TestCommand < Minitest::Test
           search_word = 'hikkakaranasounakotoba'
 
           actual, = capture_io do
-            Memo::Command.new(@test_repo).execute(['search', search_word])
+            @command.execute(['search', search_word])
           end
 
           expected = Memo::Message::NO_SEARCH_RESULTS_WERE_FOUND.sub('word', search_word) << "\n"
@@ -154,7 +161,7 @@ class TestCommand < Minitest::Test
         it "['search']を受け取った場合は、引数が足りないことをユーザーに知らせるメッセージを表示する" do
           actual, = capture_io do
             exception = assert_raises(SystemExit) do
-              Memo::Command.new(@test_repo).execute(['search'])
+              @command.execute(['search'])
             end
 
             _(exception.status).must_equal(2)
@@ -171,10 +178,10 @@ class TestCommand < Minitest::Test
           tag_name = 'CLI'
 
           actual, = capture_io do
-            Memo::Command.new(@test_repo).execute(['tag', tag_name])
+            @command.execute(['tag', tag_name])
           end
 
-          expected = Memo::Mapper.new(@test_repo).tag_and_filenames_by_tag_to_view(tag_name).join("\n") << "\n"
+          expected = @mapper.tag_and_filenames_by_tag_to_view(tag_name).join("\n") << "\n"
 
           _(actual).must_equal(expected)
         end
@@ -183,7 +190,7 @@ class TestCommand < Minitest::Test
           tag_name = 'does_not_exist_tag_name'
 
           actual, = capture_io do
-            Memo::Command.new(@test_repo).execute(['tag', tag_name])
+            @command.execute(['tag', tag_name])
           end
 
           expected = Memo::Message::NO_TAGS.sub('tag', tag_name) << @test_repo.tag_list.join(Memo::Mapper::INDENT) << "\n"
@@ -194,7 +201,7 @@ class TestCommand < Minitest::Test
         it "['tag']だけを受け取ったときは、タグ名を与えなければいけないことをユーザーに知らせるメッセージを表示する" do
           actual, = capture_io do
             exception = assert_raises(SystemExit) do
-              Memo::Command.new(@test_repo).execute(['tag'])
+              @command.execute(['tag'])
             end
 
             _(exception.status).must_equal(2)
@@ -209,10 +216,10 @@ class TestCommand < Minitest::Test
       describe 'tags' do
         it "['tags']を受け取ったときは、色付けされたタグ名とそのタグが付いたファイル名の一覧を表示する" do
           actual, = capture_io do
-            Memo::Command.new(@test_repo).execute(['tags'])
+            @command.execute(['tags'])
           end
 
-          expected = Memo::Mapper.new(@test_repo).tag_and_filenames_to_view
+          expected = @mapper.tag_and_filenames_to_view
             .join("\n") << "\n"
 
           _(actual).must_equal(expected)
@@ -223,7 +230,7 @@ class TestCommand < Minitest::Test
 
           test_tags_sub_commands.each do |sub_command|
             actual, = capture_io do
-              Memo::Command.new(@test_repo).execute(['tags', sub_command])
+              @command.execute(['tags', sub_command])
             end
 
             expected = @test_repo.tag_list
@@ -238,13 +245,13 @@ class TestCommand < Minitest::Test
 
           test_tags_sub_commands.each do |sub_command|
             actual, = capture_io do
-              Memo::Command.new(@test_repo).execute(['tags', sub_command])
+              @command.execute(['tags', sub_command])
             end
 
             expected = if @test_repo.empty_tags_file_list.empty?
                          Memo::Message::NO_EMPTY_TAGS_FILE_LIST
                        else
-                         Memo::Mapper.new(@test_repo).empty_tags_file_list_to_view.join("\n") << "\n"
+                         @mapper.empty_tags_file_list_to_view.join("\n") << "\n"
                        end
 
             _(actual).must_equal(expected)
@@ -256,10 +263,10 @@ class TestCommand < Minitest::Test
 
           test_tags_sub_commands.each do |sub_command|
             actual, = capture_io do
-              Memo::Command.new(@test_repo).execute(['tags', sub_command])
+              @command.execute(['tags', sub_command])
             end
 
-            expected = Memo::Mapper.new(@test_repo).count_of_each_tag_to_view.join("\n") << "\n"
+            expected = @mapper.count_of_each_tag_to_view.join("\n") << "\n"
 
             _(actual).must_equal(expected)
           end

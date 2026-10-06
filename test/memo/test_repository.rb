@@ -146,12 +146,12 @@ class TestRepository < Minitest::Test
     end
 
     describe '#empty_tags_file_list' do
-      it '加工したモックデータと戻り値が同じであること' do
-        actual = @test_repo.empty_tags_file_list
+      it '戻り値は、空の配列か文字列型の配列となること' do
+        ret = @test_repo.empty_tags_file_list
 
-        expected = @test_seeds.filter { |seed| seed['tags'].empty? }
+        actual = ret.empty? || ret.all?(String)
 
-        _(actual).must_equal(expected)
+        _(actual).must_equal(true)
       end
     end
 

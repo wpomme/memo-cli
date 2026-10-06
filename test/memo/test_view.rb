@@ -9,6 +9,7 @@ class TestView < Minitest::Test
     def setup
       super
 
+      @mapper = Memo::Mapper.new(@test_repo)
       @view = Memo::View.new(@test_repo)
     end
 
@@ -18,7 +19,7 @@ class TestView < Minitest::Test
           @view.dirs
         end
 
-        expected = Memo::Mapper.new(@test_repo).dirs_to_view << "\n"
+        expected = @mapper.dirs_to_view << "\n"
         _(out).must_equal(expected)
       end
     end
@@ -95,7 +96,7 @@ class TestView < Minitest::Test
           @view.list
         end
 
-        grouped_ls_to_view = Memo::Mapper.new(@test_repo).grouped_ls_to_view
+        grouped_ls_to_view = @mapper.grouped_ls_to_view
 
         actual = grouped_ls_to_view.to_set
 
@@ -111,7 +112,7 @@ class TestView < Minitest::Test
           @view.list(valid_dir)
         end
 
-        grouped_ls_to_view = Memo::Mapper.new(@test_repo).grouped_ls_to_view(valid_dir)
+        grouped_ls_to_view = @mapper.grouped_ls_to_view(valid_dir)
 
         actual = grouped_ls_to_view.to_set
 
@@ -143,7 +144,7 @@ class TestView < Minitest::Test
             @view.tag(tag)
           end
 
-          expected = Memo::Mapper.new(@test_repo).tag_and_filenames_by_tag_to_view(tag).join("\n") << "\n"
+          expected = @mapper.tag_and_filenames_by_tag_to_view(tag).join("\n") << "\n"
 
           _(actual).must_equal(expected)
         end
@@ -183,7 +184,7 @@ class TestView < Minitest::Test
             @view.tags
           end
 
-          expected = Memo::Mapper.new(@test_repo).tag_and_filenames_to_view.join("\n") << "\n"
+          expected = @mapper.tag_and_filenames_to_view.join("\n") << "\n"
 
           _(actual).must_equal(expected)
         end
@@ -209,7 +210,7 @@ class TestView < Minitest::Test
             expected = if @test_repo.empty_tags_file_list.empty?
                          Memo::Message::NO_EMPTY_TAGS_FILE_LIST
                        else
-                         Memo::Mapper.new(@test_repo).empty_tags_file_list_to_view.join("\n") << "\n"
+                         @mapper.empty_tags_file_list_to_view.join("\n") << "\n"
                        end
 
             _(actual).must_equal(expected)
@@ -222,7 +223,7 @@ class TestView < Minitest::Test
               @view.tags(:count)
             end
 
-            expected = Memo::Mapper.new(@test_repo).count_of_each_tag_to_view.join("\n") << "\n"
+            expected = @mapper.count_of_each_tag_to_view.join("\n") << "\n"
 
             _(actual).must_equal(expected)
           end
@@ -238,7 +239,7 @@ class TestView < Minitest::Test
           @view.search(search_word)
         end
 
-        actual = Memo::Mapper.new(@test_repo).search_result_to_view(search_word)
+        actual = @mapper.search_result_to_view(search_word)
           .join("\n") << "\n"
 
         _(out).must_equal(actual)
