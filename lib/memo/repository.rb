@@ -2,7 +2,7 @@
 
 module Memo
   class Repository
-    EXCLUDE_FILES = ['README.md'].to_set.freeze
+    EXCLUDE_FILE_SET = ['README.md'].to_set.freeze
 
     def initialize(dirs)
       @file_seeds = dirs.map { |dir| load_files(dir) }.flatten
@@ -121,7 +121,7 @@ module Memo
     def load_files(root_dir)
       Dir.glob('**/*.md', base: root_dir).filter_map do |rel_path|
         # README.mdは読み飛ばす
-        next if EXCLUDE_FILES.include?(File.basename(rel_path))
+        next if EXCLUDE_FILE_SET.include?(File.basename(rel_path))
 
         full_path = File.join(root_dir, rel_path)
 

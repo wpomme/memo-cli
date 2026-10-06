@@ -8,11 +8,11 @@ class TestRepository < Minitest::Test
 
     describe '#initialize' do
       describe '#load_files, @file_seeds' do
-        it '@file_seedsの配列の要素はMemo::Model::Seedである' do
+        it '@file_seedsの型はMemo::Model::Seedを要素とする配列である' do
           file_seeds = @test_repo.instance_variable_get(:@file_seeds)
-          expected = file_seeds.all?(Memo::Model::Seed)
+          actual = file_seeds.all?(Memo::Model::Seed)
 
-          _(true).must_equal(expected)
+          _(actual).must_equal(true)
         end
 
         it '@file_seeds.full_path は絶対パスである' do
@@ -21,6 +21,26 @@ class TestRepository < Minitest::Test
 
           actual = full_paths.all? do |full_path|
             File.absolute_path?(full_path)
+          end
+
+          _(actual).must_equal(true)
+        end
+
+        it '@file_seedsの中にEXCLUDE_FILE_SETで指定したファイルは含まれない' do
+          file_seeds = @test_repo.instance_variable_get(:@file_seeds)
+          all_basename_set = file_seeds.to_set(&:basename)
+
+          actual = all_basename_set.intersection(Memo::Repository::EXCLUDE_FILE_SET)
+
+          _(actual).must_be_empty
+        end
+
+        it '@file_seeds.tagsは空か文字列型の配列である' do
+          file_seeds = @test_repo.instance_variable_get(:@file_seeds)
+          all_tag_list = file_seeds.map(&:tags)
+
+          actual = all_tag_list.all? do |tags|
+            tags.empty? || tags.all?(String)
           end
 
           _(actual).must_equal(true)
@@ -100,26 +120,26 @@ class TestRepository < Minitest::Test
           it 'ファイル名が一件見つかった場合' do
             word = @fixed_search_word
             ret = @test_repo.find_files(word)
-            expected = ret.all?(Memo::Model::Seed)
+            actual = ret.all?(Memo::Model::Seed)
 
-            _(true).must_equal(expected)
+            _(actual).must_equal(true)
           end
 
           it 'ファイル名が複数件見つかった場合' do
             word = @fixed_duplicated_filename
             ret = @test_repo.find_files(word)
-            expected = ret.all?(Memo::Model::Seed)
+            actual = ret.all?(Memo::Model::Seed)
 
-            _(true).must_equal(expected)
+            _(actual).must_equal(true)
           end
         end
 
         describe '検索文字列と一致するファイル名が見つからなかった場合は、空の配列を返す' do
           it 'メモの中に存在しない検索文字列が入力された場合' do
             word = 'invalid_word'
-            expected = @test_repo.find_files(word)
+            actual = @test_repo.find_files(word)
 
-            _([]).must_equal(expected)
+            _(actual).must_be_empty
           end
         end
       end
