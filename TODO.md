@@ -38,36 +38,42 @@ Rakefileに記載したコードは別のファイルに移動させた方がい
 ## タグ系
 1. それぞれのタグによって、特定の機能が欲しい
     a. 例えばタグにCLIとついている場合は、それに紐付くCLIの一覧が見れたら嬉しい
-2. タグ名のTypoを検出する機能
+2. タグ名のTypoを検出する機能[OK]
     a. Settingとsetting, settingsなどの表記ゆれを検出する機能
         - 簡易的なものなら、次のコマンドでOK
-        - `memo tags -l | tr "[A-Z]" "[a-z]" | sort | uniq -c`
+        - `memo tags -n | tr "[A-Z]" "[a-z]" | sort | uniq -c`
 
     b. タグの出現頻度が１程度のものについて、そのタグの命名規則や単語に間違いがないか
         - 簡易的なものなら、次のコマンドでOK
-            - tags -tのUIについて、:でなく、タブか空白区切りにしたい
-        - `memo tags -t | awk '$1 ~ /^1:/ { print $2 }'`
+        - `memo tags -c | awk '$1 == 1 { print $2 }'`
 
 ## 命名など
 - Repository.search_allやfindなどのメソッドの名前を整理したい
 
 ## 修正箇所
+### 表示系
 - memo list, memo tagsにて、ディレクトリ・タグとファイル名の次に改行を入れたい
+    - memo list [DIRS]の場合の表示を変えたい。ファイルの方はより詳細な情報を出したい
+    - memo tag [TAG_NAME]も同様
+
+### その他
 - その他、git grep TODOで出てくるTODOを解消していく
 - なるべく、コメントに具体的な変数名などを書かないようにしたい
     - 実装の修正があった場合、そのコメントも修正する必要があるため
 - メソッドの可視性の調査 => 変更、オブジェクトについて、必要なものはfreezeする
-- CommandとViewを統合してもいいかもしれない。テストコードがほぼ同じことをしている
-    - ファイル生成時間などの書き込みが機能として追加されたらreadとwriteは分けたい
+- アーキテクチャ
+    - CommandとViewを統合してもいいかもしれない。テストコードがほぼ同じことをしている
+        - ファイル生成時間などの書き込みが機能として追加されたらreadとwriteは分けたい
 
 ### sub_command_parser
-- sub_command_parserについて、memo tags --listを実行すると、memo listが実行されてしまう問題をもっと簡単なロジックで解決できるようにする
-    - memo tags list => {tags: nil, list: nil}が返ってくる
-        - これを生かした方が良さそうな気がする
-        - --name, --count, --emptyはサブコマンドにする必要がないかもしれない
-        - self.parse!の処理を一つ一つの引数ごとに処理するともしかしたら見通しが良くなるかも？
-            - self.parse!(argv, count)のイメージ？
-    - optionを読み取るとき、ハイフンなしの文字列を読み取るようにしたロジックがあるので、そこを考慮してコマンドのUIを改修する
+- tagsのサブコマンドの機能を果たす--count/--empty/--nameの処理を単純にしたい
+    - ブロックを渡す処理を消したい。
+    - OptionParser.parse(args): memo tags list => {tags: nil, list: nil}っぽいのが返ってくる
+        - これを生かすのが良さそう
+        - Comamandに渡すときに、[[tags: nil, empty: nil]]のようにして、逆の順番だったらエラーを出すなど
+        - --emptyなどの詳細には、tags専用のサブコマンドであることを記載する
+            - または、helpのメッセージの出し方を再度考慮する
+
 - SubCommandSpecを作成するためのsub_command_factoryのようなクラスかメソッドが必要かもしれない
 - `memo tags -h`でmemo tagsのヘルプが見れるようにしたい
 

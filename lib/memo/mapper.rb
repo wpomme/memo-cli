@@ -46,7 +46,7 @@ module Memo
     end
 
     def count_of_each_tag_to_view
-      @repo.count_of_each_tag.map { |(first, last)| "#{first}: #{last}" }
+      @repo.count_of_each_tag.map { |(first, last)| "#{first}\t#{last}" }
     end
 
     # 引数としてタグ名を取り、そのタグ名と紐付いているファイル名の一覧を返す

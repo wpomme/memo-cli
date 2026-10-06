@@ -18,7 +18,12 @@ module Memo
     #   @return [:file | :directory] 対象のファイルがディレクトリかどうか
     # @!attribute [w] tags
     #   @return [Array<String>] 対象のファイルのフロントマター部分のtagsの値
-    Seed = Struct.new(:full_path, :rel_path, :target_dir, :parent_dir, :basename, :type, :tags)
+    Seed = Struct.new(:full_path, :rel_path, :target_dir, :parent_dir, :basename, :type, :tags) do
+      def initialize(...)
+        super
+        freeze
+      end
+    end
 
     # サブコマンドの詳細を作成するための構造体
     #
