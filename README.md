@@ -51,9 +51,11 @@ memo list
 ### モックファイルの作り方
 ```bash
 # モックを作成
-rake mock_make
+rake seed
 
-# モックデータをフォーマットする
+# 次の手順でも作成できる
+# モックを作成
+rake mock_make
 rake fix
 
 ## lintで何もなければOK

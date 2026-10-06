@@ -110,7 +110,6 @@ module Memo
           target_dir: root_dir,
           parent_dir: parent_dir == '.' ? File.basename(root_dir) : parent_dir,
           basename: File.basename(rel_path),
-          type: :directory,
           tags: []
         )
       end
@@ -141,7 +140,6 @@ module Memo
           target_dir: root_dir,
           parent_dir: parent_dir,
           basename: basename(full_path),
-          type: :file,
           tags: front_matter['tags'].nil? ? [] : front_matter['tags']
         )
       end

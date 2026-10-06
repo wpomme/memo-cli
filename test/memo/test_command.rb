@@ -233,7 +233,7 @@ class TestCommand < Minitest::Test
           end
         end
 
-        it "['tags']の次に続く値で、'-e', '--empty'を受け取ったときは、タグが空のファイル名を表示する" do
+        it "['tags']の次に続く値で、'-e', '--empty'を受け取ったときは、タグ付けされていないファイル名の一覧を返す。そのようなファイル名がなければその旨のメッセージを表示する" do
           test_tags_sub_commands = ['-e', '--empty']
 
           test_tags_sub_commands.each do |sub_command|
@@ -241,7 +241,11 @@ class TestCommand < Minitest::Test
               Memo::Command.new(@test_repo).execute(['tags', sub_command])
             end
 
-            expected = Memo::Mapper.new(@test_repo).empty_tags_file_list_to_view.join("\n") << "\n"
+            expected = if @test_repo.empty_tags_file_list.empty?
+                         Memo::Message::NO_EMPTY_TAGS_FILE_LIST
+                       else
+                         Memo::Mapper.new(@test_repo).empty_tags_file_list_to_view.join("\n") << "\n"
+                       end
 
             _(actual).must_equal(expected)
           end

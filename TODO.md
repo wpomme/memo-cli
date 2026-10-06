@@ -38,12 +38,16 @@ Rakefileに記載したコードは別のファイルに移動させた方がい
 ## タグ系
 1. それぞれのタグによって、特定の機能が欲しい
     a. 例えばタグにCLIとついている場合は、それに紐付くCLIの一覧が見れたら嬉しい
+2. タグの英語・日本語の対応表があると嬉しい
 
 ## 修正箇所
 ### 表示系
 - memo list, memo tagsにて、ディレクトリ・タグとファイル名の次に改行を入れたい
     - memo list [DIRS]の場合の表示を変えたい。ファイルの方はより詳細な情報を出したい
     - memo tag [TAG_NAME]も同様
+
+- 対象のディレクトリが異なる場合の対応が必要
+    memoとprivate-memoフォルダの末尾のフォルダ名がどちらもmemoでmemo listなどでマージされた結果が表示されてしまう
 
 ### その他
 - その他、git grep TODOで出てくるTODOを解消していく
@@ -53,6 +57,8 @@ Rakefileに記載したコードは別のファイルに移動させた方がい
 - アーキテクチャ
     - CommandとViewを統合してもいいかもしれない。テストコードがほぼ同じことをしている
         - ファイル生成時間などの書き込みが機能として追加されたらreadとwriteは分けたい
+- Modeo::Seedの属性の整理
+    - rel_path, target_dir, parent_dirを上手く統合する
 
 ### sub_command_parser
 - tagsのサブコマンドの機能を果たす--count/--empty/--nameの処理を単純にしたい
@@ -67,14 +73,6 @@ Rakefileに記載したコードは別のファイルに移動させた方がい
 - `memo tags -h`でmemo tagsのヘルプが見れるようにしたい
 
 ### CLIの拡張
-1. fzfと連携させればファジーにメモを読むことができる
-2. fzfを通すとフォルダの色付けが取れてしまう
-3. Rainbowのconfigで修正できるかもしれない
-
-#### 調査内容の詳細
-- ** `memo list <dirs> | fzf | xargs -I{} memo read {}`で選択したメモを読むことができる
-    - 例: `memo list cli | fzf | xargs -I{} memo read {}`
-    - ** `memo list | fzf | xargs -I{} memo read {}`でも可能
-        - `memo list`について、pipeやファイルに出力するとカラーコードが落ちてしまう
-        - `memo list | xargs -I@ echo @`などで再現する
-            - `Rainbow.enabled`の設定変更が必要？ -> パス名・環境変数系へ
+1. fzfと連携させればファジーにメモを読み込めたら嬉しい
+- リポジトリ配下なら`find . -type f | fzf | xargs -I@ -n1 basename @ ".md" | memo`で読めそう
+    - memo readコマンドについて、rel_pathを受け取ったらそのファイルを表示するように改修した上で、fzfと組み合わせればファジーに指定したファイルを読むことができそう

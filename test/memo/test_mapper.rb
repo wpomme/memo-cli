@@ -74,13 +74,19 @@ class TestMapper < Minitest::Test
     end
 
     describe '#empty_tags_file_list_to_view' do
-      it 'タグ付けされていないSeedがある場合、文字列の一次元配列を返す' do
+      it 'タグ付けされていないSeedがあれば、その一覧を返し、なければない旨のメッセージを文字列で返す' do
         actual = @mapper.empty_tags_file_list_to_view
 
-        grouped = @test_repo.empty_tags_file_list.group_by(&:parent_dir)
-        color_symbol = :green
+        empty_tags_file_list = @test_repo.empty_tags_file_list
 
-        expected = @mapper.seeds_hash_to_view(grouped, color_symbol)
+        expected = if empty_tags_file_list.empty?
+                     Memo::Message::NO_EMPTY_TAGS_FILE_LIST
+                   else
+                     grouped = @test_repo.empty_tags_file_list.group_by(&:parent_dir)
+                     color_symbol = :green
+
+                     @mapper.seeds_hash_to_view(grouped, color_symbol)
+                   end
 
         _(actual).must_equal(expected)
       end

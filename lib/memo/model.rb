@@ -14,14 +14,20 @@ module Memo
     #   @return [String] そのファイルが格納されているディレクトリ
     # @!attribute [w] basename
     #   @return [String] 対象のファイルのファイル名
-    # @!attribute [w] type
-    #   @return [:file | :directory] 対象のファイルがディレクトリかどうか
     # @!attribute [w] tags
     #   @return [Array<String>] 対象のファイルのフロントマター部分のtagsの値
-    Seed = Struct.new(:full_path, :rel_path, :target_dir, :parent_dir, :basename, :type, :tags) do
+    Seed = Struct.new(:full_path, :rel_path, :target_dir, :parent_dir, :basename, :tags) do
       def initialize(...)
         super
         freeze
+      end
+
+      def directory?
+        FileTest.directory?(full_path)
+      end
+
+      def file?
+        FileTest.file?(full_path)
       end
     end
 

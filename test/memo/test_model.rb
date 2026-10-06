@@ -28,5 +28,27 @@ class TestModel < Minitest::Test
         _(actual).must_equal(expected)
       end
     end
+
+    describe 'Model::Seed' do
+      include MemoTestLifecycleHooks
+
+      describe 'direcotory?' do
+        it 'dir_seedsは全てディレクトリである' do
+          test_dir_seeds = @test_repo.instance_variable_get(:@dir_seeds)
+
+          actual = test_dir_seeds.all?(&:directory?)
+
+          _(actual).must_equal(true)
+        end
+      end
+
+      describe 'file?' do
+        it 'file_seedsは全てファイルである' do
+          actual = @test_seeds.all?(&:file?)
+
+          _(actual).must_equal(true)
+        end
+      end
+    end
   end
 end

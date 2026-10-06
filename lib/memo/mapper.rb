@@ -33,8 +33,9 @@ module Memo
     end
 
     # タグの付いていないファイル名の一覧をそのディレクトリと共に返す
+    # 全てのファイルにタグ付けされていたら、その旨を知らせる文字列を返す
     #
-    # @return [Array<String>]
+    # @return [Array<String> | String]
     def empty_tags_file_list_to_view
       grouped = @repo.empty_tags_file_list.group_by(&:parent_dir)
 

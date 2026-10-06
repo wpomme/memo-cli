@@ -28,6 +28,11 @@ task :fix do
   sh 'bundle exec rubocop -A lib/ test/ playground/*.rb Rakefile'
 end
 
+desc 'test/mock_seeds.rbにモックデータを作成する'
+task :seed do
+  sh 'rake mock_make && bundle exec rubocop -A test/mock_seeds.rb '
+end
+
 # rake mockでmock_seeds.rbを作成
 # 作成後は、rake fixを実行して、重複したヒアドキュメントがあれば手動で直す
 desc '元データからモックデータを作成する'
@@ -46,7 +51,7 @@ task :mock_make do
 
   # テストのために固定のseedを作成する
   fixed_mock_file = 'ls'
-  seeds.concat(repo.find(fixed_mock_file)) if seeds.none? { |seed| seed.basename == fixed_mock_file }
+  seeds.concat(repo.find_files(fixed_mock_file)) if seeds.none? { |seed| seed.basename == fixed_mock_file }
 
   ## ファイル名の一覧を
   basenames = seeds.map(&:basename)
