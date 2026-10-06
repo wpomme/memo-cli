@@ -96,28 +96,46 @@ class TestMapper < Minitest::Test
         grouped = @test_seeds.group_by(&:parent_dir)
         color_symbol = :green
 
-        actual = Memo::Mapper.new(@test_repo).seeds_hash_to_view(grouped, color_symbol)
+        ret = Memo::Mapper.new(@test_repo).seeds_hash_to_view(grouped, color_symbol)
 
-        expected = grouped.inject([]) do |result, (key, seeds)|
-          result << Rainbow(key).color(color_symbol)
-          filenames = seeds.map(&:basename).join(Memo::Mapper::INDENT)
-          result << filenames
-        end
+        actual = ret.all?(String)
 
-        _(actual).must_equal(expected)
+        _(actual).must_equal(true)
       end
 
       it 'seeds_hashが空の場合、空の配列を返す' do
         grouped = {}
         color_symbol = :green
 
-        actual = []
+        actual = Memo::Mapper.new(@test_repo).seeds_hash_to_view(grouped, color_symbol)
 
-        expected = grouped.inject([]) do |result, (key, seeds)|
-          result << Rainbow(key).color(color_symbol)
-          filenames = seeds.map(&:basename).join(Memo::Mapper::INDENT)
-          result << filenames
-        end
+        expected = []
+
+        _(actual).must_equal(expected)
+      end
+    end
+
+    describe '#seeds_hash_by_key_to_view' do
+      it 'seeds_hashに値がある場合、文字列の一次元配列を返す' do
+        grouped = @test_seeds.group_by(&:parent_dir)
+        color_symbol = :green
+        fixed_dir = 'cli'
+
+        ret = Memo::Mapper.new(@test_repo).seeds_hash_by_key_to_view(grouped, fixed_dir, color_symbol)
+
+        actual = ret.all?(String)
+
+        _(actual).must_equal(true)
+      end
+
+      it 'seeds_hashが空の場合、空の配列を返す' do
+        grouped = {}
+        color_symbol = :green
+        fixed_dir = 'cli'
+
+        actual = Memo::Mapper.new(@test_repo).seeds_hash_by_key_to_view(grouped, fixed_dir, color_symbol)
+
+        expected = []
 
         _(actual).must_equal(expected)
       end

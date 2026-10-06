@@ -102,18 +102,19 @@ module Memo
     #
     # @param seeds_hash [Hash<String, Array<Seed>>] 文字列がキーで、値がSeedの配列となるハッシュ
     # @param color_symbol [Symbol] キーの色付けを指定する
-    # @return [Array<String | nil>]
+    # @return [Array<String>]
     def seeds_hash_to_view(seeds_hash, color_symbol)
       seeds_hash.inject([]) do |result, (key, seeds)|
-        result << Rainbow(key).color(color_symbol)
-        filenames = seeds.map(&:basename).join(INDENT)
-        result << filenames
+        # NOTE: 次のコードでも動作する。使用するかどうか検討中
+        # result.concat(seeds_hash_by_key_to_view(seeds_hash, key, color_symbol))
+        result << Rainbow(key).color(color_symbol) << seeds.map(&:basename).join(INDENT)
       end
     end
 
-    private
-
+    # NOTE: keyとそれに対応するseedsを渡した方がパフォーマンスが良さそう
     def seeds_hash_by_key_to_view(seeds_hash, key, color_symbol)
+      return [] if seeds_hash.empty?
+
       [Rainbow(key).color(color_symbol)] << seeds_hash[key].map(&:basename).join(INDENT)
     end
   end
