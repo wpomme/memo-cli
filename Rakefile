@@ -29,7 +29,7 @@ task :fix do
 end
 
 desc 'test/mock_seeds.rbにモックデータを作成する'
-task :seed do
+task :seeds do
   sh 'rake mock_make && bundle exec rubocop -A test/mock_seeds.rb '
 end
 

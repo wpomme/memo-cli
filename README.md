@@ -51,7 +51,7 @@ memo list
 ### モックファイルの作り方
 ```bash
 # モックを作成
-rake seed
+rake seeds
 
 # 次の手順でも作成できる
 # モックを作成

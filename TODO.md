@@ -46,8 +46,10 @@ Rakefileに記載したコードは別のファイルに移動させた方がい
     - memo list [DIRS]の場合の表示を変えたい。ファイルの方はより詳細な情報を出したい
     - memo tag [TAG_NAME]も同様
 
-- 対象のディレクトリが異なる場合の対応が必要
-    memoとprivate-memoフォルダの末尾のフォルダ名がどちらもmemoでmemo listなどでマージされた結果が表示されてしまう
+- Modeo::Seedの属性の整理
+    - rel_path, target_dir, parent_dirを上手く統合する
+    - 対象のディレクトリが異なる場合の対応が必要
+        memoとprivate-memoフォルダの末尾のフォルダ名がどちらもmemoでmemo listなどでマージされた結果が表示されてしまう
 
 ### その他
 - その他、git grep TODOで出てくるTODOを解消していく
@@ -57,8 +59,6 @@ Rakefileに記載したコードは別のファイルに移動させた方がい
 - アーキテクチャ
     - CommandとViewを統合してもいいかもしれない。テストコードがほぼ同じことをしている
         - ファイル生成時間などの書き込みが機能として追加されたらreadとwriteは分けたい
-- Modeo::Seedの属性の整理
-    - rel_path, target_dir, parent_dirを上手く統合する
 
 ### sub_command_parser
 - tagsのサブコマンドの機能を果たす--count/--empty/--nameの処理を単純にしたい
