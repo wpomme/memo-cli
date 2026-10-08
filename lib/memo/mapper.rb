@@ -106,9 +106,7 @@ module Memo
     # @return [Array<String>]
     def seeds_hash_to_view(seeds_hash, color_symbol)
       seeds_hash.inject([]) do |result, (key, seeds)|
-        # NOTE: 次のコードでも動作する。使用するかどうか検討中
-        # result.concat(seeds_key_to_view(seeds_hash, key, color_symbol))
-        result << Rainbow(key).color(color_symbol) << seeds.map(&:basename).join(INDENT)
+        result << Rainbow(key).color(color_symbol) << seeds.map(&:basename).join(INDENT) << "\n"
       end
     end
 

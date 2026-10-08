@@ -96,11 +96,9 @@ class TestView < Minitest::Test
           @view.list
         end
 
-        grouped_ls_to_view = @mapper.grouped_ls_to_view
+        actual = out
 
-        actual = grouped_ls_to_view.to_set
-
-        expected = out.split("\n").to_set
+        expected = @mapper.grouped_ls_to_view.join("\n").gsub("\n\n", "\n") << "\n"
 
         _(actual).must_equal(expected)
       end
@@ -112,11 +110,9 @@ class TestView < Minitest::Test
           @view.list(valid_dir)
         end
 
-        grouped_ls_to_view = @mapper.grouped_ls_to_view(valid_dir)
+        actual = out
 
-        actual = grouped_ls_to_view.to_set
-
-        expected = out.split("\n").to_set
+        expected = @mapper.grouped_ls_to_view(valid_dir).join("\n")
 
         _(actual).must_equal(expected)
       end
@@ -184,7 +180,7 @@ class TestView < Minitest::Test
             @view.tags
           end
 
-          expected = @mapper.tag_and_filenames_to_view.join("\n") << "\n"
+          expected = @mapper.tag_and_filenames_to_view.join("\n").gsub("\n\n", "\n") << "\n"
 
           _(actual).must_equal(expected)
         end
@@ -210,7 +206,7 @@ class TestView < Minitest::Test
             expected = if @test_repo.empty_tags_file_list.empty?
                          Memo::Message::NO_EMPTY_TAGS_FILE_LIST
                        else
-                         @mapper.empty_tags_file_list_to_view.join("\n") << "\n"
+                         @mapper.empty_tags_file_list_to_view.join("\n").gsub("\n\n", "\n") << "\n"
                        end
 
             _(actual).must_equal(expected)
