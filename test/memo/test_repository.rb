@@ -204,17 +204,17 @@ class TestRepository < Minitest::Test
 
       describe '戻り値の値検査' do
         it 'キーが対象のディレクトリの最上位であるとき、その値のparent_dirは全てキーと同じ値になり、その値はディレクトリの最上位を表す文字列となる' do
-          grouped_ls_hash = @test_repo.grouped_ls
+          grouped_ls = @test_repo.grouped_ls
 
-          values = @test_root_dirnames.map do |dir|
-            grouped_ls_hash[dir]
+          values = @test_target_dirs.map do |dir|
+            grouped_ls[dir]
           end.flatten
 
           actual = values.all? do |seed|
-            @test_root_dirnames.include?(seed.parent_dir)
+            @test_target_dirs.include?(seed[:parent_dir])
           end
 
-          _(true).must_equal(actual)
+          _(actual).must_equal(true)
         end
       end
     end

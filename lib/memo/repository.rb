@@ -101,14 +101,11 @@ module Memo
       Dir.glob('**/*/', base: root_dir).map do |rel_path|
         full_path = File.join(root_dir, rel_path)
 
-        target_dir = rel_path.rstrip('/')
-        parent_dir = File.dirname(target_dir)
-
         Memo::Model::Seed.new(
           full_path: full_path,
           rel_path: rel_path,
           target_dir: root_dir,
-          parent_dir: parent_dir == '.' ? File.basename(root_dir) : parent_dir,
+          parent_dir: File.dirname(full_path),
           basename: File.basename(rel_path),
           tags: []
         )
@@ -125,9 +122,6 @@ module Memo
 
         full_path = File.join(root_dir, rel_path)
 
-        # トップディレクトリにあるメモのdirは"."となってしまうため、引数として受け取ったディレクトリの末尾を使う
-        parent_dir = File.dirname(rel_path) == '.' ? File.basename(root_dir) : File.dirname(rel_path)
-
         # 各ファイルからフロントマターを読み取って、tagsの値をSeedにセットする。
         # tagsの値がnilなら、tagsには空の配列を入れる
         content = File.readlines(full_path, chomp: true)
@@ -138,7 +132,7 @@ module Memo
           full_path: full_path,
           rel_path: rel_path,
           target_dir: root_dir,
-          parent_dir: parent_dir,
+          parent_dir: File.dirname(full_path),
           basename: basename(full_path),
           tags: front_matter['tags'].nil? ? [] : front_matter['tags']
         )

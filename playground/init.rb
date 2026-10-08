@@ -6,10 +6,10 @@ bundle exec irb
 
 ## rake consoleで必要なデータを作成する
 # メモフォルダへの絶対パスを取得する
-dirs = Memo::Config.target_dirs
+target_dirs = Memo::Config.target_dirs
 
 # Repositoryのオブジェクトを作成する
-repo = Memo::Repository.new(dirs)
+repo = Memo::Repository.new(target_dirs)
 
 # Repository.seedsも取得しておく
 file_seeds = repo.instance_variable_get(:@file_seeds)

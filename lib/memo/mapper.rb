@@ -62,7 +62,7 @@ module Memo
       return Memo::Message::NO_GIVEN_ARGS.gsub('CLI', 'tag') if tag.empty?
 
       if tag_list.include?(tag)
-        seeds_hash_by_key_to_view(tag_seeds_hash, tag, :aqua)
+        seeds_key_to_view(tag_seeds_hash[tag], tag, :aqua)
       else
         Message::NO_TAGS.sub('tag', tag) << tag_list.join(INDENT)
       end
@@ -93,7 +93,7 @@ module Memo
       if dir
         return Memo::Message::NO_DIRECTORIES.sub('dir', dir) << dirs_to_view unless dir_set.include?(dir)
 
-        seeds_hash_by_key_to_view(grouped_ls, dir, :green)
+        seeds_key_to_view(grouped_ls[dir], dir, :green)
       else
         seeds_hash_to_view(grouped_ls, :green)
       end
@@ -107,16 +107,15 @@ module Memo
     def seeds_hash_to_view(seeds_hash, color_symbol)
       seeds_hash.inject([]) do |result, (key, seeds)|
         # NOTE: 次のコードでも動作する。使用するかどうか検討中
-        # result.concat(seeds_hash_by_key_to_view(seeds_hash, key, color_symbol))
+        # result.concat(seeds_key_to_view(seeds_hash, key, color_symbol))
         result << Rainbow(key).color(color_symbol) << seeds.map(&:basename).join(INDENT)
       end
     end
 
-    # NOTE: keyとそれに対応するseedsを渡した方がパフォーマンスが良さそう
-    def seeds_hash_by_key_to_view(seeds_hash, key, color_symbol)
-      return [] if seeds_hash.empty?
+    def seeds_key_to_view(seeds, key, color_symbol)
+      return [] if seeds.nil?
 
-      [Rainbow(key).color(color_symbol)] << seeds_hash[key].map(&:basename).join(INDENT)
+      [Rainbow(key).color(color_symbol)] << seeds.map(&:basename).join(INDENT)
     end
   end
 end

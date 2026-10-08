@@ -51,10 +51,12 @@ class TestMapper < Minitest::Test
         describe '戻り値の値検査' do
           it '色付けされたディレクトリ名とそれに紐付くファイル名の配列を返す' do
             target_dir = 'cli'
+            grouped_ls = @test_repo.grouped_ls
 
             actual = @mapper.grouped_ls_to_view(target_dir)
 
-            expected = [Rainbow(target_dir).color(:green)] << @test_repo.grouped_ls[target_dir].map(&:basename).join(Memo::Mapper::INDENT)
+            # expected = [Rainbow(target_dir).color(:green)] << @test_repo.grouped_ls[target_dir].map(&:basename).join(Memo::Mapper::INDENT)
+            expected = @mapper.seeds_key_to_view(grouped_ls[target_dir], target_dir, :green)
 
             _(actual).must_equal(expected)
           end
@@ -127,13 +129,13 @@ class TestMapper < Minitest::Test
       end
     end
 
-    describe '#seeds_hash_by_key_to_view' do
+    describe '#seeds_key_to_view' do
       it 'seeds_hashに値がある場合、文字列の一次元配列を返す' do
         grouped = @test_seeds.group_by(&:parent_dir)
         color_symbol = :green
         fixed_dir = 'cli'
 
-        ret = @mapper.seeds_hash_by_key_to_view(grouped, fixed_dir, color_symbol)
+        ret = @mapper.seeds_key_to_view(grouped[fixed_dir], fixed_dir, color_symbol)
 
         actual = ret.all?(String)
 
@@ -145,7 +147,7 @@ class TestMapper < Minitest::Test
         color_symbol = :green
         fixed_dir = 'cli'
 
-        actual = @mapper.seeds_hash_by_key_to_view(grouped, fixed_dir, color_symbol)
+        actual = @mapper.seeds_key_to_view(grouped[fixed_dir], fixed_dir, color_symbol)
 
         expected = []
 

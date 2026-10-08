@@ -19,5 +19,7 @@ group :development do
   gem 'rubocop', '~> 1.21'
 
   gem 'neovim', '~> 0.10.0'
+  gem 'sequel', '~> 5.109'
+  gem 'sqlite3', '~> 2.9'
   gem 'yard', '~> 0.9.45'
 end
