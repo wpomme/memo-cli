@@ -28,8 +28,7 @@ module Memo
         choice = Memo::Service.select_prompt(title: Memo::Message::MULTIPLE_MEMOS_WEWE_FOUND.sub('size', found.size.to_s), choices: choices)
         puts Memo::Service.read(choice)
       else
-        StandardError 'There is something wrong with found.size from Repository.find_files'
-        exit(2)
+        raise StandardError, 'There is something wrong with found.size from Repository.find_files'
       end
     end
 

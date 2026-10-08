@@ -89,8 +89,7 @@ module Memo
       when (3..)
         return to_error_message(:too_many_args)
       else
-        StandardError 'There is something wrong with argv.size from SubCommandParser.parse!'
-        exit(2)
+        raise StandardError, 'There is something wrong with argv.size from SubCommandParser.parse!'
       end
 
       parsed_hash

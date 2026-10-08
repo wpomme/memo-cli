@@ -9,7 +9,11 @@ module Memo
         load if @config.nil?
 
         @config['target_dirs'].map do |dir|
-          File.join(Dir.home, dir)
+          target_dir = File.join(Dir.home, dir)
+
+          raise StandardError, "#{target_dir} from config.yml is not a directory." unless FileTest.directory?(target_dir)
+
+          target_dir
         end
       end
 
