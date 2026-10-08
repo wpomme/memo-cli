@@ -55,6 +55,31 @@ Rakefileに記載したコードは別のファイルに移動させた方がい
     - <= まずtarget_dirでグループ分けしてから、parent_dirでグループ分けする
         memoとprivate-memoフォルダの末尾のフォルダ名がどちらもmemoでmemo listなどでマージされた結果が表示されてしまう
 
+### DBを作るなら&CLIインターフェイスの再構築
+#### DB
+    - 対象のOS、コンテナごとにパスやファイルが異なるが一旦無視する
+    - DBの更新
+        1. 一度データを全て消してから全てのデータを入れ直す
+        2. 最後にDBのデータをUpdateした時点から、ファイルのCreate, Update, Deleteを検知し、それぞれの更新を行う
+- 走査の対象となるディレクトリ
+1. directories: id, absolute_path, (is_root_directory: boolean型、config.ymlに記載があるディレクトリかどうか。なくてもいいかも)
+- 対象のメモファイル
+2. target_files: id, absolute_path, parent_directory_id(directory_idを外部キーとして設定する),  file_content
+- メモファイルとタグの中間テーブル
+3. target_files_tags: id, directory_id, target_file_id, tag_name,
+- 存在するタグ名
+4. tags: id, tag_name
+#### CLI
+- getoptlongなどを使ってもいいかもしれない
+    - Ruby: https://docs.ruby-lang.org/ja/latest/library/getoptlong.html
+    - GNU: https://www.gnu.org/prep/standards/html_node/Command_002dLine-Interfaces.html
+- その他コマンドオプションに関する規格などがあればそれに従うのがいいかもしれない
+
+#### 補完(Completion)
+- zshでの補完を考える
+    - zsh-completionsのコードを参照すること
+    - https://github.com/zsh-users/zsh-completions/blob/master/src/_rev
+
 ### その他
 - その他、git grep TODOで出てくるTODOを解消していく
 - なるべく、コメントに具体的な変数名などを書かないようにしたい
