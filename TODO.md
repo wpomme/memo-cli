@@ -49,6 +49,10 @@ Rakefileに記載したコードは別のファイルに移動させた方がい
 - Modeo::Seedの属性の整理
     - rel_path, target_dir, parent_dirを上手く統合する
     - 対象のディレクトリが異なる場合の対応が必要
+        1. まずparent_dirは絶対パスで保存する
+            - `parent_dir = File.dirname(full_path)`としてみる
+        2. dir_setも最初は絶対パスで保存して、UIでフォルダ名だけにした方が良さそう
+    - <= まずtarget_dirでグループ分けしてから、parent_dirでグループ分けする
         memoとprivate-memoフォルダの末尾のフォルダ名がどちらもmemoでmemo listなどでマージされた結果が表示されてしまう
 
 ### その他

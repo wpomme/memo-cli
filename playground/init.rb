@@ -12,9 +12,20 @@ dirs = Memo::Config.target_dirs
 repo = Memo::Repository.new(dirs)
 
 # Repository.seedsも取得しておく
-seeds = repo.instance_variable_get(:@file_seeds)
+file_seeds = repo.instance_variable_get(:@file_seeds)
 dir_seeds = repo.instance_variable_get(:@dir_seeds)
 
 mapper = Memo::Mapper.new(repo)
 
-[seeds, dir_seeds, mapper]
+## dir_setの今後
+dir_seeds
+  # 絶対パスを保存したい
+  .map(&:full_path)
+  # memo listに入れるディレクトリ名はbasenameの方が簡単でいいかも
+  .map { |dir| File.basename(dir) }
+
+dir_set = @repo.dir_set
+dir_basename_hash = dir_set.to_h { |dir| [dir, File.basename(dir)] }
+filtered_dirs = dir_basename_hash.filter { |_, v| v == dir }.keys
+
+[file_seeds, dir_seeds, mapper, filtered_dirs]
