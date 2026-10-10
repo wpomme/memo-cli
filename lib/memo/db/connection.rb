@@ -5,7 +5,7 @@ module Memo
     module Connection
       class << self
         # /db/の中に該当のデータベースがあれば、そのデータベースに接続する
-        def execute(path = 'memo.db')
+        def execute(path = 'production_memo.db')
           database_path = File.join(Dir.pwd, '/db', path)
 
           prepare(database_path)

@@ -2,7 +2,7 @@
 
 module Memo
   module DB
-    TABLE_NAMES = %i[directories target_files tags target_files_tags].freeze
+    TABLE_NAMES = %i[directories files tags files_tags].freeze
 
     module SetUp
       class << self
@@ -25,7 +25,7 @@ module Memo
               primary_key :id
               String :absolute_path
             end,
-            target_files: proc do
+            files: proc do
               primary_key :id
               String :absolute_path
               foreign_key :parent_directory_id, :directories
@@ -35,9 +35,9 @@ module Memo
               primary_key :id
               String :tag_name
             end,
-            target_files_tags: proc do
+            files_tags: proc do
               primary_key :id
-              foreign_key :target_files_id, :target_files
+              foreign_key :target_files_id, :files
               foreign_key :tags_id, :tags
             end
           }[table_symbol]

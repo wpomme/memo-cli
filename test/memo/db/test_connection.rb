@@ -2,7 +2,7 @@
 
 class TestConnection < Minitest::Test
   describe('#execute') do
-    it('executeを呼び出しても正常に実行できる') do
+    it('本番環境と接続できること') do
       connection = Memo::DB::Connection.execute
 
       expected_object = Sequel::SQLite::Database
@@ -10,7 +10,7 @@ class TestConnection < Minitest::Test
       _(connection).must_be_instance_of(expected_object)
     end
 
-    it('指定したDBのファイルがなければ、作成して、SQLite3と接続できるようにする') do
+    it('テスト環境と接続できること。指定したDBファイルがなければ作成する') do
       database_path = 'test_memo.db'
       connection = Memo::DB::Connection.execute(database_path)
 
