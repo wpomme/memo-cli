@@ -3,10 +3,10 @@
 module Memo
   module Controller
     class Directory
-      def create
-        absolute_paths = Memo::DB::Repository.new.absolute_paths
 
-        absolute_paths.each do |absolute_path|
+      # 対象のデータをテーブルに一括して保存するためのメソッド
+      def set_up
+        Memo::DB::Service.absolute_paths.each do |absolute_path|
           Memo::DB::Model::Directory.new(absolute_path: absolute_path)
         end
       end
