@@ -2,7 +2,8 @@
 
 require 'sequel'
 
-DB = Sequel.sqlite
+db_path = File.join(Dir.pwd, 'db/memo.db')
+DB = Sequel.sqlite(db_path)
 
 target_dirs = Memo::Config.target_dirs
 
@@ -20,7 +21,6 @@ absolute_paths = target_dirs.flat_map do |root_dir|
     end
   )
 end
-
 
 absolute_paths.map do |path|
   DB[:directories].insert(absolute_path: path)
@@ -95,7 +95,7 @@ target_files_id_tags_id_hash.each do |target_files_id, tags_ids|
   tags_ids.each do |tags_id|
     DB[:target_files_tags].insert(
       target_files_id: target_files_id,
-      tags_id: tags_id,
+      tags_id: tags_id
     )
   end
 end
