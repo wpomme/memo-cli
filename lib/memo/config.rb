@@ -5,6 +5,10 @@ module Memo
     CONFIG_PATH = File.expand_path('../../config/config.yml', __dir__)
 
     class << self
+      def target_db(database_path: 'production_memo.db')
+        File.join(Dir.pwd, '/db', database_path)
+      end
+
       def target_dirs
         load if @config.nil?
 

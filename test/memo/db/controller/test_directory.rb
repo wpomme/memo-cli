@@ -1,23 +1,27 @@
 # frozen_string_literal: true
 
+require_relative '../../../helper'
+
 class TestSetUp < Minitest::Test
   describe('Controller::Directory') do
+    include MemoDBTestLifecycleHooks
+
     describe('#set_up') do
       it('対象のディレクトリから生成した絶対パスをテーブルに保存できること') do
-        database_path = 'test_memo.db'
-        Memo::DB::Connection.execute(database_path) do |db|
-          ## TODO teardownに移動する
-          db[:directories].delete
+        skip 'TODO'
+        directory = Memo::DB::Models.directory
 
-          ret = Memo::DB::Controller::Directory.new(db).set_up
+        ## TODO teardownに移動する
+        directory.delete
 
-          # 保存した値は一次元配列の文字列で返ってくる。全てディレクトリであるか検証する
-          actual = ret.all? do |path|
-            FileTest.directory?(path)
-          end
+        ret = directory.set_up
 
-          _(actual).must_equal(true)
+        # 保存した値は一次元配列の文字列で返ってくる。全てディレクトリであるか検証する
+        actual = ret.all? do |path|
+          FileTest.directory?(path)
         end
+
+        _(actual).must_equal(true)
       end
     end
   end

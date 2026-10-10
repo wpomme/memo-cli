@@ -9,6 +9,17 @@ require 'minitest/spec'
 require 'minitest/expectations'
 require 'minitest/mock'
 
+module MemoDBTestLifecycleHooks
+  def setup
+    test_database_path = 'test_memo.db'
+    Memo::Config.target_db(database_path: test_database_path)
+  end
+
+  def teardown
+    Memo::Config.target_db
+  end
+end
+
 module MemoTestLifecycleHooks
   def setup
     # テスト環境ではMemo::Config.target_dirではないフォルダを作成して、それを使用する

@@ -6,10 +6,13 @@ module Memo
 
     module SetUp
       class << self
-        def execute(database_path)
-          Connection.execute(database_path) do |db|
+        def execute
+          Memo::DB::CONNECTION.synchronize do |db|
             create_tables(db)
           end
+          # Prepare.execute(database_path) do |db|
+          #   create_tables(db)
+          # end
         end
 
         # 該当のデータベースについて、指定したテーブルが作成されていなければ、そのテーブルを作成する

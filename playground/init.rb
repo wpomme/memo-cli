@@ -8,6 +8,9 @@ bundle exec irb
 # メモフォルダへの絶対パスを取得する
 target_dirs = Memo::Config.target_dirs
 
+# init-db
+Memo::Config.target_db(database_path: 'test_memo.db')
+
 # Repositoryのオブジェクトを作成する
 repo = Memo::Repository.new(target_dirs)
 

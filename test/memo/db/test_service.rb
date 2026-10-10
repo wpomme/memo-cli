@@ -1,6 +1,10 @@
 # frozen_string_literal: true
 
+require_relative '../../helper'
+
 class TestSetUp < Minitest::Test
+  include MemoDBTestLifecycleHooks
+
   describe('DB::Service') do
     # TODO: テストがBuggyになっており、修正が必要
     include Memo::DB::Service

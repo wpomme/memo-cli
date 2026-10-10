@@ -1,11 +1,14 @@
 # frozen_string_literal: true
 
+require_relative '../../../helper'
+
 class TestSetUp < Minitest::Test
+  include MemoDBTestLifecycleHooks
+
   describe('Models::File') do
     describe('#new') do
       it('Fileモデルのインスタンスを動的に作成できること。そのモデルのスーパークラスがSequel::Modelであること') do
-        database_path = 'test_memo.db'
-        Memo::DB::Connection.execute(database_path) do |db|
+        Memo::DB::CONNECTION.transaction do |db|
           Memo::DB::Models.file(db)
 
           file = Memo::DB::Models::File.new

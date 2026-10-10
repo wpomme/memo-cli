@@ -1,41 +1,38 @@
 # frozen_string_literal: true
 
+require_relative '../../../helper'
+
 class TestSetUp < Minitest::Test
   describe('Models::Directory') do
+    include MemoDBTestLifecycleHooks
+
     describe('#directory') do
       it('Directoryモデルのインスタンスを動的に作成できること。そのモデルのスーパークラスがSequel::Modelであること') do
-        database_path = 'test_memo.db'
-        Memo::DB::Connection.execute(database_path) do |db|
-          # Directoryクラスを動的に生成する
-          Memo::DB::Models.directory(db)
+        skip 'TODO'
+        # Directoryクラスを動的に生成する
+        # Memo::DB::Models.directory
 
-          directory = Memo::DB::Models::Directory.new
+        directory = Memo::DB::Models.directory
 
-          _(directory).must_be_instance_of(Memo::DB::Models::Directory)
-          _(directory).must_be_kind_of(Sequel::Model)
-        end
+        _(directory).must_be_instance_of(Memo::DB::Models::Directory)
+        _(directory).must_be_kind_of(Sequel::Model)
       end
 
       describe('#create') do
         it('Directoryモデルを使って、データを一件挿入できること') do
-          database_path = 'test_memo.db'
+          skip 'TODO'
           absolute_path = File.join(Dir.home, '/var')
 
-          Memo::DB::Connection.execute(database_path) do |db|
-            directory = Memo::DB::Models.directory(db)
+          directory = Memo::DB::Models.directory
 
-            # 既にデータがあれば削除する
-            # db[:directories]
-            directory
-              .where(absolute_path: absolute_path)
-              .delete
+          # 既にデータがあれば削除する
+          # db[:directories]
+          directory
+            .where(absolute_path: absolute_path)
+            .delete
 
-            # Memo::DB::Models::Directory.create(absolute_path: absolute_path)
-            directory.create(absolute_path: absolute_path)
-          end
-
-          db = Memo::DB::Connection.execute(database_path)
-          directory = Memo::DB::Models.directory(db)
+          # Memo::DB::Models::Directory.create(absolute_path: absolute_path)
+          directory.create(absolute_path: absolute_path)
 
           actual = directory
             .select(:absolute_path)

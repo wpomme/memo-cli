@@ -2,7 +2,7 @@
 
 module Memo
   module DB
-    module Connection
+    module Prepare
       class << self
         # /db/の中に該当のデータベースがあれば、そのデータベースに接続する
         # connectionhはdbをブロックで呼び出すと自動的に切断される
@@ -12,8 +12,8 @@ module Memo
         # NOTE: 接続した結果は定数にしまうのがベスト
         # ref: https://sequel.jeremyevans.net/doc/opening_databases.html#label-Passing+a+block+to+either+method
         # => it’s best to store the result of Sequel.connect in a constant, as recommended above.
-        def execute(path = 'production_memo.db')
-          database_path = File.join(Dir.pwd, '/db', path)
+        def execute
+          database_path = Memo::Config.target_db
 
           prepare(database_path)
         end
@@ -21,6 +21,7 @@ module Memo
         def prepare(database_path)
           FileUtils.touch(database_path) unless FileTest.file?(database_path)
           Sequel.sqlite(database_path)
+          # Sequel.connect("sqlite://#{database_path}")
         end
       end
 
