@@ -16,21 +16,17 @@ class TestSetUp < Minitest::Test
         _(directory).must_be_kind_of(Sequel::Model)
       end
 
-      # it('新しくデータをテーブルに保存できること') do
-      #   database_path = 'test_memo.db'
-      #   db = Memo::DB::Connection.execute(database_path)
-      #
-      #   Memo::DB::Models.directory(db)
-      #
-      #   directory = Memo::DB::Models::Directory.new
-      #
-      #   # absolute_path = File.join(Dir.home, '/var')
-      #
-      #   p directory
-      #   ## ret = directory.set(absolute_path: absolute_path)
-      #
-      #   _(ret).must_equal('')
-      # end
+      describe('#create') do
+        it('Directoryモデルを使って、データを一件挿入できること') do
+          skip 'TODO: controllerのコードを参考にしてテストコードを作成する'
+        end
+      end
+
+      describe('#validate') do
+        it('絶対パスは一意であり、同じ値は挿入できないこと') do
+          skip 'TODO'
+        end
+      end
     end
   end
 end

@@ -7,6 +7,9 @@ class TestSetUp < Minitest::Test
         database_path = 'test_memo.db'
         db = Memo::DB::Connection.execute(database_path)
 
+        ## TODO teardownに移動する
+        db[:directories].delete
+
         ret = Memo::DB::Controller::Directory.new(db).set_up
 
         # 保存した値は一次元配列の文字列で返ってくる。全てディレクトリであるか検証する

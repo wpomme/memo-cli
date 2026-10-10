@@ -57,8 +57,9 @@ Rakefileに記載したコードは別のファイルに移動させた方がい
 
 ### DBを作るなら&CLIインターフェイスの再構築
 #### DB
-1. TODO: ControllerとModelのテストを作成する
-    - Models => Modelにリネームする
+1. テストデータのセットアップseedを作成する
+2. テストデータのsetup, teardownを作成すること
+3. Models => Modelにリネームする
 
 2. DBの更新
     1. 一度データを全て消してから全てのデータを入れ直す

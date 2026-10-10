@@ -6,9 +6,18 @@ module Memo
       def self.directory(db)
         Sequel::Model.db = db
 
-        klass = Class.new(Sequel::Model)
+        klass = Class.new(Sequel::Model(:directories))
 
-        Models.const_set('Directory', klass)
+        klass.class_eval do
+          plugin :validation_helpers
+
+          def validate
+            super
+            validates_unique :absolute_path
+          end
+        end
+
+        Models.const_set('Directory', klass) unless Models.const_defined?('Directory', klass)
       end
     end
   end
