@@ -3,16 +3,12 @@
 module Memo
   module DB
     module Models
-      class Directory
-        def initialize(db)
-          Sequel::Model.db = db
+      def self.directory(db)
+        Sequel::Model.db = db
 
-          Class.new(Sequel::Model) do
-            def initialize
-              super
-            end
-          end
-        end
+        klass = Class.new(Sequel::Model)
+
+        Models.const_set('Directory', klass)
       end
     end
   end

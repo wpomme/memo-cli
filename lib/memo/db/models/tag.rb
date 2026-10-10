@@ -3,17 +3,14 @@
 module Memo
   module DB
     module Models
-      class Tag
-        def initialize(db)
-          Sequel::Model.db = db
+      def self.tag(db)
+        Sequel::Model.db = db
 
-          Class.new(Sequel::Model) do
-            def initialize
-              super
-              many_to_many :files
-            end
-          end
-        end
+        klass = Class.new(Sequel::Model)
+
+        klass.many_to_many :files
+
+        Models.const_set('Tag', klass)
       end
     end
   end

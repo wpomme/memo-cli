@@ -3,12 +3,16 @@
 class TestSetUp < Minitest::Test
   describe('Models::Tag') do
     describe('#new') do
-      it('Tagモデルのインスタンスを作成できること') do
+      it('Tagモデルのインスタンスを動的に作成できること。そのモデルのスーパークラスがSequel::Modelであること') do
         database_path = 'test_memo.db'
         db = Memo::DB::Connection.execute(database_path)
-        actual_instance = Memo::DB::Models::Tag.new(db)
 
-        _(actual_instance).must_be_instance_of(Memo::DB::Models::Tag)
+        Memo::DB::Models.tag(db)
+
+        tag = Memo::DB::Models::Tag.new
+
+        _(tag).must_be_instance_of(Memo::DB::Models::Tag)
+        _(tag).must_be_kind_of(Sequel::Model)
       end
     end
   end

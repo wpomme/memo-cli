@@ -2,6 +2,7 @@
 
 class TestSetUp < Minitest::Test
   describe('DB::Service') do
+    # TODO: テストがBuggyになっており、修正が必要
     include Memo::DB::Service
 
     describe('#database_paths') do

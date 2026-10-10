@@ -3,18 +3,15 @@
 module Memo
   module DB
     module Models
-      class File
-        def initialize(db)
-          Sequel::Model.db = db
+      def self.file(db)
+        Sequel::Model.db = db
 
-          Class.new(Sequel::Model) do
-            def initialize
-              super
-              one_to_one :directory
-              many_to_many :tags
-            end
-          end
-        end
+        klass = Class.new(Sequel::Model)
+
+        klass.one_to_one :directory
+        klass.many_to_many :tags
+
+        Models.const_set('File', klass)
       end
     end
   end
