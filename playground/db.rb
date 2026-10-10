@@ -2,7 +2,8 @@
 
 require 'sequel'
 
-database_path = File.join(Dir.pwd, 'db/production_memo.db')
+# database_path = File.join(Dir.pwd, 'db/production_memo.db')
+database_path = File.join(Dir.pwd, 'db/test_memo.db')
 FileUtils.touch(database_path) unless FileTest.file?(database_path)
 DB = Sequel.sqlite(database_path)
 

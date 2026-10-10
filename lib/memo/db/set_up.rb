@@ -7,9 +7,9 @@ module Memo
     module SetUp
       class << self
         def execute(database_path)
-          db = Connection.execute(database_path)
-
-          create_tables(db)
+          Connection.execute(database_path) do |db|
+            create_tables(db)
+          end
         end
 
         # 該当のデータベースについて、指定したテーブルが作成されていなければ、そのテーブルを作成する

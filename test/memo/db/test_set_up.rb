@@ -9,13 +9,12 @@ class TestSetUp < Minitest::Test
       Memo::DB::SetUp.execute(database_path)
 
       # DBが作成されたかどうかを検証するためにDBへの接続を図る
-      db = Memo::DB::Connection.execute(database_path)
-
-      actual = Memo::DB::TABLE_NAMES.all? do |table_name|
-        db.table_exists?(table_name)
+      Memo::DB::Connection.execute(database_path) do |db|
+        actual = Memo::DB::TABLE_NAMES.all? do |table_name|
+          db.table_exists?(table_name)
+          _(actual).must_equal(true)
+        end
       end
-
-      _(actual).must_equal(true)
     end
   end
 end

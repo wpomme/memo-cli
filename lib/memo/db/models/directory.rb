@@ -18,6 +18,7 @@ module Memo
         end
 
         Models.const_set('Directory', klass) unless Models.const_defined?('Directory', klass)
+        klass
       end
     end
   end
