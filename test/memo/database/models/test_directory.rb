@@ -8,13 +8,12 @@ class TestSetUp < Minitest::Test
 
     describe('#directory') do
       it('Directoryモデルのインスタンスを動的に作成できること。そのモデルのスーパークラスがSequel::Modelであること') do
-        skip 'TODO'
         # Directoryクラスを動的に生成する
         # Memo::DB::Models.directory
 
-        directory = Memo::DB::Models.directory
+        directory = Memo::Database::Models::Directory.new
 
-        _(directory).must_be_instance_of(Memo::DB::Models::Directory)
+        _(directory).must_be_instance_of(Memo::Database::Models::Directory)
         _(directory).must_be_kind_of(Sequel::Model)
       end
 
@@ -23,7 +22,7 @@ class TestSetUp < Minitest::Test
           skip 'TODO'
           absolute_path = File.join(Dir.home, '/var')
 
-          directory = Memo::DB::Models.directory
+          directory = Memo::Database::Models::Directory.new
 
           # 既にデータがあれば削除する
           # db[:directories]

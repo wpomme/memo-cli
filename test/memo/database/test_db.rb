@@ -15,7 +15,7 @@ class TestDB < Minitest::Test
     # end
 
     it('テスト環境と接続できること。指定したDBファイルがなければ作成する') do
-      Memo::DB::CONNECTION.synchronize do |conn|
+      Memo::Database::DB.synchronize do |conn|
         expected_object = SQLite3::Database
 
         _(conn).must_be_instance_of(expected_object)

@@ -8,14 +8,10 @@ class TestSetUp < Minitest::Test
   describe('Models::File') do
     describe('#new') do
       it('Fileモデルのインスタンスを動的に作成できること。そのモデルのスーパークラスがSequel::Modelであること') do
-        Memo::DB::CONNECTION.transaction do |db|
-          Memo::DB::Models.file(db)
+        file = Memo::Database::Models::File.new
 
-          file = Memo::DB::Models::File.new
-
-          _(file).must_be_instance_of(Memo::DB::Models::File)
-          _(file).must_be_kind_of(Sequel::Model)
-        end
+        _(file).must_be_instance_of(Memo::Database::Models::File)
+        _(file).must_be_kind_of(Sequel::Model)
       end
     end
   end

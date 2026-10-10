@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module Memo
-  module DB
+  module Database
     module Prepare
       class << self
         # /db/の中に該当のデータベースがあれば、そのデータベースに接続する

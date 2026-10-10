@@ -6,8 +6,10 @@ class TestSetUp < Minitest::Test
   include MemoDBTestLifecycleHooks
 
   describe('DB::Service') do
+    include Memo::Database
+    include Memo::Database::Service
+
     # TODO: テストがBuggyになっており、修正が必要
-    include Memo::DB::Service
 
     describe('#database_paths') do
       it('一次元配列を返し、その値はディレクトリであること') do

@@ -9,7 +9,7 @@ class TestSetUp < Minitest::Test
     describe('#set_up') do
       it('対象のディレクトリから生成した絶対パスをテーブルに保存できること') do
         skip 'TODO'
-        directory = Memo::DB::Models.directory
+        directory = Memo::Database::Models::Directory.new
 
         ## TODO teardownに移動する
         directory.delete

@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module Memo
-  module DB
+  module Database
     module Service
       module_function
 

@@ -1,24 +1,22 @@
 # frozen_string_literal: true
 
 module Memo
-  module DB
+  module Database
     TABLE_NAMES = %i[directories files tags files_tags].freeze
 
     module SetUp
       class << self
         def execute
-          Memo::DB::CONNECTION.synchronize do |db|
-            create_tables(db)
-          end
+          create_tables
           # Prepare.execute(database_path) do |db|
           #   create_tables(db)
           # end
         end
 
         # 該当のデータベースについて、指定したテーブルが作成されていなければ、そのテーブルを作成する
-        def create_tables(db)
+        def create_tables
           TABLE_NAMES.map do |table_name|
-            db.create_table table_name, &to_scheme(table_name) unless db.table_exists?(table_name)
+            DB.create_table table_name, &to_scheme(table_name) unless DB.table_exists?(table_name)
           end
         end
 

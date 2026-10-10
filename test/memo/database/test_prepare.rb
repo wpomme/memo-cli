@@ -15,7 +15,7 @@ class TestPrepare < Minitest::Test
     # end
 
     it('テスト環境と接続できること。指定したDBファイルがなければ作成する') do
-      Memo::DB::Prepare.execute do |prepare|
+      Memo::Database::Prepare.execute do |prepare|
         expected_object = Sequel::SQLite::Database
 
         _(prepare).must_be_instance_of(expected_object)
