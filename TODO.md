@@ -57,18 +57,11 @@ Rakefileに記載したコードは別のファイルに移動させた方がい
 
 ### DBを作るなら&CLIインターフェイスの再構築
 #### DB
-    - 対象のOS、コンテナごとにパスやファイルが異なるが一旦無視する
-    - DBの更新
-        1. 一度データを全て消してから全てのデータを入れ直す
-        2. 最後にDBのデータをUpdateした時点から、ファイルのCreate, Update, Deleteを検知し、それぞれの更新を行う
-- 走査の対象となるディレクトリ
-1. directories: id, absolute_path, (is_root_directory: boolean型、config.ymlに記載があるディレクトリかどうか。なくてもいいかも)
-- 対象のメモファイル
-2. target_files: id, absolute_path, parent_directory_id(directory_idを外部キーとして設定する),  file_content
-- メモファイルとタグの中間テーブル
-3. target_files_tags: id, directory_id, target_file_id, tag_name,
-- 存在するタグ名
-4. tags: id, tag_name
+1. TODO: ControllerとModelのテストを作成する
+
+2. DBの更新
+    1. 一度データを全て消してから全てのデータを入れ直す
+    2. 最後にDBのデータをUpdateした時点から、ファイルのCreate, Update, Deleteを検知し、それぞれの更新を行う
 #### CLI
 - getoptlongなどを使ってもいいかもしれない
     - Ruby: https://docs.ruby-lang.org/ja/latest/library/getoptlong.html

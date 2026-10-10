@@ -2,16 +2,11 @@
 
 module Memo
   module DB
-    class Repository
-      EXCLUDE_FILE_SET = ['README.md'].to_set.freeze
+    module Service
+      module_function
 
-      # 後にDIを作成する
-      def initialize
-        @target_dirs = Memo::Config.target_dirs
-      end
-
-      def absolute_paths
-        @target_dirs.flat_map do |root_dir|
+      def absolute_paths(target_dirs = Memo::Config.target_dirs)
+        target_dirs.flat_map do |root_dir|
           [root_dir].concat(
             Dir.glob('**/*/', base: root_dir).map do |rel_path|
               File.join(root_dir, rel_path)
