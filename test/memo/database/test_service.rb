@@ -2,7 +2,7 @@
 
 require_relative '../../helper'
 
-class TestSetUp < Minitest::Test
+class TestService < Minitest::Test
   include MemoDBTestLifecycleHooks
 
   describe('DB::Service') do

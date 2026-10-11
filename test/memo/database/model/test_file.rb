@@ -2,15 +2,15 @@
 
 require_relative '../../../helper'
 
-class TestSetUp < Minitest::Test
+class TestFile < Minitest::Test
   include MemoDBTestLifecycleHooks
 
-  describe('Models::File') do
+  describe('Model::File') do
     describe('#new') do
       it('Fileモデルのインスタンスを動的に作成できること。そのモデルのスーパークラスがSequel::Modelであること') do
-        file = Memo::Database::Models::File.new
+        file = Memo::Database::Model::File.new
 
-        _(file).must_be_instance_of(Memo::Database::Models::File)
+        _(file).must_be_instance_of(Memo::Database::Model::File)
         _(file).must_be_kind_of(Sequel::Model)
       end
     end

@@ -4,7 +4,7 @@ module Memo
   module Database
     TABLE_NAMES = %i[directories files tags files_tags].freeze
 
-    module SetUp
+    module Setup
       class << self
         def execute
           create_tables

@@ -2,19 +2,18 @@
 
 require_relative '../../../helper'
 
-class TestSetUp < Minitest::Test
+class TestDirectory < Minitest::Test
   describe('Controller::Directory') do
     include MemoDBTestLifecycleHooks
 
-    describe('#set_up') do
+    describe('#setup') do
       it('対象のディレクトリから生成した絶対パスをテーブルに保存できること') do
-        skip 'TODO'
-        directory = Memo::Database::Models::Directory.new
+        directory = Memo::Database::Controller::Directory.new
 
         ## TODO teardownに移動する
-        directory.delete
+        # directory.delete
 
-        ret = directory.set_up
+        ret = directory.setup
 
         # 保存した値は一次元配列の文字列で返ってくる。全てディレクトリであるか検証する
         actual = ret.all? do |path|

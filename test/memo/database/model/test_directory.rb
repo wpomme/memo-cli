@@ -2,18 +2,18 @@
 
 require_relative '../../../helper'
 
-class TestSetUp < Minitest::Test
-  describe('Models::Directory') do
+class TestDirectory < Minitest::Test
+  describe('Model::Directory') do
     include MemoDBTestLifecycleHooks
 
     describe('#directory') do
       it('Directoryモデルのインスタンスを動的に作成できること。そのモデルのスーパークラスがSequel::Modelであること') do
         # Directoryクラスを動的に生成する
-        # Memo::DB::Models.directory
+        # Memo::DB::Model.directory
 
-        directory = Memo::Database::Models::Directory.new
+        directory = Memo::Database::Model::Directory.new
 
-        _(directory).must_be_instance_of(Memo::Database::Models::Directory)
+        _(directory).must_be_instance_of(Memo::Database::Model::Directory)
         _(directory).must_be_kind_of(Sequel::Model)
       end
 
@@ -22,7 +22,7 @@ class TestSetUp < Minitest::Test
           skip 'TODO'
           absolute_path = File.join(Dir.home, '/var')
 
-          directory = Memo::Database::Models::Directory.new
+          directory = Memo::Database::Model::Directory.new
 
           # 既にデータがあれば削除する
           # db[:directories]
@@ -30,7 +30,7 @@ class TestSetUp < Minitest::Test
             .where(absolute_path: absolute_path)
             .delete
 
-          # Memo::DB::Models::Directory.create(absolute_path: absolute_path)
+          # Memo::DB::Model::Directory.create(absolute_path: absolute_path)
           directory.create(absolute_path: absolute_path)
 
           actual = directory
