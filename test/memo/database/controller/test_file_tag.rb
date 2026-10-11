@@ -11,15 +11,19 @@ class TestFileTag < Minitest::Test
         Memo::Database::DB[:files_tags].delete
         Memo::Database::DB[:tags].delete
         Memo::Database::DB[:files].delete
+        Memo::Database::DB[:directories].delete
         super
       end
 
       it('全てのデータを挿入した場合、戻り値の配列の総数が、全てのタグの出現回数と同じになること') do
+        directory_dataset = Memo::Database::Controller::Directory.new
         file_dataset = Memo::Database::Controller::File.new
         tag_dataset = Memo::Database::Controller::Tag.new
         file_tag_dataset = Memo::Database::Controller::FileTag.new
 
-        file_seeds_result = file_dataset.seeds
+        directory_seeds_result = directory_dataset.seeds
+
+        file_seeds_result = file_dataset.seeds(directory_seeds_result)
         tag_seeds_result = tag_dataset.seeds
 
         result = file_tag_dataset.seeds(file_seeds_result, tag_seeds_result)

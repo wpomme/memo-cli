@@ -19,7 +19,13 @@ class TestDirectory < Minitest::Test
         actual = result.size
         expected = Memo::Database::Service.absolute_paths.size
 
+        # resultの型をチェックする
+        actual_type = result.all? do |directory_path, directory_id|
+          FileTest.directory?(directory_path) && directory_id.instance_of?(Integer)
+        end
+
         _(actual).must_equal(expected)
+        _(actual_type).must_equal(true)
       end
     end
   end

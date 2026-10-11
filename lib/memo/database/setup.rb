@@ -13,9 +13,14 @@ module Memo
 
         def create_tables
           TABLE_NAMES.map do |table_name|
-            DB.create_table table_name, &to_scheme(table_name)
+            DB.create_table table_name, &to_schema(table_name)
           end
         end
+
+        # TODO: Controllerのseedsを使って、全てのデータを挿入する
+        # test_file_tag.rbのテストケースを参考にしてコードを作成すること
+        # def seeds
+        # end
 
         # 既にテーブルがあれば、そのテーブルを削除する
         # 外部キー制約があるため、テーブルを作成する順番と逆に削除する
@@ -25,7 +30,7 @@ module Memo
           end
         end
 
-        def to_scheme(table_symbol)
+        def to_schema(table_symbol)
           {
             directories: proc do
               primary_key :id
@@ -50,7 +55,7 @@ module Memo
         end
       end
 
-      private_class_method :create_tables, :drop_tables_if_exist, :to_scheme
+      private_class_method :create_tables, :drop_tables_if_exist, :to_schema
     end
   end
 end

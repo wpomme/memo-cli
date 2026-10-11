@@ -57,9 +57,12 @@ Rakefileに記載したコードは別のファイルに移動させた方がい
 
 ### DBを作るなら&CLIインターフェイスの再構築
 #### DB
-1. テストデータのセットアップseedを作成する
-2. テストデータのsetup, teardownを作成すること
-3. Models => Modelにリネームする
+1. seedsを作成して、実データとテストデータをDBに入れる
+2. db/以下のgit監視を外す
+3. database/配下の構成案
+    - db.rb => prepare.rbに統合して、connection.rbとする
+    - serviceフォルダを作成する。その中にfile_loader.rbを入れる
+    - setup.rbはそのままでいい。できればto_schemaをmodel/以下に入れたい
 
 2. DBの更新
     1. 一度データを全て消してから全てのデータを入れ直す
