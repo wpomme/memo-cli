@@ -11,7 +11,7 @@ class TestFileLoader < Minitest::Test
         file_loader = Memo::Database::FileLoader.new
 
         file_loader.file_hash_seeds
-        file_loader.file_path_tag_hash
+        file_loader.file_path_tags_hash
         file_loader.all_tags
 
         actual = file_loader.instance_variable_get(:@method_called_count)
@@ -36,11 +36,11 @@ class TestFileLoader < Minitest::Test
       end
     end
 
-    describe('#file_path_tag_hash') do
+    describe('#file_path_tags_hash') do
       it('TagとFileTagテーブルを作成するのに必要なハッシュ値が返されること') do
-        file_path_tag_hash = Memo::Database::FileLoader.new.file_path_tag_hash
+        file_path_tags_hash = Memo::Database::FileLoader.new.file_path_tags_hash
 
-        actual = file_path_tag_hash.all? do |(path, tags)|
+        actual = file_path_tags_hash.all? do |(path, tags)|
           FileTest.file?(path) && tags.all?(String)
         end
 
@@ -55,6 +55,14 @@ class TestFileLoader < Minitest::Test
         actual = all_tags.all?(String)
 
         _(actual).must_equal(true)
+      end
+    end
+
+    describe('#all_tag_count_of_appearance') do
+      it('整数が返されること') do
+        actual = Memo::Database::FileLoader.new.all_tag_count_of_appearance
+
+        _(actual).must_be_instance_of(Integer)
       end
     end
   end

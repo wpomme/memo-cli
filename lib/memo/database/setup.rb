@@ -43,7 +43,7 @@ module Memo
             end,
             files_tags: proc do
               primary_key :id
-              foreign_key :target_files_id, :files
+              foreign_key :files_id, :files
               foreign_key :tags_id, :tags
             end
           }[table_symbol]

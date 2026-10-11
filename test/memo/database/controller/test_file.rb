@@ -2,7 +2,7 @@
 
 require_relative '../../../helper'
 
-class TestDirectory < Minitest::Test
+class TestFile < Minitest::Test
   describe('Controller::File') do
     include MemoDBTestLifecycleHooks
 

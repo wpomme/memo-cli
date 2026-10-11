@@ -10,7 +10,7 @@ module Memo
 
         # ディレクトリテーブルに必要なデータを挿入する
         #
-        # @return [Hash<Integer, String>] Tagテーブルの主キーのIDがキーで、そのタグ名が値となるハッシュを返す
+        # @return [Hash<String, Integer>] タグ名がキーで、主キーが値となるハッシュを返す
         def seeds
           insert_all
         end
@@ -19,13 +19,13 @@ module Memo
 
         # 対象のデータをテーブルに一括して挿入する
         #
-        # @return [Hash<Integer, String>] Tagテーブルの主キーのIDがキーで、そのタグ名が値となるハッシュを返す
+        # @return [Hash<String, Integer>] タグ名がキーで、主キーが値となるハッシュを返す
         def insert_all
           file_loader = Memo::Database::FileLoader.new
 
           file_loader.all_tags.each_with_object({}) do |tag, result|
             tag_id = @dataset.insert(tag_name: tag)
-            result[tag_id] = tag
+            result[tag] = tag_id
           end
         end
       end

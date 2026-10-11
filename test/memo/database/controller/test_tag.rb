@@ -2,7 +2,7 @@
 
 require_relative '../../../helper'
 
-class TestDirectory < Minitest::Test
+class TestTag < Minitest::Test
   describe('Controller::Tag') do
     include MemoDBTestLifecycleHooks
 
@@ -28,8 +28,8 @@ class TestDirectory < Minitest::Test
         expected_called_count = 1
 
         # resultの型をチェックする
-        actual_type = result.all? do |tag_id, tag_name|
-          tag_id.instance_of?(Integer) && tag_name.instance_of?(String)
+        actual_type = result.all? do |tag_name, tag_id|
+          tag_name.instance_of?(String) && tag_id.instance_of?(Integer)
         end
 
         _(actual_size).must_equal(expected_size)

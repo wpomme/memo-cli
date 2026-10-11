@@ -7,12 +7,19 @@ module Memo
     class FileLoader
       def initialize
         @file_hash_seeds = []
-        @file_path_tag_hash = {}
+        @file_path_tags_hash = {}
         @method_called_count = 0
       end
 
       def all_tags
-        file_path_tag_hash.values.flatten.sort.uniq
+        file_path_tags_hash.values.flatten.sort.uniq
+      end
+
+      # 全てのファイルに出現するタグの数について、重複しているものをまとめないで返す
+      #
+      # @return [Integer]
+      def all_tag_count_of_appearance
+        file_path_tags_hash.values.flatten.size
       end
 
       def file_hash_seeds
@@ -21,10 +28,13 @@ module Memo
         @file_hash_seeds
       end
 
-      def file_path_tag_hash
+      # ファイルパスと、そのファイルに付けられているタグ名の配列のハッシュを返す
+      #
+      # @return [Hash<String, Array<String>>]
+      def file_path_tags_hash
         load_files unless load_files_called?
 
-        @file_path_tag_hash
+        @file_path_tags_hash
       end
 
       private
@@ -51,7 +61,7 @@ module Memo
               file_content: file_content
             }
 
-            @file_path_tag_hash[absolute_path] = tags
+            @file_path_tags_hash[absolute_path] = tags
           end
         end
 
