@@ -7,7 +7,7 @@ class TestSetup < Minitest::Test
   include Memo::Database
 
   describe('#execute') do
-    it('指定したパスを引数に入れると、そのパスに該当のテーブルを作成する') do
+    it('必要なテーブルを作成する。既にテーブルが存在すれば、削除して作成し直す') do
       # DBを作成する
       Memo::Database::Setup.execute
 

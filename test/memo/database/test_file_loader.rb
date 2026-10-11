@@ -1,0 +1,49 @@
+# frozen_string_literal: true
+
+require_relative '../../helper'
+
+class TestFileLoader < Minitest::Test
+  include MemoDBTestLifecycleHooks
+
+  describe('DB::FileLoader') do
+    describe('#load_files_called?') do
+      it('#file_hash_seedsと#file_path_tag_hashを同時に呼んだ場合、#load_fileは一回だけ呼ばれること') do
+        file_loader = Memo::Database::FileLoader.new
+
+        file_loader.file_hash_seeds
+        file_loader.file_path_tag_hash
+
+        actual = file_loader.instance_variable_get(:@method_called_count)
+
+        expected = 1
+
+        _(actual).must_equal(expected)
+      end
+    end
+    describe('#file_hash_seeds') do
+      it('Fileテーブルを作成するのに必要なハッシュが入った一次元配列が返されること') do
+        file_hash_seeds = Memo::Database::FileLoader.new.file_hash_seeds
+
+        actual = file_hash_seeds.all? do |file_hash|
+          FileTest.file?(file_hash[:absolute_path]) &&
+            FileTest.directory?(file_hash[:parent_directory]) &&
+            file_hash[:file_content].instance_of?(String)
+        end
+
+        _(actual).must_equal(true)
+      end
+    end
+
+    describe('#file_path_tag_hash') do
+      it('TagとFileTagテーブルを作成するのに必要なハッシュ値が返されること') do
+        file_path_tag_hash = Memo::Database::FileLoader.new.file_path_tag_hash
+
+        actual = file_path_tag_hash.all? do |(path, tags)|
+          FileTest.file?(path) && tags.all?(String)
+        end
+
+        _(actual).must_equal(true)
+      end
+    end
+  end
+end

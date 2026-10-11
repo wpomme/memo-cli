@@ -7,16 +7,21 @@ module Memo
     module Setup
       class << self
         def execute
+          drop_tables_if_exist
           create_tables
-          # Prepare.execute(database_path) do |db|
-          #   create_tables(db)
-          # end
         end
 
-        # 該当のデータベースについて、指定したテーブルが作成されていなければ、そのテーブルを作成する
         def create_tables
           TABLE_NAMES.map do |table_name|
-            DB.create_table table_name, &to_scheme(table_name) unless DB.table_exists?(table_name)
+            DB.create_table table_name, &to_scheme(table_name)
+          end
+        end
+
+        # 既にテーブルがあれば、そのテーブルを削除する
+        # 外部キー制約があるため、テーブルを作成する順番と逆に削除する
+        def drop_tables_if_exist
+          TABLE_NAMES.reverse.each do |table_name|
+            DB.drop_table(table_name) if DB.table_exists?(table_name)
           end
         end
 
@@ -45,7 +50,7 @@ module Memo
         end
       end
 
-      private_class_method :create_tables, :to_scheme
+      private_class_method :create_tables, :drop_tables_if_exist, :to_scheme
     end
   end
 end

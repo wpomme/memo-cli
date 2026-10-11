@@ -6,21 +6,20 @@ class TestDirectory < Minitest::Test
   describe('Controller::Directory') do
     include MemoDBTestLifecycleHooks
 
-    describe('#setup') do
-      it('対象のディレクトリから生成した絶対パスをテーブルに保存できること') do
-        directory = Memo::Database::Controller::Directory.new
+    describe('#seeds') do
+      def teardown
+        Memo::Database::DB[:directories].delete
+        super
+      end
 
-        ## TODO teardownに移動する
-        # directory.delete
+      it('全てのデータを挿入した場合、対象のディレクトリと同じ数の配列が戻り値となること') do
+        dataset = Memo::Database::Controller::Directory.new
+        result = dataset.seeds
 
-        ret = directory.setup
+        actual = result.size
+        expected = Memo::Database::Service.absolute_paths.size
 
-        # 保存した値は一次元配列の文字列で返ってくる。全てディレクトリであるか検証する
-        actual = ret.all? do |path|
-          FileTest.directory?(path)
-        end
-
-        _(actual).must_equal(true)
+        _(actual).must_equal(expected)
       end
     end
   end
