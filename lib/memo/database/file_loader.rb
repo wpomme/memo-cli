@@ -11,6 +11,10 @@ module Memo
         @method_called_count = 0
       end
 
+      def all_tags
+        file_path_tag_hash.values.flatten.sort.uniq
+      end
+
       def file_hash_seeds
         load_files unless load_files_called?
 

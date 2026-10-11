@@ -7,11 +7,12 @@ class TestFileLoader < Minitest::Test
 
   describe('DB::FileLoader') do
     describe('#load_files_called?') do
-      it('#file_hash_seedsと#file_path_tag_hashを同時に呼んだ場合、#load_fileは一回だけ呼ばれること') do
+      it('メソッドを同時に呼んでも、#load_fileは一回だけしか呼ばれないこと') do
         file_loader = Memo::Database::FileLoader.new
 
         file_loader.file_hash_seeds
         file_loader.file_path_tag_hash
+        file_loader.all_tags
 
         actual = file_loader.instance_variable_get(:@method_called_count)
 
@@ -20,6 +21,7 @@ class TestFileLoader < Minitest::Test
         _(actual).must_equal(expected)
       end
     end
+
     describe('#file_hash_seeds') do
       it('Fileテーブルを作成するのに必要なハッシュが入った一次元配列が返されること') do
         file_hash_seeds = Memo::Database::FileLoader.new.file_hash_seeds
@@ -41,6 +43,16 @@ class TestFileLoader < Minitest::Test
         actual = file_path_tag_hash.all? do |(path, tags)|
           FileTest.file?(path) && tags.all?(String)
         end
+
+        _(actual).must_equal(true)
+      end
+    end
+
+    describe('#all_tags') do
+      it('Tagテーブルを作成するのに必要なタグ名の配列が返されること') do
+        all_tags = Memo::Database::FileLoader.new.all_tags
+
+        actual = all_tags.all?(String)
 
         _(actual).must_equal(true)
       end
