@@ -22,6 +22,23 @@ class TestFileLoader < Minitest::Test
       end
     end
 
+    describe('#load_files_by_target_dir') do
+      it('対象のディレクトリをキーとし、そのディレクトリ内のファイルに関するハッシュが値となること') do
+        file_loader = Memo::Database::FileLoader.new
+        # プライベートメソッドを取得する
+        load_files_by_target_dir = file_loader.send(:load_files_by_target_dir)
+
+        load_files_by_target_dir.all? do |target_dir, file_seeds|
+          FileTest.directory?(target_dir) &&
+            file_seeds.all? do |file_seed|
+              FileTest.file?(file_seed[:absolute_path]) &&
+                FileTest.directory?(file_seed[:parent_directory]) &&
+                file_seed[:file_content].instance_of?(String)
+            end
+        end
+      end
+    end
+
     describe('#file_hash_seeds') do
       it('Fileテーブルを作成するのに必要なハッシュが入った一次元配列が返されること') do
         file_hash_seeds = Memo::Database::FileLoader.new.file_hash_seeds
@@ -55,6 +72,14 @@ class TestFileLoader < Minitest::Test
         actual = all_tags.all?(String)
 
         _(actual).must_equal(true)
+      end
+    end
+
+    describe('#all_tag_count_of_list') do
+      it('整数が返されること') do
+        actual = Memo::Database::FileLoader.new.all_tag_count_of_list
+
+        _(actual).must_be_instance_of(Integer)
       end
     end
 

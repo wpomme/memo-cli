@@ -96,6 +96,13 @@ task :mock_make do
   end
 end
 
+namespace :db do
+  desc 'DBにデータを挿入する'
+  task :seeds do
+    Memo::Database::Setup.execute
+  end
+end
+
 cmd_tasks = {
   list: [
     {

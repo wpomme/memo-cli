@@ -11,17 +11,30 @@ module Memo
         @method_called_count = 0
       end
 
+      # 全てのサグの一覧をソートし、重複を排除してから、その一覧を返す
+      #
+      # @return [Array<String>]
       def all_tags
-        file_path_tags_hash.values.flatten.sort.uniq
+        all_tags_array.sort.uniq
+      end
+
+      # 重複を排除した上で、全てのタグの総数を返す
+      #
+      # @return [Integer]
+      def all_tag_count_of_list
+        all_tags_array.uniq.size
       end
 
       # 全てのファイルに出現するタグの数について、重複しているものをまとめないで返す
       #
       # @return [Integer]
       def all_tag_count_of_appearance
-        file_path_tags_hash.values.flatten.size
+        all_tags_array.size
       end
 
+      # 全てのファイルの情報をハッシュにして一次元配列に保存したメソッド
+      #
+      # @return [Array<Hash<symbol, String>>]
       def file_hash_seeds
         load_files unless load_files_called?
 
@@ -39,8 +52,12 @@ module Memo
 
       private
 
+      def all_tags_array
+        @all_tags_array ||= file_path_tags_hash.values.flatten
+      end
+
       def load_files_called?
-        !@method_called_count.zero?
+        @load_files_called ||= !@method_called_count.zero?
       end
 
       def load_files(target_dirs = Memo::Config.target_dirs)
@@ -66,6 +83,33 @@ module Memo
         end
 
         @method_called_count += 1
+      end
+
+      # TODO: このメソッドから、load_filesを作成する
+      # また、file_hash_seedsを直接呼び出すようになる
+      def load_files_by_target_dir(target_dirs = Memo::Config.target_dirs)
+        @load_files_by_target_dir ||= target_dirs.to_h do |target_dir|
+          file_seeds = Dir.glob('**/*.md', base: target_dir).filter_map do |rel_path|
+            next if ['README.md'].include?(File.basename(rel_path))
+
+            absolute_path = File.join(target_dir, rel_path)
+            file_content = File.readlines(absolute_path).join("\n")
+
+            # front_matter = Memo::Service.parse_yaml_front_matter(file_content)
+
+            # tags = front_matter['tags'].nil? ? [] : front_matter['tags']
+
+            {
+              absolute_path: absolute_path,
+              parent_directory: File.dirname(absolute_path) << '/',
+              file_content: file_content
+            }
+
+            # @file_path_tags_hash[absolute_path] = tags
+          end
+
+          [target_dir, file_seeds]
+        end
       end
     end
   end

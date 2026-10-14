@@ -9,4 +9,5 @@
 /spec/reports/
 /tmp/
 /config/config.yml
-/db/*
+/db/memo_production.db
+/db/memo_test.db

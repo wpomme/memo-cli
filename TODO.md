@@ -61,13 +61,21 @@ Rakefileに記載したコードは別のファイルに移動させた方がい
 2. db/以下のgit監視を外す
 3. database/配下の構成案
     - db.rb => prepare.rbに統合して、connection.rbとする
-    - serviceフォルダを作成する。その中にfile_loader.rbを入れる
+    - loaderフォルダを作成し、その中にfile_loaderとdirectory_loaderを入れる。serviceのabsolute_pathsはdirectory_loaderの中に入れる
+        - ユーザー向けに必要な情報はloader内で作成する。
+            - 現状、全てのコマンドがloader内で処理できそう
+            - 手始めにmemo dirsをこのdirectory_loaderを使って変更してみたい
+                - `ls -R`の表示に倣って、対象ディレクトリごとに、ディレクトリの一覧を表示する
+        - ユーザー向けに表示方法を変更する場合は、viewの中で行う
     - setup.rbはそのままでいい。できればto_schemaをmodel/以下に入れたい
 
 2. DBの更新
     1. 一度データを全て消してから全てのデータを入れ直す
     2. 最後にDBのデータをUpdateした時点から、ファイルのCreate, Update, Deleteを検知し、それぞれの更新を行う
+
 #### CLI
+- OptionParserなしで実装してもいいかもしれない
+    - 使用するオプションが少ない。代わりにサブコマンドで代用しているため。
 - getoptlongなどを使ってもいいかもしれない
     - Ruby: https://docs.ruby-lang.org/ja/latest/library/getoptlong.html
     - GNU: https://www.gnu.org/prep/standards/html_node/Command_002dLine-Interfaces.html
