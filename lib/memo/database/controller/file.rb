@@ -29,7 +29,7 @@ module Memo
 
             file_id = @dataset.insert(
               absolute_path: absolute_path,
-              parent_directory_id: directory_seeds_result[file_hash[:absolute_path]],
+              parent_directory_id: directory_seeds_result[file_hash[:parent_directory]],
               file_content: file_hash[:file_content]
             )
             result[file_id] = absolute_path
