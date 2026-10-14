@@ -7,14 +7,21 @@
 -- .table
 
 -- CLIの出現する回数をカウントする
-SELECT count(*) FROM target_files_tags
+SELECT count(*) FROM files_tags
 WHERE tags_id = (
   SELECT id FROM tags WHERE tag_name = 'CLI'
 );
 
--- タグ名でグループ化し集計する(WIP)
-SELECT tags_id, count(*) FROM target_files_tags GROUP BY tags_id;
+-- タグ名と、そのタグがファイルに紐づけられている数を降順で出力する
+SELECT tag_name, count(*) AS tag_count FROM tags
+  INNER JOIN files_tags
+     ON tags.id = files_tags.tags_id
+  GROUP BY tag_name
+  ORDER BY tag_count DESC;
 
-SELECT tag_name FROM tags
-  INNER JOIN target_files_tags
-  ON tags.id = target_files_tags.tags_id;
+-- タグ名と、そのタグが付いているファイル名の一覧を返す
+SELECT T.tag_name, F.absolute_path FROM tags AS T
+  INNER JOIN files_tags AS FT
+     ON T.id = FT.tags_id
+  INNER JOIN files AS F
+     ON F.id = FT.files_id;

@@ -74,6 +74,8 @@ module Memo
 
             @file_hash_seeds << {
               absolute_path: absolute_path,
+              # DBには挿入しないが、CLIの方で使う
+              basename: File.basename(absolute_path, '.md'),
               parent_directory: File.dirname(absolute_path) << '/',
               file_content: file_content
             }

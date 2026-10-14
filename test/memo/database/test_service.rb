@@ -17,6 +17,16 @@ class TestService < Minitest::Test
 
         _(actual).must_equal(true)
       end
+
+      it('configで設定されたディレクトリも含むこと') do
+        test_target_dirs = Memo::Config.target_dirs
+
+        actual = test_target_dirs.all? do |target_dir|
+          absolute_paths.include?(target_dir)
+        end
+
+        _(actual).must_equal(true)
+      end
     end
 
     describe('#rel_paths_grouped_by_target_dir') do

@@ -6,13 +6,16 @@ module Memo
       module_function
 
       # 対象のディレクトリについて、その中のディレクトリの一覧を配列で返す
+      # Configで設定されたディレクトリも含む
       #
       # @return [Array<String>>]
       def absolute_paths
         rel_paths_grouped_by_target_dir.flat_map do |target_dir, dirs|
-          dirs.map do |dir|
-            File.join(target_dir, dir)
-          end
+          [target_dir].concat(
+            dirs.map do |dir|
+              File.join(target_dir, dir)
+            end
+          )
         end
       end
 
