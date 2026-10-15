@@ -20,7 +20,7 @@ SELECT tag_name, count(*) AS tag_count FROM tags
   ORDER BY tag_count DESC;
 
 -- タグ名と、そのタグが付いているファイル名の一覧を返す
-SELECT T.tag_name, F.absolute_path FROM tags AS T
+SELECT T.tag_name, F.filename FROM tags AS T
   INNER JOIN files_tags AS FT
      ON T.id = FT.tags_id
   INNER JOIN files AS F
@@ -45,3 +45,25 @@ SELECT CD.directory_path || D.directory_path || F.filename || '.md', count(*) AS
   INNER JOIN files AS F
      ON CD.id = F.config_directory_id;
 -- => 4461件(!!)
+
+
+-- ファイル名が重複しているものを抽出する
+SELECT filename, COUNT(filename) AS 'duplicated filename'
+  FROM files
+  GROUP BY filename
+  HAVING COUNT(filename) > 1;
+
+-- ファイル名が重複しているレコードと、その絶対パスを取得する
+-- ファイル名でソートする
+SELECT F.id, F.filename, CD.directory_path || D.directory_path || F.filename || '.md' AS absolute_path FROM config_directories AS CD
+  INNER JOIN directories AS D
+     ON CD.id = D.config_directory_id
+  INNER JOIN files AS F
+     ON D.id = F.parent_directory_id
+  WHERE F.filename IN (
+  SELECT filename
+    FROM files
+    GROUP BY filename
+    HAVING COUNT(filename) > 1
+  )
+  ORDER BY F.filename ASC;

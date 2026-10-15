@@ -19,10 +19,14 @@ module Memo
         end
       end
 
+      # 相対パスの合計を返す
+      #
+      # @return [Integer]
       def rel_paths_size
-        @rel_paths_size ||= rel_paths_hash.inject(0) do |ret, (_, v)|
-          ret + v.size
+        @rel_paths_size ||= rel_paths_hash.keys.map do |key|
+          rel_paths_hash.values_at(key).size
         end
+          .inject(:+)
       end
 
       # キーが設定ファイルで定義されたディレクトリで、そのキーの中のディレクトリの一覧が値となるハッシュを返す

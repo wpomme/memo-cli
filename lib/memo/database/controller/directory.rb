@@ -21,9 +21,8 @@ module Memo
         #
         # @return [Hash<String, Integer>] パス名がキーで、主キーが値となるハッシュを返す
         def insert_all(config_directory_seeds_result)
-          #NOTE: rel_pathが重複している場合の対応。現場は設定ファイルのディレクトリが重複しているだけであるため、条件分岐をrel_path == ''で対応する
-          # 対象ディレクトリごとに同じディレクトリが格納される場合がある
-          # その場合は、DirectoryLoaderあたりで検知するのが適切と思われる
+          # NOTE: 対象ディレクトリごとに同じ名前のディレクトリが作成される可能性がある
+          # その場合は、DirectoryLoaderで検知するのが適切と思われる
           duplicated_rel_path = ''
           duplicated_path_hash = {}
 

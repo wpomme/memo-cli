@@ -6,6 +6,46 @@
 ### バージョン
     - gemspecの件が終了したらバージョンを1.0.0にする
 
+## DB / CLIのUI
+- DBを作成したら、それに従ってアーキテクチャとCLIのUIを変更する予定
+    - CLIについては、基本は作成したFileLoaderを使うのみで、DBに依存しないようにしたい
+
+### DB
+1. seedsを作成して、実データとテストデータをDBに入れる
+2. db/以下のgit監視を外す
+3. database/配下の構成案
+    - db.rb => prepare.rbに統合して、connection.rbとする
+    - loaderフォルダを作成し、その中にfile_loaderとdirectory_loaderを入れる。serviceのabsolute_pathsはdirectory_loaderの中に入れる
+        - ユーザー向けに必要な情報はloader内で作成する。
+            - 現状、全てのコマンドがloader内で処理できそう
+            - 手始めにmemo dirsをこのdirectory_loaderを使って変更してみたい
+                - `ls -R`の表示に倣って、対象ディレクトリごとに、ディレクトリの一覧を表示する
+        - ユーザー向けに表示方法を変更する場合は、viewの中で行う
+    - setup.rbのto_schemaをmodel/以下に入れたい
+
+### CLI案
+- OptionParserなしで実装してもいいかもしれない
+    - 使用するオプションが少ない。代わりにサブコマンドで代用しているため。
+- getoptlongなどを使ってもいいかもしれない
+    - Ruby: https://docs.ruby-lang.org/ja/latest/library/getoptlong.html
+    - GNU: https://www.gnu.org/prep/standards/html_node/Command_002dLine-Interfaces.html
+- その他コマンドオプションに関する規格などがあればそれに従うのがいいかもしれない
+
+### CLI案２
+- tagsのサブコマンドの機能を果たす--count/--empty/--nameの処理を単純にしたい
+    - ブロックを渡す処理を消したい。
+    - OptionParser.parse(args): memo tags list => {tags: nil, list: nil}っぽいのが返ってくる
+        - これを生かすのが良さそう
+        - Comamandに渡すときに、[[tags: nil, empty: nil]]のようにして、逆の順番だったらエラーを出すなど
+        - --emptyなどの詳細には、tags専用のサブコマンドであることを記載する
+            - または、helpのメッセージの出し方を再度考慮する
+
+### 表示系に関するCLI案
+- memo list, memo tagsにて、ディレクトリ・タグとファイル名の次に改行を入れたい
+    - memo list [DIRS]の場合の表示を変えたい。ファイルの方はより詳細な情報を出したい
+    - memo tag [TAG_NAME]も同様
+
+## その他やりたいこと
 ## テスト系
 ### 型検査・型のテスト・テスト拡張
 - Rdocかyard、型検査の導入、coverageの取得
@@ -26,13 +66,6 @@ Rakefileに記載したコードは別のファイルに移動させた方がい
 - 各メモファイルのfront matterにcreated_at, updated_atを挿入する
     - bashと組み合わせてスクリプトのように作成してもいい
 
-- memo checkのようなCLIが欲しい
-    - memo check duplicate => ファイル名の重複の調査
-
-- CLIの自動補完機能
-    - bash, zshと連携させてコマンドの自動補完機能を付けてみたい
-    - ref?: https://docs.ruby-lang.org/ja/latest/method/OptionParser/i/candidate.html
-
 - Messageモジュールについて、メッセージ内の文字列を他の変数に変換するメソッドを追加する
 
 ## タグ系
@@ -40,77 +73,15 @@ Rakefileに記載したコードは別のファイルに移動させた方がい
     a. 例えばタグにCLIとついている場合は、それに紐付くCLIの一覧が見れたら嬉しい
 2. タグの英語・日本語の対応表があると嬉しい
 
-## 修正箇所
-### 表示系
-- memo list, memo tagsにて、ディレクトリ・タグとファイル名の次に改行を入れたい
-    - memo list [DIRS]の場合の表示を変えたい。ファイルの方はより詳細な情報を出したい
-    - memo tag [TAG_NAME]も同様
+## DBの更新
+1. 一度データを全て消してから全てのデータを入れ直す
+2. 最後にDBのデータをUpdateした時点から、ファイルのCreate, Update, Deleteを検知し、それぞれの更新を行う
 
-- Model::Seedの属性の整理
-    - 対象のディレクトリが異なる場合の対応が必要
-        1. まずparent_dirは絶対パスで保存する
-            - `parent_dir = File.dirname(full_path)`としてみる
-        2. dir_setも最初は絶対パスで保存して、UIでフォルダ名だけにした方が良さそう
-    - <= まずtarget_dirでグループ分けしてから、parent_dirでグループ分けする
-        memoとprivate-memoフォルダの末尾のフォルダ名がどちらもmemoでmemo listなどでマージされた結果が表示されてしまう
-
-### DBを作るなら&CLIインターフェイスの再構築
-#### DB
-1. seedsを作成して、実データとテストデータをDBに入れる
-2. db/以下のgit監視を外す
-3. database/配下の構成案
-    - db.rb => prepare.rbに統合して、connection.rbとする
-    - loaderフォルダを作成し、その中にfile_loaderとdirectory_loaderを入れる。serviceのabsolute_pathsはdirectory_loaderの中に入れる
-        - ユーザー向けに必要な情報はloader内で作成する。
-            - 現状、全てのコマンドがloader内で処理できそう
-            - 手始めにmemo dirsをこのdirectory_loaderを使って変更してみたい
-                - `ls -R`の表示に倣って、対象ディレクトリごとに、ディレクトリの一覧を表示する
-        - ユーザー向けに表示方法を変更する場合は、viewの中で行う
-    - setup.rbはそのままでいい。できればto_schemaをmodel/以下に入れたい
-4. ファイル名は1. ホームディレクトリ2.configに記載のディレクトリ3.それ以下のパス4.ファイル名に分けてもいいかも
-    - => config_directoriesテーブルを作成して、その中にconfig.ymlで記載されたディレクトリに絶対パスを足したものを入れる
-    - => 絶対パスはconfig_directoriesとの結合で作成する
-        - SQLは文字列の分解は難しいが、結合は簡単
-
-2. DBの更新
-    1. 一度データを全て消してから全てのデータを入れ直す
-    2. 最後にDBのデータをUpdateした時点から、ファイルのCreate, Update, Deleteを検知し、それぞれの更新を行う
-
-#### CLI
-- OptionParserなしで実装してもいいかもしれない
-    - 使用するオプションが少ない。代わりにサブコマンドで代用しているため。
-- getoptlongなどを使ってもいいかもしれない
-    - Ruby: https://docs.ruby-lang.org/ja/latest/library/getoptlong.html
-    - GNU: https://www.gnu.org/prep/standards/html_node/Command_002dLine-Interfaces.html
-- その他コマンドオプションに関する規格などがあればそれに従うのがいいかもしれない
-
-#### 補完(Completion)
+### 補完(Completion)
 - zshでの補完を考える
     - zsh-completionsのコードを参照すること
     - https://github.com/zsh-users/zsh-completions/blob/master/src/_rev
 
 ### その他
-- その他、git grep TODOで出てくるTODOを解消していく
-- なるべく、コメントに具体的な変数名などを書かないようにしたい
-    - 実装の修正があった場合、そのコメントも修正する必要があるため
+- git grep TODOで出てくるTODOを解消していく。また、テストコードのskipを外す
 - メソッドの可視性の調査 => 変更、オブジェクトについて、必要なものはfreezeする
-- アーキテクチャ
-    - CommandとViewを統合してもいいかもしれない。テストコードがほぼ同じことをしている
-        - ファイル生成時間などの書き込みが機能として追加されたらreadとwriteは分けたい
-
-### sub_command_parser
-- tagsのサブコマンドの機能を果たす--count/--empty/--nameの処理を単純にしたい
-    - ブロックを渡す処理を消したい。
-    - OptionParser.parse(args): memo tags list => {tags: nil, list: nil}っぽいのが返ってくる
-        - これを生かすのが良さそう
-        - Comamandに渡すときに、[[tags: nil, empty: nil]]のようにして、逆の順番だったらエラーを出すなど
-        - --emptyなどの詳細には、tags専用のサブコマンドであることを記載する
-            - または、helpのメッセージの出し方を再度考慮する
-
-- SubCommandSpecを作成するためのsub_command_factoryのようなクラスかメソッドが必要かもしれない
-- `memo tags -h`でmemo tagsのヘルプが見れるようにしたい
-
-### CLIの拡張
-1. fzfと連携させればファジーにメモを読み込めたら嬉しい
-- リポジトリ配下なら`find . -type f | fzf | xargs -I@ -n1 basename @ ".md" | memo`で読めそう
-    - memo readコマンドについて、rel_pathを受け取ったらそのファイルを表示するように改修した上で、fzfと組み合わせればファジーに指定したファイルを読むことができそう

@@ -27,7 +27,7 @@ class TestFileLoader < Minitest::Test
       it('対象のディレクトリをキーとし、そのディレクトリ内のファイルに関するハッシュが値となること') do
         file_loader = Memo::Database::FileLoader.new
         # プライベートメソッドを取得する
-        file_seeds_hash = file_loader.send(:file_seeds_hash)
+        file_seeds_hash = file_loader.file_seeds_hash
 
         file_seeds_hash.all? do |target_dir, file_seeds|
           FileTest.directory?(target_dir) &&
@@ -39,20 +39,6 @@ class TestFileLoader < Minitest::Test
         end
       end
     end
-
-    # describe('#file_hash_seeds') do
-    #   it('Fileテーブルを作成するのに必要なハッシュが入った一次元配列が返されること') do
-    #     file_hash_seeds = Memo::Database::FileLoader.new.file_hash_seeds
-    #
-    #     actual = file_hash_seeds.all? do |file_hash|
-    #       FileTest.file?(file_hash[:absolute_path]) &&
-    #         FileTest.directory?(file_hash[:parent_directory]) &&
-    #         file_hash[:file_content].instance_of?(String)
-    #     end
-    #
-    #     _(actual).must_equal(true)
-    #   end
-    # end
 
     describe('#file_path_tags_hash') do
       it('TagとFileTagテーブルを作成するのに必要なハッシュ値が返されること') do
