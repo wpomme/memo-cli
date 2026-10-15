@@ -46,7 +46,6 @@ SELECT CD.directory_path || D.directory_path || F.filename || '.md', count(*) AS
      ON CD.id = F.config_directory_id;
 -- => 4461件(!!)
 
-
 -- ファイル名が重複しているものを抽出する
 SELECT filename, COUNT(filename) AS 'duplicated filename'
   FROM files

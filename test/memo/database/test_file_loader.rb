@@ -26,7 +26,6 @@ class TestFileLoader < Minitest::Test
     describe('#file_seeds_hash') do
       it('対象のディレクトリをキーとし、そのディレクトリ内のファイルに関するハッシュが値となること') do
         file_loader = Memo::Database::FileLoader.new
-        # プライベートメソッドを取得する
         file_seeds_hash = file_loader.file_seeds_hash
 
         file_seeds_hash.all? do |target_dir, file_seeds|
