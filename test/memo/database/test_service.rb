@@ -29,13 +29,21 @@ class TestService < Minitest::Test
       end
     end
 
-    describe('#rel_paths_grouped_by_target_dir') do
+    describe('#rel_paths_hash') do
       it('キーが設定ファイルで定義されたディレクトリで、そのキーの中のディレクトリの一覧が値となる') do
-        actual = rel_paths_grouped_by_target_dir.all? do |target_dir, dirs|
+        actual = rel_paths_hash.all? do |target_dir, dirs|
           FileTest.directory?(target_dir) && dirs.all? { |dir| FileTest.directory?(File.join(target_dir, dir)) }
         end
 
         _(actual).must_equal(true)
+      end
+    end
+
+    describe('#rel_paths_size') do
+      it('正の整数を返すこと') do
+        actual = rel_paths_size
+
+        _(actual.positive?).must_equal(true)
       end
     end
   end

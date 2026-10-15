@@ -42,10 +42,10 @@ module Memo
           file_tag_dataset = Memo::Database::Controller::FileTag.new
 
           # 1. ConfigDirectoryテーブルにデータを挿入
-          config_directory_dataset.seeds
+          config_directory_seeds_result = config_directory_dataset.seeds
 
           # 2. Directoryテーブルにデータを挿入
-          directory_seeds_result = directory_dataset.seeds
+          directory_seeds_result = directory_dataset.seeds(config_directory_seeds_result)
 
           # 3. Fileテーブルにデータを挿入
           file_seeds_result = file_dataset.seeds(directory_seeds_result)
@@ -65,7 +65,8 @@ module Memo
             end,
             directories: proc do
               primary_key :id
-              String :absolute_path
+              foreign_key :config_directory_id, :config_directories
+              String :directory_path
             end,
             files: proc do
               primary_key :id

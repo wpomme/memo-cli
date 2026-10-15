@@ -10,14 +10,18 @@ class TestFile < Minitest::Test
       def teardown
         Memo::Database::DB[:files].delete
         Memo::Database::DB[:directories].delete
+        Memo::Database::DB[:config_directories].delete
         super
       end
 
       it('全てのデータを挿入した場合、対象のディレクトリと同じ数の配列が戻り値となること') do
+        config_directory_dataset = Memo::Database::Controller::ConfigDirectory.new
         directory_dataset = Memo::Database::Controller::Directory.new
         file_dataset = Memo::Database::Controller::File.new
 
-        directory_seeds_result = directory_dataset.seeds
+        config_directory_seeds_result = config_directory_dataset.seeds
+
+        directory_seeds_result = directory_dataset.seeds(config_directory_seeds_result)
 
         result = file_dataset.seeds(directory_seeds_result)
 

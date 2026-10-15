@@ -3,7 +3,7 @@
 require_relative '../../../helper'
 
 class TestFileTag < Minitest::Test
-  describe('Controller::File') do
+  describe('Controller::FileTag') do
     include MemoDBTestLifecycleHooks
 
     describe('#seeds') do
@@ -12,16 +12,19 @@ class TestFileTag < Minitest::Test
         Memo::Database::DB[:tags].delete
         Memo::Database::DB[:files].delete
         Memo::Database::DB[:directories].delete
+        Memo::Database::DB[:config_directories].delete
         super
       end
 
       it('全てのデータを挿入した場合、戻り値の配列の総数が、全てのタグの出現回数と同じになること') do
+        config_directory_dataset = Memo::Database::Controller::ConfigDirectory.new
         directory_dataset = Memo::Database::Controller::Directory.new
         file_dataset = Memo::Database::Controller::File.new
         tag_dataset = Memo::Database::Controller::Tag.new
         file_tag_dataset = Memo::Database::Controller::FileTag.new
 
-        directory_seeds_result = directory_dataset.seeds
+        config_directory_seeds_result = config_directory_dataset.seeds
+        directory_seeds_result = directory_dataset.seeds(config_directory_seeds_result)
 
         file_seeds_result = file_dataset.seeds(directory_seeds_result)
         tag_seeds_result = tag_dataset.seeds

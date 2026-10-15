@@ -9,19 +9,24 @@ class TestDirectory < Minitest::Test
     describe('#seeds') do
       def teardown
         Memo::Database::DB[:directories].delete
+        Memo::Database::DB[:config_directories].delete
         super
       end
 
       it('全てのデータを挿入した場合、対象のディレクトリと同じ数の配列が戻り値となること') do
-        dataset = Memo::Database::Controller::Directory.new
-        result = dataset.seeds
+        config_directory_dataset = Memo::Database::Controller::ConfigDirectory.new
+        directory_dataset = Memo::Database::Controller::Directory.new
+
+        config_directory_seeds_result = config_directory_dataset.seeds
+
+        result = directory_dataset.seeds(config_directory_seeds_result)
 
         actual = result.size
-        expected = Memo::Database::Service.absolute_paths.size
+        expected = Memo::Database::Service.rel_paths_size
 
         # resultの型をチェックする
         actual_type = result.all? do |directory_path, directory_id|
-          FileTest.directory?(directory_path) && directory_id.instance_of?(Integer)
+          directory_path.instance_of?(String) && directory_id.instance_of?(Integer)
         end
 
         _(actual).must_equal(expected)
