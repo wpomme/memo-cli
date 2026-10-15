@@ -24,14 +24,21 @@ module Memo
           file_loader = Memo::Database::FileLoader.new
           file_seeds_hash = file_loader.file_seeds_hash
 
+          # Controller#Directoryと共通
+          duplicated_rel_path = ''
+
           file_seeds_hash.each_with_object({}) do |(target_dir, file_hash_array), result|
             file_hash_array.flat_map do |file_hash|
               absolute_path = file_hash[:absolute_path]
+              rel_path = file_hash[:parent_directory]
+              parent_directory_id_or_hash = directory_seeds_result[rel_path]
+
+              parent_directory_id = rel_path == duplicated_rel_path ? parent_directory_id_or_hash[target_dir] : parent_directory_id_or_hash
 
               file_id = @dataset.insert(
                 filename: file_hash[:filename],
                 config_directory_id: config_directory_seeds_result[target_dir],
-                parent_directory_id: directory_seeds_result[file_hash[:parent_directory]],
+                parent_directory_id: parent_directory_id,
                 file_content: file_hash[:file_content]
               )
               result[file_id] = absolute_path

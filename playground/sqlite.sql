@@ -30,3 +30,18 @@ SELECT T.tag_name, F.absolute_path FROM tags AS T
 SELECT CD.directory_path || D.directory_path AS absolute_path FROM config_directories AS CD
   INNER JOIN directories AS D
      ON CD.id = D.config_directory_id;
+
+-- 三つのテーブルから絶対パスを作成する
+SELECT CD.directory_path || D.directory_path || F.filename || '.md' AS absolute_path FROM config_directories AS CD
+  INNER JOIN directories AS D
+     ON CD.id = D.config_directory_id
+  INNER JOIN files AS F
+     ON D.id = F.parent_directory_id;
+
+-- なお、設定ディレクトリとファイルのテーブルで結合すると、値を重複して結合してしまう
+SELECT CD.directory_path || D.directory_path || F.filename || '.md', count(*) AS absolute_path FROM config_directories AS CD
+  INNER JOIN directories AS D
+     ON CD.id = D.config_directory_id
+  INNER JOIN files AS F
+     ON CD.id = F.config_directory_id;
+-- => 4461件(!!)
