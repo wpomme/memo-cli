@@ -11,8 +11,8 @@ module Memo
         # ディレクトリテーブルに必要なデータを挿入する
         #
         # @return [Hash<Integer, String>] Fileテーブルの主キーと、対象のファイルの絶対パスが対となるハッシュを返す
-        def seeds(directory_seeds_result)
-          insert_all(directory_seeds_result)
+        def seeds(config_directory_seeds_result, directory_seeds_result)
+          insert_all(config_directory_seeds_result, directory_seeds_result)
         end
 
         private
@@ -20,19 +20,22 @@ module Memo
         # 対象のデータをテーブルに一括して挿入する
         #
         # @return [Hash<Integer, String>] Fileテーブルの主キーと、対象のファイルの絶対パスが対となるハッシュを返す
-        def insert_all(directory_seeds_result)
+        def insert_all(config_directory_seeds_result, directory_seeds_result)
           file_loader = Memo::Database::FileLoader.new
-          file_hash_seeds = file_loader.file_hash_seeds
+          file_seeds_hash = file_loader.file_seeds_hash
 
-          file_hash_seeds.each_with_object({}) do |file_hash, result|
-            absolute_path = file_hash[:absolute_path]
+          file_seeds_hash.each_with_object({}) do |(target_dir, file_hash_array), result|
+            file_hash_array.flat_map do |file_hash|
+              absolute_path = file_hash[:absolute_path]
 
-            file_id = @dataset.insert(
-              absolute_path: absolute_path,
-              parent_directory_id: directory_seeds_result[file_hash[:parent_directory]],
-              file_content: file_hash[:file_content]
-            )
-            result[file_id] = absolute_path
+              file_id = @dataset.insert(
+                filename: file_hash[:filename],
+                config_directory_id: config_directory_seeds_result[target_dir],
+                parent_directory_id: directory_seeds_result[file_hash[:parent_directory]],
+                file_content: file_hash[:file_content]
+              )
+              result[file_id] = absolute_path
+            end
           end
         end
       end

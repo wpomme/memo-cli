@@ -25,3 +25,8 @@ SELECT T.tag_name, F.absolute_path FROM tags AS T
      ON T.id = FT.tags_id
   INNER JOIN files AS F
      ON F.id = FT.files_id;
+
+-- 設定ディレクトリテーブルとディレクトリテーブルを結合させて、絶対パスを返す
+SELECT CD.directory_path || D.directory_path AS absolute_path FROM config_directories AS CD
+  INNER JOIN directories AS D
+     ON CD.id = D.config_directory_id;

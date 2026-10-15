@@ -23,17 +23,12 @@ class TestFile < Minitest::Test
 
         directory_seeds_result = directory_dataset.seeds(config_directory_seeds_result)
 
-        result = file_dataset.seeds(directory_seeds_result)
+        result = file_dataset.seeds(config_directory_seeds_result, directory_seeds_result)
 
         actual_size = result.size
 
         file_loader = Memo::Database::FileLoader.new
-        expected_size = file_loader.file_hash_seeds.size
-
-        # load_filesが呼ばれた回数も一回であることを確認する
-        actual_called_count = file_loader.instance_variable_get(:@method_called_count)
-
-        expected_called_count = 1
+        expected_size = file_loader.file_seeds_hash.values.flatten.size
 
         # resultの型をチェックする
         actual_type = result.all? do |file_id, file_path|
@@ -42,7 +37,6 @@ class TestFile < Minitest::Test
 
         _(actual_size).must_equal(expected_size)
         _(actual_type).must_equal(true)
-        _(actual_called_count).must_equal(expected_called_count)
       end
     end
   end

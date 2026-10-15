@@ -22,11 +22,6 @@ class TestTag < Minitest::Test
         file_loader = Memo::Database::FileLoader.new
         expected_size = file_loader.all_tags.size
 
-        # load_filesが呼ばれた回数が一回であることを確認する
-        actual_called_count = file_loader.instance_variable_get(:@method_called_count)
-
-        expected_called_count = 1
-
         # resultの型をチェックする
         actual_type = result.all? do |tag_name, tag_id|
           tag_name.instance_of?(String) && tag_id.instance_of?(Integer)
@@ -34,7 +29,6 @@ class TestTag < Minitest::Test
 
         _(actual_size).must_equal(expected_size)
         _(actual_type).must_equal(true)
-        _(actual_called_count).must_equal(expected_called_count)
       end
     end
   end

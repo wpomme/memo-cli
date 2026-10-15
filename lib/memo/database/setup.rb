@@ -48,7 +48,7 @@ module Memo
           directory_seeds_result = directory_dataset.seeds(config_directory_seeds_result)
 
           # 3. Fileテーブルにデータを挿入
-          file_seeds_result = file_dataset.seeds(directory_seeds_result)
+          file_seeds_result = file_dataset.seeds(config_directory_seeds_result, directory_seeds_result)
 
           # 4. Tagテーブルにデータを挿入
           tag_seeds_result = tag_dataset.seeds
@@ -70,7 +70,8 @@ module Memo
             end,
             files: proc do
               primary_key :id
-              String :absolute_path
+              String :filename
+              foreign_key :config_directory_id, :config_directories
               foreign_key :parent_directory_id, :directories
               String :file_content
             end,
