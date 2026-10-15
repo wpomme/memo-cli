@@ -46,8 +46,7 @@ Rakefileに記載したコードは別のファイルに移動させた方がい
     - memo list [DIRS]の場合の表示を変えたい。ファイルの方はより詳細な情報を出したい
     - memo tag [TAG_NAME]も同様
 
-- Modeo::Seedの属性の整理
-    - rel_path, target_dir, parent_dirを上手く統合する
+- Model::Seedの属性の整理
     - 対象のディレクトリが異なる場合の対応が必要
         1. まずparent_dirは絶対パスで保存する
             - `parent_dir = File.dirname(full_path)`としてみる
@@ -68,6 +67,10 @@ Rakefileに記載したコードは別のファイルに移動させた方がい
                 - `ls -R`の表示に倣って、対象ディレクトリごとに、ディレクトリの一覧を表示する
         - ユーザー向けに表示方法を変更する場合は、viewの中で行う
     - setup.rbはそのままでいい。できればto_schemaをmodel/以下に入れたい
+4. ファイル名は1. ホームディレクトリ2.configに記載のディレクトリ3.それ以下のパス4.ファイル名に分けてもいいかも
+    - => config_directoriesテーブルを作成して、その中にconfig.ymlで記載されたディレクトリに絶対パスを足したものを入れる
+    - => 絶対パスはconfig_directoriesとの結合で作成する
+        - SQLは文字列の分解は難しいが、結合は簡単
 
 2. DBの更新
     1. 一度データを全て消してから全てのデータを入れ直す

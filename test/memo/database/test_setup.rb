@@ -12,6 +12,7 @@ class TestSetup < Minitest::Test
       Memo::Database::DB[:tags].delete
       Memo::Database::DB[:files].delete
       Memo::Database::DB[:directories].delete
+      Memo::Database::DB[:config_directories].delete
       super
     end
     it('必要なテーブルを作成して、各々のデータを挿入する。') do

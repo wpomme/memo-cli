@@ -6,14 +6,14 @@ module Memo
 
     class << self
       # TODO: DB名をmemo_production.dbにする
-      def target_db(database_path: 'production_memo.db')
+      def target_database(database_path: 'production_memo.db')
         File.join(Dir.pwd, '/db', database_path)
       end
 
       def target_dirs
         load if @config.nil?
 
-        @config['target_dirs'].map do |dir|
+        @target_dirs = @config['target_dirs'].map do |dir|
           target_dir = File.join(Dir.home, dir)
 
           raise StandardError, "#{target_dir} from config.yml is not a directory." unless FileTest.directory?(target_dir)

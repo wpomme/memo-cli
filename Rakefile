@@ -101,6 +101,12 @@ namespace :db do
   task :seeds do
     Memo::Database::Setup.execute
   end
+
+  desc 'DBにテストデータを挿入する'
+  task :seeds_test do
+    Memo::Config.target_database(database_path: 'test_memo.db')
+    Memo::Database::Setup.execute
+  end
 end
 
 cmd_tasks = {

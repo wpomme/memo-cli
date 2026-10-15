@@ -2,7 +2,7 @@
 
 module Memo
   module Database
-    TABLE_NAMES = %i[directories files tags files_tags].freeze
+    TABLE_NAMES = %i[config_directories directories files tags files_tags].freeze
 
     module Setup
       class << self
@@ -10,6 +10,12 @@ module Memo
           drop_tables_if_exist
           create_tables
           seeds
+        end
+
+        # テーブルだけ作成するメソッド
+        def prepare
+          drop_tables_if_exist
+          create_tables
         end
 
         # 既にテーブルがあれば、そのテーブルを削除する
@@ -29,25 +35,34 @@ module Memo
         # TODO: Controllerのseedsを使って、全てのデータを挿入する
         # test_file_tag.rbのテストケースを参考にしてコードを作成すること
         def seeds
+          config_directory_dataset = Memo::Database::Controller::ConfigDirectory.new
           directory_dataset = Memo::Database::Controller::Directory.new
           file_dataset = Memo::Database::Controller::File.new
           tag_dataset = Memo::Database::Controller::Tag.new
           file_tag_dataset = Memo::Database::Controller::FileTag.new
 
-          # 1. Directoryテーブルにデータを挿入
+          # 1. ConfigDirectoryテーブルにデータを挿入
+          config_directory_dataset.seeds
+
+          # 2. Directoryテーブルにデータを挿入
           directory_seeds_result = directory_dataset.seeds
 
-          # 2. Fileテーブルにデータを挿入
+          # 3. Fileテーブルにデータを挿入
           file_seeds_result = file_dataset.seeds(directory_seeds_result)
-          # 3. Tagテーブルにデータを挿入
+
+          # 4. Tagテーブルにデータを挿入
           tag_seeds_result = tag_dataset.seeds
 
-          # 4. FileTagテーブルにデータを挿入
+          # 5. FileTagテーブルにデータを挿入
           file_tag_dataset.seeds(file_seeds_result, tag_seeds_result)
         end
 
         def to_schema(table_symbol)
           {
+            config_directories: proc do
+              primary_key :id
+              String :directory_path
+            end,
             directories: proc do
               primary_key :id
               String :absolute_path

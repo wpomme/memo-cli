@@ -8,7 +8,7 @@ module Memo
         # => connectionは極力ブロックで使用すること
         # そうでない場合は手動で切断する必要がある
         def execute
-          database_path = Memo::Config.target_db
+          database_path = Memo::Config.target_database
 
           prepare(database_path)
         end

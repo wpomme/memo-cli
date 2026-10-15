@@ -13,11 +13,12 @@ module MemoDBTestLifecycleHooks
   def setup
     # TODO: DB名をmemo_test.dbにする
     test_database_path = 'test_memo.db'
-    Memo::Config.target_db(database_path: test_database_path)
+    Memo::Config.target_database(database_path: test_database_path)
+    Memo::Database::Setup.prepare
   end
 
   def teardown
-    Memo::Config.target_db
+    Memo::Config.target_database
   end
 end
 
