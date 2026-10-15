@@ -13,6 +13,10 @@ class TestDirectory < Minitest::Test
         super
       end
 
+      # TODO: directory_seeds_resultについて、空文字を許容したため、ハッシュのキーの値が不正確になっている
+      # まず、id => directory_pathというハッシュに修正する
+      # その後、directory_pathからidを逆引きする場合、空文字の場合など、pathが重複する場合のロジックを修正する必要がある
+      # その後、directory_seeds_resultに依存するseedsを順次修正していく
       it('全てのデータを挿入した場合、対象のディレクトリと同じ数の配列が戻り値となること') do
         config_directory_dataset = Memo::Database::Controller::ConfigDirectory.new
         directory_dataset = Memo::Database::Controller::Directory.new

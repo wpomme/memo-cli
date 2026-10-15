@@ -101,17 +101,19 @@ module Memo
             next if ['README.md'].include?(File.basename(rel_path))
 
             absolute_path = File.join(target_dir, rel_path)
+            rel_dirname = File.dirname(rel_path)
+            parent_directory = rel_dirname == '.' ? '' : rel_dirname << '/'
             file_content = File.readlines(absolute_path).join("\n")
 
+            # tagsのための処理
             front_matter = Memo::Service.parse_yaml_front_matter(file_content)
-
             tags = front_matter['tags'].nil? ? [] : front_matter['tags']
-
             @file_path_tags_hash[absolute_path] = tags
 
             {
               absolute_path: absolute_path,
-              parent_directory: File.dirname(rel_path) << '/',
+              parent_directory: parent_directory,
+              # parent_directory: File.dirname(rel_path) << '/',
               filename: File.basename(absolute_path, '.md'),
               file_content: file_content
             }

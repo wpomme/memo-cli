@@ -26,11 +26,12 @@ module Memo
       end
 
       # キーが設定ファイルで定義されたディレクトリで、そのキーの中のディレクトリの一覧が値となるハッシュを返す
+      # 値の方の配列に空文字を入れる。Directoryテーブルのdirectory_pathが空文字の場合は、Configディレクトリを表すため
       #
       # @return [Hash<String, Array<String>>]
       def rel_paths_hash(target_dirs = Memo::Config.target_dirs)
         @rel_paths_hash ||= target_dirs.to_h do |root_dir|
-          [root_dir, Dir.glob('**/*/', base: root_dir)]
+          [root_dir, [''].concat(Dir.glob('**/*/', base: root_dir))]
         end
       end
     end
