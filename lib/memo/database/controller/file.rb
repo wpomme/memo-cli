@@ -11,8 +11,8 @@ module Memo
         # ディレクトリテーブルに必要なデータを挿入する
         #
         # @return [Hash<Integer, String>] Fileテーブルの主キーと、対象のファイルの絶対パスが対となるハッシュを返す
-        def seeds(config_directory_seeds_result, directory_seeds_result)
-          insert_all(config_directory_seeds_result, directory_seeds_result)
+        def seeds(directory_seeds_result)
+          insert_all(directory_seeds_result)
         end
 
         private
@@ -20,9 +20,11 @@ module Memo
         # 対象のデータをテーブルに一括して挿入する
         #
         # @return [Hash<Integer, String>] Fileテーブルの主キーと、対象のファイルの絶対パスが対となるハッシュを返す
-        def insert_all(config_directory_seeds_result, directory_seeds_result)
+        def insert_all(directory_seeds_result)
           file_loader = Memo::Database::FileLoader.new
           file_seeds_hash = file_loader.file_seeds_hash
+
+          path_to_id = Memo::Database::Controller::ConfigDirectory.new.path_to_id
 
           # Controller#Directoryと共通
           duplicated_rel_path = ''
@@ -37,7 +39,7 @@ module Memo
 
               file_id = @dataset.insert(
                 filename: file_hash[:filename],
-                config_directory_id: config_directory_seeds_result[target_dir],
+                config_directory_id: path_to_id[target_dir],
                 parent_directory_id: parent_directory_id,
                 file_content: file_hash[:file_content]
               )

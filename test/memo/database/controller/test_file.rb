@@ -19,11 +19,11 @@ class TestFile < Minitest::Test
         directory_dataset = Memo::Database::Controller::Directory.new
         file_dataset = Memo::Database::Controller::File.new
 
-        config_directory_seeds_result = config_directory_dataset.seeds
+        config_directory_dataset.seeds
 
-        directory_seeds_result = directory_dataset.seeds(config_directory_seeds_result)
+        directory_seeds_result = directory_dataset.seeds
 
-        result = file_dataset.seeds(config_directory_seeds_result, directory_seeds_result)
+        result = file_dataset.seeds(directory_seeds_result)
 
         actual_size = result.size
 

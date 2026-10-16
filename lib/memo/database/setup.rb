@@ -42,13 +42,13 @@ module Memo
           file_tag_dataset = Memo::Database::Controller::FileTag.new
 
           # 1. ConfigDirectoryテーブルにデータを挿入
-          config_directory_seeds_result = config_directory_dataset.seeds
+          config_directory_dataset.seeds
 
           # 2. Directoryテーブルにデータを挿入
-          directory_seeds_result = directory_dataset.seeds(config_directory_seeds_result)
+          directory_seeds_result = directory_dataset.seeds
 
           # 3. Fileテーブルにデータを挿入
-          file_seeds_result = file_dataset.seeds(config_directory_seeds_result, directory_seeds_result)
+          file_seeds_result = file_dataset.seeds(directory_seeds_result)
 
           # 4. Tagテーブルにデータを挿入
           tag_seeds_result = tag_dataset.seeds

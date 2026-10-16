@@ -24,6 +24,15 @@ module Memo
           insert_all
         end
 
+        # 設定ファイルのパスがキー、主キーが値のハッシュを返す
+        #
+        # @return [Hash<String, Integer>]
+        def path_to_id
+          @dataset.to_h do |row|
+            [row[:directory_path], row[:id]]
+          end
+        end
+
         private
 
         # 対象のデータをテーブルに一括して挿入する

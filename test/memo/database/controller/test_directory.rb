@@ -14,12 +14,9 @@ class TestDirectory < Minitest::Test
       end
 
       it('全てのデータが挿入できること') do
-        config_directory_dataset = Memo::Database::Controller::ConfigDirectory.new
         directory_dataset = Memo::Database::Controller::Directory.new
 
-        config_directory_seeds_result = config_directory_dataset.seeds
-
-        result = directory_dataset.seeds(config_directory_seeds_result)
+        result = directory_dataset.seeds
 
         # resultの型をチェックする
         actual_type = result.all? do |directory_path, directory_id|

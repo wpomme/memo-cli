@@ -23,10 +23,10 @@ class TestFileTag < Minitest::Test
         tag_dataset = Memo::Database::Controller::Tag.new
         file_tag_dataset = Memo::Database::Controller::FileTag.new
 
-        config_directory_seeds_result = config_directory_dataset.seeds
-        directory_seeds_result = directory_dataset.seeds(config_directory_seeds_result)
+        config_directory_dataset.seeds
+        directory_seeds_result = directory_dataset.seeds
 
-        file_seeds_result = file_dataset.seeds(config_directory_seeds_result, directory_seeds_result)
+        file_seeds_result = file_dataset.seeds(directory_seeds_result)
         tag_seeds_result = tag_dataset.seeds
 
         result = file_tag_dataset.seeds(file_seeds_result, tag_seeds_result)
