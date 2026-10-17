@@ -16,19 +16,12 @@ class TestTag < Minitest::Test
         dataset = Memo::Database::Controller::Tag.new
         result = dataset.seeds
 
-        # 挿入する前のデータの数と挿入されたデータの数が等しいかどうかも検証する
-        actual_size = result.size
+        actual = result.size
 
         file_loader = Memo::Database::FileLoader.new
-        expected_size = file_loader.all_tags.size
+        expected = file_loader.all_tag_count_of_list
 
-        # resultの型をチェックする
-        actual_type = result.all? do |tag_name, tag_id|
-          tag_name.instance_of?(String) && tag_id.instance_of?(Integer)
-        end
-
-        _(actual_size).must_equal(expected_size)
-        _(actual_type).must_equal(true)
+        _(actual).must_equal(expected)
       end
     end
   end

@@ -18,12 +18,10 @@ class TestDirectory < Minitest::Test
 
         result = directory_dataset.seeds
 
-        # resultの型をチェックする
-        actual_type = result.all? do |directory_path, directory_id|
-          directory_path.instance_of?(String) && (directory_id.instance_of?(Integer) || directory_id.instance_of?(Hash))
-        end
+        actual = result.size
+        expected = Memo::Database::Service.rel_paths_size
 
-        _(actual_type).must_equal(true)
+        _(actual).must_equal(expected)
       end
     end
   end

@@ -4,6 +4,8 @@ module Memo
   module Database
     module Controller
       class Tag
+        extend Forwardable
+
         def initialize
           @dataset = DB[:tags]
         end
@@ -15,7 +17,19 @@ module Memo
           insert_all
         end
 
+        def tag_to_id
+          all.to_h do |row|
+            [row[:tag_name], row[:id]]
+          end
+        end
+
         private
+
+        # テーブルのデータを全件取得する。数百件程度のデータであるため、全件取得する
+        #
+        # 戻り値は一次元配列の中にハッシュが入っている
+        # @return [Array<Hash<symbol, <Integer | String>>>]
+        delegate all: :@dataset
 
         # 対象のデータをテーブルに一括して挿入する
         #

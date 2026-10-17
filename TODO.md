@@ -11,17 +11,19 @@
     - CLIについては、基本は作成したFileLoaderを使うのみで、DBに依存しないようにしたい
 
 ### DB
-1. seedsを作成して、実データとテストデータをDBに入れる
-2. db/以下のgit監視を外す
-3. database/配下の構成案
+1. DB用のsetup, teardownの作成。また、テストを走らせるとDBのデータが消去される問題を修正する
+2. DBの接続が多重になってそうな問題を解消する
+3. db/以下のgit監視を外す
+4. database/配下の構成案
     - db.rb => prepare.rbに統合して、connection.rbとする
-    - loaderフォルダを作成し、その中にfile_loaderとdirectory_loaderを入れる。serviceのabsolute_pathsはdirectory_loaderの中に入れる
-        - ユーザー向けに必要な情報はloader内で作成する。
+    - setup.rbのto_schemaをmodel/以下に入れたい
+    - loaderフォルダを作成し、その中にfile_loaderとdirectory_loaderを入れる。serviceのabsolute_pathsはdirectory_loaderに移動する
+        - その後、databaseフォルダから移動させる
+        - => ユーザー向けに必要な情報はloader内で作成する。
             - 現状、全てのコマンドがloader内で処理できそう
             - 手始めにmemo dirsをこのdirectory_loaderを使って変更してみたい
                 - `ls -R`の表示に倣って、対象ディレクトリごとに、ディレクトリの一覧を表示する
         - ユーザー向けに表示方法を変更する場合は、viewの中で行う
-    - setup.rbのto_schemaをmodel/以下に入れたい
 
 ### CLI案
 - OptionParserなしで実装してもいいかもしれない

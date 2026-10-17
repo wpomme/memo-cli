@@ -18,8 +18,7 @@ module Memo
           create_tables
         end
 
-        # 既にテーブルがあれば、そのテーブルを削除する
-        # 外部キー制約があるため、テーブルを作成する順番と逆に削除する
+        # テーブルを作成する順番と逆に削除する
         def drop_tables_if_exist
           TABLE_NAMES.reverse.each do |table_name|
             DB.drop_table(table_name) if DB.table_exists?(table_name)
@@ -32,29 +31,19 @@ module Memo
           end
         end
 
-        # TODO: Controllerのseedsを使って、全てのデータを挿入する
-        # test_file_tag.rbのテストケースを参考にしてコードを作成すること
         def seeds
+          # NOTE: まとめられそう
           config_directory_dataset = Memo::Database::Controller::ConfigDirectory.new
           directory_dataset = Memo::Database::Controller::Directory.new
           file_dataset = Memo::Database::Controller::File.new
           tag_dataset = Memo::Database::Controller::Tag.new
           file_tag_dataset = Memo::Database::Controller::FileTag.new
 
-          # 1. ConfigDirectoryテーブルにデータを挿入
           config_directory_dataset.seeds
-
-          # 2. Directoryテーブルにデータを挿入
-          directory_seeds_result = directory_dataset.seeds
-
-          # 3. Fileテーブルにデータを挿入
-          file_seeds_result = file_dataset.seeds(directory_seeds_result)
-
-          # 4. Tagテーブルにデータを挿入
-          tag_seeds_result = tag_dataset.seeds
-
-          # 5. FileTagテーブルにデータを挿入
-          file_tag_dataset.seeds(file_seeds_result, tag_seeds_result)
+          directory_dataset.seeds
+          file_dataset.seeds
+          tag_dataset.seeds
+          file_tag_dataset.seeds
         end
 
         def to_schema(table_symbol)

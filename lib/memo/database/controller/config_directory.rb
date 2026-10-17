@@ -39,9 +39,8 @@ module Memo
         #
         # @return [Hash<String, Integer>] パス名がキーで、主キーが値となるハッシュを返す
         def insert_all(target_dirs = Memo::Config.target_dirs)
-          target_dirs.each_with_object({}) do |path, result|
-            directory_id = @dataset.insert(directory_path: path)
-            result[path] = directory_id
+          target_dirs.map do |path|
+            @dataset.insert(directory_path: path)
           end
         end
       end

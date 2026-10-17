@@ -12,21 +12,14 @@ class TestDirectory < Minitest::Test
         super
       end
 
-      it('全てのデータを挿入した場合、対象のディレクトリと同じ数の配列が戻り値となること') do
+      it('全てのデータを挿入した場合、その配列の値が設定ディレクトリの数と同じになること') do
         dataset = Memo::Database::Controller::ConfigDirectory.new
         result = dataset.seeds
 
         actual = result.size
         expected = Memo::Config.target_dirs.size
 
-        # resultの型をチェックする
-        actual_type = result.all? do |directory_path, directory_id|
-          FileTest.directory?(directory_path) && directory_id.instance_of?(Integer)
-        end
-
-        _(actual.positive?).must_equal(true)
         _(actual).must_equal(expected)
-        _(actual_type).must_equal(true)
       end
     end
 
@@ -38,19 +31,15 @@ class TestDirectory < Minitest::Test
         dataset.seeds
       end
 
-      it('挿入したデータが取得できること') do
+      it('挿入したデータが取得でき、その総数が設定ディレクトリの数と同じであること') do
         dataset = Memo::Database::Controller::ConfigDirectory.new
 
         result = dataset.all
 
-        actual = result.all? do |row|
-          row[:id].instance_of?(Integer) && row[:directory_path].instance_of?(String)
-        end
+        actual = result.size
+        expected = Memo::Config.target_dirs.size
 
-        actual_size = result.size
-
-        _(actual_size.positive?).must_equal(true)
-        _(actual).must_equal(true)
+        _(actual).must_equal(expected)
       end
     end
   end

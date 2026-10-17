@@ -5,12 +5,16 @@ module Memo
     module Service
       module_function
 
+      def absolute_paths_size
+        @absolute_paths_size = absolute_paths.size
+      end
+
       # 対象のディレクトリについて、その中のディレクトリの一覧を配列で返す
       # Configで設定されたディレクトリも含む
       #
       # @return [Array<String>>]
       def absolute_paths
-        rel_paths_hash.flat_map do |target_dir, dirs|
+        @absolute_paths = rel_paths_hash.flat_map do |target_dir, dirs|
           [target_dir].concat(
             dirs.map do |dir|
               File.join(target_dir, dir)
@@ -24,7 +28,7 @@ module Memo
       # @return [Integer]
       def rel_paths_size
         @rel_paths_size ||= rel_paths_hash.keys.map do |key|
-          rel_paths_hash.values_at(key).size
+          rel_paths_hash[key].size
         end
           .inject(:+)
       end

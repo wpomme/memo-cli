@@ -20,23 +20,36 @@ class TestFile < Minitest::Test
         file_dataset = Memo::Database::Controller::File.new
 
         config_directory_dataset.seeds
+        directory_dataset.seeds
+        result = file_dataset.seeds
 
-        directory_seeds_result = directory_dataset.seeds
-
-        result = file_dataset.seeds(directory_seeds_result)
-
-        actual_size = result.size
+        actual = result.size
 
         file_loader = Memo::Database::FileLoader.new
-        expected_size = file_loader.file_seeds_hash.values.flatten.size
+        expected = file_loader.file_list_size
 
-        # resultの型をチェックする
-        actual_type = result.all? do |file_id, file_path|
-          file_id.instance_of?(Integer) && FileTest.file?(file_path)
-        end
+        _(actual).must_equal(expected)
+      end
+    end
 
-        _(actual_size).must_equal(expected_size)
-        _(actual_type).must_equal(true)
+    describe('#all') do
+      def setup
+        dataset = Memo::Database::Controller::File.new
+
+        # データを挿入する
+        dataset.seeds
+      end
+
+      it('挿入したデータが取得でき、その総数が対象となるファイルの総数と同じであること') do
+        dataset = Memo::Database::Controller::File.new
+
+        result = dataset.all
+
+        actual = result.size
+        file_loader = Memo::Database::FileLoader.new
+        expected = file_loader.file_list_size
+
+        _(actual).must_equal(expected)
       end
     end
   end

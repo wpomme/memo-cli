@@ -15,33 +15,47 @@ module Memo
           insert_all
         end
 
+        # ディレクトリの絶対パスがキーで、ディレクトリテーブルのIDが値となるハッシュを返す
+        #
+        # @return [Hash<String, Integer>]
+        def absolute_directory_path_to_id
+          absolute_directory_paths
+            .to_h do |row|
+              [row[:absolute_path], row[:directory_id]]
+            end
+        end
+
         private
+
+        # ディレクトリの絶対パスと設定ディレクトリのIDのオブジェクトを配列で返す
+        #
+        # @return [Array<Hash>]
+        def absolute_directory_paths
+          @dataset
+            .join(:config_directories, id: :config_directory_id)
+            .select(
+              Sequel.join(
+                [Sequel[:config_directories][:directory_path],
+                 Sequel[:directories][:directory_path]]
+              ).as(:absolute_path),
+              Sequel[:directories][:id].as(:directory_id)
+            )
+        end
 
         # 対象のデータをテーブルに一括して挿入する
         #
-        # @return [Hash<String, Integer>] パス名がキーで、主キーが値となるハッシュを返す
+        # @return [Array<Integer>] 挿入したレコードのIDを配列で返す
         def insert_all
-          # NOTE: 対象ディレクトリごとに同じ名前のディレクトリが作成される可能性がある
-          # その場合は、DirectoryLoaderで検知するのが適切と思われる
-          duplicated_rel_path = ''
-          duplicated_path_hash = {}
-
           path_to_id = Memo::Database::Controller::ConfigDirectory.new.path_to_id
 
-          result = Memo::Database::Service.rel_paths_hash.each_with_object({}) do |(target_dir, rel_paths), result|
-            result = rel_paths.flat_map do |rel_path|
-              directory_id = @dataset.insert(
+          Memo::Database::Service.rel_paths_hash.flat_map do |target_dir, rel_paths|
+            rel_paths.flat_map do |rel_path|
+              @dataset.insert(
                 config_directory_id: path_to_id[target_dir],
                 directory_path: rel_path
               )
-              duplicated_path_hash[target_dir] = directory_id if rel_path == duplicated_rel_path
-              result[rel_path] = directory_id
             end
           end
-
-          result[duplicated_rel_path] = duplicated_path_hash
-
-          result
         end
       end
     end

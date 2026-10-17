@@ -9,6 +9,7 @@ module Memo
         @file_path_tags_hash = {}
       end
 
+      # TODO: sorted_tags, tags, tag_size, total_tag_sizeにリネームする
       # 全てのサグの一覧をソートし、重複を排除してから、その一覧を返す
       #
       # @return [Array<String>]
@@ -30,6 +31,15 @@ module Memo
         all_tags_array.size
       end
 
+      # 対象ファイルの絶対パスがキーで、そのファイルに付けられているタグの一覧をハッシュで返す
+      #
+      # @return [Hash<String, Array<String>>]
+      def absolute_filename_to_tags
+        file_seeds_hash.values.flatten.to_h do |file_hash|
+          [file_hash[:absolute_path], file_hash[:tags]]
+        end
+      end
+
       # ファイルパスと、そのファイルに付けられているタグ名の配列のハッシュを返す
       #
       # @return [Hash<String, Array<String>>]
@@ -37,6 +47,13 @@ module Memo
         load_file_seeds_hash unless load_files_called?
 
         @file_path_tags_hash
+      end
+
+      # 対象となるファイルの総数を返す
+      #
+      # @return [Integer]
+      def file_list_size
+        file_list_size_by_config_directory.values.inject(:+)
       end
 
       # 全てのファイルの情報をハッシュにして一次元配列に保存したメソッド
@@ -48,6 +65,13 @@ module Memo
       end
 
       private
+
+      # 設定ディレクトリごとのファイルの総数をハッシュで返す
+      #
+      # @return [Hash<String, Integer>]
+      def file_list_size_by_config_directory
+        file_seeds_hash.transform_values(&:size)
+      end
 
       def all_tags_array
         @all_tags_array ||= file_path_tags_hash.values.flatten
@@ -71,13 +95,18 @@ module Memo
             file_content = File.readlines(absolute_path).join("\n")
 
             # tagsのための処理
-            add_file_path_tags_hash(absolute_path, file_content)
+            # add_file_path_tags_hash(absolute_path, file_content)
+            front_matter = Memo::Service.parse_yaml_front_matter(file_content)
+            tags = front_matter['tags'].nil? ? [] : front_matter['tags']
+            @file_path_tags_hash[absolute_path] = tags
 
             {
               absolute_path: absolute_path,
-              parent_directory: rel_dirname == '.' ? '' : rel_dirname << '/',
+              parent_directory: File.dirname(absolute_path) << '/',
+              parent_rel_path: rel_dirname == '.' ? '' : rel_dirname << '/',
               filename: File.basename(absolute_path, '.md'),
-              file_content: file_content
+              file_content: file_content,
+              tags: tags
             }
           end
 
