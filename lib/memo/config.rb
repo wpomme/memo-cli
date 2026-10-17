@@ -5,7 +5,6 @@ module Memo
     CONFIG_PATH = File.expand_path('../../config/config.yml', __dir__)
 
     class << self
-      # TODO: DB名をmemo_production.dbにする
       def target_database(database_filename: 'memo_production.db')
         File.join(Dir.pwd, '/db', database_filename)
       end

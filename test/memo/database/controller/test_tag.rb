@@ -8,7 +8,7 @@ class TestTag < Minitest::Test
 
     def setup
       super
-      @dataset = Memo::Database::Controller::Tag.new(@db)
+      @dataset = Memo::Database::Controller::Tag.new
 
       @seeds = @dataset.seeds
     end
@@ -22,8 +22,7 @@ class TestTag < Minitest::Test
       it('戻り値の配列の数が、重複を排除したタグの総数と同じになること') do
         actual = @seeds.size
 
-        file_loader = Memo::Loader::FileLoader.new
-        expected = file_loader.tag_size
+        expected = Memo::Loader::FileLoader.new.tag_size
 
         _(actual).must_equal(expected)
       end

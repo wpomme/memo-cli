@@ -10,9 +10,8 @@ module Memo
 
         def_delegators :@dataset, :delete
 
-        def initialize(db)
-          @db = db
-          @dataset = db[:files_tags]
+        def initialize
+          @dataset = Memo::Database.db[:files_tags]
         end
 
         # ディレクトリテーブルに必要なデータを挿入する
@@ -31,11 +30,10 @@ module Memo
         #
         # @return [Hash<Integer, Array<String>>]
         def to_file_id_tag_names
-          file_dataset = Memo::Database::Controller::File.new(@db)
+          file_dataset = Memo::Database::Controller::File.new
           id_to_absolute_filename = file_dataset.id_to_absolute_filename
 
-          file_loader = Memo::Loader::FileLoader.new
-          absolute_filename_to_tags = file_loader.absolute_filename_to_tags
+          absolute_filename_to_tags = Memo::Loader::FileLoader.new.absolute_filename_to_tags
 
           id_to_absolute_filename.each_with_object({}) do |(file_id, file_path), result|
             result[file_id] = absolute_filename_to_tags[file_path]
@@ -49,7 +47,7 @@ module Memo
         #
         # @return [Hash<Integer, Array<Integer>>]
         def from_tags_to_tag_ids(file_id_to_tag_names)
-          tag_dataset = Memo::Database::Controller::Tag.new(@db)
+          tag_dataset = Memo::Database::Controller::Tag.new
           tag_to_id = tag_dataset.tag_to_id
 
           file_id_to_tag_names.transform_values do |tags|

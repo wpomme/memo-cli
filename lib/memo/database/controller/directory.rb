@@ -10,9 +10,8 @@ module Memo
 
         def_delegators :@dataset, :delete
 
-        def initialize(db)
-          @db = db
-          @dataset = db[:directories]
+        def initialize
+          @dataset = Memo::Database.db[:directories]
         end
 
         # ディレクトリテーブルに必要なデータを挿入する
@@ -53,7 +52,7 @@ module Memo
         #
         # @return [Array<Integer>] 挿入したレコードのIDを配列で返す
         def insert_all
-          path_to_id = Memo::Database::Controller::ConfigDirectory.new(@db).path_to_id
+          path_to_id = Memo::Database::Controller::ConfigDirectory.new.path_to_id
 
           Memo::Loader::DirectoryLoader.rel_paths_hash.flat_map do |target_dir, rel_paths|
             rel_paths.flat_map do |rel_path|

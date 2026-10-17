@@ -8,9 +8,9 @@ class TestFile < Minitest::Test
 
     def setup
       super
-      @config_directory_dataset = Memo::Database::Controller::ConfigDirectory.new(@db)
-      @directory_dataset = Memo::Database::Controller::Directory.new(@db)
-      @file_dataset = Memo::Database::Controller::File.new(@db)
+      @config_directory_dataset = Memo::Database::Controller::ConfigDirectory.new
+      @directory_dataset = Memo::Database::Controller::Directory.new
+      @file_dataset = Memo::Database::Controller::File.new
 
       @config_directory_dataset.seeds
       @directory_dataset.seeds
@@ -28,8 +28,7 @@ class TestFile < Minitest::Test
       it('戻り値の配列の数が、対象のファイルと同じ数となること') do
         actual = @seeds.size
 
-        file_loader = Memo::Loader::FileLoader.new
-        expected = file_loader.file_list_size
+        expected = Memo::Loader::FileLoader.new.file_list_size
 
         _(actual).must_equal(expected)
       end
@@ -37,11 +36,9 @@ class TestFile < Minitest::Test
 
     describe('#all') do
       it('取得したデータの総数が、対象のファイルと同じ数となること') do
-        result = @file_dataset.all
+        actual = @file_dataset.all.size
 
-        actual = result.size
-        file_loader = Memo::Loader::FileLoader.new
-        expected = file_loader.file_list_size
+        expected = Memo::Loader::FileLoader.new.file_list_size
 
         _(actual).must_equal(expected)
       end

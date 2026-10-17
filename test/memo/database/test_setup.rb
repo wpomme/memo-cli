@@ -31,7 +31,7 @@ class TestSetup < Minitest::Test
       test_database_filename = 'memo_test.db'
       @test_database_path = Memo::Config.target_database(database_filename: test_database_filename)
       @db = Memo::Database.db(database_path: @test_database_path)
-      Memo::Database::Setup.prepare(@db)
+      Memo::Database::Setup.new(@db).prepare
     end
 
     it('テーブルが作成されること') do
@@ -48,7 +48,7 @@ class TestSetup < Minitest::Test
       test_database_filename = 'memo_test.db'
       @test_database_path = Memo::Config.target_database(database_filename: test_database_filename)
       @db = Memo::Database.db(database_path: @test_database_path)
-      @result = Memo::Database::Setup.execute(@db)
+      @result = Memo::Database::Setup.new(@db).execute
     end
 
     # TODO: actualの回数が倍になって、テストが失敗する場合がある

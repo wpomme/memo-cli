@@ -2,7 +2,7 @@
 
 require_relative '../../helper'
 
-class TestConnection < Minitest::Test
+class TestPrepare < Minitest::Test
   include MemoDBTestLifecycleHooks
 
   describe('#execute') do
@@ -16,11 +16,19 @@ class TestConnection < Minitest::Test
 
     it('テスト環境と接続できること。指定したDBファイルがなければ作成する') do
       skip 'TODO'
-      Memo::Database::Connection.execute(database_path: @database_path) do |conn|
+      Memo::Database::Prepare.execute(database_path: @database_path) do |conn|
         expected_object = Sequel::SQLite::Database
 
         _(conn).must_be_instance_of(expected_object)
       end
+    end
+
+    it('dbがブロックを受け取った場合の動作') do
+      skip 'TODO'
+    end
+
+    it('dbがブロックを受け取らなかった場合の動作') do
+      skip 'TODO'
     end
   end
 end

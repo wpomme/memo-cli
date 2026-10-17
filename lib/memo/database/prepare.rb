@@ -2,7 +2,7 @@
 
 module Memo
   module Database
-    module Connection
+    module Prepare
       class << self
         def execute(database_path: Memo::Config.target_database)
           FileUtils.touch(database_path) unless FileTest.file?(database_path)

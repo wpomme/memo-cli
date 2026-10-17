@@ -8,8 +8,8 @@ class TestDirectory < Minitest::Test
 
     def setup
       super
-      @config_directory_dataset = Memo::Database::Controller::ConfigDirectory.new(@db)
-      @dataset = Memo::Database::Controller::Directory.new(@db)
+      @config_directory_dataset = Memo::Database::Controller::ConfigDirectory.new
+      @dataset = Memo::Database::Controller::Directory.new
 
       @config_directory_dataset.seeds
       @seeds = @dataset.seeds

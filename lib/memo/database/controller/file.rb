@@ -10,9 +10,8 @@ module Memo
 
         def_delegators :@dataset, :all, :delete
 
-        def initialize(db)
-          @db = db
-          @dataset = db[:files]
+        def initialize
+          @dataset = Memo::Database.db[:files]
         end
 
         # ファイルテーブルのIDがキーで、対象ファイルの絶対パスが値となるハッシュを返す
@@ -53,13 +52,10 @@ module Memo
         #
         # @return [Hash<Integer, String>] Fileテーブルの主キーと、対象のファイルの絶対パスが対となるハッシュを返す
         def insert_all
-          file_loader = Memo::Loader::FileLoader.new
-          file_seeds_hash = file_loader.file_seeds_hash
+          path_to_id = Memo::Database::Controller::ConfigDirectory.new.path_to_id
+          absolute_directory_path_to_id = Memo::Database::Controller::Directory.new.absolute_directory_path_to_id
 
-          path_to_id = Memo::Database::Controller::ConfigDirectory.new(@db).path_to_id
-          absolute_directory_path_to_id = Memo::Database::Controller::Directory.new(@db).absolute_directory_path_to_id
-
-          file_seeds_hash.flat_map do |target_dir, file_hash_array|
+          Memo::Loader::FileLoader.new.file_seeds_hash.flat_map do |target_dir, file_hash_array|
             file_hash_array.flat_map do |file_hash|
               @dataset.insert(
                 filename: file_hash[:filename],

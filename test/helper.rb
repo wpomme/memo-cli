@@ -16,7 +16,7 @@ module MemoDBTestLifecycleHooks
     test_database_filename = 'memo_test.db'
     @test_database_path = Memo::Config.target_database(database_filename: test_database_filename)
     @db = Memo::Database.db(database_path: @test_database_path)
-    Memo::Database::Setup.prepare(@db)
+    Memo::Database::Setup.new(@db).prepare
   end
 
   def teardown
