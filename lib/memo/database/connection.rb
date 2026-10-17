@@ -2,7 +2,7 @@
 
 module Memo
   module Database
-    module Prepare
+    module Connection
       class << self
         # connectionhはdbをブロックで呼び出すと自動的に切断される
         # => connectionは極力ブロックで使用すること

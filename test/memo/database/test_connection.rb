@@ -2,7 +2,7 @@
 
 require_relative '../../helper'
 
-class TestPrepare < Minitest::Test
+class TestConnection < Minitest::Test
   include MemoDBTestLifecycleHooks
 
   describe('#execute') do
@@ -15,10 +15,10 @@ class TestPrepare < Minitest::Test
     # end
 
     it('テスト環境と接続できること。指定したDBファイルがなければ作成する') do
-      Memo::Database::Prepare.execute do |prepare|
+      Memo::Database::Connection.execute do |conn|
         expected_object = Sequel::SQLite::Database
 
-        _(prepare).must_be_instance_of(expected_object)
+        _(conn).must_be_instance_of(expected_object)
       end
     end
   end

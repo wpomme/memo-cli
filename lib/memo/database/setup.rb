@@ -2,6 +2,7 @@
 
 module Memo
   module Database
+    DB = Memo::Database::Connection.execute
     TABLE_NAMES = %i[config_directories directories files tags files_tags].freeze
 
     module Setup
