@@ -51,16 +51,6 @@ class TestSetup < Minitest::Test
       @result = Memo::Database::Setup.execute(@db)
     end
 
-    def teardown
-      # executeの方で各コントローラーに既に@dbを渡しているから？
-      # Memo::Database::Controller::FileTag.new(@db).delete
-      # Memo::Database::Controller::Tag.new(@db).delete
-      # Memo::Database::Controller::File.new(@db).delete
-      # Memo::Database::Controller::Directory.new(@db).delete
-      # Memo::Database::Controller::ConfigDirectory.new(@db).delete
-      super
-    end
-
     # TODO: actualの回数が倍になって、テストが失敗する場合がある
     # おそらくDB接続の問題か、並行処理の問題
     it('挿入したデータの件数が、全てのタグの出現回数と同じになること') do
