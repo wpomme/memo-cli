@@ -8,7 +8,8 @@
 
 ## DB / CLIのUI
 - DBを作成したら、それに従ってアーキテクチャとCLIのUIを変更する予定
-    - CLIについては、基本は作成したFileLoaderを使うのみで、DBに依存しないようにしたい
+    - Command (<=> SubCommandParser) <=> View <=> Loader(Modelの役割)の構成にする？
+    - 更新処理が出来たらCommandの次にControllerを導入してもいいかも
 
 ### DB
 1. DB用のsetup, teardownの作成。また、テストを走らせるとDBのデータが消去される問題を修正する
@@ -26,21 +27,16 @@
         - ユーザー向けに表示方法を変更する場合は、viewの中で行う
 
 ### CLI案
-- OptionParserなしで実装してもいいかもしれない
-    - 使用するオプションが少ない。代わりにサブコマンドで代用しているため。
-- getoptlongなどを使ってもいいかもしれない
-    - Ruby: https://docs.ruby-lang.org/ja/latest/library/getoptlong.html
-    - GNU: https://www.gnu.org/prep/standards/html_node/Command_002dLine-Interfaces.html
-- その他コマンドオプションに関する規格などがあればそれに従うのがいいかもしれない
+- サブコマンドは-h, --helpなどのオプションと同時に使えないようにする
+    - その代わり、zshで補完が効くようにする
+- サブコマンドの次の引数からコマンドオプションが使えるようにする
 
-### CLI案２
-- tagsのサブコマンドの機能を果たす--count/--empty/--nameの処理を単純にしたい
-    - ブロックを渡す処理を消したい。
-    - OptionParser.parse(args): memo tags list => {tags: nil, list: nil}っぽいのが返ってくる
-        - これを生かすのが良さそう
-        - Comamandに渡すときに、[[tags: nil, empty: nil]]のようにして、逆の順番だったらエラーを出すなど
-        - --emptyなどの詳細には、tags専用のサブコマンドであることを記載する
-            - または、helpのメッセージの出し方を再度考慮する
+- その他の案
+    - OptionParserなしで実装してもいいかもしれない
+        - 使用するオプションが少ない。代わりにサブコマンドで代用しているため。
+    - getoptlongなどを使ってもいいかもしれない
+        - Ruby: https://docs.ruby-lang.org/ja/latest/library/getoptlong.html
+        - GNU: https://www.gnu.org/prep/standards/html_node/Command_002dLine-Interfaces.html
 
 ### 表示系に関するCLI案
 - memo list, memo tagsにて、ディレクトリ・タグとファイル名の次に改行を入れたい

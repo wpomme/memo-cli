@@ -18,7 +18,7 @@ module MemoDBTestLifecycleHooks
   end
 
   def teardown
-    Memo::Config.target_database
+    # Memo::Config.target_database
   end
 end
 

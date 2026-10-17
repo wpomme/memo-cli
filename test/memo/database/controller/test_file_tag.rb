@@ -18,7 +18,7 @@ class TestFileTag < Minitest::Test
         directory_dataset.seeds
         file_dataset.seeds
         tag_dataset.seeds
-        file_tag_dataset.seeds
+        @seeds = file_tag_dataset.seeds
       end
 
       def teardown
@@ -30,11 +30,8 @@ class TestFileTag < Minitest::Test
         super
       end
 
-      it('全てのデータを挿入した場合、戻り値の配列の総数が、全てのタグの出現回数と同じになること') do
-        file_tag_dataset = Memo::Database::Controller::FileTag.new
-        result = file_tag_dataset.seeds
-
-        each_array_size = result.values.map(&:size)
+      it('戻り値の配列の数が、重複を排除しないタグの出現回数と同じになること') do
+        each_array_size = @seeds.values.map(&:size)
         actual = each_array_size.inject(:+)
 
         expected = Memo::Database::FileLoader.new.all_tag_count_of_appearance

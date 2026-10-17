@@ -12,7 +12,6 @@ class TestFileLoader < Minitest::Test
         file_loader = Memo::Database::FileLoader.new
 
         file_loader.file_seeds_hash
-        file_loader.file_path_tags_hash
         file_loader.all_tags
 
         mock.verify
@@ -36,18 +35,6 @@ class TestFileLoader < Minitest::Test
                 file_seed[:file_content].instance_of?(String)
             end
         end
-      end
-    end
-
-    describe('#file_path_tags_hash') do
-      it('TagとFileTagテーブルを作成するのに必要なハッシュ値が返されること') do
-        file_path_tags_hash = Memo::Database::FileLoader.new.file_path_tags_hash
-
-        actual = file_path_tags_hash.all? do |(path, tags)|
-          FileTest.file?(path) && tags.all?(String)
-        end
-
-        _(actual).must_equal(true)
       end
     end
 

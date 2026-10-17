@@ -5,8 +5,10 @@ module Memo
     # 対象のディレクトリを走査してデータベースに必要なデータを取得するためのクラス
     # 何度も走査しないように、キャッシュを取得する
     class FileLoader
+      attr_reader :file_seeds_hash
+
       def initialize
-        @file_path_tags_hash = {}
+        @file_seeds_hash = load_file_seeds_hash
       end
 
       # TODO: sorted_tags, tags, tag_size, total_tag_sizeにリネームする
@@ -35,18 +37,9 @@ module Memo
       #
       # @return [Hash<String, Array<String>>]
       def absolute_filename_to_tags
-        file_seeds_hash.values.flatten.to_h do |file_hash|
+        @file_seeds_hash.values.flatten.to_h do |file_hash|
           [file_hash[:absolute_path], file_hash[:tags]]
         end
-      end
-
-      # ファイルパスと、そのファイルに付けられているタグ名の配列のハッシュを返す
-      #
-      # @return [Hash<String, Array<String>>]
-      def file_path_tags_hash
-        load_file_seeds_hash unless load_files_called?
-
-        @file_path_tags_hash
       end
 
       # 対象となるファイルの総数を返す
@@ -56,33 +49,20 @@ module Memo
         file_list_size_by_config_directory.values.inject(:+)
       end
 
-      # 全てのファイルの情報をハッシュにして一次元配列に保存したメソッド
-      #
-      def file_seeds_hash
-        load_file_seeds_hash unless load_files_called?
-
-        @load_file_seeds_hash
-      end
-
       private
 
       # 設定ディレクトリごとのファイルの総数をハッシュで返す
       #
       # @return [Hash<String, Integer>]
       def file_list_size_by_config_directory
-        file_seeds_hash.transform_values(&:size)
+        @file_seeds_hash.transform_values(&:size)
       end
 
       def all_tags_array
-        @all_tags_array ||= file_path_tags_hash.values.flatten
-      end
-
-      def load_files_called?
-        @load_files_called ||= !@load_file_seeds_hash.nil?
+        @all_tags_array ||= absolute_filename_to_tags.values.flatten
       end
 
       # 対象のディレクトリ内のファイルを読み込んで、DBに保存するためのfile_seeds_hashを作成する
-      # このメソッドには、@file_path_tags_hashを生成するという副作用がある
       #
       # @return [Hash<String, Array>] 設定ディレクトリがキーで、そのディレクトリ内のファイルに関する情報の配列が値となるハッシュを返す
       def load_file_seeds_hash(target_dirs = Memo::Config.target_dirs)
@@ -98,7 +78,6 @@ module Memo
             # add_file_path_tags_hash(absolute_path, file_content)
             front_matter = Memo::Service.parse_yaml_front_matter(file_content)
             tags = front_matter['tags'].nil? ? [] : front_matter['tags']
-            @file_path_tags_hash[absolute_path] = tags
 
             {
               absolute_path: absolute_path,
@@ -112,12 +91,6 @@ module Memo
 
           [target_dir, file_seeds]
         end
-      end
-
-      def add_file_path_tags_hash(absolute_path, file_content)
-        front_matter = Memo::Service.parse_yaml_front_matter(file_content)
-        tags = front_matter['tags'].nil? ? [] : front_matter['tags']
-        @file_path_tags_hash[absolute_path] = tags
       end
     end
   end

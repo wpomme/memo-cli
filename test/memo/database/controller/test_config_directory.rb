@@ -6,17 +6,20 @@ class TestDirectory < Minitest::Test
   describe('Controller::ConfigDirectory') do
     include MemoDBTestLifecycleHooks
 
+    def setup
+      @dataset = Memo::Database::Controller::ConfigDirectory.new
+
+      @seeds = @dataset.seeds
+    end
+
+    def teardown
+      Memo::Database::DB[:config_directories].delete
+      super
+    end
+
     describe('#seeds') do
-      def teardown
-        Memo::Database::DB[:config_directories].delete
-        super
-      end
-
-      it('全てのデータを挿入した場合、その配列の値が設定ディレクトリの数と同じになること') do
-        dataset = Memo::Database::Controller::ConfigDirectory.new
-        result = dataset.seeds
-
-        actual = result.size
+      it('戻り値の配列の数が設定ディレクトリの数と同じとなること') do
+        actual = @seeds.size
         expected = Memo::Config.target_dirs.size
 
         _(actual).must_equal(expected)
@@ -24,17 +27,8 @@ class TestDirectory < Minitest::Test
     end
 
     describe('#all') do
-      def setup
-        dataset = Memo::Database::Controller::ConfigDirectory.new
-
-        # データを挿入する
-        dataset.seeds
-      end
-
-      it('挿入したデータが取得でき、その総数が設定ディレクトリの数と同じであること') do
-        dataset = Memo::Database::Controller::ConfigDirectory.new
-
-        result = dataset.all
+      it('取得したデータの総数が設定ディレクトリの数と同じとなること') do
+        result = @dataset.all
 
         actual = result.size
         expected = Memo::Config.target_dirs.size
