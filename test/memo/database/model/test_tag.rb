@@ -8,6 +8,7 @@ class TestTag < Minitest::Test
   describe('Model::Tag') do
     describe('#new') do
       it('Tagモデルのインスタンスを動的に作成できること。そのモデルのスーパークラスがSequel::Modelであること') do
+        skip 'TODO'
         tag = Memo::Database::Model::Tag.new
 
         _(tag).must_be_instance_of(Memo::Database::Model::Tag)

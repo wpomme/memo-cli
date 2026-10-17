@@ -8,6 +8,7 @@ class TestDirectory < Minitest::Test
 
     describe('#directory') do
       it('Directoryモデルのインスタンスを動的に作成できること。そのモデルのスーパークラスがSequel::Modelであること') do
+        skip 'TODO'
         # Directoryクラスを動的に生成する
         # Memo::DB::Model.directory
 

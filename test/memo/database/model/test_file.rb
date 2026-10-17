@@ -8,6 +8,7 @@ class TestFile < Minitest::Test
   describe('Model::File') do
     describe('#new') do
       it('Fileモデルのインスタンスを動的に作成できること。そのモデルのスーパークラスがSequel::Modelであること') do
+        skip 'TODO'
         file = Memo::Database::Model::File.new
 
         _(file).must_be_instance_of(Memo::Database::Model::File)

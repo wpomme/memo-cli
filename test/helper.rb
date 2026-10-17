@@ -13,7 +13,7 @@ module MemoDBTestLifecycleHooks
   def setup
     # TODO: DB名をmemo_test.dbにする
     super
-    test_database_path = 'test_memo.db'
+    test_database_path = 'memo_test.db'
     Memo::Config.target_database(database_path: test_database_path)
     Memo::Database::Setup.prepare
   end
