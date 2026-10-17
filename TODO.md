@@ -12,10 +12,19 @@
     - 更新処理が出来たらCommandの次にControllerを導入してもいいかも
 
 ### DB
-1. parent_directory_idなど、not null制約を付ける
-2. setup.rbのto_schemaをmodel/以下に入れたい
+1. 接続~データ挿入部分の構成変更
+    - 現状のConnectionを読み込む=>setupにあるDatabase.dbからdb接続のためのオブジェクトを取得する=>setupにdbの依存性を入れて実行
+        - という手順が煩雑になってしまった
+    - 案
+        - connection.rb => prepare.rbにする
+        - Database.dbメソッドをDatabase.connectionなどにする
+        - setupはクラスの方がいいかもしれない
+            - @dbをインスタンス変数としたい
+2. parent_directory_idなど、not null制約を付ける
+3. setup.rbのto_schemaをmodel/以下に入れたい
 
-6. ユーザー向けに必要な情報はloader内で作成する
+### Loader => View => Command
+4. ユーザー向けに必要な情報はloader内で作成する
     - 現状、全てのコマンドがloader内で処理できそう
     - 手始めにmemo dirsをこのdirectory_loaderを使って変更してみたい
         - `ls -R`の表示に倣って、対象ディレクトリごとに、ディレクトリの一覧を表示する
