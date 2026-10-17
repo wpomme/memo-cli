@@ -7,7 +7,7 @@ class TestService < Minitest::Test
 
   describe('DB::Service') do
     include Memo::Database
-    include Memo::Database::Service
+    include Memo::Loader::DirectoryLoader
 
     describe('#database_paths') do
       it('一次元配列を返し、その値はディレクトリであること') do

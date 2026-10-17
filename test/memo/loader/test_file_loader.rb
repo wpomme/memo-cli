@@ -9,7 +9,7 @@ class TestFileLoader < Minitest::Test
     describe('#load_files_called?') do
       it('メソッドを同時に呼んでも、#load_fileは一回だけしか呼ばれないこと') do
         skip 'TODO: Minitestのモックを探す。なければRSpecに移行する'
-        file_loader = Memo::Database::FileLoader.new
+        file_loader = Memo::Loader::FileLoader.new
 
         file_loader.file_seeds_hash
         file_loader.sorted_tags
@@ -24,7 +24,7 @@ class TestFileLoader < Minitest::Test
 
     describe('#file_seeds_hash') do
       it('対象のディレクトリをキーとし、そのディレクトリ内のファイルに関するハッシュが値となること') do
-        file_loader = Memo::Database::FileLoader.new
+        file_loader = Memo::Loader::FileLoader.new
         file_seeds_hash = file_loader.file_seeds_hash
 
         file_seeds_hash.all? do |target_dir, file_seeds|
@@ -40,7 +40,7 @@ class TestFileLoader < Minitest::Test
 
     describe('#sorted_tags') do
       it('Tagテーブルを作成するのに必要なタグ名の配列が返されること') do
-        sorted_tags = Memo::Database::FileLoader.new.sorted_tags
+        sorted_tags = Memo::Loader::FileLoader.new.sorted_tags
 
         actual = sorted_tags.all?(String)
 
@@ -50,7 +50,7 @@ class TestFileLoader < Minitest::Test
 
     describe('#tag_size') do
       it('整数が返されること') do
-        actual = Memo::Database::FileLoader.new.tag_size
+        actual = Memo::Loader::FileLoader.new.tag_size
 
         _(actual).must_be_instance_of(Integer)
       end
@@ -58,7 +58,7 @@ class TestFileLoader < Minitest::Test
 
     describe('#total_tag_size') do
       it('整数が返されること') do
-        actual = Memo::Database::FileLoader.new.total_tag_size
+        actual = Memo::Loader::FileLoader.new.total_tag_size
 
         _(actual).must_be_instance_of(Integer)
       end

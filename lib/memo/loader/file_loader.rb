@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module Memo
-  module Database
+  module Loader
     # 対象のディレクトリを走査してデータベースに必要なデータを取得するためのクラス
     # 何度も走査しないように、キャッシュを取得する
     class FileLoader

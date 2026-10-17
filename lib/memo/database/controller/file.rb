@@ -54,7 +54,7 @@ module Memo
         #
         # @return [Hash<Integer, String>] Fileテーブルの主キーと、対象のファイルの絶対パスが対となるハッシュを返す
         def insert_all
-          file_loader = Memo::Database::FileLoader.new
+          file_loader = Memo::Loader::FileLoader.new
           file_seeds_hash = file_loader.file_seeds_hash
 
           path_to_id = Memo::Database::Controller::ConfigDirectory.new.path_to_id

@@ -19,13 +19,12 @@
 5. database/配下の構成案
     - db.rb => prepare.rbに統合して、connection.rbとする
     - setup.rbのto_schemaをmodel/以下に入れたい
-    - loaderフォルダを作成し、その中にfile_loaderとdirectory_loaderを入れる。serviceのabsolute_pathsはdirectory_loaderに移動する
-        - その後、databaseフォルダから移動させる
-        - => ユーザー向けに必要な情報はloader内で作成する。
-            - 現状、全てのコマンドがloader内で処理できそう
-            - 手始めにmemo dirsをこのdirectory_loaderを使って変更してみたい
-                - `ls -R`の表示に倣って、対象ディレクトリごとに、ディレクトリの一覧を表示する
-        - ユーザー向けに表示方法を変更する場合は、viewの中で行う
+
+6. ユーザー向けに必要な情報はloader内で作成する
+    - 現状、全てのコマンドがloader内で処理できそう
+    - 手始めにmemo dirsをこのdirectory_loaderを使って変更してみたい
+        - `ls -R`の表示に倣って、対象ディレクトリごとに、ディレクトリの一覧を表示する
+    - ユーザー向けに表示方法を変更する場合は、viewの中で行う
 
 ### CLI案
 - サブコマンドは-h, --helpなどのオプションと同時に使えないようにする

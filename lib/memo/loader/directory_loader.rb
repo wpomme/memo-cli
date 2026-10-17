@@ -1,9 +1,9 @@
 # frozen_string_literal: true
 
 module Memo
-  module Database
+  module Loader
     # TODO: Service => class DirectoryLoaderにする
-    module Service
+    module DirectoryLoader
       module_function
 
       def absolute_paths_size

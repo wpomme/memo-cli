@@ -27,7 +27,7 @@ class TestFile < Minitest::Test
       it('戻り値の配列の数が、対象のファイルと同じ数となること') do
         actual = @seeds.size
 
-        file_loader = Memo::Database::FileLoader.new
+        file_loader = Memo::Loader::FileLoader.new
         expected = file_loader.file_list_size
 
         _(actual).must_equal(expected)
@@ -39,7 +39,7 @@ class TestFile < Minitest::Test
         result = @file_dataset.all
 
         actual = result.size
-        file_loader = Memo::Database::FileLoader.new
+        file_loader = Memo::Loader::FileLoader.new
         expected = file_loader.file_list_size
 
         _(actual).must_equal(expected)

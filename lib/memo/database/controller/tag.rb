@@ -35,7 +35,7 @@ module Memo
         #
         # @return [Hash<String, Integer>] タグ名がキーで、主キーが値となるハッシュを返す
         def insert_all
-          file_loader = Memo::Database::FileLoader.new
+          file_loader = Memo::Loader::FileLoader.new
 
           file_loader.sorted_tags.each_with_object({}) do |tag, result|
             tag_id = @dataset.insert(tag_name: tag)
