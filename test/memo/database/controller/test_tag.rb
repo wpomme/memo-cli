@@ -7,7 +7,8 @@ class TestTag < Minitest::Test
     include MemoDBTestLifecycleHooks
 
     def setup
-      @dataset = Memo::Database::Controller::Tag.new
+      super
+      @dataset = Memo::Database::Controller::Tag.new(@db)
 
       @seeds = @dataset.seeds
     end

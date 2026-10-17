@@ -12,11 +12,8 @@
     - 更新処理が出来たらCommandの次にControllerを導入してもいいかも
 
 ### DB
-1. DB用のsetup, teardownの作成。また、テストを走らせるとDBのデータが消去される問題を修正する
-2. DBの接続が多重になってそうな問題を解消する
-3. parent_directory_idなど、not null制約を付ける
-4. database/配下の構成案
-    - setup.rbのto_schemaをmodel/以下に入れたい
+1. parent_directory_idなど、not null制約を付ける
+2. setup.rbのto_schemaをmodel/以下に入れたい
 
 6. ユーザー向けに必要な情報はloader内で作成する
     - 現状、全てのコマンドがloader内で処理できそう

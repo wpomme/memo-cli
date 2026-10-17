@@ -15,8 +15,8 @@ module Memo
         # @return [Array<Hash<symbol, <Integer | String>>>]
         def_delegators :@dataset, :all, :delete
 
-        def initialize
-          @dataset = DB[:config_directories]
+        def initialize(db)
+          @dataset = db[:config_directories]
         end
 
         # config.ymlに記載のあるディレクトリを保存するテーブルに、データを挿入する

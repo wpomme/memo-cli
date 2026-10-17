@@ -2,43 +2,47 @@
 
 module Memo
   module Database
-    DB = Memo::Database::Connection.execute
+    # DB = Memo::Database::Connection.execute
     TABLE_NAMES = %i[config_directories directories files tags files_tags].freeze
+
+    def self.db(database_path: Memo::Config.target_database)
+      @db ||= Memo::Database::Connection.execute(database_path: database_path)
+    end
 
     module Setup
       class << self
-        def execute
-          drop_tables_if_exist
-          create_tables
-          seeds
+        def execute(db)
+          drop_tables_if_exist(db)
+          create_tables(db)
+          seeds(db)
         end
 
         # テーブルだけ作成するメソッド
-        def prepare
-          drop_tables_if_exist
-          create_tables
+        def prepare(db)
+          drop_tables_if_exist(db)
+          create_tables(db)
         end
 
         # テーブルを作成する順番と逆に削除する
-        def drop_tables_if_exist
+        def drop_tables_if_exist(db)
           TABLE_NAMES.reverse.each do |table_name|
-            DB.drop_table(table_name) if DB.table_exists?(table_name)
+            db.drop_table(table_name) if db.table_exists?(table_name)
           end
         end
 
-        def create_tables
+        def create_tables(db)
           TABLE_NAMES.map do |table_name|
-            DB.create_table table_name, &to_schema(table_name)
+            db.create_table table_name, &to_schema(table_name)
           end
         end
 
-        def seeds
+        def seeds(db)
           # NOTE: まとめられそう
-          config_directory_dataset = Memo::Database::Controller::ConfigDirectory.new
-          directory_dataset = Memo::Database::Controller::Directory.new
-          file_dataset = Memo::Database::Controller::File.new
-          tag_dataset = Memo::Database::Controller::Tag.new
-          file_tag_dataset = Memo::Database::Controller::FileTag.new
+          config_directory_dataset = Memo::Database::Controller::ConfigDirectory.new(db)
+          directory_dataset = Memo::Database::Controller::Directory.new(db)
+          file_dataset = Memo::Database::Controller::File.new(db)
+          tag_dataset = Memo::Database::Controller::Tag.new(db)
+          file_tag_dataset = Memo::Database::Controller::FileTag.new(db)
 
           config_directory_dataset.seeds
           directory_dataset.seeds

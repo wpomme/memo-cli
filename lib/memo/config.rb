@@ -6,8 +6,8 @@ module Memo
 
     class << self
       # TODO: DB名をmemo_production.dbにする
-      def target_database(database_path: 'memo_production.db')
-        File.join(Dir.pwd, '/db', database_path)
+      def target_database(database_filename: 'memo_production.db')
+        File.join(Dir.pwd, '/db', database_filename)
       end
 
       def target_dirs

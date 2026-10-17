@@ -8,10 +8,10 @@ module Memo
 
         attr_reader :dataset
 
-        def_delegators :@dataset, :delete
+        def_delegators :@dataset, :all, :delete
 
-        def initialize
-          @dataset = DB[:tags]
+        def initialize(db)
+          @dataset = db[:tags]
         end
 
         # ディレクトリテーブルに必要なデータを挿入する
@@ -33,7 +33,7 @@ module Memo
         #
         # 戻り値は一次元配列の中にハッシュが入っている
         # @return [Array<Hash<symbol, <Integer | String>>>]
-        delegate all: :@dataset
+        # delegate all: :@dataset
 
         # 対象のデータをテーブルに一括して挿入する
         #

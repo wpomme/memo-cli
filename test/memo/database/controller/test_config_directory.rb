@@ -7,7 +7,8 @@ class TestDirectory < Minitest::Test
     include MemoDBTestLifecycleHooks
 
     def setup
-      @dataset = Memo::Database::Controller::ConfigDirectory.new
+      super
+      @dataset = Memo::Database::Controller::ConfigDirectory.new(@db)
 
       @seeds = @dataset.seeds
     end

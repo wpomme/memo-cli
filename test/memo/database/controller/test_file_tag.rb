@@ -8,11 +8,12 @@ class TestFileTag < Minitest::Test
 
     describe('#seeds') do
       def setup
-        @config_directory_dataset = Memo::Database::Controller::ConfigDirectory.new
-        @directory_dataset = Memo::Database::Controller::Directory.new
-        @file_dataset = Memo::Database::Controller::File.new
-        @tag_dataset = Memo::Database::Controller::Tag.new
-        @file_tag_dataset = Memo::Database::Controller::FileTag.new
+        super
+        @config_directory_dataset = Memo::Database::Controller::ConfigDirectory.new(@db)
+        @directory_dataset = Memo::Database::Controller::Directory.new(@db)
+        @file_dataset = Memo::Database::Controller::File.new(@db)
+        @tag_dataset = Memo::Database::Controller::Tag.new(@db)
+        @file_tag_dataset = Memo::Database::Controller::FileTag.new(@db)
 
         @config_directory_dataset.seeds
         @directory_dataset.seeds
