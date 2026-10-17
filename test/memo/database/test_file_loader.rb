@@ -12,7 +12,7 @@ class TestFileLoader < Minitest::Test
         file_loader = Memo::Database::FileLoader.new
 
         file_loader.file_seeds_hash
-        file_loader.all_tags
+        file_loader.sorted_tags
 
         mock.verify
 
@@ -38,27 +38,27 @@ class TestFileLoader < Minitest::Test
       end
     end
 
-    describe('#all_tags') do
+    describe('#sorted_tags') do
       it('Tagテーブルを作成するのに必要なタグ名の配列が返されること') do
-        all_tags = Memo::Database::FileLoader.new.all_tags
+        sorted_tags = Memo::Database::FileLoader.new.sorted_tags
 
-        actual = all_tags.all?(String)
+        actual = sorted_tags.all?(String)
 
         _(actual).must_equal(true)
       end
     end
 
-    describe('#all_tag_count_of_list') do
+    describe('#tag_size') do
       it('整数が返されること') do
-        actual = Memo::Database::FileLoader.new.all_tag_count_of_list
+        actual = Memo::Database::FileLoader.new.tag_size
 
         _(actual).must_be_instance_of(Integer)
       end
     end
 
-    describe('#all_tag_count_of_appearance') do
+    describe('#total_tag_size') do
       it('整数が返されること') do
-        actual = Memo::Database::FileLoader.new.all_tag_count_of_appearance
+        actual = Memo::Database::FileLoader.new.total_tag_size
 
         _(actual).must_be_instance_of(Integer)
       end

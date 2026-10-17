@@ -37,7 +37,7 @@ module Memo
         def insert_all
           file_loader = Memo::Database::FileLoader.new
 
-          file_loader.all_tags.each_with_object({}) do |tag, result|
+          file_loader.sorted_tags.each_with_object({}) do |tag, result|
             tag_id = @dataset.insert(tag_name: tag)
             result[tag] = tag_id
           end

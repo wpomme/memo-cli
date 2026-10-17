@@ -2,6 +2,7 @@
 
 module Memo
   module Database
+    # TODO: Service => class DirectoryLoaderにする
     module Service
       module_function
 
@@ -20,6 +21,15 @@ module Memo
               File.join(target_dir, dir)
             end
           )
+        end
+      end
+
+      # ディレクトリの階層関係をハッシュで表す
+      def directory_tree(target_dirs = Memo::Config.target_dirs)
+        target_dirs.to_h do |target_dir|
+          [target_dir, Dir.glob('**/*/', base: target_dir).group_by do |dir|
+            File.dirname(dir)
+          end]
         end
       end
 

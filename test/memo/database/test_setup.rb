@@ -37,7 +37,7 @@ class TestSetup < Minitest::Test
       each_array_size = @result.values.map(&:size)
       actual_size = each_array_size.inject(:+)
 
-      expected_size = Memo::Database::FileLoader.new.all_tag_count_of_appearance
+      expected_size = Memo::Database::FileLoader.new.total_tag_size
 
       _(actual_size).must_equal(expected_size)
     end

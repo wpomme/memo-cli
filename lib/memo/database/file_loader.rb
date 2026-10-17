@@ -11,26 +11,25 @@ module Memo
         @file_seeds_hash = load_file_seeds_hash
       end
 
-      # TODO: sorted_tags, tags, tag_size, total_tag_sizeにリネームする
       # 全てのサグの一覧をソートし、重複を排除してから、その一覧を返す
       #
       # @return [Array<String>]
-      def all_tags
-        all_tags_array.sort.uniq
+      def sorted_tags
+        tag_list.sort
       end
 
       # 重複を排除した上で、全てのタグの総数を返す
       #
       # @return [Integer]
-      def all_tag_count_of_list
-        all_tags_array.uniq.size
+      def tag_size
+        tag_list.size
       end
 
       # 全てのファイルに出現するタグの数について、重複しているものをまとめないで返す
       #
       # @return [Integer]
-      def all_tag_count_of_appearance
-        all_tags_array.size
+      def total_tag_size
+        tag_size_by_filename.values.inject(:+)
       end
 
       # 対象ファイルの絶対パスがキーで、そのファイルに付けられているタグの一覧をハッシュで返す
@@ -58,8 +57,16 @@ module Memo
         @file_seeds_hash.transform_values(&:size)
       end
 
-      def all_tags_array
-        @all_tags_array ||= absolute_filename_to_tags.values.flatten
+      # ファイルごとに付いているタグの数をハッシュで返す
+      def tag_size_by_filename
+        @tag_size_by_filename ||= absolute_filename_to_tags.transform_values(&:size)
+      end
+
+      # 全てのタグの一覧。ソートしていない
+      #
+      # [Array<String>]
+      def tag_list
+        @tag_list ||= absolute_filename_to_tags.values.flatten.uniq
       end
 
       # 対象のディレクトリ内のファイルを読み込んで、DBに保存するためのfile_seeds_hashを作成する

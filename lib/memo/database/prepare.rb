@@ -13,6 +13,11 @@ module Memo
           prepare(database_path)
         end
 
+        # TODO: DBへの接続が残っている場合があるため
+        def disconnect
+          Memo::Database::DB.disconnect
+        end
+
         def prepare(database_path)
           FileUtils.touch(database_path) unless FileTest.file?(database_path)
           Sequel.sqlite(database_path)

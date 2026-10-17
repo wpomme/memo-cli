@@ -22,7 +22,7 @@ class TestTag < Minitest::Test
         actual = @seeds.size
 
         file_loader = Memo::Database::FileLoader.new
-        expected = file_loader.all_tag_count_of_list
+        expected = file_loader.tag_size
 
         _(actual).must_equal(expected)
       end
