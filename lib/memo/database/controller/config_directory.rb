@@ -6,12 +6,14 @@ module Memo
       class ConfigDirectory
         extend Forwardable
 
+        attr_reader :dataset
+
         # テーブルのデータを全件取得する。数件しかデータないため、全件取得可能
         #
         # 戻り値は一次元配列の中にハッシュが入っている
         # :id, :directory_pathでハッシュにアクセス可能
         # @return [Array<Hash<symbol, <Integer | String>>>]
-        delegate all: :@dataset
+        def_delegators :@dataset, :all, :delete
 
         def initialize
           @dataset = DB[:config_directories]

@@ -14,10 +14,8 @@
 ### DB
 1. DB用のsetup, teardownの作成。また、テストを走らせるとDBのデータが消去される問題を修正する
 2. DBの接続が多重になってそうな問題を解消する
-3. db/以下のgit監視を外す
-4. parent_directory_idなど、not null制約を付ける
-5. database/配下の構成案
-    - db.rb => prepare.rbに統合して、connection.rbとする
+3. parent_directory_idなど、not null制約を付ける
+4. database/配下の構成案
     - setup.rbのto_schemaをmodel/以下に入れたい
 
 6. ユーザー向けに必要な情報はloader内で作成する

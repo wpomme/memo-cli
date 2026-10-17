@@ -4,6 +4,12 @@ module Memo
   module Database
     module Controller
       class FileTag
+        extend Forwardable
+
+        attr_reader :dataset
+
+        def_delegators :@dataset, :delete
+
         def initialize
           @dataset = DB[:files_tags]
         end

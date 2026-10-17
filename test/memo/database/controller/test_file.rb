@@ -7,19 +7,19 @@ class TestFile < Minitest::Test
     include MemoDBTestLifecycleHooks
 
     def setup
-      config_directory_dataset = Memo::Database::Controller::ConfigDirectory.new
-      directory_dataset = Memo::Database::Controller::Directory.new
+      @config_directory_dataset = Memo::Database::Controller::ConfigDirectory.new
+      @directory_dataset = Memo::Database::Controller::Directory.new
       @file_dataset = Memo::Database::Controller::File.new
 
-      config_directory_dataset.seeds
-      directory_dataset.seeds
+      @config_directory_dataset.seeds
+      @directory_dataset.seeds
       @seeds = @file_dataset.seeds
     end
 
     def teardown
-      Memo::Database::DB[:files].delete
-      Memo::Database::DB[:directories].delete
-      Memo::Database::DB[:config_directories].delete
+      @file_dataset.delete
+      @directory_dataset.delete
+      @config_directory_dataset.delete
       super
     end
 

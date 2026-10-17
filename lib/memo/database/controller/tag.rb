@@ -6,6 +6,10 @@ module Memo
       class Tag
         extend Forwardable
 
+        attr_reader :dataset
+
+        def_delegators :@dataset, :delete
+
         def initialize
           @dataset = DB[:tags]
         end

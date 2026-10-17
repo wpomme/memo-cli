@@ -13,7 +13,7 @@ class TestDirectory < Minitest::Test
     end
 
     def teardown
-      Memo::Database::DB[:config_directories].delete
+      @dataset.delete
       super
     end
 

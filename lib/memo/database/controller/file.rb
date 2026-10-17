@@ -6,11 +6,9 @@ module Memo
       class File
         extend Forwardable
 
-        # テーブルのデータを全件取得する。高々数百件ほどのデータであるため、全件取得する
-        #
-        # 戻り値は一次元配列の中にハッシュが入っている
-        # @return [Array<Hash<symbol, <Integer | String>>>]
-        delegate all: :@dataset
+        attr_reader :dataset
+
+        def_delegators :@dataset, :all, :delete
 
         def initialize
           @dataset = DB[:files]

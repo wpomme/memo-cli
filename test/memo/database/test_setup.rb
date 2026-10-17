@@ -41,11 +41,11 @@ class TestSetup < Minitest::Test
     end
 
     def teardown
-      Memo::Database::DB[:files_tags].delete
-      Memo::Database::DB[:tags].delete
-      Memo::Database::DB[:files].delete
-      Memo::Database::DB[:directories].delete
-      Memo::Database::DB[:config_directories].delete
+      Memo::Database::Controller::FileTag.new.delete
+      Memo::Database::Controller::Tag.new.delete
+      Memo::Database::Controller::File.new.delete
+      Memo::Database::Controller::Directory.new.delete
+      Memo::Database::Controller::ConfigDirectory.new.delete
       super
     end
 

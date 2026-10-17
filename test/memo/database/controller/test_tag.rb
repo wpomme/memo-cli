@@ -7,13 +7,13 @@ class TestTag < Minitest::Test
     include MemoDBTestLifecycleHooks
 
     def setup
-      dataset = Memo::Database::Controller::Tag.new
+      @dataset = Memo::Database::Controller::Tag.new
 
-      @seeds = dataset.seeds
+      @seeds = @dataset.seeds
     end
 
     def teardown
-      Memo::Database::DB[:tags].delete
+      @dataset.delete
       super
     end
 

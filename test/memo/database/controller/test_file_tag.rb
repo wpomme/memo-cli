@@ -8,25 +8,25 @@ class TestFileTag < Minitest::Test
 
     describe('#seeds') do
       def setup
-        config_directory_dataset = Memo::Database::Controller::ConfigDirectory.new
-        directory_dataset = Memo::Database::Controller::Directory.new
-        file_dataset = Memo::Database::Controller::File.new
-        tag_dataset = Memo::Database::Controller::Tag.new
-        file_tag_dataset = Memo::Database::Controller::FileTag.new
+        @config_directory_dataset = Memo::Database::Controller::ConfigDirectory.new
+        @directory_dataset = Memo::Database::Controller::Directory.new
+        @file_dataset = Memo::Database::Controller::File.new
+        @tag_dataset = Memo::Database::Controller::Tag.new
+        @file_tag_dataset = Memo::Database::Controller::FileTag.new
 
-        config_directory_dataset.seeds
-        directory_dataset.seeds
-        file_dataset.seeds
-        tag_dataset.seeds
-        @seeds = file_tag_dataset.seeds
+        @config_directory_dataset.seeds
+        @directory_dataset.seeds
+        @file_dataset.seeds
+        @tag_dataset.seeds
+        @seeds = @file_tag_dataset.seeds
       end
 
       def teardown
-        Memo::Database::DB[:files_tags].delete
-        Memo::Database::DB[:tags].delete
-        Memo::Database::DB[:files].delete
-        Memo::Database::DB[:directories].delete
-        Memo::Database::DB[:config_directories].delete
+        @file_tag_dataset.delete
+        @tag_dataset.delete
+        @file_dataset.delete
+        @directory_dataset.delete
+        @config_directory_dataset.delete
         super
       end
 
