@@ -9,31 +9,22 @@ class TestFileTag < Minitest::Test
     describe('#seeds') do
       def setup
         super
-        @config_directory_dataset = Memo::Database::Controller::ConfigDirectory.new
-        @directory_dataset = Memo::Database::Controller::Directory.new
-        @file_dataset = Memo::Database::Controller::File.new
-        @tag_dataset = Memo::Database::Controller::Tag.new
-        @file_tag_dataset = Memo::Database::Controller::FileTag.new
-
-        @config_directory_dataset.seeds
-        @directory_dataset.seeds
-        @file_dataset.seeds
-        @tag_dataset.seeds
-        @seeds = @file_tag_dataset.seeds
+        Memo::Database::CONTROLLER_NAMES.each do |name|
+          klass = Object.const_get("Memo::Database::Controller::#{name}")
+          klass.new.seeds
+        end
       end
 
       def teardown
-        @file_tag_dataset.delete
-        @tag_dataset.delete
-        @file_dataset.delete
-        @directory_dataset.delete
-        @config_directory_dataset.delete
+        Memo::Database::CONTROLLER_NAMES.reverse.each do |name|
+          klass = Object.const_get("Memo::Database::Controller::#{name}")
+          klass.new.delete
+        end
         super
       end
 
       it('戻り値の配列の数が、重複を排除しないタグの出現回数と同じになること') do
-        each_array_size = @seeds.values.map(&:size)
-        actual = each_array_size.inject(:+)
+        actual = Memo::Database::Controller::FileTag.new.count
 
         expected = Memo::Loader::FileLoader.new.total_tag_size
 

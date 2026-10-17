@@ -13,7 +13,7 @@ module Memo
         # 戻り値は一次元配列の中にハッシュが入っている
         # :id, :directory_pathでハッシュにアクセス可能
         # @return [Array<Hash<symbol, <Integer | String>>>]
-        def_delegators :@dataset, :all, :delete
+        def_delegators :@dataset, :count, :delete
 
         def initialize
           @dataset = Memo::Database.db[:config_directories]

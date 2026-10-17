@@ -27,11 +27,10 @@ class TestDirectory < Minitest::Test
       end
     end
 
-    describe('#all') do
+    describe('#count') do
       it('取得したデータの総数が設定ディレクトリの数と同じとなること') do
-        result = @dataset.all
+        actual = @dataset.count
 
-        actual = result.size
         expected = Memo::Config.target_dirs.size
 
         _(actual).must_equal(expected)

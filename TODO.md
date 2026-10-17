@@ -12,23 +12,16 @@
     - 更新処理が出来たらCommandの次にControllerを導入してもいいかも
 
 ### DB
-1. 接続~データ挿入部分の構成変更
-    - 現状のConnectionを読み込む=>setupにあるDatabase.dbからdb接続のためのオブジェクトを取得する=>setupにdbの依存性を入れて実行
-        - という手順が煩雑になってしまった
-    - 案
-        - connection.rb => prepare.rbにする
-        - Database.dbメソッドをDatabase.connectionなどにする
-        - setupはクラスの方がいいかもしれない
-            - @dbをインスタンス変数としたい
-2. parent_directory_idなど、not null制約を付ける
-3. setup.rbのto_schemaをmodel/以下に入れたい
+1. parent_directory_idなど、not null制約を付ける
+2. setup.rbのto_schemaをmodel/以下に入れたい
+3. Database以下の構成
+    - setupは1. create/drop tables, 2. Seeder, 3. schemaの三つに分けられる
 
 ### Loader => View => Command
-4. ユーザー向けに必要な情報はloader内で作成する
-    - 現状、全てのコマンドがloader内で処理できそう
-    - 手始めにmemo dirsをこのdirectory_loaderを使って変更してみたい
-        - `ls -R`の表示に倣って、対象ディレクトリごとに、ディレクトリの一覧を表示する
-    - ユーザー向けに表示方法を変更する場合は、viewの中で行う
+1. FileLoader => file_seeds_hashをプライベートにする
+2. DirectoryLoader => クラスにする
+3. ユーザー向けに必要な情報はloader内で作成する
+4. ユーザー向けに表示方法を変更する場合は、viewの中で行う
 
 ### CLI案
 - サブコマンドは-h, --helpなどのオプションと同時に使えないようにする
@@ -57,10 +50,6 @@
 - expected, actualを意味的に逆に使っている箇所があるかもしれない
     - 洗い出す
 
-### 値の検査
-- 実装のメソッドをそのままコピーしたテストコードは修正したい
-    - 他、古いテストコードのアップデートなど
-
 ### モックデータの作成
 Rakefileに記載したコードは別のファイルに移動させた方がいいかもしれない
 
@@ -88,3 +77,4 @@ Rakefileに記載したコードは別のファイルに移動させた方がい
 - git grep TODOで出てくるTODOを解消していく。また、テストコードのskipを外す
 - メソッドの可視性の調査 => 変更、オブジェクトについて、必要なものはfreezeする
 - オプショナル位置引数をキーワード引数に変えていく
+- Minitest::Testを継承しているクラス名がタイポしていないかどうかを確認する

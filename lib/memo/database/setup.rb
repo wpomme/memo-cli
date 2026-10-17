@@ -3,6 +3,7 @@
 module Memo
   module Database
     TABLE_NAMES = %i[config_directories directories files tags files_tags].freeze
+    CONTROLLER_NAMES = %w[ConfigDirectory Directory File Tag FileTag].freeze
 
     def self.db(database_path: Memo::Config.target_database)
       @db ||= Memo::Database::Prepare.execute(database_path: database_path)
@@ -40,18 +41,10 @@ module Memo
       end
 
       def seeds
-        # NOTE: まとめられそう
-        config_directory_dataset = Memo::Database::Controller::ConfigDirectory.new
-        directory_dataset = Memo::Database::Controller::Directory.new
-        file_dataset = Memo::Database::Controller::File.new
-        tag_dataset = Memo::Database::Controller::Tag.new
-        file_tag_dataset = Memo::Database::Controller::FileTag.new
-
-        config_directory_dataset.seeds
-        directory_dataset.seeds
-        file_dataset.seeds
-        tag_dataset.seeds
-        file_tag_dataset.seeds
+        CONTROLLER_NAMES.each do |name|
+          klass = Object.const_get("Memo::Database::Controller::#{name}")
+          klass.new.seeds
+        end
       end
 
       def to_schema(table_symbol)

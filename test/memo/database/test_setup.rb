@@ -48,18 +48,16 @@ class TestSetup < Minitest::Test
       test_database_filename = 'memo_test.db'
       @test_database_path = Memo::Config.target_database(database_filename: test_database_filename)
       @db = Memo::Database.db(database_path: @test_database_path)
-      @result = Memo::Database::Setup.new(@db).execute
     end
 
-    # TODO: actualの回数が倍になって、テストが失敗する場合がある
-    # おそらくDB接続の問題か、並行処理の問題
     it('挿入したデータの件数が、全てのタグの出現回数と同じになること') do
-      each_array_size = @result.values.map(&:size)
-      actual_size = each_array_size.inject(:+)
+      Memo::Database::Setup.new(@db).execute
 
-      expected_size = Memo::Loader::FileLoader.new.total_tag_size
+      actual = Memo::Database::Controller::FileTag.new.count
 
-      _(actual_size).must_equal(expected_size)
+      expected = Memo::Loader::FileLoader.new.total_tag_size
+
+      _(actual).must_equal(expected)
     end
   end
 end

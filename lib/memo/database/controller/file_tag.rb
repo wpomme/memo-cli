@@ -8,7 +8,7 @@ module Memo
 
         attr_reader :dataset
 
-        def_delegators :@dataset, :delete
+        def_delegators :@dataset, :count, :delete
 
         def initialize
           @dataset = Memo::Database.db[:files_tags]

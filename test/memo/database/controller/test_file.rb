@@ -34,9 +34,9 @@ class TestFile < Minitest::Test
       end
     end
 
-    describe('#all') do
+    describe('#count') do
       it('取得したデータの総数が、対象のファイルと同じ数となること') do
-        actual = @file_dataset.all.size
+        actual = @file_dataset.count
 
         expected = Memo::Loader::FileLoader.new.file_list_size
 
