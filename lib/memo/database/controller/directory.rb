@@ -54,7 +54,7 @@ module Memo
         def insert_all
           path_to_id = Memo::Database::Controller::ConfigDirectory.new.path_to_id
 
-          Memo::Loader::DirectoryLoader.rel_paths_hash.flat_map do |target_dir, rel_paths|
+          Memo::Loader::DirectoryLoader.new.relative_path_hash.flat_map do |target_dir, rel_paths|
             rel_paths.flat_map do |rel_path|
               @dataset.insert(
                 config_directory_id: path_to_id[target_dir],
