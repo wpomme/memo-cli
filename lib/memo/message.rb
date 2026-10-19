@@ -21,6 +21,10 @@ module Memo
       memo CLIに必要な引数の数を超えています。
       適切な数の引数を指定してください。
     TOO_ARGS
+    TOO_LONG_ARGS = <<~TOO_LONG
+      memo CLIが引数として取る文字列が長すぎます。
+      適切な長さの文字列を指定してください。
+    TOO_LONG
     UNKNOWN_COMMAND = <<~UNKNOWN
       memo CLIにそのようなサブコマンドはありません。
       適切なサブコマンドを指定してください。

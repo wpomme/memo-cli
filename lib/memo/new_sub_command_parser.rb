@@ -13,18 +13,14 @@ module Memo
       return sub_parser(:help) if first.nil?
 
       case first
-      when 'read'
-        sub_parser(:read, argv: argv)
-      when 'search'
-        sub_parser(:search, argv: argv)
+      when 'read', 'search', 'tag'
+        parse_one_argument(first.intern, argv: argv)
       when 'dirs'
-        sub_parser(:dirs, argv: argv)
+        parse_no_arguments(first.intern, argv: argv)
       when 'list'
         sub_parser(:list, argv: argv)
       when 'tags'
         sub_parser(:tags, argv: argv)
-      when 'tag'
-        sub_parser(:tag, argv: argv)
       when 'check'
         sub_parser(:check, argv: argv)
       when 'help'
@@ -36,38 +32,36 @@ module Memo
       end
     end
 
+    private
+
+    def parse_no_arguments(sym, argv: nil)
+      to_error_message(:too_many_args, sym) unless argv.empty?
+
+      { sym => true }
+    end
+
+    def parse_one_argument(sym, argv: nil)
+      to_error_message(:no_given_args, sym) if argv.empty?
+
+      to_error_message(:too_many_args, sym) if argv.size > 1
+
+      { sym => argv[0] }
+    end
+
     def sub_parser(sym, argv: nil)
       case sym
-      when :search
-        to_error_message(:no_given_args, :search) if argv.empty?
-
-        to_error_message(:too_many_args, :search) if argv.size > 1
-
-        { search: argv[0] }
-      when :read
-        to_error_message(:no_given_args, :read) if argv.empty?
-
-        to_error_message(:too_many_args, :read) if argv.size > 1
-
-        { read: argv[0] }
-      when :dirs
-        to_error_message(:too_many_args, :dirs) unless argv.empty?
-
-        { dirs: true }
       when :list
-        to_error_message(:no_given_args, :list) if argv.empty?
-
         to_error_message(:too_many_args, :list) if argv.size > 1
 
-        # argv[0].match(/\A([\w\/¥])\Z/)
+        return { list: true } if argv.empty?
 
-        # { list: }
+        opt = argv[0]
 
-        # OptionParser.new do |opt|
-        #   # 任意でDIR_NAMEを取る
-        #   opt.on('-c', '--count', 'ファイル数を表示する')
-        # end
-        #   .parse(argv)
+        to_error_message(:too_long_args, :list) if opt.size > 32
+
+        return { list: :count } if ['-c', '--count'].include?(opt)
+
+        { list: opt }
       when :tags
         parsed = {}
 
@@ -95,6 +89,8 @@ module Memo
         value = parsed.empty? || parsed.keys[0]
 
         { check: value }
+      # TODO
+      # when :help
       when :version
         puts Memo::VERSION
       else
@@ -102,17 +98,26 @@ module Memo
       end
     end
 
-    private
+    # TODO
+    # 引数として取る文字列が有効な形式かどうかを判断する
+    # とりあえず、33文字以上ならfalseとする
+    # def valid_word?(word)
+    #   word.size > 32
+    # end
 
     def to_error_message(error_message_symbol, sub_command_symbol)
       dispatch = {
         read: 'read',
         search: 'search',
-        dirs: 'dirs'
-      }
+        dirs: 'dirs',
+        list: 'list',
+        tag: 'tag'
+      }.freeze
+
       error_message_map = {
         no_given_args: Message::NO_GIVEN_ARGS.gsub('CLI', dispatch[sub_command_symbol]),
         too_many_args: Message::TOO_MANY_ARGS.gsub('CLI', dispatch[sub_command_symbol]),
+        too_long_args: Message::TOO_LONG_ARGS,
         unknown_command: Memo::Message::UNKNOWN_COMMAND
       }
       puts error_message_map[error_message_symbol]
