@@ -5,19 +5,30 @@ require_relative '../../helper'
 class TestService < Minitest::Test
   include MemoDBTestLifecycleHooks
 
-  describe('DB::Service') do
+  describe('Loader::DirectoryLoader') do
     include Memo::Database
     include Memo::Loader::DirectoryLoader
 
-    describe('#database_paths') do
-      it('一次元配列を返し、その値はディレクトリであること') do
-        actual = absolute_paths.all? do |path|
-          FileTest.directory?(path)
+    describe('Integration Test::DirectoryLoader') do
+      it('#absolute_paths_sizeと#rel_paths_sizeが同じ値となること') do
+        act1 = absolute_paths_size
+        act2 = rel_paths_size
+
+        _(act1).must_equal(act2)
+      end
+    end
+
+    describe('#directory_tree') do
+      it('値の中に"."が含まれること。"."は設定ディレクトリのカレントディレクトリを表す。') do
+        actual = directory_tree.values.all? do |dir_node|
+          dir_node.keys.include?('.')
         end
 
         _(actual).must_equal(true)
       end
+    end
 
+    describe('#absolute_paths') do
       it('configで設定されたディレクトリも含むこと') do
         test_target_dirs = Memo::Config.target_dirs
 
@@ -36,14 +47,6 @@ class TestService < Minitest::Test
         end
 
         _(actual).must_equal(true)
-      end
-    end
-
-    describe('#rel_paths_size') do
-      it('正の整数を返すこと') do
-        actual = rel_paths_size
-
-        _(actual.positive?).must_equal(true)
       end
     end
   end
