@@ -2,6 +2,8 @@
 
 module Memo
   class NewSubCommandParser
+    Spec = Data.define(:short, :long, :desc)
+
     def self.run(argv)
       new.execute(argv)
     end
@@ -19,10 +21,8 @@ module Memo
         parse_no_arguments(first.intern, argv: argv)
       when 'list'
         sub_parser(:list, argv: argv)
-      when 'tags'
-        sub_parser(:tags, argv: argv)
-      when 'check'
-        sub_parser(:check, argv: argv)
+      when 'tags', 'check'
+        parse_with_option_parser(first.intern, argv: argv)
       when 'help'
         sub_parser(:help, argv: argv)
       when 'version', '-V'
@@ -48,6 +48,47 @@ module Memo
       { sym => argv[0] }
     end
 
+    def parse_with_option_parser(sym, argv: nil)
+      parsed = {}
+
+      specs = to_spec_list(sym)
+
+      OptionParser.new do |opt|
+        specs.each do |spec|
+          opt.on(spec.short, spec.long, spec.desc)
+        end
+      end
+        .parse(argv, into: parsed)
+
+      # 違うオプションを同時に取ることはできません。というようなエラーを返す
+      # to_error_message(:foo, :tags) if parsed.size > 1
+
+      value = parsed.empty? || parsed.keys[0]
+
+      { sym => value }
+    end
+
+    def to_spec_list(sym)
+      case sym
+      when :tags
+        spec1 = Spec.new('-n', '--name', 'タグ名のみを表示する')
+        spec2 = Spec.new('-c', '--count', 'タグ名とそのタグが付いているファイルの数を表示する')
+      when :check
+        spec1 = Spec.new('-d', '--duplicate', '重複したファイル名の情報を表示する')
+        spec2 = Spec.new('-e', '--empty', 'タグの付いていないファイルの一覧を表示する')
+      else
+        raise StandardError, 'Unknown Error...'
+      end
+
+      spec_list([spec1, spec2])
+    end
+
+    def spec_list(specs)
+      specs.map do |spec|
+        Spec.new(spec.short, spec.long, spec.desc)
+      end
+    end
+
     def sub_parser(sym, argv: nil)
       case sym
       when :list
@@ -62,39 +103,12 @@ module Memo
         return { list: :count } if ['-c', '--count'].include?(opt)
 
         { list: opt }
-      when :tags
-        parsed = {}
-
-        OptionParser.new do |opt|
-          opt.on('-n', '--name', 'タグ名のみを表示する')
-          opt.on('-c', '--count', 'タグ名とそのタグが付いているファイルの数を表示する')
-        end
-          .parse(argv, into: parsed)
-
-        # 違うオプションを同時に取ることはできません。というようなエラーを返す
-        # to_error_message(:foo, :tags) if parsed.size > 1
-
-        value = parsed.empty? || parsed.keys[0]
-
-        { tags: value }
-      when :check
-        parsed = {}
-
-        OptionParser.new do |opt|
-          opt.on('-d', '--duplicate', '重複したファイル名の情報を表示する')
-          opt.on('-e', '--empty', 'タグの付いていないファイルの一覧を表示する')
-        end
-          .parse(argv, into: parsed)
-
-        value = parsed.empty? || parsed.keys[0]
-
-        { check: value }
       # TODO
       # when :help
       when :version
         puts Memo::VERSION
       else
-        [sym, argv]
+        raise StandardError, 'Unknown Error...'
       end
     end
 

@@ -33,7 +33,7 @@ class TestNewSubCommandParser < Minitest::Test
     end
 
     describe 'サブコマンドによる分類' do
-      describe 'read, search, tag' do
+      describe '#parse_one_argument: read, search, tag' do
         it '引数が存在しない場合は、エラーメッセージを表示する' do
           args = %w[read search tag]
 
@@ -88,6 +88,33 @@ class TestNewSubCommandParser < Minitest::Test
         end
       end
 
+      describe '#parse_no_arguments: dirs' do
+        it '引数を取らない場合は、dirs: trueを返す' do
+          argv = %w[dirs]
+
+          actual = Memo::NewSubCommandParser.run(argv)
+
+          _(actual).must_equal({ dirs: true })
+        end
+
+        it '引数がある場合は、エラーメッセージを表示する' do
+          actual, = capture_io do
+            exception = assert_raises(SystemExit) do
+              argv = %w[dirs foo]
+
+              Memo::NewSubCommandParser.run(argv)
+            end
+
+            _(exception.status).must_equal(2)
+          end
+
+          expected = Memo::Message::TOO_MANY_ARGS.gsub('CLI', 'dirs')
+
+          _(actual).must_equal(expected)
+        end
+      end
+
+      # TODO: #parse_with_option_parser: tags, checkを作成する
       describe 'tags' do
         it 'tagsのみの場合は、tags: trueを返す' do
           argv = %w[tags]
@@ -277,32 +304,6 @@ class TestNewSubCommandParser < Minitest::Test
           end
 
           expected = Memo::Message::TOO_LONG_ARGS
-
-          _(actual).must_equal(expected)
-        end
-      end
-
-      describe 'dirs' do
-        it '引数を取らない場合は、dirs: trueを返す' do
-          argv = %w[dirs]
-
-          actual = Memo::NewSubCommandParser.run(argv)
-
-          _(actual).must_equal({ dirs: true })
-        end
-
-        it '第三引数がある場合は、エラーメッセージを表示する' do
-          actual, = capture_io do
-            exception = assert_raises(SystemExit) do
-              argv = %w[dirs foo]
-
-              Memo::NewSubCommandParser.run(argv)
-            end
-
-            _(exception.status).must_equal(2)
-          end
-
-          expected = Memo::Message::TOO_MANY_ARGS.gsub('CLI', 'dirs')
 
           _(actual).must_equal(expected)
         end
