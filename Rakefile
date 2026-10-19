@@ -100,14 +100,14 @@ namespace :db do
   desc 'DBにデータを挿入する'
   task :seeds do
     db = Memo::Database.db
-    Memo::Database::Setup.execute(db)
+    Memo::Database::Setup.new(db).execute
   end
 
   desc 'DBにテストデータを挿入する'
   task :seeds_test do
     database_path = Memo::Config.target_database(database_filename: 'memo_test.db')
     db = Memo::Database.db(database_path: database_path)
-    Memo::Database::Setup.execute(db)
+    Memo::Database::Setup.new(db).execute
   end
 end
 
