@@ -7,9 +7,6 @@ class TestNewSubCommandParser < Minitest::Test
     describe '引数による分類' do
       it '引数がない場合はヘルプメッセージを表示する' do
         skip 'TODO'
-        argv = []
-
-        Memo::NewSubCommandParser.run(argv)
       end
 
       describe '第一引数がサブコマンドではない場合' do

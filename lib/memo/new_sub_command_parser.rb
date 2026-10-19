@@ -12,23 +12,23 @@ module Memo
     def execute(argv)
       first = argv.shift
 
-      return sub_parser(:help) if first.nil?
+      return parse_help_command(:help) if first.nil?
 
       case first
       when 'read', 'search', 'tag'
         parse_one_argument(first.intern, argv: argv)
       when 'dirs'
         parse_no_arguments(first.intern, argv: argv)
-      when 'list'
-        sub_parser(:list, argv: argv)
       when 'tags', 'check'
         parse_with_option_parser(first.intern, argv: argv)
+      when 'list'
+        parse_list_command(first.intern, argv: argv)
       when 'help'
-        sub_parser(:help, argv: argv)
+        parse_help_command(first.intern, argv: argv)
       when 'version', '-V'
-        sub_parser(:version, argv: argv)
+        parse_version_command(first.intern, argv: argv)
       else
-        sub_parser(:read, argv: [first])
+        parse_one_argument(:read, argv: [first])
       end
     end
 
@@ -89,27 +89,27 @@ module Memo
       end
     end
 
-    def sub_parser(sym, argv: nil)
-      case sym
-      when :list
-        to_error_message(:too_many_args, :list) if argv.size > 1
+    def parse_list_command(sym, argv: nil)
+      to_error_message(:too_many_args, sym) if argv.size > 1
 
-        return { list: true } if argv.empty?
+      return { sym => true } if argv.empty?
 
-        opt = argv[0]
+      opt = argv[0]
 
-        to_error_message(:too_long_args, :list) if opt.size > 32
+      to_error_message(:too_long_args, sym) if opt.size > 32
 
-        return { list: :count } if ['-c', '--count'].include?(opt)
+      return { sym => :count } if ['-c', '--count'].include?(opt)
 
-        { list: opt }
-      # TODO
-      # when :help
-      when :version
-        puts Memo::VERSION
-      else
-        raise StandardError, 'Unknown Error...'
-      end
+      { sym => opt }
+    end
+
+    def parse_version_command(_sym, _argv: nil)
+      puts Memo::VERSION
+    end
+
+    def parse_help_command(_sym, _argv: nil)
+      puts Message::HELP_MESSAGE_GENERAL
+      exit 0
     end
 
     # TODO
