@@ -5,8 +5,6 @@ module Memo
     # 対象のディレクトリを走査してデータベースに必要なデータを取得するためのクラス
     # 何度も走査しないように、キャッシュを取得する
     class FileLoader
-      attr_reader :file_seeds_hash
-
       def initialize
         @file_seeds_hash = load_file_seeds_hash
       end
@@ -46,6 +44,18 @@ module Memo
       # @return [Integer]
       def file_list_size
         file_list_size_by_config_directory.values.inject(:+)
+      end
+
+      def file_seeds_to_database
+        @file_seeds_hash.transform_values do |values|
+          values.map do |value|
+            {
+              filename: value[:filename],
+              parent_directory: value[:parent_directory],
+              file_content: value[:file_content]
+            }
+          end
+        end
       end
 
       private

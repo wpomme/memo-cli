@@ -55,7 +55,7 @@ module Memo
           path_to_id = Memo::Database::Controller::ConfigDirectory.new.path_to_id
           absolute_directory_path_to_id = Memo::Database::Controller::Directory.new.absolute_directory_path_to_id
 
-          Memo::Loader::FileLoader.new.file_seeds_hash.flat_map do |target_dir, file_hash_array|
+          Memo::Loader::FileLoader.new.file_seeds_to_database.flat_map do |target_dir, file_hash_array|
             file_hash_array.flat_map do |file_hash|
               @dataset.insert(
                 filename: file_hash[:filename],
