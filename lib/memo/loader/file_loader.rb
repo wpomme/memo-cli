@@ -9,7 +9,7 @@ module Memo
         @file_seeds_hash = load_file_seeds_hash
       end
 
-      # 全てのサグの一覧をソートし、重複を排除してから、その一覧を返す
+      # 全てのタグの一覧をソートし、重複を排除してから、その一覧を返す
       #
       # @return [Array<String>]
       def sorted_tags

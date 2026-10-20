@@ -21,6 +21,10 @@ module Memo
       memo CLIに必要な引数の数を超えています。
       適切な数の引数を指定してください。
     TOO_ARGS
+    TOO_LONG_ARGS = <<~TOO_LONG
+      memo CLIが引数として取る文字列が長すぎます。
+      適切な長さの文字列を指定してください。
+    TOO_LONG
     UNKNOWN_COMMAND = <<~UNKNOWN
       memo CLIにそのようなサブコマンドはありません。
       適切なサブコマンドを指定してください。
@@ -28,6 +32,25 @@ module Memo
     NO_EMPTY_TAGS_FILE_LIST = <<~NO_EMPTY
       タグ付けされていないファイルはありませんでした。
     NO_EMPTY
+    HELP_MESSAGE_GENERAL = <<~HELP_G
+      memo CLI: ローカルのメモフォルダをコマンドで閲覧、検索するためのコマンド
+
+      使い方: memo (subcommand) [arguments]
+      例: memo list cli => memoフォルダ内のcliフォルダの中のメモの一覧を返す
+
+      なお、サブコマンドを省略した場合はmemo readを実行するものとみなされる
+      例: memo ls => フォルダ内のls.mdを検索して、あればls.mdを全文表示する
+
+      サブコマンド(subcommand)のリスト:
+          read WORD                  対象のメモを全文表示する
+          list [DIRS]                メモの一覧を表示する
+          dirs                       メモの中のディレクトリの一覧を表示する
+          search WORD                検索した文字列で全てのメモを全文検索する
+          tags [FILTER]              タグ名とそのタグ名が付いたファイル名の一覧を表示する
+          tag TAG_NAME               与えらえたタグ名に対応するファイル名の一覧を表示する
+          help                       memoコマンドのヘルプ
+          version                    memoコマンドのバージョン
+    HELP_G
     OPT_BANNER = 'memo CLI: ローカルのメモフォルダをコマンドで閲覧、検索するためのコマンド'
     OPT_SEPARATOR_HEREDOCS = <<~SEPT
       new_line
