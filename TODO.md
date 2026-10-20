@@ -12,9 +12,8 @@
     - 更新処理が出来たらCommandの次にControllerを導入してもいいかも
 
 ### DB
-1. parent_directory_idなど、not null制約を付ける
-2. setup.rbのto_schemaをmodel/以下に入れたい
-3. Database以下の構成
+1. setup.rbのto_schemaをmodel/以下に入れたい
+2. Database以下の構成
     - setupは1. create/drop tables, 2. Seeder, 3. schemaの三つに分けられる
 
 ### Loader => View => Command

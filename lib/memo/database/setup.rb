@@ -51,28 +51,28 @@ module Memo
         {
           config_directories: proc do
             primary_key :id
-            String :directory_path
+            String :directory_path, null: false
           end,
           directories: proc do
             primary_key :id
-            foreign_key :config_directory_id, :config_directories
-            String :directory_path
+            foreign_key :config_directory_id, :config_directories, null: false
+            String :directory_path, null: false
           end,
           files: proc do
             primary_key :id
-            String :filename
-            foreign_key :config_directory_id, :config_directories
-            foreign_key :parent_directory_id, :directories
-            String :file_content
+            String :filename, null: false
+            foreign_key :config_directory_id, :config_directories, null: false
+            foreign_key :parent_directory_id, :directories, null: false
+            String :file_content, null: false
           end,
           tags: proc do
             primary_key :id
-            String :tag_name
+            String :tag_name, null: false, unique: true
           end,
           files_tags: proc do
             primary_key :id
-            foreign_key :files_id, :files
-            foreign_key :tags_id, :tags
+            foreign_key :files_id, :files, null: false
+            foreign_key :tags_id, :tags, null: false
           end
         }[table_symbol]
       end
