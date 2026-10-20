@@ -39,6 +39,22 @@ module Memo
         end
       end
 
+      # それぞれのタグと、そのタグが付いているSeedの配列のハッシュを返す
+      #
+      # @return [Hash<String, Array<String>>]
+      def tag_files_hash
+        tag_list.to_h do |tag|
+          [
+            tag,
+            @file_seeds_hash.keys.map do |key|
+              @file_seeds_hash[key].filter_map do |file_hash|
+                file_hash[:filename] if file_hash[:tags].include?(tag)
+              end
+            end
+          ]
+        end
+      end
+
       # 対象となるファイルの総数を返す
       #
       # @return [Integer]

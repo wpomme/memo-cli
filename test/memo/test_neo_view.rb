@@ -81,5 +81,36 @@ class TestView < Minitest::Test
         _(out).must_equal(expected)
       end
     end
+
+    describe '#tag' do
+      it 'NeoViewはtagメソッドを返す' do
+        actual = @neo_view
+
+        _(actual).must_respond_to(:tag)
+      end
+
+      it '検索結果が見つかった場合' do
+        search_word = 'CLI'
+
+        out, = capture_io do
+          @neo_view.tag(search_word)
+        end
+
+        _(out).wont_be_empty
+      end
+
+      it '検索結果が見つからなかった場合' do
+        search_word = 'does_not_exist_word'
+        tag_list = Memo::Loader::FileLoader.new.sorted_tags
+
+        out, = capture_io do
+          @neo_view.tag(search_word)
+        end
+
+        expected = Memo::Message::NO_TAGS.sub('tag', search_word) << tag_list.join(' ') << "\n"
+
+        _(out).must_equal(expected)
+      end
+    end
   end
 end

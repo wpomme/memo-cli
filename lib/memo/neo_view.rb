@@ -10,6 +10,10 @@ module Memo
       puts Memo::NewView::Search.run(word)
     end
 
+    def tag(word)
+      puts Memo::NewView::Tag.run(word)
+    end
+
     private
 
     def read_file_by_found_result(word)
