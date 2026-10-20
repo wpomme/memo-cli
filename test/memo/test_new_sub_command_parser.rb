@@ -251,12 +251,12 @@ class TestNewSubCommandParser < Minitest::Test
       end
 
       describe 'list' do
-        it "listのみの場合は、list: ''を返す" do
+        it 'listのみの場合は、list: trueを返す' do
           argv = %w[list]
 
           actual = Memo::NewSubCommandParser.run(argv)
 
-          _(actual).must_equal({ list: '' })
+          _(actual).must_equal({ list: true })
         end
 
         it '-c/--countがある場合は、list: :countを返す' do

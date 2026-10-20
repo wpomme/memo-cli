@@ -19,7 +19,8 @@ class TestNewViewTag < Minitest::Test
       it '見つかった場合、FileLoaderからのタグの数とTag.runによるタグの数は同じになる' do
         search_word = 'CLI'
 
-        actual = Memo::NewView::Tag.run(search_word).size
+        # タグの文字列が入っている配列の方を取得して、スペースでsplitしてsizeを取る
+        actual = Memo::NewView::Tag.run(search_word).last.split.size
 
         expected = Memo::Loader::FileLoader.new.tag_files_hash[search_word].size
 

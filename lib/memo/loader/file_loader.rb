@@ -46,11 +46,11 @@ module Memo
         tag_list.to_h do |tag|
           [
             tag,
-            @file_seeds_hash.keys.map do |key|
+            @file_seeds_hash.keys.filter_map do |key|
               @file_seeds_hash[key].filter_map do |file_hash|
                 file_hash[:filename] if file_hash[:tags].include?(tag)
               end
-            end
+            end.flatten
           ]
         end
       end

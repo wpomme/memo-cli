@@ -22,6 +22,10 @@ module Memo
       puts Memo::NewView::List.run(word)
     end
 
+    def tags(option = '')
+      puts Memo::NewView::Tags.run(option)
+    end
+
     private
 
     def read_file_by_found_result(word)

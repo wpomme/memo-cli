@@ -3,19 +3,21 @@
 module Memo
   module NewView
     class List
-      def self.run(word = '')
+      #
+      # word [true | String]
+      def self.run(word)
         new(word).execute
       end
 
       def initialize(word)
-        @word = word.empty? ? '' : unify_word(word)
+        @word = unify_word(word)
         @file_loader = Memo::Loader::FileLoader.new
         @target_dirs = @file_loader.file_seeds_to_list.keys
       end
 
       def execute
         # return hash_for_list if @word.empty?
-        return nest_hash_array_to_view(hash_for_list, :green, :cyan) if @word.empty?
+        return nest_hashs_to_view(hash_for_list, :green, :cyan) if @word == true
 
         # そのようなディレクトリ名がないというメッセージを表示するのが適切
         return unless hash_for_list.values.map(&:keys).flatten.include?(@word)
@@ -36,6 +38,8 @@ module Memo
       private
 
       def unify_word(word)
+        return true if word == true
+
         return "#{word}/" unless word.end_with?('/')
 
         word
@@ -43,13 +47,14 @@ module Memo
 
       # ネストしたハッシュをユーザー向けに表示できるように加工する
       # ネストしたハッシュがあり、最後の値が文字列型の配列である場合に使用する
+      # 最初のハッシュのキーが複数ある場合はこちらを使う
       #
       # nest_hash_array [Hash<String, Hash<String, Array<String>>>]
       # key1_color [Symbol]
       # key2_color [Symbol]
       #
       # @return [Array<String>]
-      def nest_hash_array_to_view(nest_hash_array, key1_color, key2_color)
+      def nest_hashs_to_view(nest_hash_array, key1_color, key2_color)
         nest_hash_array.keys.map do |key1|
           [Rainbow(key1).color(key1_color)].concat(
             nest_hash_array[key1].flat_map do |key2, arr|

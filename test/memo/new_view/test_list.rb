@@ -5,8 +5,8 @@
 class TestNewViewList < Minitest::Test
   describe 'NewView::List' do
     describe '#run' do
-      it '引数を取らない場合、対象のディレクトリの配列が返ってくる' do
-        actual = Memo::NewView::List.run
+      it '引数がtrueの場合、対象のディレクトリの配列が返ってくる' do
+        actual = Memo::NewView::List.run(true)
 
         _(actual).must_be_instance_of(Array)
       end

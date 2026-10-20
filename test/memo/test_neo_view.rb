@@ -148,5 +148,29 @@ class TestView < Minitest::Test
         _(out).must_equal("\n")
       end
     end
+
+    describe '#tags' do
+      it 'NeoViewはtagsメソッドを返す' do
+        actual = @neo_view
+
+        _(actual).must_respond_to(:tags)
+      end
+
+      it '引数を取らない場合' do
+        out, = capture_io do
+          @neo_view.tags
+        end
+
+        _(out).wont_be_empty
+      end
+
+      it ':nameを取る場合' do
+        out, = capture_io do
+          @neo_view.tags(:name)
+        end
+
+        _(out).wont_be_empty
+      end
+    end
   end
 end
