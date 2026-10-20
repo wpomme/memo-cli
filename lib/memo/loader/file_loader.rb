@@ -46,6 +46,18 @@ module Memo
         file_list_size_by_config_directory.values.inject(:+)
       end
 
+      def file_seeds_to_search
+        @file_seeds_hash.transform_values do |values|
+          values.map do |value|
+            {
+              filename: value[:filename],
+              parent_directory: value[:parent_directory],
+              file_content: value[:file_content]
+            }
+          end
+        end
+      end
+
       def file_seeds_to_database
         @file_seeds_hash.transform_values do |values|
           values.map do |value|
