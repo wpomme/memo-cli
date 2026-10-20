@@ -18,6 +18,10 @@ module Memo
       puts Memo::NewView::Dirs.run
     end
 
+    def list(word = '')
+      puts Memo::NewView::List.run(word)
+    end
+
     private
 
     def read_file_by_found_result(word)

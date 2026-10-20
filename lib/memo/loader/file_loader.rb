@@ -62,6 +62,18 @@ module Memo
         file_list_size_by_config_directory.values.inject(:+)
       end
 
+      def file_seeds_to_list
+        @file_seeds_hash.transform_values do |values|
+          values.map do |value|
+            {
+              filename: value[:filename],
+              parent_directory: value[:parent_directory],
+              parent_rel_path: value[:parent_rel_path]
+            }
+          end
+        end
+      end
+
       def file_seeds_to_search
         @file_seeds_hash.transform_values do |values|
           values.map do |value|
@@ -139,7 +151,7 @@ module Memo
             {
               absolute_path: absolute_path,
               parent_directory: File.dirname(absolute_path) << '/',
-              parent_rel_path: rel_dirname == '.' ? '' : rel_dirname << '/',
+              parent_rel_path: rel_dirname << '/',
               filename: File.basename(absolute_path, '.md'),
               file_content: file_content,
               tags: tags

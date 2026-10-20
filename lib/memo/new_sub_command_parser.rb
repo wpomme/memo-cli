@@ -92,7 +92,7 @@ module Memo
     def parse_list_command(sym, argv: nil)
       to_error_message(:too_many_args, sym) if argv.size > 1
 
-      return { sym => true } if argv.empty?
+      return { sym => '' } if argv.empty?
 
       opt = argv[0]
 
