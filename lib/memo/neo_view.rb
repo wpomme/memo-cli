@@ -6,6 +6,10 @@ module Memo
       puts read_file_by_found_result(word)
     end
 
+    def search(word)
+      puts Memo::NewView::Search.run(word)
+    end
+
     private
 
     def read_file_by_found_result(word)

@@ -51,6 +51,18 @@ module Memo
           values.map do |value|
             {
               filename: value[:filename],
+              parent_rel_path: value[:parent_rel_path],
+              file_content: value[:file_content]
+            }
+          end
+        end
+      end
+
+      def file_seeds_to_read
+        @file_seeds_hash.transform_values do |values|
+          values.map do |value|
+            {
+              filename: value[:filename],
               parent_directory: value[:parent_directory],
               file_content: value[:file_content]
             }
