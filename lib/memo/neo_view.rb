@@ -14,6 +14,10 @@ module Memo
       puts Memo::NewView::Tag.run(word)
     end
 
+    def dirs(_)
+      puts Memo::NewView::Dirs.run
+    end
+
     private
 
     def read_file_by_found_result(word)
