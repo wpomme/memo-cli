@@ -41,7 +41,7 @@ module Memo
       def directory_tree(target_dirs = Memo::Config.target_dirs)
         @directory_tree ||= target_dirs.to_h do |target_dir|
           [target_dir, Dir.glob('**/*/', base: target_dir).group_by do |dir|
-            File.dirname(dir)
+            File.dirname(dir) << '/'
           end]
         end
       end

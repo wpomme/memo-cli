@@ -18,22 +18,16 @@
     - setupは1. create/drop tables, 2. Seeder, 3. schemaの三つに分けられる
 
 ### Loader => View => Command
-1. FileLoader => file_seeds_hashをプライベートにする
-2. DirectoryLoader => クラスにする
-3. ユーザー向けに必要な情報はloader内で作成する
-4. ユーザー向けに表示方法を変更する場合は、viewの中で行う
+1. directory_treeから、フォルダ名を受け取ったら、そのフォルダの配下にあるフォルダを全て出力するメソッドを作成する
+    - 例: 'cli/' => ["cli/", "cli/core/", "cli/third-party/", "cli/core/builtin/", "cli/core/file/", "cli/core/old/", "cli/core/process/", "cli/core/search/", "cli/core/text/"]
+        - 自分自身も出力として返した方が使いやすい
+    - 別の処理で、'./cli', 'cli' => 'cli/'などとする処理もほしい
+2. ユーザー向けに必要な情報はloader内で作成する
+3. ユーザー向けに表示方法を変更する場合は、viewの中で行う
 
 ### CLI案
-- サブコマンドは-h, --helpなどのオプションと同時に使えないようにする
-    - その代わり、zshで補完が効くようにする
-- サブコマンドの次の引数からコマンドオプションが使えるようにする
-
-- その他の案
-    - OptionParserなしで実装してもいいかもしれない
-        - 使用するオプションが少ない。代わりにサブコマンドで代用しているため。
-    - getoptlongなどを使ってもいいかもしれない
-        - Ruby: https://docs.ruby-lang.org/ja/latest/library/getoptlong.html
-        - GNU: https://www.gnu.org/prep/standards/html_node/Command_002dLine-Interfaces.html
+- new_sub_command_parser.rbを作成中
+- zshで補完が効くようにする
 
 ### 表示系に関するCLI案
 - memo list, memo tagsにて、ディレクトリ・タグとファイル名の次に改行を入れたい

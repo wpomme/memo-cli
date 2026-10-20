@@ -36,9 +36,34 @@ class TestService < Minitest::Test
     end
 
     describe('#directory_tree') do
-      it('値の中に"."が含まれること。"."は設定ディレクトリのカレントディレクトリを表す。') do
+      # NOTE: OSにより環境依存する
+      it('このハッシュの全てのキーと値について、末尾にバックスラッシュが入ること') do
+        path_strings = '/'
+
+        actual = @directory_loader.directory_tree.all? do |config_dir, hash|
+          config_dir.end_with?(path_strings) && hash.keys.all? do |key|
+            key.end_with?(path_strings) && hash[key].all? do |dir|
+              dir.end_with?(path_strings)
+            end
+          end
+        end
+
+        _(actual).must_equal(true)
+      end
+
+      it('二番目のハッシュのキーには、対応する値があること。二番目のハッシュのキーは、子のディレクトリを持つディレクトリの一覧を表す。') do
+        actual = @directory_loader.directory_tree.all? do |_, hash|
+          hash.keys.all? do |key|
+            !hash[key].empty?
+          end
+        end
+
+        _(actual).must_equal(true)
+      end
+
+      it('二番目のハッシュのキーの中に"./"が含まれること。"./"は設定ディレクトリのカレントディレクトリを表す。') do
         actual = @directory_loader.directory_tree.values.all? do |dir_node|
-          dir_node.keys.include?('.')
+          dir_node.keys.include?('./')
         end
 
         _(actual).must_equal(true)
