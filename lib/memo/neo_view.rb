@@ -22,10 +22,7 @@ module Memo
     def read_prompt(found)
       choices = found.to_h { |file_seed| [file_seed[:parent_directory], file_seed] }
       choice = Memo::Service.select_prompt(title: Memo::Message::MULTIPLE_MEMOS_WEWE_FOUND.sub('size', found.size.to_s), choices: choices)
-      choice.values.map do |value|
-        value
-      end
-        .flatten
+      choice.values.flatten
     end
   end
 end

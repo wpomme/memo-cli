@@ -101,7 +101,7 @@ module Memo
 
             absolute_path = File.join(target_dir, rel_path)
             rel_dirname = File.dirname(rel_path)
-            file_content = File.readlines(absolute_path).join("\n")
+            file_content = File.readlines(absolute_path).join
 
             # tagsのための処理
             # add_file_path_tags_hash(absolute_path, file_content)

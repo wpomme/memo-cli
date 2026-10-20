@@ -9,6 +9,12 @@ class TestView < Minitest::Test
     end
 
     describe '#read' do
+      it 'NeoViewはreadメソッドを返す' do
+        actual = @neo_view
+
+        _(actual).must_respond_to(:read)
+      end
+
       it 'ファイルが一件見つかったとき、そのファイルを全文表示する' do
         target_filename = 'ls'
 

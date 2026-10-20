@@ -22,7 +22,7 @@ module Memo
       # 検索でヒットした文字列に色をつける
       #
       # @param word [string]
-      # @return [Array<String>]
+      # @return [Array]
       def find_files(word)
         Memo::Loader::FileLoader.new.file_seeds_to_search.flat_map do |_, file_hash_array|
           file_hash_array.filter do |file_hash|
