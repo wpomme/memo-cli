@@ -24,7 +24,7 @@ module Memo
       # @param word [string]
       # @return [Array]
       def find_files(word)
-        Memo::Loader::FileLoader.new.file_seeds_to_read.flat_map do |_, file_hash_array|
+        Memo::Loader::FileLoader.new.file_seeds_with_content.flat_map do |_, file_hash_array|
           file_hash_array.filter do |file_hash|
             file_hash[:filename] == word
           end

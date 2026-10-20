@@ -62,7 +62,7 @@ module Memo
         file_list_size_by_config_directory.values.inject(:+)
       end
 
-      def file_seeds_to_list
+      def file_seeds_without_content
         @file_seeds_hash.transform_values do |values|
           values.map do |value|
             {
@@ -74,36 +74,13 @@ module Memo
         end
       end
 
-      def file_seeds_to_search
+      def file_seeds_with_content
         @file_seeds_hash.transform_values do |values|
           values.map do |value|
             {
               filename: value[:filename],
+              parent_directory: value[:parent_directory],
               parent_rel_path: value[:parent_rel_path],
-              file_content: value[:file_content]
-            }
-          end
-        end
-      end
-
-      def file_seeds_to_read
-        @file_seeds_hash.transform_values do |values|
-          values.map do |value|
-            {
-              filename: value[:filename],
-              parent_directory: value[:parent_directory],
-              file_content: value[:file_content]
-            }
-          end
-        end
-      end
-
-      def file_seeds_to_database
-        @file_seeds_hash.transform_values do |values|
-          values.map do |value|
-            {
-              filename: value[:filename],
-              parent_directory: value[:parent_directory],
               file_content: value[:file_content]
             }
           end

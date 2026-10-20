@@ -12,7 +12,7 @@ module Memo
       def initialize(word)
         @word = unify_word(word)
         @file_loader = Memo::Loader::FileLoader.new
-        @target_dirs = @file_loader.file_seeds_to_list.keys
+        @target_dirs = @file_loader.file_seeds_without_content.keys
       end
 
       def execute
@@ -78,7 +78,7 @@ module Memo
       end
 
       def hash_for_list
-        file_seeds = @file_loader.file_seeds_to_list
+        file_seeds = @file_loader.file_seeds_without_content
 
         to_hash = @target_dirs.to_h do |target_dir|
           [target_dir, file_seeds[target_dir].group_by { |file_seed| file_seed[:parent_rel_path] }]

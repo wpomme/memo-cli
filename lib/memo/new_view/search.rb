@@ -26,7 +26,7 @@ module Memo
       # @param word [string]
       # @return [Array]
       def search_file_seed(word)
-        Memo::Loader::FileLoader.new.file_seeds_to_search.filter_map do |_, file_hash_array|
+        Memo::Loader::FileLoader.new.file_seeds_with_content.filter_map do |_, file_hash_array|
           file_hash_array
             .filter_map do |file_hash|
               file_hash[:file_content].split("\n").filter_map.with_index(1) do |line, idx|

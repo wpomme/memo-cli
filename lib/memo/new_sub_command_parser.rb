@@ -2,6 +2,7 @@
 
 module Memo
   class NewSubCommandParser
+    SUB_COMMANDS = %w[read search tag dirs tags check list version].freeze
     Spec = Data.define(:short, :long, :desc)
 
     def self.run(argv)
@@ -107,7 +108,9 @@ module Memo
       puts Memo::VERSION
     end
 
-    def parse_help_command(_sym, _argv: nil)
+    def parse_help_command(_sym, argv: nil)
+      # TODO: コマンドごとのヘルプが欲しい
+      Memo::NewSubCommandParser::SUB_COMMANDS.include?(argv)
       puts Message::HELP_MESSAGE_GENERAL
       exit 0
     end

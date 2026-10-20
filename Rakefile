@@ -33,6 +33,12 @@ task :seeds do
   sh 'rake mock_make && bundle exec rubocop -A test/mock_seeds.rb '
 end
 
+desc '元データからモックデータを作成する'
+task :new_mock_data do
+  sh 'ruby ./test/add_mock_seeds.rb'
+  sh 'bundle exec rubocop -A test/new_mock_seeds.rb'
+end
+
 # rake mockでmock_seeds.rbを作成
 # 作成後は、rake fixを実行して、重複したヒアドキュメントがあれば手動で直す
 desc '元データからモックデータを作成する'
@@ -111,63 +117,17 @@ namespace :db do
   end
 end
 
-cmd_tasks = {
-  list: [
-    {
-      name: 'noargs',
-      cmd: 'list'
-    },
-    {
-      name: 'dirs',
-      cmd: 'list cli'
-    }
-  ],
-  dirs: [
-    {
-      name: 'default',
-      cmd: 'dirs'
-    }
-  ],
-  read: [
-    {
-      name: 'default',
-      cmd: 'read ls'
-    },
-    {
-      name: 'memo',
-      cmd: 'ls'
-    }
-  ],
-  search: [
-    {
-      name: 'default',
-      cmd: 'search diff'
-    }
-  ]
-}
-
-desc 'memo cliの正常系が成功するかテストする'
+desc 'memo2 cliが成功するかテストする'
 task :e2e do
-  cmd_tasks.each do |cmd_name, task_list|
-    task_list.each do |task_hash|
-      sh("rake cli:#{cmd_name}:#{task_hash[:name]}", verbose: false)
-    end
-  end
-end
-
-namespace :cli do
-  cmd_tasks.each do |cmd_name, task_list|
-    namespace cmd_name do
-      desc "#{cmd_name}を実行する"
-      task_list.each do |task_hash|
-        desc "memo #{task_hash[:cmd]}を実行する"
-        task task_hash[:name] do
-          IO.popen((%w[bundle exec ruby exe/memo] << task_hash[:cmd].split).flatten) do |pipe|
-            puts "Success: memo #{task_hash[:cmd]}" if $CHILD_STATUS.success?
-            pipe.close
-          end
-        end
-      end
-    end
-  end
+  sh 'bundle exec exe/memo2 > /dev/null'
+  sh 'bundle exec exe/memo2 ls > /dev/null'
+  sh 'bundle exec exe/memo2 read 2>&1 > /dev/null || true'
+  sh 'bundle exec exe/memo2 read ls > /dev/null'
+  sh 'bundle exec exe/memo2 read does_not_exist_files 2>&1 > /dev/null || true'
+  sh 'bundle exec exe/memo2 search 2>&1 > /dev/null || true'
+  sh 'bundle exec exe/memo2 search ls > /dev/null'
+  sh 'bundle exec exe/memo2 search does_not_exist_search_strings 2>&1 > /dev/null || true'
+  sh 'bundle exec exe/memo2 tag 2>&1 > /dev/null || true'
+  sh 'bundle exec exe/memo2 tag CLI > /dev/null'
+  sh 'bundle exec exe/memo2 tag does_not_exist_search_strings 2>&1 > /dev/null || true'
 end

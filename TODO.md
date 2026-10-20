@@ -16,22 +16,11 @@
 2. Database以下の構成
     - setupは1. create/drop tables, 2. Seeder, 3. schemaの三つに分けられる
 
-### Loader => View => Command
-1. directory_treeから、フォルダ名を受け取ったら、そのフォルダの配下にあるフォルダを全て出力するメソッドを作成する
-    - 例: 'cli/' => ["cli/", "cli/core/", "cli/third-party/", "cli/core/builtin/", "cli/core/file/", "cli/core/old/", "cli/core/process/", "cli/core/search/", "cli/core/text/"]
-        - 自分自身も出力として返した方が使いやすい
-    - 別の処理で、'./cli', 'cli' => 'cli/'などとする処理もほしい
-2. ユーザー向けに必要な情報はloader内で作成する
-3. ユーザー向けに表示方法を変更する場合は、viewの中で行う
-
-### CLI案
-- new_sub_command_parser.rbを作成中
-- zshで補完が効くようにする
-
-### 表示系に関するCLI案
-- memo list, memo tagsにて、ディレクトリ・タグとファイル名の次に改行を入れたい
-    - memo list [DIRS]の場合の表示を変えたい。ファイルの方はより詳細な情報を出したい
-    - memo tag [TAG_NAME]も同様
+### CLI・残タスク
+- memo check, memo help [sub_command], memo versionの作成
+- Rakefileのモックデータ作成コードをLoaderから出来るようにする
+- repository.rbなどを削除し、neo_viewなどをリネームする
+- @target_dirs.filter_map { |target_dir| ... } というコードのパターン化
 
 ## その他やりたいこと
 ## テスト系
