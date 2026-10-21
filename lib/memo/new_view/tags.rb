@@ -15,12 +15,23 @@ module Memo
       end
 
       def execute
-        return seeds_hash_to_view(@file_loader.tag_files_hash, :aqua) if @option == true
+        tag_files_hash = @file_loader.tag_files_hash
+        tag_files_size = @file_loader.sorted_tag_files_size
+
+        return seeds_hash_to_view(tag_files_hash, :aqua) if @option == true
+
+        return hash_to_view(tag_files_size) if @option == :count
 
         @file_loader.sorted_tags if @option == :name
       end
 
       private
+
+      def hash_to_view(hash)
+        hash.map do |k, v|
+          ["#{k}: #{v}"]
+        end
+      end
 
       # TODO: Strategyに移動する
       # グループ化されたSeedのハッシュについて、グループごとのファイル名を文字列にして返す

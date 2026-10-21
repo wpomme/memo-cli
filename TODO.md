@@ -17,10 +17,10 @@
     - setupは1. create/drop tables, 2. Seeder, 3. schemaの三つに分けられる
 
 ### CLI・残タスク
-- memo check, memo help [sub_command], memo versionの作成
-- Rakefileのモックデータ作成コードをLoaderから出来るようにする
+- memo help [sub_command]の作成
 - repository.rbなどを削除し、neo_viewなどをリネームする
-- @target_dirs.filter_map { |target_dir| ... } というコードのパターン化
+- モックデータからテストコードの検証を行うようにする
+
 
 ## その他やりたいこと
 ## テスト系
@@ -31,9 +31,6 @@
 ### expected, actual
 - expected, actualを意味的に逆に使っている箇所があるかもしれない
     - 洗い出す
-
-### モックデータの作成
-Rakefileに記載したコードは別のファイルに移動させた方がいいかもしれない
 
 ## 機能追加
 - 各メモファイルのfront matterにcreated_at, updated_atを挿入する

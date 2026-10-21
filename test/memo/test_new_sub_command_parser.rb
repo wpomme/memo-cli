@@ -111,7 +111,7 @@ class TestNewSubCommandParser < Minitest::Test
         end
       end
 
-      # TODO: #parse_with_option_parser: tags, checkを作成する
+      # TODO: #parse_with_option_parser: tagsを作成する
       describe 'tags' do
         it 'tagsのみの場合は、tags: trueを返す' do
           argv = %w[tags]
@@ -171,75 +171,6 @@ class TestNewSubCommandParser < Minitest::Test
           skip 'TODO: OptionParserだと何もしないので、引数はスルーする'
           argv = 'tags'
           options = ['-n', '--name', '-c', '--count']
-          rest_argv = 'foo'
-
-          # exit 2を使うかも
-          options.map { |opt| [argv, opt, rest_argv] }
-            .map do |args|
-            Memo::NewSubCommandParser.run(args)
-          end
-        end
-      end
-
-      describe 'check' do
-        it 'checkのみの場合は、check: trueを返す' do
-          argv = %w[check]
-
-          actual = Memo::NewSubCommandParser.run(argv)
-
-          _(actual).must_equal({ check: true })
-        end
-
-        it '-d/--duplicateがある場合は、duplicate: trueを返す' do
-          arg = 'check'
-          options = ['-d', '--duplicate']
-
-          args = options.map { |opt| [arg, opt] }
-
-          args.each do |arg|
-            actual = Memo::NewSubCommandParser.run(arg)
-            _(actual).must_equal({ check: :duplicate })
-          end
-        end
-
-        it 'memo check -hの場合' do
-          skip 'TODO: ヘルプメッセージを表示する'
-          arg = 'check'
-          options = ['-h', '--help']
-
-          args = options.map { |opt| [arg, opt] }
-
-          args.each do |arg|
-            actual = Memo::NewSubCommandParser.run(arg)
-            _(actual).must_equal({ check: :name })
-          end
-        end
-
-        it '-e/--emptyがある場合は、check: :emptyを返す' do
-          arg = 'check'
-          options = ['-e', '--empty']
-
-          args = options.map { |opt| [arg, opt] }
-
-          args.each do |arg|
-            actual = Memo::NewSubCommandParser.run(arg)
-            _(actual).must_equal({ check: :empty })
-          end
-        end
-
-        it '-nと-cを同時に指定した場合は、エラーを返す' do
-          skip 'TODO'
-          argv = %w[check -cn]
-
-          actual = Memo::NewSubCommandParser.run(argv)
-
-          _(actual).must_equal({ check: :name })
-        end
-
-        it '第三引数も存在する場合は、エラーメッセージを表示する' do
-          skip 'TODO: OptionParserだと何もしないので、引数はスルーする'
-          argv = 'check'
-          options = ['-d', '--duplicate', '-e', '--empty']
           rest_argv = 'foo'
 
           # exit 2を使うかも

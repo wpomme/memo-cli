@@ -2,7 +2,7 @@
 
 module Memo
   class NewSubCommandParser
-    SUB_COMMANDS = %w[read search tag dirs tags check list version].freeze
+    SUB_COMMANDS = %w[read search tag dirs tags list version].freeze
     Spec = Data.define(:short, :long, :desc)
 
     def self.run(argv)
@@ -20,7 +20,7 @@ module Memo
         parse_one_argument(first.intern, argv: argv)
       when 'dirs'
         parse_no_arguments(first.intern, argv: argv)
-      when 'tags', 'check'
+      when 'tags'
         parse_with_option_parser(first.intern, argv: argv)
       when 'list'
         parse_list_command(first.intern, argv: argv)
@@ -52,7 +52,7 @@ module Memo
     def parse_with_option_parser(sym, argv: nil)
       parsed = {}
 
-      specs = to_spec_list(sym)
+      specs = to_spec_list
 
       OptionParser.new do |opt|
         specs.each do |spec|
@@ -69,19 +69,12 @@ module Memo
       { sym => value }
     end
 
-    def to_spec_list(sym)
-      case sym
-      when :tags
-        spec1 = Spec.new('-n', '--name', 'タグ名のみを表示する')
-        spec2 = Spec.new('-c', '--count', 'タグ名とそのタグが付いているファイルの数を表示する')
-      when :check
-        spec1 = Spec.new('-d', '--duplicate', '重複したファイル名の情報を表示する')
-        spec2 = Spec.new('-e', '--empty', 'タグの付いていないファイルの一覧を表示する')
-      else
-        raise StandardError, 'Unknown Error...'
-      end
+    def to_spec_list
+      spec1 = Spec.new('-n', '--name', 'タグ名のみを表示する')
+      spec2 = Spec.new('-c', '--count', 'タグ名とそのタグが付いているファイルの数を表示する')
+      spec3 = Spec.new('-e', '--empty', 'タグの付いていないファイルの一覧を表示する')
 
-      spec_list([spec1, spec2])
+      spec_list([spec1, spec2, spec3])
     end
 
     def spec_list(specs)
@@ -100,6 +93,8 @@ module Memo
       to_error_message(:too_long_args, sym) if opt.size > 32
 
       return { sym => :count } if ['-c', '--count'].include?(opt)
+
+      return { sym => :count } if ['-d', '--duplicate'].include?(opt)
 
       { sym => opt }
     end

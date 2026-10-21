@@ -10,6 +10,7 @@ module Memo
       end
 
       # 全てのタグの一覧をソートし、重複を排除してから、その一覧を返す
+      # 名前順に並んでいる
       #
       # @return [Array<String>]
       def sorted_tags
@@ -39,11 +40,28 @@ module Memo
         end
       end
 
+      # タグの付いている数が多いものから順に並べる
+      #
+      # @return [Array<Array<String, Integer>>]
+      def sorted_tag_files_size
+        @sorted_tag_files_size ||= tag_files_size.to_a.sort do |a, b|
+          b[1] <=> a[1]
+        end
+      end
+
+      # それぞれのタグと、そのタグが付いているファイルの数のハッシュを返す
+      #
+      # @return [Hash<String, Array<String>>]
+      def tag_files_size
+        @tag_files_size ||= tag_files_hash
+          .transform_values(&:size)
+      end
+
       # それぞれのタグと、そのタグが付いているSeedの配列のハッシュを返す
       #
       # @return [Hash<String, Array<String>>]
       def tag_files_hash
-        tag_list.to_h do |tag|
+        @tag_files_hash ||= tag_list.to_h do |tag|
           [
             tag,
             file_seeds.filter_map do |file_seed|

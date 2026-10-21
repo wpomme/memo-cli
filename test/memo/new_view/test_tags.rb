@@ -23,6 +23,19 @@ class TestNewViewTags < Minitest::Test
 
         _(actual).must_equal(expected)
       end
+
+      it ':countを受け取った場合、タグ名とそのタグが付いたファイルの数を出力する。' do
+        option = :count
+
+        out = Memo::NewView::Tags.run(option)
+
+        # actual = out.size
+        #
+        # expected = Memo::Loader::FileLoader.new.tag_size
+
+        _(out).wont_be_empty
+        # _(actual).must_equal(expected)
+      end
     end
   end
 end

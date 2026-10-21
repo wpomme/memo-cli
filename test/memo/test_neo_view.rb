@@ -171,6 +171,14 @@ class TestView < Minitest::Test
 
         _(out).wont_be_empty
       end
+
+      it ':countを取る場合' do
+        out, = capture_io do
+          @neo_view.tags(:count)
+        end
+
+        _(out).wont_be_empty
+      end
     end
   end
 end
