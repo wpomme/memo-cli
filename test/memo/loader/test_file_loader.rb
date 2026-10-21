@@ -8,7 +8,7 @@ class TestFileLoader < Minitest::Test
   describe('Loader::FileLoader') do
     describe('#sorted_tags') do
       it('Tagテーブルを作成するのに必要なタグ名の配列が返されること') do
-        sorted_tags = Memo::Loader::FileLoader.new.sorted_tags
+        sorted_tags = Memo::FileLoader.new.sorted_tags
 
         actual = sorted_tags.all?(String)
 
@@ -18,7 +18,7 @@ class TestFileLoader < Minitest::Test
 
     describe('#tag_size') do
       it('整数が返されること') do
-        actual = Memo::Loader::FileLoader.new.tag_size
+        actual = Memo::FileLoader.new.tag_size
 
         _(actual).must_be_instance_of(Integer)
       end
@@ -26,7 +26,7 @@ class TestFileLoader < Minitest::Test
 
     describe('#total_tag_size') do
       it('整数が返されること') do
-        actual = Memo::Loader::FileLoader.new.total_tag_size
+        actual = Memo::FileLoader.new.total_tag_size
 
         _(actual).must_be_instance_of(Integer)
       end

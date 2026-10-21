@@ -8,7 +8,7 @@ class TestService < Minitest::Test
   describe('Loader::DirectoryLoader') do
     def setup
       super
-      @directory_loader = Memo::Loader::DirectoryLoader.new
+      @directory_loader = Memo::DirectoryLoader.new
     end
 
     describe('Integration Test::DirectoryLoader') do

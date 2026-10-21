@@ -55,7 +55,7 @@ class TestSetup < Minitest::Test
 
       actual = Memo::Database::Controller::FileTag.new.count
 
-      expected = Memo::Loader::FileLoader.new.total_tag_size
+      expected = Memo::FileLoader.new.total_tag_size
 
       _(actual).must_equal(expected)
     end

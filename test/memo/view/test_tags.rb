@@ -19,7 +19,7 @@ class TestViewTags < Minitest::Test
 
         actual = out.size
 
-        expected = Memo::Loader::FileLoader.new.tag_size
+        expected = Memo::FileLoader.new.tag_size
 
         _(actual).must_equal(expected)
       end
@@ -31,7 +31,7 @@ class TestViewTags < Minitest::Test
 
         # actual = out.size
         #
-        # expected = Memo::Loader::FileLoader.new.tag_size
+        # expected = Memo::FileLoader.new.tag_size
 
         _(out).wont_be_empty
         # _(actual).must_equal(expected)

@@ -4,7 +4,7 @@ $LOAD_PATH.unshift File.expand_path('../lib', __dir__)
 require 'memo'
 
 target_dirs = Memo::Config.target_dirs
-file_loader = Memo::Loader::FileLoader.new
+file_loader = Memo::FileLoader.new
 
 # テストのために固定のファイルを選択しておく
 fixed_duplicated_filename = 'diff'

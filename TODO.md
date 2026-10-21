@@ -9,8 +9,7 @@
     - setupは1. create/drop tables, 2. Seeder, 3. schemaの三つに分けられる
 - memo help [sub_command]の作成: コマンドごとのヘルプがほしい
 - モックデータからテストコードの検証を行うようにする
-- loaderフォルダについて、フォルダに入れるまでで充分。Loaderモジュールは削除する
-    - Loaderに値を入れる場面で、FileSeed, DirectorySeedを使いたい
+- Loaderに値を入れる場面で、FileSeed, DirectorySeedを使いたい
 - View::Listについて、ネストしたハッシュを配列・構造体・集合のどれかを使って直す
     - コードが複雑になってしまったため
 

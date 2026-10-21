@@ -7,7 +7,7 @@ class TestViewTag < Minitest::Test
     describe '#run' do
       it '見つからなかった場合、エラーメッセージを表示する' do
         search_word = 'does_not_exist_words'
-        tag_list = Memo::Loader::FileLoader.new.sorted_tags
+        tag_list = Memo::FileLoader.new.sorted_tags
 
         actual = Memo::View::Tag.run(search_word)
 
@@ -22,7 +22,7 @@ class TestViewTag < Minitest::Test
         # タグの文字列が入っている配列の方を取得して、スペースでsplitしてsizeを取る
         actual = Memo::View::Tag.run(search_word).last.split.size
 
-        expected = Memo::Loader::FileLoader.new.tag_files_hash[search_word].size
+        expected = Memo::FileLoader.new.tag_files_hash[search_word].size
 
         _(actual).must_equal(expected)
       end

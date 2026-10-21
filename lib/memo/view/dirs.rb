@@ -8,7 +8,7 @@ module Memo
       end
 
       def execute
-        Memo::Loader::DirectoryLoader.new.relative_path_hash.transform_values { |paths| paths.join("\n") }
+        Memo::DirectoryLoader.new.relative_path_hash.transform_values { |paths| paths.join("\n") }
           .map do |key, value|
             [Rainbow("#{key}:").green].push(value).push('')
           end

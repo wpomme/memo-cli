@@ -26,7 +26,7 @@ class TestFileTag < Minitest::Test
       it('戻り値の配列の数が、重複を排除しないタグの出現回数と同じになること') do
         actual = Memo::Database::Controller::FileTag.new.count
 
-        expected = Memo::Loader::FileLoader.new.total_tag_size
+        expected = Memo::FileLoader.new.total_tag_size
 
         _(actual).must_equal(expected)
       end

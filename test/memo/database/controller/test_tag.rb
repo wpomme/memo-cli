@@ -22,7 +22,7 @@ class TestTag < Minitest::Test
       it('戻り値の配列の数が、重複を排除したタグの総数と同じになること') do
         actual = @seeds.size
 
-        expected = Memo::Loader::FileLoader.new.tag_size
+        expected = Memo::FileLoader.new.tag_size
 
         _(actual).must_equal(expected)
       end

@@ -33,7 +33,7 @@ module Memo
           file_dataset = Memo::Database::Controller::File.new
           id_to_absolute_filename = file_dataset.id_to_absolute_filename
 
-          absolute_filename_to_tags = Memo::Loader::FileLoader.new.absolute_filename_to_tags
+          absolute_filename_to_tags = Memo::FileLoader.new.absolute_filename_to_tags
 
           id_to_absolute_filename.each_with_object({}) do |(file_id, file_path), result|
             result[file_id] = absolute_filename_to_tags[file_path]

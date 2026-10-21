@@ -77,7 +77,7 @@ module Memo
       end
 
       def hash_for_list
-        grouped = Memo::Loader::FileLoader.new.file_seeds_light.group_by { |file_seed| file_seed[:parent_rel_path] }
+        grouped = Memo::FileLoader.new.file_seeds_light.group_by { |file_seed| file_seed[:parent_rel_path] }
           .transform_values do |values|
             values.map do |file_seed|
               file_seed[:filename]

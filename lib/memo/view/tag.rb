@@ -11,7 +11,7 @@ module Memo
 
       def initialize(word)
         @word = word
-        @file_loader = Memo::Loader::FileLoader.new
+        @file_loader = Memo::FileLoader.new
       end
 
       def execute

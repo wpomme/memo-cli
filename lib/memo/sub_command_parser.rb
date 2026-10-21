@@ -9,23 +9,22 @@ module Memo
       new.execute(argv)
     end
 
-    # TODO: Visitorパターンを参考にして後ほど修正する
     def execute(argv)
       first = argv.shift
 
-      return parse_help_command(:help) if first.nil?
+      return parse_help_command if first.nil?
 
       case first
       when 'read', 'search', 'tag'
         parse_one_argument(first.intern, argv: argv)
       when 'dirs'
-        parse_no_arguments(first.intern, argv: argv)
+        parse_no_arguments(argv: argv)
       when 'tags'
-        parse_with_option_parser(first.intern, argv: argv)
+        parse_with_option_parser(argv: argv)
       when 'list'
-        parse_list_command(first.intern, argv: argv)
+        parse_list_command(argv: argv)
       when 'help'
-        parse_help_command(first.intern, argv: argv)
+        parse_help_command(argv: argv)
       when 'version', '-V'
         parse_version_command
       else
@@ -35,7 +34,7 @@ module Memo
 
     private
 
-    def parse_no_arguments(sym, argv: nil)
+    def parse_no_arguments(sym: :dirs, argv: nil)
       to_error_message(:too_many_args, sym) unless argv.empty?
 
       { sym => true }
@@ -49,10 +48,10 @@ module Memo
       { sym => argv[0] }
     end
 
-    def parse_with_option_parser(sym, argv: nil)
+    def parse_with_option_parser(sym: :tags, argv: nil)
       parsed = {}
 
-      specs = to_spec_list
+      specs = tags_spec_list
 
       OptionParser.new do |opt|
         specs.each do |spec|
@@ -61,7 +60,7 @@ module Memo
       end
         .parse(argv, into: parsed)
 
-      # 違うオプションを同時に取ることはできません。というようなエラーを返す
+      # TODO: 違うオプションを同時に取ることはできません。というようなエラーを返す
       # to_error_message(:foo, :tags) if parsed.size > 1
 
       value = parsed.empty? || parsed.keys[0]
@@ -69,12 +68,12 @@ module Memo
       { sym => value }
     end
 
-    def to_spec_list
-      spec1 = Spec.new('-n', '--name', 'タグ名のみを表示する')
-      spec2 = Spec.new('-c', '--count', 'タグ名とそのタグが付いているファイルの数を表示する')
-      spec3 = Spec.new('-e', '--empty', 'タグの付いていないファイルの一覧を表示する')
+    def tags_spec_list
+      name_spec = Spec.new('-n', '--name', 'タグ名のみを表示する')
+      count_spec = Spec.new('-c', '--count', 'タグ名とそのタグが付いているファイルの数を表示する')
+      empty_spec = Spec.new('-e', '--empty', 'タグの付いていないファイルの一覧を表示する')
 
-      spec_list([spec1, spec2, spec3])
+      spec_list([name_spec, count_spec, empty_spec])
     end
 
     def spec_list(specs)
@@ -83,7 +82,7 @@ module Memo
       end
     end
 
-    def parse_list_command(sym, argv: nil)
+    def parse_list_command(sym: :list, argv: nil)
       to_error_message(:too_many_args, sym) if argv.size > 1
 
       return { sym => true } if argv.empty?
@@ -104,7 +103,7 @@ module Memo
       exit 0
     end
 
-    def parse_help_command(_sym, argv: nil)
+    def parse_help_command(argv: nil)
       # TODO: コマンドごとのヘルプが欲しい
       Memo::SubCommandParser::SUB_COMMANDS.include?(argv)
       puts Memo::HelpMessage::GENERAL
