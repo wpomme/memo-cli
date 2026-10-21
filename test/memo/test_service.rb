@@ -4,75 +4,7 @@ require_relative '../helper'
 
 class TestService < Minitest::Test
   describe 'Service' do
-    include MemoTestLifecycleHooks
     include Memo::Service
-
-    describe '#read' do
-      describe '戻り値の型検査' do
-        it '文字列型の一次元配列を返す' do
-          target_file = @fixed_mock_file
-          expected_seed = @test_seeds.find { |seed| seed.basename == target_file }
-          ret = read(expected_seed)
-
-          expected = ret.all?(String)
-
-          _(true).must_equal(expected)
-        end
-      end
-
-      it '与えられたseedにしたがい、そのSeedの元となっているファイルを全文表示する。、' do
-        target_file = @fixed_mock_file
-        expected_seed = @test_seeds.find { |seed| seed.basename == target_file }
-        expected = read(expected_seed)
-
-        actual = Memo::MockSeed::TEST_LS_FILE_CONTENT
-
-        _(actual.split("\n")).must_equal(expected)
-      end
-    end
-
-    describe '#search' do
-      describe '戻り値の型検査' do
-        it '読み込んだファイルの中に該当の文字列が含まれている場合は、SearchLineの配列を返す' do
-          target_file = @fixed_mock_file
-          ## NOTE: target_fileと同じワードで検索すれば複数行ヒットする
-          search_word = target_file
-          target_seed = @test_seeds.find { |seed| seed.basename == target_file }
-          search_lines = search(target_seed, search_word)
-          expected = search_lines.all?(Memo::Model::SearchLine)
-
-          _(true).must_equal(expected)
-        end
-
-        it '読み込んだファイルの中に該当の文字列が含まれていない場合は、空の配列を返す' do
-          target_file = @fixed_mock_file
-          ## target_fileと同じワードで検索すれば複数行ヒットするので都合がいい
-          search_word = 'hikkakaranasounakotoba'
-          target_seed = @test_seeds.find { |seed| seed.basename == target_file }
-          expected = search(target_seed, search_word)
-
-          _([]).must_equal(expected)
-        end
-      end
-
-      describe '戻り値の値検査' do
-        it '読み込んだファイルの中に該当の文字列が含まれている場合は、SearchLineの配列を返す' do
-          target_file = @fixed_mock_file
-          search_word = target_file
-          target_seed = @test_seeds.find { |seed| seed.basename == target_file }
-          expected = search(target_seed, search_word)
-
-          actual = Memo::MockSeed::TEST_LS_FILE_CONTENT
-            .split("\n")
-            .each_with_index
-            .filter_map do |line, index|
-              Memo::Model::SearchLine.new(path: target_seed.rel_path, line_number: index + 1, line: line) if line.include?(search_word)
-            end
-
-          _(actual).must_equal(expected)
-        end
-      end
-    end
 
     describe '#parse_yaml_front_matter' do
       describe 'yaml形式のフロントマターが付いたマークダウン形式の文字列を読み取って、フロントマターの値を返す' do

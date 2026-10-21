@@ -10,25 +10,3 @@ target_dirs = Memo::Config.target_dirs
 
 # init-db
 Memo::Config.target_database(database_path: 'test_memo.db')
-
-# Repositoryのオブジェクトを作成する
-repo = Memo::Repository.new(target_dirs)
-
-# Repository.seedsも取得しておく
-file_seeds = repo.instance_variable_get(:@file_seeds)
-dir_seeds = repo.instance_variable_get(:@dir_seeds)
-
-mapper = Memo::Mapper.new(repo)
-
-## dir_setの今後
-dir_seeds
-  # 絶対パスを保存したい
-  .map(&:full_path)
-  # memo listに入れるディレクトリ名はbasenameの方が簡単でいいかも
-  .map { |dir| File.basename(dir) }
-
-dir_set = @repo.dir_set
-dir_basename_hash = dir_set.to_h { |dir| [dir, File.basename(dir)] }
-filtered_dirs = dir_basename_hash.filter { |_, v| v == dir }.keys
-
-[file_seeds, dir_seeds, mapper, filtered_dirs]

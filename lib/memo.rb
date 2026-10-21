@@ -29,13 +29,8 @@ require_relative 'memo/new_view/tags'
 require_relative 'memo/new_view/dirs'
 require_relative 'memo/new_view/list'
 require_relative 'memo/model'
-require_relative 'memo/sub_command_parser'
 require_relative 'memo/new_sub_command_parser'
 require_relative 'memo/service'
-require_relative 'memo/repository'
-require_relative 'memo/mapper'
-require_relative 'memo/view'
-require_relative 'memo/command'
 require_relative 'memo/new_command'
 
 module Memo

@@ -3,6 +3,7 @@
 module Memo
   module Model
     #  対象ディレクトリのファイル情報を保存するための値オブジェクト
+    #  NOTE: Loaderのfile_seedに使えるかもしれない
     #
     # @!attribute [w] full_path
     #   @return [String] memoディレクトリの中にあるファイルの絶対パス。メモを読み取るために使う
@@ -28,74 +29,6 @@ module Memo
 
       def file?
         FileTest.file?(full_path)
-      end
-    end
-
-    # サブコマンドの詳細を作成するための構造体
-    #
-    # @!attribute [r] :sub_command_form
-    #   @return [String] memoの後にこの値を指定するとサブコマンドとして機能する文字列
-    # @!attribute [r] :long_form
-    #   @return [String] サブコマンドのロングフォーム。OptionParser#onに準ずる
-    # @!attribute [r] :short_form
-    #   @return [String] サブコマンドのショートフォーム。OptionParser#onに準ずる
-    # @!attribute [r] :desc
-    #   @return [String] サブコマンドの詳細。OptionParser#onに準ずる
-    # @!attribute [r] :option_argv
-    #   @return [String | Void] サブコマンドが引数を取る場合に、OptionParser#onのロングフォームに指定する値を定めたもの
-    # @!attribute [r] :parsed_block
-    #   @return [String | Void] OptionsParser#parse!で実行する手続き
-    SubCommandSpec = Struct.new(:sub_command_form, :long_form, :short_form, :desc, :option_argv, :parsed_block) do
-      def initialize(...)
-        super
-        freeze
-      end
-
-      # サブコマンドのそれぞれの形式を配列で返す。テストコード用
-      # @return [Array<String>]
-      def take_command_forms
-        deconstruct_keys(%i[sub_command_form long_form short_form]).values
-      end
-
-      def long_form_with_argv
-        "#{long_form} #{option_argv}"
-      end
-
-      def no_args?
-        option_argv.nil?
-      end
-
-      def optional?
-        /\A\[\w+\]\Z/.match?(option_argv)
-      end
-
-      def required?
-        /\A\w+\Z/.match?(option_argv)
-      end
-
-      # サブコマンドを受け取ったら、そのショートフォームを返す
-      # @params word [<String>]
-      # @return [<String>]
-      def to_opts(word)
-        short_form if deconstruct_keys(%i[sub_command_form long_form short_form]).values.include?(word)
-      end
-    end
-
-    SubCommandSubSpec = Struct.new(:sub_command_form, :long_form, :short_form) do
-      def initialize(...)
-        super
-        freeze
-      end
-
-      # サブコマンドのそれぞれの形式を配列で返す。テストコード用
-      # @return [Array<String>]
-      def take_command_forms
-        deconstruct_keys(%i[sub_command_form long_form short_form]).values
-      end
-
-      # サブコマンドを受け取ったら、そのサブコマンドのシンボルを返す
-      def to_sym(word)
-        sub_command_form.intern if deconstruct_keys(%i[sub_command_form long_form short_form]).values.include?(word)
       end
     end
 
