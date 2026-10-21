@@ -1,5 +1,5 @@
 [tools]
-ruby = "4.0.2"
+ruby = "4.0.7"
 
 [shell_alias]
 n = "nvim --listen /tmp/nvim.sock"

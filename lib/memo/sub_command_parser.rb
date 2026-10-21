@@ -107,7 +107,7 @@ module Memo
     def parse_help_command(_sym, argv: nil)
       # TODO: コマンドごとのヘルプが欲しい
       Memo::SubCommandParser::SUB_COMMANDS.include?(argv)
-      puts Message::HELP_MESSAGE_GENERAL
+      puts Memo::HelpMessage::GENERAL
       exit 0
     end
 

@@ -3,19 +3,17 @@
 ### gemspec
     - gemとして公開する必要がない。gemspecについて調査しておくこと
 
-### バージョン
-    - gemspecの件が終了したらバージョンを1.0.0にする
-
 ### DB・CLI・残タスク
 - setup.rbのto_schemaをmodel/以下に入れたい
 - Database以下の構成
     - setupは1. create/drop tables, 2. Seeder, 3. schemaの三つに分けられる
-- memo help [sub_command]の作成
+- memo help [sub_command]の作成: コマンドごとのヘルプがほしい
 - モックデータからテストコードの検証を行うようにする
 - loaderフォルダについて、フォルダに入れるまでで充分。Loaderモジュールは削除する
     - Loaderに値を入れる場面で、FileSeed, DirectorySeedを使いたい
 - View::Listについて、ネストしたハッシュを配列・構造体・集合のどれかを使って直す
     - コードが複雑になってしまったため
+
 
 ## その他やりたいこと
 ## テスト系
