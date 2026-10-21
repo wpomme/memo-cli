@@ -2,74 +2,6 @@
 
 module Memo
   module MockSeed
-    TEST_CLI_THIRD_PARTY_MISE_FILE_CONTENT = <<~CLI_THIRD_PARTY_MISE_FILE
-      ---
-      tags: ["CLI", "External Command", "Package Manager", "Runtime Version Manager"]
-      ---
-      # mise.md
-      # TODO: mise の設定に関することは docs/setting/mise.md に書く
-      ## mise
-      - nodejsやpythonなど、ランタイムのバージョンを管理できるツール
-          - 他にも使い出がありそう
-
-      ### 例
-      ```bash
-      # サブコマンドの一覧を表示
-      mise
-
-      # サブコマンドのヘルプを表示
-      mise help <subcommand>
-
-      # パッケージをインストールしてmise.toml. にパッケージを追加するコマンド
-      # mise で利用できるパッケージの一覧が見れる
-      mise use
-
-      # 利用できるRubyのランタイムを全て表示
-      mise ls-remote ruby
-
-      # 利用できるRubyのランタイムのうち、バージョンが4系のものを表示する
-      mise ls-remote ruby@4
-      ```
-
-      - miseのconfigファイルを管理する
-      ```bash
-      # miseのコンフィグファイルの一覧を見る
-      mise config
-      ```
-
-      - 管理しているランタイムやパッケージの詳細情報を確認
-      ```
-      mise ls
-      ```
-
-      - nodejsの最新のLTSをインストールする
-      ```
-      mise use -g node@lts
-
-      # mise で管理できるプラグインの一覧をみる
-      mise registry
-      ```
-    CLI_THIRD_PARTY_MISE_FILE
-
-    TEST_SETTING_MISE_FILE_CONTENT = <<~SETTING_MISE_FILE
-      ---
-      tags: ["toml", "duplicated filenames", "Tips"]
-      ---
-      ## mise.md
-      ### mise.toml
-      - mise.tomlを読み取る順番(抜粋)
-          - ~
-          - .config/mise.toml        (local)
-          - .cinfig/mise/config.toml (dotfiles)
-          - ~
-
-      ### install
-      ```bash
-      # mise install でそれぞれのmise.toml をみてパッケージをインストールする
-      mise install
-      ```
-    SETTING_MISE_FILE
-
     TEST_ANSI_ESCAPE_CODE_AND_SET_COLOR_FILE_CONTENT = <<~ANSI_ESCAPE_CODE_AND_SET_COLOR_FILE
       ---
       tags: ["Terminal", "Charactor"]
@@ -122,159 +54,168 @@ module Memo
           - 例えば、文字色を緑にしたかったら'\033[32m'と'\033[0m'で挟むと、その間の文字色が緑になる
     ANSI_ESCAPE_CODE_AND_SET_COLOR_FILE
 
-    TEST_ALIAS_FILE_CONTENT = <<~ALIAS_FILE
+    TEST_CHROME_FILE_CONTENT = <<~CHROME_FILE
+      ---
+      tags: ["Browser", "Frontend"]
+      ---
+      ## Chrome
+
+      - 開発コンソールのコマンドパレッドの出し方
+          - スクリーンショットを撮るときに使う
+          `Cmd + Shift + P`
+    CHROME_FILE
+
+    TEST_BUILTIN_FILE_CONTENT = <<~BUILTIN_FILE
       ---
       tags: ["bash", "CLI", "builtin", "Command inspection"]
       ---
-      ## alias: CLIにエイリアスを付ける
+      ## builtin: そのコマンドがbuiltinかどうかを判別する
+      - 組み込みだと正常終了し、何も帰ってこない
+      - それ以外だと何かが帰ってくる
+      - cdがカスタマイズされてないかどうかを調べたりするのに使うらしい
+    BUILTIN_FILE
+
+    TEST_HASH_FILE_CONTENT = <<~HASH_FILE
+      ---
+      tags: ["bash", "CLI", "builtin", "Command inspection"]
+      ---
+      ## hash: bash builtinコマンド
+      - その環境で実行できるコマンドと、そのコマンドのパスの一覧が確認できる
       ```bash
-      ## aliasを実行すると、その環境のエイリアスの一覧が見れる
-      alias
+      hash | wc -l
+      # > 2692
+
+      hash | grep "^ls"
+      # > ls=/bin/ls
+      # > ...
+      # > ...
       ```
-    ALIAS_FILE
+    HASH_FILE
 
-    TEST_COMMAND_FILE_CONTENT = <<~COMMAND_FILE
-      ---
-      tags: ["bash", "CLI", "builtin", "Command inspection"]
-      ---
-      ## command (bash builtin command)
-
-      ### 例
-      ```
-      # シェル関数やエイリアスを無視して、元のコマンドや、外部プログラムを直接実行するために使う
-      ## 例
-      ## エイリアスなしのls を実行する
-      command ls
-
-      ## -v エイリアスなどがあれば、その情報を表示する
-      command -v ls
-      > alias ls='ls -GpF'
-
-
-
-      ## -V そのコマンドが組み込み関数かどうかの情報を取得する
-      ### 例1: cd
-      command -V cd
-      > cd is a shell builtin
-
-      ### 例2: gs
-      command -V gs
-      gs is an alias for git status
-      ```
-    COMMAND_FILE
-
-    TEST_CHMOD_FILE_CONTENT = <<~CHMOD_FILE
-      ---
-      tags: ["bash", "CLI", "File and Directory", "edit", "completion"]
-      ---
-      ## chmod: ファイルモードとアクセス権限を変更するコマンド
-
-      ### ZSH でのchmod のオプション補完
-      - chmodと入力した後にTABを入力すると次のようなオプションの一覧が表示される。 便利。
-
-      ```
-      a  -- all
-      g  -- group
-      o  -- others
-      u  -- owner
-      -   +   =
-      ```
-    CHMOD_FILE
-
-    TEST_REALPATH_FILE_CONTENT = <<~REALPATH_FILE
+    TEST_LS_FILE_CONTENT = <<~LS_FILE
       ---
       tags: ["bash", "CLI", "File and Directory", "表示"]
       ---
-      ## realpath: 実体の方のパスを返す
-      - How to
+      ## ls: list directory contents
       ```bash
-      realpath <filename>
+      ## 再帰的にファイル名を表示する
+      ls -R memo/
+
+      ## memo/フォルダの全てのファイルの詳細を表示する
+      ## totalや空行は他のコマンドと組み合わせて消すのが一番良さそう
+      ls -Rl memo/
+
+      ## -Tは-lと組み合わせると年数も表示できる
+      ls -RlT memo/
+
+      ## さらに-tと組み合わせて、最終更新日時(mtime)が新しい順に表示することができる
+      ls -RTlt memo/
+
+      ## なお、-uも付けると、最終アクセス日時(atime)が新しい順に表示することができる
+      ### 最終更新時間 -> Last Modified Time, 最終アクセス時間 -> Last Access Time
+      ls -RTltu memo/
+
+      ## aliasで定義されているlsの情報を確認
+      ## -G: 色付け -F: ファイルの種別によって末尾に色々つける -p: ディレクトリの末尾にスラッシュを付ける
+      ## * OSによってオプションの意味が結構変わるコマンドだったような...
+      command -v
+      > alias ls='ls -GpF'
+
+      ## aliasで定義されているllの情報も確認
+      ## -a: ドットファイルも表示する -l: 詳細表示（下記参照）
+      command -v ll
+      > alias ll='ls -alGpF'
+
+      ## よく使うコマンド
+      ### 更新順に表示するとき
+      ls -lt
+
+      ### 容量順に表示するときは-Sオプションを使う
+      ### さらに、-hで容量に単位がつく
+      ### なお、-sオプションは、使用しているブロック数を表示する
+      ls -lS
       ```
 
-      - ユースケース
-      ```bash
-      # フルパスを取得してpbcopyに渡す
-      realpath <filename> | pbcopy
-      ```
-    REALPATH_FILE
+      ## -lオプションについて
 
-    TEST_KILL_FILE_CONTENT = <<~KILL_FILE
+      - `-l`: 詳細表示
+         以下のデータを表示する
+         file mode, number of links, owner name, group name,
+         number of bytes in the file, abbreviated month, day-of-month file was last modified, hour file last modified, minute file last modified,
+         and the pathname.
+    LS_FILE
+
+    TEST_GROUPS_FILE_CONTENT = <<~GROUPS_FILE
+      ---
+      tags: ["bash", "CLI", "legacy"]
+      ---
+      ## groups: グループを表示する
+      - idコマンドにより廃止された
+      - `id -Gn [user]`と同等である
+    GROUPS_FILE
+
+    TEST_LSOF_FILE_CONTENT = <<~LSOF_FILE
       ---
       tags: ["bash", "CLI", "process", "terminate"]
       ---
-      ## kill: プロセスを終了させるか、プロセスにシグナルを送信する
+      ## lsof: list open files - オープン中のファイルについて、その情報を得るためのコマンド
 
-      ### 例: プロセスを終了させる
+      ### 例: ポート8080によって開かれているファイルの情報を得るには
       ```bash
-      ## -9オプションを使う
-      kill -9 <PID>
+      lsof -i:8080
+      # 次のような値が返ってくる
+      # COMMAND   PID USER   FD   TYPE             DEVICE SIZE/OFF NODE NAME
+      # node    25789   hy   32u  IPv6 0xc355a48837ad9ec6      0t0  TCP localhost:rwhois (LISTEN)
       ```
-    KILL_FILE
 
-    TEST_PS_FILE_CONTENT = <<~PS_FILE
-      ---
-      tags: ["bash", "CLI", "process", "表示", "配列"]
-      ---
-      ## ps: プロセスのステータスを確認する
-
-      ### オプション
-      a - 端末のあるプロセス表示
-      c - 実行コマンドのパスを省略する
-      u - 実行ユーザー名表示
-      x - 端末のないプロセス表示
-      e - 環境変数を表示
-
-      ## 例
-      - 子プロセスの確認(PPID)
+      ### 例: 特定のuserが開いているファイルの情報を得るには
       ```bash
-      ## どちらかを使う
-      aux -o ppid
-      aux -ef
-      ```
+      lsof -u <USER>
 
-      ## 実行プロセスの集計
+      ## USERが開いているプロセス名の一覧を取得するには
+      lsof -u <USER> | cut -w -f1 | sort | uniq
       ```
-      $ ps aux | cut -w -f11 | xargs basename | sort | uniq -c | sort -r
-      ```
+    LSOF_FILE
 
-      - basenameを使わなくてもcオプションで同じことができる
-      ```
-      $ ps acux | cut -w -f11 | sort | uniq -c | sort -r
-      ```
-    PS_FILE
-
-    TEST_GREP_FILE_CONTENT = <<~GREP_FILE
+    TEST_FIND_FILE_CONTENT = <<~FIND_FILE
       ---
       tags: ["bash", "CLI", "search", "bulk", "pipe", "recursive"]
       ---
-      ## grep: 文字列検索
+      ## find: フォルダの階層を巡回する
 
       - 例
       ```bash
-      ## 基本形
-      # grep <word> <file>
-      grep ls foo.txt
+      # 名前に"foo"を含むファイルを検索する
+      find . -type f -name "*foo*"
 
-      ## -Rオブションを付ければfindからパイプで渡す必要もない
-      ## -R: ディレクトリの中を再帰的に検索する
-      grep -R "ls" memo/
-
-      ## memoフォルダの中にあるファイルを一括してgrepする
-      ## xargsに渡すからかalias grep='grep --color=auto'が効かない
-      find memo -type f | xargs grep --color=auto "foo"
-
-      ## --includeで特定のファイル名に該当するものだけを検索できる
-      grep -R "ls" --include="*.md" memo/
-
-      ## -cオプションでそのファイルに何回その単語が現れたかを数えることができる
-      grep -Rc "ls" memo/
-
-      ## -lオプションでその単語が現れたファイルだけを表示する
-      grep -Rl "ls" memo/
+      # 実行可能なファイルを検索して、中身の文字数などを確認する
+      find . -perm -a+x -type f -exec wc {} ;
       ```
-    GREP_FILE
 
-    TEST_CLI_CORE_TEXT_DIFF_FILE_CONTENT = <<~CLI_CORE_TEXT_DIFF_FILE
+      - オプション
+          - `-print0`: 改行の代わりにヌル文字を使って入力文字列を区切る
+    FIND_FILE
+
+    TEST_CUT_FILE_CONTENT = <<~CUT_FILE
+      ---
+      tags: ["bash", "CLI", "text", "filter", "remove"]
+      ---
+      ## cut: ファイルを適切なところでカットする
+
+      - 例
+      ```sh
+      # psコマンドの最後の行(COMMAND)を除外する
+      ps aux | cut -w -f1-10
+
+      # スネークケースの最初の文字列だけ切り取る
+      cut -d'-' -f2-
+      ```
+
+      - オプション
+          - `-w` : デリミタとしてホワイトスペースを使う
+    CUT_FILE
+
+    TEST_CLI_CORE_TEXT__FILE_CONTENT = <<~CLI_CORE_TEXT__FILE
       ---
       tags: ["bash", "CLI", "text"]
       ---
@@ -334,79 +275,120 @@ module Memo
       ```bash
       diff -u origfile patchfile | patch -u
       ```
-    CLI_CORE_TEXT_DIFF_FILE
+    CLI_CORE_TEXT__FILE
 
-    TEST_NL_FILE_CONTENT = <<~NL_FILE
+    TEST_ED_FILE_CONTENT = <<~ED_FILE
       ---
-      tags: ["bash", "CLI", "text", "表示", "集計"]
+      tags: ["bash", "CLI", "text", "legacy"]
+      ---
+      ## ed: classic text editor
+
+      ## 使い方１
+      1. `ed <filename>`でファイルを読み込む
+      2. コマンドを打ちながら修正したい行に移動したり修正する
+      3. wでsave、qでedをexit、数字を打つとその行に移動して表示する、.を打つと現在の行を表示するなど
+
+      ### 例(WIP)
+      ```bash
+      ## ファイルを読み込む
+      ed foo.txt
+      ```
+    ED_FILE
+
+    TEST_REV_FILE_CONTENT = <<~REV_FILE
+      ---
+      tags: ["bash", "CLI", "text", "reverse"]
+      ---
+      ## rev: 文字列を逆順にして表示する
+
+      ### 例
+      ```bash
+      cat foo << EOF
+      abc
+      def
+      ghi
+      EOF
+
+      rev foo
+      # > cba
+      # > fed
+      # > ihg
+      ```
+
+      - tacも参照すること
+    REV_FILE
+
+    TEST_TAC_FILE_CONTENT = <<~TAC_FILE
+      ---
+      tags: ["bash", "CLI", "text", "reverse"]
+      ---
+      ## rev: ファイルを連結させて最後の行から表示する
+
+      ### 例
+      ```bash
+      cat foo << EOF
+      abc
+      def
+      ghi
+      EOF
+
+      tac foo
+      # > ghi
+      # > def
+      # > abc
+      ```
+
+      - revも参照すること
+    TAC_FILE
+
+    TEST_UNIQ_FILE_CONTENT = <<~UNIQ_FILE
+      ---
+      tags: ["bash", "CLI", "text", "set", "edit", "filter", "remove", "集計"]
+      ---
+      - uniq: 文字の重複排除
+          - 他のコマンドとsortと組み合わせて使うことが多い
+      ```bash
+      # 例: コマンド履歴の集計
+      fc -ln 1 | sort | uniq -c | sort
+      ```
+    UNIQ_FILE
+
+    TEST_XARGS_FILE_CONTENT = <<~XARGS_FILE.freeze
+      ---
+      tags: ["bash", "CLI", "text", "bulk", "edit", "pipe", "search", "集計"]
       ---
       ## 例
-      - 行番号を付けて表示する
-      ```sh
-      nl test.txt
-      ```
-    NL_FILE
-
-    TEST_SED_FILE_CONTENT = <<~SED_FILE.freeze
-      ---
-      tags: ["bash", "CLI", "text", "substitute", "edit"]
-      ---
-      ## sed: stream editor
-
-      ## 例
+      - -Iコマンド
+      ### コマンドに渡す引数の場所を指定する
       ```bash
-      # 1.1. gitリポジトリで対象のファイルの中の命名を置換したい場合
-      ## 置換コマンドのところの-eを省略するとエラーが出る
-      ## たぶんBSD版のsedを使っているMac限定のコマンド
-      git grep -l 'foo' | xargs sed -i '' -e 's/foo/bar/g'
-
-      # 1.2. ls を使ったファイルの中身の置換
-      ls | xargs sed -i '' s/foo/bar/g
-
-      # 2. ファイル名の一括リネーム
-      # 2.1. lsと組み合わせる
-      ls | sed "p;s/test/foo-test/" | xargs -n 2 mv
-
-
-      ## その他、オプションの使い方など
-      ### lsでフォルダを除外して、ファイル名だけを表示するには
-      ```bash
-      $ ls -p | grep -v /
+      echo 01 Black Rain.aiff | tr " " - | xargs -I{} mv 01 Black Rain.aiff {}
       ```
 
-      ## オプションの詳細
-      - p: sedで変換される前の文字列も表示する
-      - i: 拡張子を指定して上書き(BSD version) -> macのsedはBSD#{'  '}
-          -> 空の文字列を指定すればバックアップなしの上書きになる#{'  '}
-          上書き(GNU version)#{'  '}
-
-    SED_FILE
-
-    TEST_TR_FILE_CONTENT = <<~TR_FILE
-      ---
-      tags: ["bash", "CLI", "text", "substitute", "edit", "filter", "remove"]
-      ---
-      ## tr: 標準出力からの文字列を置換・削除するコマンド
-
-      - 例
+      - -nコマンド
+      ### コマンドに渡す引数の数を制御する
+      - できるだけ多くの入力文字列を受け入れる
       ```bash
-      ## PATHの一覧を取得する
-      env | grep ^PATH | tr ":" "\n"
+      ls | xargs echo
       ```
-    TR_FILE
 
-    TEST_WC_FILE_CONTENT = <<~WC_FILE.freeze
-      ---
-      tags: ["bash", "CLI", "text", "表示", "集計"]
-      ---
-      ## オプション
-      出力される数値は、行数・単語数・バイト数の順番で並んでいる#{'  '}
+      - カレントディレクトリ配下のファイルについて、ファイル名を取得する
+      ```bash
+      find . -type f | fzf | xargs -n1 basename
+      ```
 
-      - -l: 行数のみ出力
-      - -c: バイト数のみ出力
-      - -m: 文字数でカウント。通常はUTF-8で数える。日本語も一文字としてカウント
-      - -w: 単語数のみ出力。日本語だと使う意味がそこまでない。
-    WC_FILE
+      - 一つのechoコマンドにつき一つの引数を渡す
+      ```bash
+      ls | xargs -n1 echo
+      ```
+
+      - findとの組み合わせ
+      拡張子のあるファイルパスを取得して、行数を数える#{'  '}
+      findに-print0を指定して、改行の代わりにヌル文字でファイルパスのリストを区切る#{'  '}
+      また、xargsに-0を指定して、空白の代わりにヌル文字を入力セパレーターとして認識する#{'  '}
+      ```bash
+      $ find . -type f -name "*.*" -print0 | xargs -0 wc -l
+      ```
+    XARGS_FILE
 
     TEST_IFCONFIG_FILE_CONTENT = <<~IFCONFIG_FILE
       ---
@@ -453,7 +435,23 @@ module Memo
       ```bash
       ## 対象のインターファイスを指定すること
       tcpdump -i en0
+
+      ## パケット回数を10回に制限して、その内容をASCII文字で出力する
+      tcpdump -i en0 -c 10 -A
+
+      ## 使用できるインターフェイスの一覧
+      tcpdump -D
+
+      ## アプリケーションのサービス名で絞り込む
+      tcpdump -i en0 port https
+      ### dnsは"domain"と指定する
+      tcpdump -i en0 port domain
+      ## ホスト名でなくポート番号で指定するな-nnを指定する
+      tcpdump -i en0 port -nn 443
       ```
+
+      ## ポート番号とサービス名の定義ファイル
+      - `/etc/services`を確認すること
     TCPDUMP_FILE
 
     TEST_CLAUDE_FILE_CONTENT = <<~CLAUDE_FILE
@@ -489,6 +487,55 @@ module Memo
       ```
     GH_FILE
 
+    TEST_MISE_FILE_CONTENT = <<~MISE_FILE
+      ---
+      tags: ["CLI", "External Command", "Package Manager", "Runtime Version Manager"]
+      ---
+      # mise.md
+      # TODO: mise の設定に関することは docs/setting/mise.md に書く
+      ## mise
+      - nodejsやpythonなど、ランタイムのバージョンを管理できるツール
+          - 他にも使い出がありそう
+
+      ### 例
+      ```bash
+      # サブコマンドの一覧を表示
+      mise
+
+      # サブコマンドのヘルプを表示
+      mise help <subcommand>
+
+      # パッケージをインストールしてmise.toml. にパッケージを追加するコマンド
+      # mise で利用できるパッケージの一覧が見れる
+      mise use
+
+      # 利用できるRubyのランタイムを全て表示
+      mise ls-remote ruby
+
+      # 利用できるRubyのランタイムのうち、バージョンが4系のものを表示する
+      mise ls-remote ruby@4
+      ```
+
+      - miseのconfigファイルを管理する
+      ```bash
+      # miseのコンフィグファイルの一覧を見る
+      mise config
+      ```
+
+      - 管理しているランタイムやパッケージの詳細情報を確認
+      ```
+      mise ls
+      ```
+
+      - nodejsの最新のLTSをインストールする
+      ```
+      mise use -g node@lts
+
+      # mise で管理できるプラグインの一覧をみる
+      mise registry
+      ```
+    MISE_FILE
+
     TEST_NKF_FILE_CONTENT = <<~NKF_FILE
       ---
       tags: ["CLI", "External Command", "text", "表示", "変換", "Character Inspection", "edit"]
@@ -514,6 +561,28 @@ module Memo
       - units: 単位の計算ができる
           - mac版だと'/usr/share/misc/units.lib'に使える単位の一覧がある
     UNITS_FILE
+
+    TEST_SQLITE3_FILE_CONTENT = <<~SQLITE3_FILE
+      ## sqlite3: sqlite3 CLIの使い方など
+      ### 使い方
+      ```bash
+      ## DBを読み込む
+      sqlite3 test.db
+      ```
+
+      ### 例
+      ```
+      -- テーブルの一覧を表示する
+      .table
+
+      -- テーブルのスキーマを確認する
+      .schema <table_name>
+
+      -- 結果をHTMLにしてブラウザで表示する
+          - .wwwの後にEnterを押して、その後にSQLを実行するとブラウザが起動して結果がテーブルで確認できる
+      .www
+      ```
+    SQLITE3_FILE
 
     TEST_BRANCH_FILE_CONTENT = <<~BRANCH_FILE
       ---
@@ -556,7 +625,7 @@ module Memo
       ```
     CONFIG_FILE
 
-    TEST_GIT_DIFF_FILE_CONTENT = <<~GIT_DIFF_FILE
+    TEST_GIT__FILE_CONTENT = <<~GIT__FILE
       ---
       tags: ["CLI", "git", "Basic Snapshotting", "Comparison Version", "Patching"]
       ---
@@ -582,400 +651,399 @@ module Memo
       # patchファイルを作成
       git diff HEAD^ HEAD > patch.diff
       ```
-    GIT_DIFF_FILE
+    GIT__FILE
 
-    TEST_GITIGNORE_FILE_CONTENT = <<~GITIGNORE_FILE
+    TEST_GIT_FILE_CONTENT = <<~GIT_FILE
       ---
-      tags: ["git", "Git Guides", "Setting"]
+      tags: ["CLI", "git", "documentation"]
       ---
-      - .gitignore
-      ## ローカル環境だけでgitignoreを設定するには
-      .git/info/excludeに該当のファイル・フォルダ名を書けばいい
-    GITIGNORE_FILE
+      - git
+      ## ドキュメント
+      https://git-scm.com/about
+          - git用のTUIなどの一覧が載っている
+    GIT_FILE
 
-    TEST_MERGE_FILE_CONTENT = <<~MERGE_FILE
+    TEST_LOG_FILE_CONTENT = <<~LOG_FILE
       ---
-      tags: ["CLI", "git", "Branching and Merging"]
+      tags: ["CLI", "git", "Branching and Merging", "Inspection Version"]
       ---
-      ## git merge
+      - 基本的なログ表示
       ```bash
-      # git squashしてマージ
-      git merge --squash origin/feature/foo
-
-      # コンフリクトの事前確認
-      git merge --no-commit --no-ff feature/foo
+      git log --oneline
       ```
-    MERGE_FILE
 
-    TEST_PULL_FILE_CONTENT = <<~PULL_FILE
-      ---
-      tags: ["CLI", "git", "Sharing and Updating Projects"]
-      ---
-      ## pull: リモートからブランチを取得し、ローカルのブランチとマージする
-
-      ### ローカルとリモートの履歴が分岐していた場合のwaringについて
-      1. pull.ff only: fast-forwardできる場合だけpull。分岐していたらエラー
-      2. pull.rebase true: ローカルのコミットをリモートブランチの先頭に載せる
-      3. pull.rebase false: マージコミットを作成して統合する
-
-      #### 設定方法
+      - ブランチの分岐を視覚的に表示
       ```bash
-      # 1.の場合
-      git config --global pull.ff only
-
-      # 2.の場合
-      git config --global pull.rebase true
+      git log --graph --oneline --all
       ```
-    PULL_FILE
 
-    TEST_REBASE_FILE_CONTENT = <<~REBASE_FILE
-      ---
-      tags: ["CLI", "git", "Patching"]
-      ---
-      ## rebase: Reapply commits on top of another base tip
-
-      ## 例
+      - 特定のファイルの変更履歴
+          - ファイル名の変更があっても、その前のコミットログまで追うことができる
       ```bash
-      ## 対話的にリベースする場合
-      ### 例: 直前の二つのコミットをsquashしたい場合
-      ### 直前の二つのコミットHEAD~2を指定して、リベース用のエディタを開く
-      git rebase -i HEAD~2
-      ## -> 二番目のコミットのpickをs(squash)に変更して保存する。
+      git log --follow -- filename
       ```
-    REBASE_FILE
 
-    TEST_RESTORE_FILE_CONTENT = <<~RESTORE_FILE
-      ---
-      tags: ["CLI", "git", "Basic Snapshotting"]
-      ---
-      - `git restore`: ファイルの復元
-
+      - developにはない現在のブランチのみのコミットを表示する
       ```bash
-      # staged ではないファイルを元に戻す
-      git restore <filename>
+      git log develop..HEAD
 
-      # staged のファイルを not staged に戻す
-      git restore --staged <filename>
+      # -p で差分も確認できる
+      git log -p develop..HEAD
+
+      # ここからmergeコミットを取り除くには
+      git log --no-merges develop..HEAD
+
+      # tig でも同様
+      tig -p --no-merges develop..HEAD
       ```
-    RESTORE_FILE
+    LOG_FILE
 
-    TEST_SWITCH_FILE_CONTENT = <<~SWITCH_FILE
+    TEST_CHECKOUT_FILE_CONTENT = <<~CHECKOUT_FILE
       ---
       tags: ["CLI", "git", "Branching and Merging", "legacy"]
       ---
-      ## `git switch`: ブランチの操作
+      ## git checkout: git restore + git switchの機能があるgit CLI
+      ## `git checkout`から`git switch`, `git restore`へ
+      - `git checkout`の役割
+          - ブランチの切り替え
+          - 新規ブランチの作成
+          - ファイルの復元
+          - コミットのチェックアウト
+
+          -> これらを`git switch`か`git restore`へ
+    CHECKOUT_FILE
+
+    TEST_PUSH_FILE_CONTENT = <<~PUSH_FILE
+      ---
+      tags: ["CLI", "git", "Sharing and Updating Projects"]
+      ---
+      - 現在チェックアウトしているブランチをpushする
+      ```bash
+      # 最もシンプルな方法
+      git push origin HEAD
+      # 上流ブランチ(upstream)が設定済みならgit push でOK
+      git push
+      # 最初に-uを付けて上流を設定しておけばいい
+      git push -u origin HEAD
+      ```
+
+      ## 上流ブランチ(Upstream Branch)
+      - ローカルブランチが追跡(トラッキング)しているリモートブランチのこと
+      ```bash
+      ## 上流ブランチの設定方法
+      # -u(--set-upstream)オプションを追加する
+      git push -u origin <branch-name>
+
+      ## 現在のブランチが上流ブランチに設定されているかどうかを確認
+      git rev-parse --abbrev-ref @{upstream}
+      # -> 未設定の場合はエラーになる
+      ```
+    PUSH_FILE
+
+    TEST_RESET_FILE_CONTENT = <<~RESET_FILE
+      ---
+      tags: ["CLI", "git", "Basic Snapshotting"]
+      ---
+      ## git reset
+      - resetとrevertの違い
+          - reset -> コミットログが残らない
+          - revert -> コミットログが残る
+
+      - featureブランチで直前のコミットを取り消す
+      ```bash
+      git reset --soft HEAD^
+      ```
+    RESET_FILE
+
+    TEST_REV_PARSE_FILE_CONTENT = <<~REV_PARSE_FILE
+      ---
+      tags: ["CLI", "git", "Plumbing Commands"]
+      ---
+      - rev-parse
+          - "Pick out and massage parameters"というporcelain command
+
+      - `git rev-parse --show-toplevel`
+          - 対象のgitリポジトリの第一階層のディレクトリを取得できるコマンド
+          - このコマンドをスクリプトで使用する際の注意点
+          1. gitリポジトリ外で実行するとエラーになる
+          2. worktree内での実行、シンボリックリンク経由による実行、サブモジュール内での実行
+
+          - 改善版
+      ```bash
+      # Add Error Handling
+      REPO_ROOT=$(git rev-parse --show-toplevel 2>/dev/null) || {
+        echo "Error: not inside a git repository" >&2
+        exit 1
+      }
+
+      TARGET_PATH="$REPO_ROOT/path/to/target"
+      ```
+
+      - なお、gitに依存したくない場合はこちら
+      ```bash
+      SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+      REPO_ROOT="$(cd "$SCRIPT_DIR/path/to/target" && pwd)"
+      ```
+    REV_PARSE_FILE
+
+    TEST_UPSTREAM_FILE_CONTENT = <<~UPSTREAM_FILE
+      ---
+      tags: ["git", "Sharing and Updating Projects", "Branching and Merging", "Option"]
+      ---
+      ## upstream: 追跡ブランチ
 
       ```bash
-      # ブランチの切り替え
-      git switch <branch>
+      ## git pushするときに-u(--set-upstream) originを付けると、そのブランチは追跡ブランチとなる
+      git push -u origin feature/foobar
+      # -> 次回以降はgit pushだけでpushできる
 
-      # 新規ブランチを作成して切り替え
-      git switch -c <branch>
+      ## 追跡ブランチが設定されているかどうかを確認するには
+      git branch -vv
+      # -> 三番目の項目に[origin/feature/foobar]などと表示されていれば、そのブランチは追跡ブランチ
+      ## コマンドで抽出するなら:
+      git branch -vv | grep '[origin/'
 
-      # 特定のコミット・ブランチから新しいブランチを作成して、そのブランチに切り替える場合
-      git switch -c <branch> <commit>
+      ## 追跡ブランチを取り消すには
+      git branch --unset-upstream develop
+
+      ## ただし、git pullするときにorigin developを追加する必要がある
+      git pull origin develop
       ```
+    UPSTREAM_FILE
 
-    SWITCH_FILE
-
-    TEST_GITLAB_FILE_CONTENT = <<~GITLAB_FILE
-      ---
-      tags: ["SaaS"]
-      ---
-      ## gitlab: コード管理プラットフォーム
-
-      ### SSHキー問題
-      - SSHキーを手順通りに設定してもすぐdeniedとなってしまっていた
-          - SSHキーが複数あると~/.ssh/id_rsaかid_ed25519を読み取ってしまう
-          - そのため、次のドキュメントに従って適切なキーを設定すること
-              - https://docs.gitlab.com/user/ssh_troubleshooting/#error-permission-denied-publickey
-    GITLAB_FILE
-
-    TEST_DIRECTORY_FILE_CONTENT = <<~DIRECTORY_FILE
-      ---
-      tags: ["How to", "Directory"]
-      ---
-      ## directory: ディレクトリ構成図を書くときに使う記号
-
-      - 例
-      ```
-      home/
-      ├─ foo/
-      │  ├── file1.txt
-      │  ├── file2.txt
-      │  └── file3.txt
-      ├─ bar/
-      ├─ bar/
-      └─ qux/
-      ```
-    DIRECTORY_FILE
-
-    TEST_SERVER_FILE_CONTENT = <<~SERVER_FILE
+    TEST_DATA_EXCHANGER_FILE_CONTENT = <<~DATA_EXCHANGER_FILE
       ---
       tags: ["How to", "Network"]
       ---
-      - server: 簡易的なWebサーバーを起動させる方法
+      ## 概要
+      - パソコン間でファイルの送受信をしたいときなど
+
+      ### 送り手側
+      1. ncで送信する
+      ``` sh
+      # -l でリスナーモードにする
+      # ポート番号は任意のものを使用する。一旦8888とする。
+      cat file.txt | nc -l 8888
+
+      # 画像などは多分こっちがいい
+      nc -l 8888 < file.jpeg
+      ```
+
+      2. 送信側IPアドレスを調べる
+      ``` sh
+      ifconfig | grep "inet "
+      ```
+
+      ### 受け手側
+      1. ncで受信する
+      ``` sh
+      nc [送り手川のIPアドレス] 8888 > received.txt
+      ```
+    DATA_EXCHANGER_FILE
+
+    TEST_RANDOM_FILE_CONTENT = <<~RANDOM_FILE
+      ---
+      tags: ["How to", "Generator"]
+      ---
+      ## Random: 乱数やランダムな文字列の表示方法
       ```bash
-      # ruby
-      ruby -rwebrick -e 'WEBrick::HTTPServer.new({:DocumentRoot => "./"}).start'
-
-      # python
-      python3 -m http.server 8000
+      ## 1から100までの数が4カラムで表示される
+      jot -r 100 | rs 25
       ```
-    SERVER_FILE
+    RANDOM_FILE
 
-    TEST_AWK_FILE_CONTENT = <<~AWK_FILE
+    TEST_SPECIAL_CHARACTERS_FILE_CONTENT = <<~SPECIAL_CHARACTERS_FILE
       ---
-      tags: ["bash", "CLI", "awk", "text", "edit"]
+      tags: ["How to", "Characters", "Keyboard"]
       ---
-      ## awkの基本
-      パターンにマッチした行に対してアクションを実行する
+      ## 特殊文字(Special Characters)
+      - 特殊文字とその文字の打ち方について
+
+      ### バックスラッシュ(\\)
+      - M + ¥
+          - <kbd>option</kbd> + <kbd>¥</kbd>
+    SPECIAL_CHARACTERS_FILE
+
+    TEST_HOVER_FILE_CONTENT = <<~HOVER_FILE
+      ---
+      tags: ["CSS", "擬似クラス"]
+      ---
+      ## hover: CSSの擬似クラス(pseudo-classes)
+      - カーソルを要素の上にかざしたときに発動するスタイル
+
+      ### 順番
+      - LVHA順で定義されるようにする
+          - :link — :visited — :hover — :active
+
+      ## 例
+          - 擬似クラスを複数記載する場合はカンマで区切る
+      ```css
+      .link-button:hover, :active {
+          background-color: blue;
+      }
       ```
-      pattern1 { action1 }
-      pattern2 { action2 }
+    HOVER_FILE
+
+    TEST_CONSOLE_FILE_CONTENT = <<~CONSOLE_FILE
+      ---
+      tags: ["JavaScript", "Debug", "I/O"]
+      ---
+      - console
+      ```javascript
+      # Map オブジェクトにはconsole.table()を使うと中身が見やすい
+      const map = new Map(obj);
+      console.table(map);
+
+      # Object にはconsole.dir() がいい
+      # Map に使うと全部見えてしまう
+      console.dir(obj);
+      ```
+    CONSOLE_FILE
+
+    TEST_MAP_FILE_CONTENT = <<~MAP_FILE.freeze
+      ---
+      tags: ["JavaScript", "連想配列", "データ構造", "Notation"]
+      ---
+      - map
+      ```javascript
+      # 値を得るときはget() を使う
+      const map = new Map();
+
+      map.get("key")
+      // -> key に対応するvalue が返ってくる
       ```
 
-      ## ビルトイン関数
-      - substr
-      strの一部を抽出する
+      ## JSDoc の書き方
+      ```javascript
+      /**
+       *#{' '}
+       * @param {Map<string, String>} userMap - ユーザーとユーザーに紐づくMap
+       */
       ```
-      substr(str, start[, length])
+    MAP_FILE
+
+    TEST_PACKAGE_JSON_FILE_CONTENT = <<~PACKAGE_JSON_FILE.freeze
+      ---
+      tags: ["JavaScript", "Package Manager", "Setting"]
+      ---
+      ## package.json:#{' '}
+
+      ### バージョン指定について
+      - 数字のみ: 指定したバージョンと正確に一致するバージョンがインストールされる
+
+      - キャレット(^): メジャーバージョン以外の更新は可能とする
+          - ^1.2.3: 1.2.3以上、2.0.0未満までのバージョン更新を可能とする
+
+      - チルダ(~): マイナーバージョンの更新を可能とする
+          - ~1.2.3: 1.2.3以上、1.3.0未満までのバージョン更新を可能とする
+
+      - 大なり(>): 指定したバージョン以上なら更新可能とする
+    PACKAGE_JSON_FILE
+
+    TEST_LUA_FILE_CONTENT = <<~LUA_FILE
+      ---
+      tags: ["lua", "Package Manager", "Linter", "Setting", "Formatter"]
+      ---
+      ## lua
+
+      ### パッケージマネージャー
+      - `luarocks`を使う
+          - homebrewからインストールする
+
+      ### リンター
+      - `luacheck`を使う
+          - luarocksからインストールする
+              - ref: https://github.com/lunarmodules/luacheck#installation
+
+      - neovimの設定ファイルにLinterを実行
+          - dotfiles/の下に`.luacheckrc`を作成する
+              - globalsに`vim`を設定し、accessing undefined variable vimの警告をなくす
+
+      - 実行
+      ```bash
+      luacheck config/nvim/**/*.lua
+      ```
+    LUA_FILE
+
+    TEST_ONELINER_FILE_CONTENT = <<~ONELINER_FILE
+      ---
+      tags: ["perl", "oneliner", "表示", "edit", "substitute", "regex"]
+      ---
+      ## Perl one-liners: Perlによるワンライナー
+      ```bash
+      ## ドキュメント: perlrunにperlコマンドのオプションの解説がある
+      man perlrun
+
+      ## grep系
+      ### ドットファイルだけを取得
+      ls -alGpF | perl -lane 'print if $F[-1] =~ /^./'
+
+      ### bashのマニュアルから章を抜き出すコマンド
+      man bash | perl -ne 'print if /^[A-Z]/'
+
+      ### 特定のフォルダから、"href="か"src="が含まれている行を抜き出すコマンド(正規表現の「選択」)
+      find packages/web/src | xargs -I@ perl -ne 'print if /href=|src=/' @
+
+      ## sed系
+      ### 対象ファイルについて、文字列の一括置換を行う場合(in-place編集)
+      git grep -l NOT_FOUND_MESSAGE | xargs -I@ perl -pi -e 's/NOT_FOUND_MESSAGE/READ_RESULT_IS_NOT_FOUND/g' @
+
+      ### マッチする部分が正規表現ではなくて文字列である場合は、正規表現の最初に\Qを付ける
+      ### 置換する文字列にも\Qを付けてしまうと、メタ文字も一緒に置換されてしまう
+      echo "_(expected).must_equal(actual)" | perl -p -e 's/\Q_(expected).must_equal(actual)/_(actual).must_equal(expected)/g'
+
+      ### マッチングしたものを取り出す場合: https://perldoc.jp/docs/perl/5.22.1/perlretut.pod#Extracting32matches
+      ### グループ化メタ文字()の中でマッチしたものは、$1, $2, ...などで取り出せる
+      ### must_equalのカッコの中身にマッチさせて、その中身を_()の中に移動する
+      echo "_(expected).must_equal([:list, 'foo'])" | perl -p -e 's/\Q_(expected).must_equal(\E(.+))/_($1).must_equal(expected)/g'
+      # => _([:list, 'foo']).must_equal(expected)
       ```
 
       ## オプション
-      - `-v`: awkから参照可能な変数を指定する
+          - `man perlrun`にオプションのドキュメントがある。詳しくはそちらを参照すること。
+      - -e: perlのワンライナーを入力するために使用する。-eの後にワンライナーを入力すれば、perlはそのワンライナーを認識する
+      - -n: 一行ずつ処理する。ダイアモンド演算子と`while (<>) {...}`と同じ。`sed -n`や`awk`と似たような処理を実行する
+      - -p: -nと同じように一行ずつ処理するが、警告が-nより詳しい。perlにprintさせるだけなら、-nを使う。
+      - -i: in-placeで編集する。-iの後に何も指定しなければ、同じファイルを編集する。バックアップが不要なら`perl -i -e '...' <filename>`のようにして使う。
+      - -l: 行末処理の自動化を行う。入力時に改行を削除し、出力時に改行を追加する。
 
-      ## セパレーター
-      - FS: 入力時のフィールドセパレーター
-          - デフォルトは空白文字で、デフォルトだとタブや改行文字もセパレーターとして認識されるとのこと
+      ## 正規表現のオプション
+      - \Q: その正規表現のメタ文字をエスケープする
+      - \E: \Qなどのエスケープを\Eが追加された位置で終了させる
+    ONELINER_FILE
 
-      - RS: 入力時のレコードセパレーター
-          - デフォルトは改行文字
+    TEST_ARGUMENTS_FILE_CONTENT = <<~ARGUMENTS_FILE
+      ---
+      tags: ["Ruby", "引数", "TODO"]
+      ---
+      ## Arguments: Rubyの引数の取り扱いについて
+      - キーワード引数
+      ```ruby
+      ### 出典: https://www.ruby-lang.org/ja/news/2019/12/12/separation-of-positional-and-keyword-arguments-in-ruby-3-0/#what-is-deprecated
+      ## キーワード引数を渡したい場合は次の形式にすべき
+      foo(k: expr)
+      foo(**expr)
 
-
-      ## 例
-      - 長い行を削除してファイルを表示する
-      ```bash
-      cat error.log | awk 'length($0) <= 100 { print $0 }'
+      ## キーワード引数を受け取りたい場合は次の形式にすべき
+      def foo(k: default)
+      def foo(k:)
+      def foo(**kwargs)
       ```
+    ARGUMENTS_FILE
 
-      - フィールドセパレーターをタブ文字に指定する
-      -
-      ```bash
-      memo tags -c | awk -v FS="\t" '$1 == 1 { print $2 }'
+    TEST_ASSIGNMENT_FILE_CONTENT = <<~ASSIGNMENT_FILE.freeze
+      ---
+      tags: ["Ruby", "配列", "演算子式", "初期化"]
+      ---
+      ## assignment: Rubyの代入式
+      - 参照(api-docs): https://docs.ruby-lang.org/en/master/syntax/assignment_rdoc.html#abbreviated-assignment
+
+      ### 初期化子
+      ```ruby
+      # a が偽か未定義ならば1を代入。
+      a ||= 1#{'         '}
       ```
-    AWK_FILE
-
-    TEST_LANG_JAVASCRIPT_ARRAY_FILE_CONTENT = <<~LANG_JAVASCRIPT_ARRAY_FILE
-      ---
-      tags: ["JavaScript", "配列", "データ構造"]
-      ---
-      - Array
-      ```javascript
-      # 配列の最後の値を取得するのにat() が使えるようになった
-      arr.at(-1);
-
-      # 配列の内、最後だけを取り除く場合slice() が使える
-      arr.slice(0, -1)
-      ```
-    LANG_JAVASCRIPT_ARRAY_FILE
-
-    TEST_JSDOC_FILE_CONTENT = <<~JSDOC_FILE.freeze
-      ---
-      tags: ["JavaScript", "Annotation", "Notation"]
-      ---
-      ## JSDoc の書き方
-      ```javascript
-      ## Array
-      # ex.1
-      /** @type {Array<number>} */
-
-      # ex.2
-      /**
-       * URL の文字列を処理する
-       *#{' '}
-       * @param {Array<string>} urls - URL の文字列#{' '}
-       */
-       const processUrls = (urls) => processedUrls;
-
-       ## string
-       ### 先頭のアルファベットは小文字のはず
-      /**
-       * string か boolean
-       *
-       * @type {(string | boolean)}
-       */
-      var sb;
-      ```
-    JSDOC_FILE
-
-    TEST_NPM_FILE_CONTENT = <<~NPM_FILE
-      ---
-      tags: ["JavaScript", "Package Manager", "Setting", "CLI"]
-      ---
-      - npm: パッケージマネージャー
-      ```bash
-      ## グローバルにインストールしたコマンドの確認
-      npm list -g
-
-      ## こちらの方が見やすい場合があるかも
-      npm list -g --depth=0
-
-      ## npx: ローカルかリモートのnpmパッケージを実行
-      ## -> pnpm dlxと違いローカルのパッケージを使用して実行することもあるみたい
-      npx jest
-      ```
-
-    NPM_FILE
-
-    TEST_PNPM_FILE_CONTENT = <<~PNPM_FILE
-      ---
-      tags: ["JavaScript", "Package Manager", "Setting", "CLI"]
-      ---
-      - pnpm: パッケージマネージャー
-      ```bash
-      ## exec: プロジェクトのスコープでコマンドを実行
-      pnpm exec textlint
-
-      ## 他のコマンドと被らなければexecは省略可能
-      pnpm textlint
-
-      ## pnpm dlx (alias pnpx): レジストリから直接取得し、コマンドを実行
-      ## dlx => execにするには、該当のパッケージをpnpm addで追加すればよい
-      pnpx create-vue my-app
-      pnpm dlx create-vue my-app
-      # ドキュメントにはpnxのaliasesがpnpm dlx, pnpxとあるが、pnxだけが今の環境だと動かない
-      # ref: https://pnpm.io/ja/cli/pnx
-
-      # パッケージのインストール
-      # バージョンを正確に指定するには--save-exact, -Eを使う
-      pnpm add -E tsx
-      # コマンドのグローバルインストールも可能
-      pnpm add -g textlint
-
-      # グローバルコマンドのリストを確認
-      pnpm list -g
-
-      # そしてアンインストールする場合
-      pnpm uninstall -g textlint
-      ```
-
-      ## 設定: pnpm-workspace.yaml
-      ```yaml
-      allowBuilds:
-        # JavaScriptのバンドラーを有効にする
-        esbuild: true
-      # キャレットを付けず、正確なバージョンをpackage.jsonに記載する
-      saveExact: true
-      # パッケージが公開されてから指定した時間(分)以上経過しないと、そのパッケージをインストールできないようにする。
-      # デフォルトは1440分(１日)
-      minimumReleaseAge: 1440
-      ```
-    PNPM_FILE
-
-    TEST_NAMING_CONVENTION_FILE_CONTENT = <<~NAMING_CONVENTION_FILE
-      ---
-      tags: ["命名規則", "引数"]
-      ---
-      ## 命名規則
-      - プログラミングで大事な命名の、その規則や習慣について
-
-      - 対になっている
-          - synonym antonym dictionaryがあったらいいかも
-          Entry <-> Collection
-
-      ### 引数の命名規則: arguments
-      - argc(Argument Count)
-          - 引数の数を表す
-          - 慣用上、C, C++などで使われる
-
-      - argv(Argument Vector)
-          - 引数の要素(文字列の配列)を表す
-          - 慣用上、C, C++などで使われる
-
-      - args(Arguments)
-          - 引数全体を表す
-          - 慣用上、JavaやPythonで使われる
-    NAMING_CONVENTION_FILE
-
-    TEST_UV_FILE_CONTENT = <<~UV_FILE
-      ---
-      tags: ["CLI", "Python", "Package Manager", "Project Manager"]
-      ---
-      ## uv: Pythonのパッケージ＆プロジェクトマネージャー
-
-      ### インストールなど
-      ```bash
-      # homebrewでインストール可能
-      brew install uv
-      ```
-
-      ### プロジェクトの作成・実行
-      ```bash
-      # helloフォルダが作成され、その中にプロジェクトの雛形が作成される
-      uv init hello
-
-      # プロジェクトの実行
-      cd hello/
-      uv run hello
-      ```
-
-      ### パッケージの追加・管理
-      ```bash
-      # 対象のパッケージをrequestsとする
-      # シンプリに追加
-      uv add requests
-
-      # バージョン指定
-      uv add 'requests==2.31.0'
-
-      # requirements.txtから追加する場合は、-rオプションを指定する
-      uv add -r requirements.txt -c constraints.txt
-
-      # 削除
-      uv remove requests
-
-      # パッケージのアップデート
-      uv lock --upgrade-package requests
-      ```
-    UV_FILE
-
-    TEST_LANG_RUBY_ARRAY_FILE_CONTENT = <<~LANG_RUBY_ARRAY_FILE
-      ---
-      tags: ["Ruby", "配列", "Creation", "Concatenation", "データ構造"]
-      ---
-      # Array: 配列について
-
-      ## 配列の結合
-      - `<<, push, concat, +`について
-          - <<: 配列の末尾に破壊的に要素を追加する
-              ```ruby
-              arr = [1,2,3]
-              # => [1, 2, 3]
-              arr << 4
-              # => [1, 2, 3, 4]
-              ```
-
-          - push: 指定された要素を順番に配列の末尾に追加する
-              - docs: https://docs.ruby-lang.org/ja/latest/method/Array/i/append.html
-              ```ruby
-              array = [1, 2, 3]
-              array.push 4
-              array.push [5, 6]
-              array.push 7, 8
-              # => [1, 2, 3, 4, [5, 6], 7, 8]
-              ```
-
-          - concat: 配列の末尾に破壊的に配列を追加する
-              ```ruby
-              arr = [1, 2, 3]
-              # => [1, 2, 3]
-              arr.concat([4, 5, 6])
-              # => [1, 2, 3, 4, 5, 6]
-              ```
-
-          - +: 自分と他の配列同士を繋げた配列を生成して返す
-    LANG_RUBY_ARRAY_FILE
+    ASSIGNMENT_FILE
 
     TEST_BUNDLE_FILE_CONTENT = <<~BUNDLE_FILE
       ---
@@ -1048,98 +1116,136 @@ module Memo
               3. 全ての要素が等しいこと
     COMPARE_FILE
 
-    TEST_MINITEST_FILE_CONTENT = <<~MINITEST_FILE
+    TEST_INDEX_FILE_CONTENT = <<~INDEX_FILE
       ---
-      tags: ["Ruby", "Testing Framework"]
+      tags: ["Ruby", "Idiom"]
       ---
-      ## minitest: 軽量なテスティングフレームワーク
+      ## Index in Ruby: Rubyでのインデックスの取り扱い
+          - 取り扱いによく迷うので
 
-      - expectedとactualの位置
-          - なぜか混同してしまうので
-      ```rb
-      ## spec形式
-      ## この順番！
-      _(expected).must_equal(actual)
+      ### 方針
+      #### each_with_index => with_indexを使う
+      - rubocopで修正される
+      - with_indexは引数をとって、その引数から数え始めることができる(offset argument)
 
-      ## assertion形式
-      assert_equal expected, actual
-      ```
-    MINITEST_FILE
-
-    TEST_PRINT_FILE_CONTENT = <<~PRINT_FILE
-      ---
-      tags: ["Ruby", "print", "配列", "比較", "標準出力"]
-      ---
-      ## print: 標準出力への表示、puts, p, ppとの比較
-
-      ### 配列とprint
+      ### 例
       ```ruby
-      ## 配列を定義する
-      arr1 = ["foo", "bar", "baz"]
+      str_arr = ['foo', 'bar', 'baz']
 
-      ## putsだと改行した文字列として表示される
-      puts arr1
-      foo
-      bar
-      baz
-
-      ## printだと配列がそのまま標準出力に書き出される
-      ## また、print自体は何も返さない
-      print arr1
-      ["foo", "bar", "baz"] # => nil
-
-      ## pだと配列をそのまま表示し、p自身も表示したものと同様のものを返す
-      p arr1
-      ["foo", "bar", "baz"]
-      => ["foo", "bar", "baz"]
+      ## インデックスの開始を１に定めた場合
+      str_arr.map.with_index(1) do |s, i|
+        p s, i
+      end
+      # => "foo", 1, "bar", 2, ...
       ```
-    PRINT_FILE
 
-    TEST_RUBY_FILE_CONTENT = <<~RUBY_FILE
+      ### injectと同時に使用する場合
+      - resultか真ん中のオブジェクトに割り当てられる値が何かバグったから違う方法で書いた方がいいかも
+          - 書くとしたら`[1, 2, ...].map.with_index.inject(0) { |result, (item, index)| ... }`とする
+    INDEX_FILE
+
+    TEST_MODULE_FILE_CONTENT = <<~MODULE_FILE
       ---
-      tags: ["Ruby", "CLI", "documentation"]
+      tags: ["Ruby", "TODO"]
       ---
-      ## Ruby
-      - manコマンドでCLIのrubyコマンドの使い方を見ることができる
-          - テストで何が行われているかとか、ワンライナーの書き方とかで参考になるかも
+      ## Rubyとモジュール
+      - TODO: クラスのときのように一通りまとめてみること
+
+      ## Module#module_function
+      - メソッドをモジュール関数にする
+      - モジュール関数とは、プライベートメソッドかつモジュールの特異メソッドであるメソッドのことをいう
+          - メモ
+              - モジュール内にインスタンスメソッドを定義した場合、includeはできるが、FooModule.bar_methodのようなメソッドの指定ができない
+              - そのため、モジュールをincludeせずに直接指定してモジュールを利用するには特異メソッドにする必要がある
+              - そこでこのmodule_functionを使う
+    MODULE_FILE
+
+    TEST_RAKE_FILE_CONTENT = <<~RAKE_FILE
+      ---
+      tags: ["Ruby", "Task Runner"]
+      ---
+      - rake: タスクランナー
       ```bash
-      man ruby
+      # タスクの一覧を表示する
+      rake -T
       ```
-    RUBY_FILE
+    RAKE_FILE
 
-    TEST_STRUCT_FILE_CONTENT = <<~STRUCT_FILE
+    TEST_STRING_FILE_CONTENT = <<~STRING_FILE
       ---
-      tags: ["Ruby", "連想配列", "構造体", "データ構造", "値オブジェクト"]
+      tags: ["Ruby", "string", "Creation", "Concatenation", "データ構造"]
       ---
-      ## Struct: 構造体を作成するクラス、およびHash, Dataとの比較
+      # String: 文字列クラスについて
 
-      ### Structと、HashとDataとの比較・使い分け
-      - Hashは動的、Struct、Dataは静的
-          - Hashはキーが事前に決まってない場合に使う
-          - Struct, Dataは構造自体は先に決まっているものに使う
+      ## 文字列の結合
+      - `+, <<, concat`について、
+          - <<, concatは破壊的変更である
+              - サイズの大きいデータを生成するときなどに使う
+              - `# frozen_string_literal: true`が指定されていると使えない
 
-      ### その他
-      1. Hashの値は数値、文字列、シンボルなどが良く、配列あたりのオブジェクトは望ましくないらしい
-      2. それ以上、複雑なデータ構造を作成するならDataやStructを使う
-      3. でも、その中間のようなデータ構造はあるよなあ...
-    STRUCT_FILE
+          1. <<: 文字列を破壊的に連結する
+              ```ruby
+              str = "foo"
+              # => "foo"
+              str << "bar"
+              # => "foobar"
+              ```
 
-    TEST_YARD_FILE_CONTENT = <<~YARD_FILE
+          2. concat: 複数の文字列を破壊的に連結する
+              ```ruby
+              str = "foo"
+              # => "foo"
+              str.concat "bar", "baz"
+              # => "foobarbaz"
+              str
+              # => "foobarbaz"
+              ```
+
+          3. +: 元の文字列からその複製を返す
+              - 文字列がfrozenされていても使える
+              - パフォーマンスが悪くなるので、サイズの大きい文字列の生成をする際には注意すること
+    STRING_FILE
+
+    TEST_TYPE_CHECK_FILE_CONTENT = <<~TYPE_CHECK_FILE
       ---
-      tags: ["Ruby", "Generate documentation"]
+      tags: ["Ruby", "型検査"]
       ---
-      ## yard: ドキュメント生成のためのライブラリ
+      ## Ruby型検査
+      - テストコード
+      ```ruby
+      ## 配列の要素が全て同じなら真が戻り値になる
+      ## Array#all?に検査したい型を入れる
+      require "minitest/expectations"
 
-      ### 記法
-      - 次のドキュメントが参考になる
-          - https://rubydoc.info/gems/yard/file/docs/GettingStarted.md#Declaring_Types
-      - YARD Type Parserというものもある
-          https://yardoc.org/types.html
+      expected = seeds.all?(Memo::Model::Seed)
 
-      #### 例
-      - 戻り値がStringかnilの場合: `@return [String, nil]`
-      - キーが文字列で値がシンボルか数値の場合: `Hash{String => Symbol, Number}`
-    YARD_FILE
+      _(expected).must_equal(true)
+      # => true
+      ```
+    TYPE_CHECK_FILE
+
+    TEST_TEST_ASSERTION_FILE_CONTENT = <<~TEST_ASSERTION_FILE
+      ---
+      tags: ["テストコード"]
+      ---
+      ## テストアサーションについて
+      - いつもexpectedとactualを逆に書いている気がする......。
+      - 文献がいつもexpectedとactualが逆なような......
+
+      ### 期待値と実際の値
+      - expected(期待値): テストを実行する側が、こうあるべきとして定義する値
+      - actual(実際の値): テストを実際に実行して得られる値
+
+      ### Ruby
+      minitestのassert, specは次の順番でactual, expectedを書く
+      ```ruby
+      ### assert
+      assert_equal expected, actual
+
+      ### expectation
+      _(actual).must_equal(expected)
+      ```
+    TEST_ASSERTION_FILE
 
     TEST_FORMAT_FILE_CONTENT = <<~FORMAT_FILE
       ---
@@ -1214,7 +1320,6 @@ module Memo
       ### ドキュメント
       - 次のコマンドで確認できる
       - :h neo-tree | only
-
     NEO_TREE_FILE
 
     TEST_NVIM_SURROUND_FILE_CONTENT = <<~NVIM_SURROUND_FILE
@@ -1302,8 +1407,6 @@ module Memo
       :cn, :cne, :cnext
       -> ]q でも移動できる
       ```
-
-
     READ_HELP_FILE
 
     TEST_SCRIPT_FILE_CONTENT = <<~SCRIPT_FILE
@@ -1345,7 +1448,6 @@ module Memo
       ```lua
       vim.opt.swapfile = false
       ```
-
     SCRIPT_FILE
 
     TEST_TIPS_FILE_CONTENT = <<~TIPS_FILE
@@ -1617,7 +1719,6 @@ module Memo
       ```bash
       $ !string
       ```
-
     HISTORY_EXPANSION_FILE
 
     TEST_FOR_FILE_CONTENT = <<~FOR_FILE
@@ -1905,56 +2006,335 @@ module Memo
           1. `tmux list-commnads | grep new`
     TMUX_FILE
 
-    TEST_SET_THE_TABLE_FILE_CONTENT = <<~SET_THE_TABLE_FILE
+    TEST_NULL_FILE_CONTENT = <<~NULL_FILE
+      ## null: 存在しない・無効であることを示す
+      ### 定義
+          - ref: https://developer.mozilla.org/ja/docs/Glossary/Null
+              > 存在しないまたは無効なオブジェクトやアドレスへの"ポインター参照"を表します。
+          - ヌルポインタ: https://ja.wikipedia.org/wiki/%E3%83%8C%E3%83%AB%E3%83%9D%E3%82%A4%E3%83%B3%E3%82%BF
+              > 何のオブジェクトも指していないことを表す特別なポインタの値
+
+      ### nullの分類
+      - nullには二つの分類がある
+          1. 未知(unknown)
+          2. 適用不能(Not Applicable, N/A)
+
+      ### 言語別のnull
+      - null: Java, JavaScript
+      - nil: Ruby, Go, Pasca
+      - None: Python
+      - (undefined): JavaScript
+          - ref: https://developer.mozilla.org/ja/docs/Glossary/Undefined
+    NULL_FILE
+
+    TEST_COMPILER_MEMO_FILE_CONTENT = <<~COMPILER_MEMO_FILE
       ---
-      tags: ["テスト駆動開発", "AAA"]
+      tags: ["コンパイラ"]
       ---
-      ## 前準備: 第18章から
-      - テストの基本パターン: AAA(Bill Wakeによる命名)
-          1. Arrange: 準備
-          2. Act: 実行
-          3. Assert: アサート
+      ##  compiler-memo: 「コンパイラ」(Aho他) についてのメモ書きや演習問題
+      Aho. p.55
+      次の文法: S -> S S + | S S * | aについて
+      a) この文法によって、記号列aa+a*がどのようにして生成されるか
+      -)
+      S
+      -> S S *
+      -> S a *
+      -> S S + a *
+      -> a a + a *
 
-      - Arrangeは重複するコードが多いが、Act, Assertは重複しない場合が多い
-          - そこで、setUpメソッドを利用して、テストごとにオブジェクトを作り直す
-          - 各テストごとは独立であるべきで、テスト間ごとに依存関係を作ってはならない
+      b)
+        S --> S -----> S -> a
+           -> S -> a   S -> a
+           -> *        +
 
-    SET_THE_TABLE_FILE
+      Aho. p.219
+      文法S => (S)S | eについて、例えばSを(S)Sで置き換えることを、導出するといい、S => (S)Sで表す
+      ex) S => (S)S => ((S)S)S => ((S)S)(S)S => ((S)(S)S)(S)S => (()())()
 
-    TEST_CHAT_FILE_CONTENT = <<~CHAT_FILE
+      Aho. p.222
+      文脈自由文法: S => S S + | S S * | a
+      記号列: aa+a*
+
+      a) 最左導出とb) 最右導出
+      ) S => S S * => S S + S * まで導出して
+      a) => a S + S * => a a + S * => a a + a *
+
+      これは違う: b) => S S + a * => S a + a * => a a + a *
+      正解はb) S => S S * => S a * => S S + a * => S a + a * => a a + a *
+
+      左再帰
+      次のような文脈自由文法がある (p.207 - (4.1))
+      E => E + T | T
+      T => T * F | F
+      F => ( E ) | id
+      この文法は左再帰である。
+
+      左再帰を含む生成規則A => Aa | bは次のような非左再帰の生成規則によって置き換えられる。
+      a) A => Aa | b
+      b) A => bR
+         R => aR | e
+
+      これを使って(4.1)を次のように書き換える(4.14)
+      - 生成規則(Production Rule)
+      E  => T E'
+      E' => + T E' | e
+      T  => F T'
+      T' => * F T' | e
+      F => ( E ) | id
+
+      FIRST(E') = {+, e}
+      FIRST(T') = {*, e}
+      FIRST(F) = {(, id}
+      FIRST(E) = FIRST(T) = FIRST(F) = {(, id}
+      ## FIRST(E) -> FIRST(T E') -> FIRST(T)
+      ## FIRST(T) -> FIRST(F T') -> FIRST(F)
+
+      FOLLOW(E) = {), $}
+      FOLLOW(T) = FOLLOW(T') = {+, ), $}
+      FOLLOW(F) = {+, *, ), $}
+    COMPILER_MEMO_FILE
+
+    TEST_CHAPTER_3_FILE_CONTENT = <<~CHAPTER_3_FILE.freeze
+      ---
+      tags: ["Security", "HTTP"]
+      ---
+      # 第三章　Webセキュリティの基礎
+      ## HTTP
+
+      ### リクエストメッセージ
+      ```
+      ## 一行目はリクエストラインと呼ばれる
+      ### メソッド URL プロトコルバージョン
+      GET http://example.jp/31/31-001.php HTTP/1.1
+      ## 二行目以降はヘッダと呼ばれる
+      host: example.jp
+      User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:129.0) Gecko/20100101 Firefox/129.0
+      Referer: https://example.jp/31/
+      ```
+
+      ### レスポンスメッセージ
+      ```
+      ## ステータスライン
+      ### プロトコルバージョン ステータスコード テキストフレーズ
+      HTTP/1.1 200 OK
+      ## ヘッダ
+      ### 空行が現れるまでヘッダが続く
+      Date: Thu, 29 Aug 2024 20:10:30 GMT
+      ...
+      ## 空行
+
+      ## ボディ
+      <body>
+      5:10</body>
+      ```
+
+      ### POSTメソッドのリクエストメッセージ
+      ```
+      ## リクエストメッセージの抜粋
+      POST http://example.jp/31/31-003.php HTTP/1.1
+      Referer: https://example.jp/31/31-002.php
+      Content-Type: application/x-www-form-urlencoded
+      Content-Length: 63
+      host: example.jp
+      ## 空行
+
+      ## ボディ
+      name=%E6%A9%8B%E6%9C%AC&mail=aaa%40example.com&gender=%E7%94%B7
+      ```
+
+
+      ### hiddenパラメータのメリット
+      - hiddenは利用者自身からは書き換えできるが、情報漏洩や第三者からの書き換えに関しては堅牢
+      #{'    '}
+
+      ### ステートレスなHTTP認証
+      - HTTPには認証機能がサポートされている。これをHTTP認証と呼ぶ。
+      - 実装方式により、Basic認証やNTLM認証、Digest認証などがある。
+      - HTTPがステートレスなプロトコルであることから、HTTP認証もステートレスである。
+
+      ### Basic認証
+      - リクエストメッセージにAuthorizationヘッダを付与する。次の形式である。
+          - 一度認証に成功すると、ブラウザが自動的にAuthorizationヘッダを付与する。
+          - そのため、見かけ上は認証状態が保たれているように見えるが、実際にはリクエスト毎にIDとパスワードが送出されており、認証状態は保持されていない。
+          - このようにBasic認証はステートレスなので、ログアウトという概念もない。
+      ```
+      Authorization: Basic encode(<username>:<password>)
+      ```
+
+
+      ## クッキーとセッション管理
+      - HTTPはステートレスであるため、サーバー側では状態を保持しない。
+      - しかし、アプリケーションでは状態を保持したい要求がある。このようにアプリケーションの状態を覚えておくことをセッション管理という。
+      - このセッション管理をHTTPで実現するために、クッキーという仕組みが導入されている。
+
+      ### サンプルアプリケーションの例
+      - 最初のログイン画面を表示させると次のレスポンスが返ってくる。
+      ```
+      HTTP/1.1 200 OK
+      Content-Length: 279
+      Content-Type: text/html; charset=UTF-8
+      ## Webサーバーからブラウザに対してクッキー値を覚えるよう命令
+      Set-Cookie: PHPSESSID=8cc8e8cd9d99b775b22864e9b3650fc4
+      ```
+
+      - ログイン画面の「ログイン」ボタンをクリックすると、次のリクエストがブラウザからサーバーに送信される。
+      ```
+      POST http://example.jp/31/31-021.php HTTP/1.1
+      host: example.jp
+      Content-Type: application/x-www-form-urlencoded
+      Content-Length: 22
+      Referer: https://example.jp/31/31-020.php
+      ## 同じサイト(example.jp)にリクエストを送信する際は、覚えたクッキー値を送信する。
+      ## 有効期限が設定されていないクッキーは、ブラウザを終了させるまで有効。
+      Cookie: PHPSESSID=8cc8e8cd9d99b775b22864e9b3650fc4
+      ```
+
+      ### セッションIDに求められる要件
+      1. 第三者がセッションIDを推測できないこと
+          - 開発ツールの提供するセッション管理機構を利用すること
+      #{'    '}
+      2. 第三者からセッションIDを強制されないこと
+          - 認証後にセッションIDを変更すること
+      #{'    '}
+      3. 第三者にセッションIDが漏洩しないこと
+          - クッキーのDomain属性は原則として設定しない
+          - クッキーのHttpOnly属性は基本的に設定する
+
+      ## 受動的攻撃と同一オリジンポリシー
+
+      ### 受動的攻撃
+      - Webサイトの利用者に罠を仕掛けるなどの攻撃手法。
+          - ブラウザとWebサイトのそれぞれで対策を行う必要がある。
+
+      ### ブラウザのセキュリティ機能 - サンドボックスという考え方
+      - JavaScriptのサンドボックス
+          - ローカルファイルへのアクセス禁止
+          - プリンタなどの資源の利用禁止 (画面表示は可能)
+          - ネットワークアクセスの制限 (同一オリジンポリシー)
+      - 異なるホストのJavaScriptからのアクセスは拒否される。
+      #{'    '}
+      #### 同一オリジンである条件
+      - URLのホストが一致している
+      - スキーム(プロトコル)が一致している
+      - ポート番号が一致している
+
+      ### JavaScript以外のクロスドメインアクセス
+      - frame要素とiframe要素
+          - iframe(frame)要素はクロスドメインのアクセスができる。
+      #{'    '}
+      - img要素
+          - img要素のsrc属性はクロスドメインの指定が可能。
+      #{'    '}
+      - script要素
+          - script要素にsrc属性を指定すると他のサイトからJavaScriptを読み込むことができる。
+      #{'    '}
+      - CSS
+          - CSSはクロスドメインでの読み込みができる。
+      #{'    '}
+      - form属性のaction要素
+          - form属性のaction要素もクロスドメインの指定ができる。また、formの送信はJavaScriptから常に操作できる。これを悪用した攻撃手法がクロスサイト・リクエストフォージェリ(CSRF)
+      #{'    '}
+
+      ## CORS(Cross-Origin Resource Sharing)
+      - 同一オリジンポリシーの制限を超えて、サイト間でデータのやり取りをするための仕様。
+      - シンプルなリクエストの場合は、次のHTTPレスポンスヘッダを付与して送信する。
+
+      ```
+      Access-Control-Allow-Origin: http://example.jp
+      ```
+      - シンプルでないリクエストの場合、ブラウザはプリフライトリクエストというHTTPリクエストを送信する。
+      - クッキーなどの認証用のヘッダを伴うクロスオリジンリクエストは、次の両方を満たす必要がある。
+          - XMLHttpRequestオブジェクトのwithCredentialsプロパティをtrueにする
+          - レスポンスヘッダとしてAccess-Control-Allow-Credentials: trueを返す
+    CHAPTER_3_FILE
+
+    TEST_COMMIT_MESSAGES_FILE_CONTENT = <<~COMMIT_MESSAGES_FILE
+      ---
+      tags: ["English", "Messages", "git"]
+      ---
+      ## Commit messages: コミットメッセージ向け
+      ### エラーの解消
+      - Suppressed unused-export warnings
+
+      ### 定数と型を集約化
+      - Consolidate constants and types for the report domain
+
+      ### hooksから純粋関数を切り分け
+      - Extract pure utility functions from hooks
+
+      ## コミットメッセージ例文集
+      - URL: https://gist.github.com/mono0926/e6ffd032c384ee4c1cef5a2aa4f778d7
+
+      ### 追加: Add
+      - メソッドや機能、ファイルやオプションを追加したときに使う
+      - "Add ~ to/for ~"の形式が多い
+      #### 例
+      - Add Throws flag and ThrowsLoc to AbstractFunctionDecl
+      - Add build script
+      - Add a typealias to avoid a build ordering dependency between projects
+      - Add a helper method mayHaveOpenedArchetypeOperands to SILInstruction
+
+      ### 切り替え: Use ~ instead of ~
+      - 何かを別のものに切り替えた場合は"Use ~ instead of ~"を使うことが多いようだ
+      - また、"Change ~ to ~"も使う
+      #### 例
+      - Use arrays instead of while loops
+      - Use weak pointer instead of manual bookkeeping
+      - Change all uses of 'CInt' to 'Int32' in the SDK overlay
+      - Change Integer#year to return a Fixnum instead of a Float to improve consistency
+
+      ### 対応/制限解除/可能
+      - Add support for/Make it possible to/Allowを使う
+      #### 例
+      - Add support for closure contexts to readMetadataFromInstance()
+          - 該当の関数がクロージャのコンテキストを取り扱えるようにした
+      - Add support for activating and deactivating package-specific keymaps
+      - Add support for launching HTML files directly
+      - Make it possible to call `reflect` multiple times
+      - Make it possible to set a data type for variables that come out of constants
+          - 定数の結果から出てくる変数に型を適用した
+      - Allow pane to be shrunk independently of its contents' width
+          - ペインをコンテンツ幅と独立して縮小できるようにした
+
+      ### リネーム: 名前の修正
+      - "Rename ~ to ~"とする
+      #### 例
+      - Rename environment -> environmentHelpers
+      - Rename watchProjectPath to watchProjectPaths
+      - Rename generic arguments
+      - fullVersion -> writeFullVersion
+    COMMIT_MESSAGES_FILE
+
+    TEST_REVIEW_FILE_CONTENT = <<~REVIEW_FILE
       ---
       tags: ["English", "Messages"]
       ---
-      ## Chat: 英語でチャットするとき
-      ### 読み書きの能力を示す
-      1. It's no problem for you to write a review in English
-      2. I have a basic command of reading and writing in English.
-    CHAT_FILE
+      ## Review: レビューに関するやり取り
 
-    TEST_PROMPT_AI_FILE_CONTENT = <<~PROMPT_AI_FILE
-      ---
-      tags: ["English", "AI prompt"]
-      ---
-      ## Prompt AI: AIとの対話用
-      ### 修正依頼
-          - エラーがあれば直してほしい
-      1. Please fix any errors. -> 少し丁寧
-      2. Fix any errors if found. -> 自然
+      ### レビューを見てもらうとき
+      1. Could you review my PR at your Convenience?
+      2. Could you take a look at my PR when you get a chance?
 
-      ### 出力して欲しい・AIが読みやすい形で
-          - AIが読みやすいようにpbcopyに渡して
-      - Please pipe the output to pbcopy in an AI-readable format.
-    PROMPT_AI_FILE
+      ### 再レビュー
+      1. Could you re-review my PR when you get a chance?
+      2. Could you re-review my PR and also check this when you get a chance?
+          a. これも見てほしい、のニュアンス
 
-    TEST_VOCABULARY_ABOUT_COMPUTER_FILE_CONTENT = <<~VOCABULARY_ABOUT_COMPUTER_FILE
+      ### 指摘事項の修正
+      1. Updated the code based on feedback from AI.
+
+      ### PRの説明
+      1. This PR only changes the folder structure for domain/report.
+      2. This PR fixes the bug in report list table.
+    REVIEW_FILE
+
+    TEST_VOCABULARY_FILE_CONTENT = <<~VOCABULARY_FILE
       ---
       tags: ["English", "Vocabulary"]
       ---
-      ## Vocabulary about computer: 計算機科学に関する英単語
-      - Instance: 例、実例
-          - プログラミングだと具体的なオブジェクトのことをいう
-
-    VOCABULARY_ABOUT_COMPUTER_FILE
+      ## Vocabulary: 英単語帳
+      - opaque: 不透明な, not able to be seen through
+    VOCABULARY_FILE
 
     TEST_RUIGO_FILE_CONTENT = <<~RUIGO_FILE
       ---
@@ -1965,509 +2345,726 @@ module Memo
           - 空しい
     RUIGO_FILE
 
-    TEST_LS_FILE_CONTENT = <<~LS_FILE
-      ---
-      tags: ["bash", "CLI", "File and Directory", "表示"]
-      ---
-      ## ls: list directory contents
-      ```bash
-      ## 再帰的にファイル名を表示する
-      ls -R memo/
-
-      ## memo/フォルダの全てのファイルの詳細を表示する
-      ## totalや空行は他のコマンドと組み合わせて消すのが一番良さそう
-      ls -Rl memo/
-
-      ## -Tは-lと組み合わせると年数も表示できる
-      ls -RlT memo/
-
-      ## さらに-tと組み合わせて、最終更新日時(mtime)が新しい順に表示することができる
-      ls -RTlt memo/
-
-      ## なお、-uも付けると、最終アクセス日時(atime)が新しい順に表示することができる
-      ### 最終更新時間 -> Last Modified Time, 最終アクセス時間 -> Last Access Time
-      ls -RTltu memo/
-
-      ## aliasで定義されているlsの情報を確認
-      ## -G: 色付け -F: ファイルの種別によって末尾に色々つける -p: ディレクトリの末尾にスラッシュを付ける
-      ## * OSによってオプションの意味が結構変わるコマンドだったような...
-      command -v
-      > alias ls='ls -GpF'
-
-      ## aliasで定義されているllの情報も確認
-      ## -a: ドットファイルも表示する -l: 詳細表示（下記参照）
-      command -v ll
-      > alias ll='ls -alGpF'
-
-      ## よく使うコマンド
-      ### 更新順に表示するとき
-      ls -lt
-
-      ### 容量順に表示するときは-Sオプションを使う
-      ### さらに、-hで容量に単位がつく
-      ### なお、-sオプションは、使用しているブロック数を表示する
-      ls -lS
-      ```
-
-      ## -lオプションについて
-
-      - `-l`: 詳細表示
-         以下のデータを表示する
-         file mode, number of links, owner name, group name,
-         number of bytes in the file, abbreviated month, day-of-month file was last modified, hour file last modified, minute file last modified,
-         and the pathname.
-    LS_FILE
-
-    TEST_MEMO_DATA_SEED = [
+    TEST_MOCK_DATA_SEED = [
       {
         target_dir: '/Users/hy/repo/memorandum/memo/',
-        parent_dir: 'cli/third-party',
-        basename: 'mise',
-        content: TEST_CLI_THIRD_PARTY_MISE_FILE_CONTENT
+        absolute_path: '/Users/hy/repo/memorandum/memo/ANSI-escape-code-and-set-color.md',
+        parent_directory: '/Users/hy/repo/memorandum/memo/',
+        parent_rel_path: './',
+        filename: 'ANSI-escape-code-and-set-color',
+        file_content: TEST_ANSI_ESCAPE_CODE_AND_SET_COLOR_FILE_CONTENT,
+        tags: %w[Terminal Charactor]
       },
       {
         target_dir: '/Users/hy/repo/memorandum/memo/',
-        parent_dir: 'setting',
-        basename: 'mise',
-        content: TEST_SETTING_MISE_FILE_CONTENT
+        absolute_path: '/Users/hy/repo/memorandum/memo/chrome.md',
+        parent_directory: '/Users/hy/repo/memorandum/memo/',
+        parent_rel_path: './',
+        filename: 'chrome',
+        file_content: TEST_CHROME_FILE_CONTENT,
+        tags: %w[Browser Frontend]
       },
       {
         target_dir: '/Users/hy/repo/memorandum/memo/',
-        parent_dir: 'memo',
-        basename: 'ANSI-escape-code-and-set-color',
-        content: TEST_ANSI_ESCAPE_CODE_AND_SET_COLOR_FILE_CONTENT
+        absolute_path: '/Users/hy/repo/memorandum/memo/cli/core/builtin/builtin.md',
+        parent_directory: '/Users/hy/repo/memorandum/memo/cli/core/builtin/',
+        parent_rel_path: 'cli/core/builtin/',
+        filename: 'builtin',
+        file_content: TEST_BUILTIN_FILE_CONTENT,
+        tags: ['bash', 'CLI', 'builtin', 'Command inspection']
       },
       {
         target_dir: '/Users/hy/repo/memorandum/memo/',
-        parent_dir: 'cli/core/builtin',
-        basename: 'alias',
-        content: TEST_ALIAS_FILE_CONTENT
+        absolute_path: '/Users/hy/repo/memorandum/memo/cli/core/builtin/hash.md',
+        parent_directory: '/Users/hy/repo/memorandum/memo/cli/core/builtin/',
+        parent_rel_path: 'cli/core/builtin/',
+        filename: 'hash',
+        file_content: TEST_HASH_FILE_CONTENT,
+        tags: ['bash', 'CLI', 'builtin', 'Command inspection']
       },
       {
         target_dir: '/Users/hy/repo/memorandum/memo/',
-        parent_dir: 'cli/core/builtin',
-        basename: 'command',
-        content: TEST_COMMAND_FILE_CONTENT
+        absolute_path: '/Users/hy/repo/memorandum/memo/cli/core/file/ls.md',
+        parent_directory: '/Users/hy/repo/memorandum/memo/cli/core/file/',
+        parent_rel_path: 'cli/core/file/',
+        filename: 'ls',
+        file_content: TEST_LS_FILE_CONTENT,
+        tags: ['bash', 'CLI', 'File and Directory', '表示']
       },
       {
         target_dir: '/Users/hy/repo/memorandum/memo/',
-        parent_dir: 'cli/core/file',
-        basename: 'chmod',
-        content: TEST_CHMOD_FILE_CONTENT
+        absolute_path: '/Users/hy/repo/memorandum/memo/cli/core/old/groups.md',
+        parent_directory: '/Users/hy/repo/memorandum/memo/cli/core/old/',
+        parent_rel_path: 'cli/core/old/',
+        filename: 'groups',
+        file_content: TEST_GROUPS_FILE_CONTENT,
+        tags: %w[bash CLI legacy]
       },
       {
         target_dir: '/Users/hy/repo/memorandum/memo/',
-        parent_dir: 'cli/core/file',
-        basename: 'realpath',
-        content: TEST_REALPATH_FILE_CONTENT
+        absolute_path: '/Users/hy/repo/memorandum/memo/cli/core/process/lsof.md',
+        parent_directory: '/Users/hy/repo/memorandum/memo/cli/core/process/',
+        parent_rel_path: 'cli/core/process/',
+        filename: 'lsof',
+        file_content: TEST_LSOF_FILE_CONTENT,
+        tags: %w[bash CLI process terminate]
       },
       {
         target_dir: '/Users/hy/repo/memorandum/memo/',
-        parent_dir: 'cli/core/process',
-        basename: 'kill',
-        content: TEST_KILL_FILE_CONTENT
+        absolute_path: '/Users/hy/repo/memorandum/memo/cli/core/search/find.md',
+        parent_directory: '/Users/hy/repo/memorandum/memo/cli/core/search/',
+        parent_rel_path: 'cli/core/search/',
+        filename: 'find',
+        file_content: TEST_FIND_FILE_CONTENT,
+        tags: %w[bash CLI search bulk pipe recursive]
       },
       {
         target_dir: '/Users/hy/repo/memorandum/memo/',
-        parent_dir: 'cli/core/process',
-        basename: 'ps',
-        content: TEST_PS_FILE_CONTENT
+        absolute_path: '/Users/hy/repo/memorandum/memo/cli/core/text/cut.md',
+        parent_directory: '/Users/hy/repo/memorandum/memo/cli/core/text/',
+        parent_rel_path: 'cli/core/text/',
+        filename: 'cut',
+        file_content: TEST_CUT_FILE_CONTENT,
+        tags: %w[bash CLI text filter remove]
       },
       {
         target_dir: '/Users/hy/repo/memorandum/memo/',
-        parent_dir: 'cli/core/search',
-        basename: 'grep',
-        content: TEST_GREP_FILE_CONTENT
+        absolute_path: '/Users/hy/repo/memorandum/memo/cli/core/text/diff.md',
+        parent_directory: '/Users/hy/repo/memorandum/memo/cli/core/text/',
+        parent_rel_path: 'cli/core/text/',
+        filename: 'diff',
+        file_content: TEST_CLI_CORE_TEXT__FILE_CONTENT,
+        tags: %w[bash CLI text]
       },
       {
         target_dir: '/Users/hy/repo/memorandum/memo/',
-        parent_dir: 'cli/core/text',
-        basename: 'diff',
-        content: TEST_CLI_CORE_TEXT_DIFF_FILE_CONTENT
+        absolute_path: '/Users/hy/repo/memorandum/memo/cli/core/text/ed.md',
+        parent_directory: '/Users/hy/repo/memorandum/memo/cli/core/text/',
+        parent_rel_path: 'cli/core/text/',
+        filename: 'ed',
+        file_content: TEST_ED_FILE_CONTENT,
+        tags: %w[bash CLI text legacy]
       },
       {
         target_dir: '/Users/hy/repo/memorandum/memo/',
-        parent_dir: 'cli/core/text',
-        basename: 'nl',
-        content: TEST_NL_FILE_CONTENT
+        absolute_path: '/Users/hy/repo/memorandum/memo/cli/core/text/rev.md',
+        parent_directory: '/Users/hy/repo/memorandum/memo/cli/core/text/',
+        parent_rel_path: 'cli/core/text/',
+        filename: 'rev',
+        file_content: TEST_REV_FILE_CONTENT,
+        tags: %w[bash CLI text reverse]
       },
       {
         target_dir: '/Users/hy/repo/memorandum/memo/',
-        parent_dir: 'cli/core/text',
-        basename: 'sed',
-        content: TEST_SED_FILE_CONTENT
+        absolute_path: '/Users/hy/repo/memorandum/memo/cli/core/text/tac.md',
+        parent_directory: '/Users/hy/repo/memorandum/memo/cli/core/text/',
+        parent_rel_path: 'cli/core/text/',
+        filename: 'tac',
+        file_content: TEST_TAC_FILE_CONTENT,
+        tags: %w[bash CLI text reverse]
       },
       {
         target_dir: '/Users/hy/repo/memorandum/memo/',
-        parent_dir: 'cli/core/text',
-        basename: 'tr',
-        content: TEST_TR_FILE_CONTENT
+        absolute_path: '/Users/hy/repo/memorandum/memo/cli/core/text/uniq.md',
+        parent_directory: '/Users/hy/repo/memorandum/memo/cli/core/text/',
+        parent_rel_path: 'cli/core/text/',
+        filename: 'uniq',
+        file_content: TEST_UNIQ_FILE_CONTENT,
+        tags: %w[bash CLI text set edit filter remove 集計]
       },
       {
         target_dir: '/Users/hy/repo/memorandum/memo/',
-        parent_dir: 'cli/core/text',
-        basename: 'wc',
-        content: TEST_WC_FILE_CONTENT
+        absolute_path: '/Users/hy/repo/memorandum/memo/cli/core/text/xargs.md',
+        parent_directory: '/Users/hy/repo/memorandum/memo/cli/core/text/',
+        parent_rel_path: 'cli/core/text/',
+        filename: 'xargs',
+        file_content: TEST_XARGS_FILE_CONTENT,
+        tags: %w[bash CLI text bulk edit pipe search 集計]
       },
       {
         target_dir: '/Users/hy/repo/memorandum/memo/',
-        parent_dir: 'cli',
-        basename: 'ifconfig',
-        content: TEST_IFCONFIG_FILE_CONTENT
+        absolute_path: '/Users/hy/repo/memorandum/memo/cli/ifconfig.md',
+        parent_directory: '/Users/hy/repo/memorandum/memo/cli/',
+        parent_rel_path: 'cli/',
+        filename: 'ifconfig',
+        file_content: TEST_IFCONFIG_FILE_CONTENT,
+        tags: %w[CLI Network 表示]
       },
       {
         target_dir: '/Users/hy/repo/memorandum/memo/',
-        parent_dir: 'cli',
-        basename: 'tcpdump',
-        content: TEST_TCPDUMP_FILE_CONTENT
+        absolute_path: '/Users/hy/repo/memorandum/memo/cli/tcpdump.md',
+        parent_directory: '/Users/hy/repo/memorandum/memo/cli/',
+        parent_rel_path: 'cli/',
+        filename: 'tcpdump',
+        file_content: TEST_TCPDUMP_FILE_CONTENT,
+        tags: %w[CLI Network]
       },
       {
         target_dir: '/Users/hy/repo/memorandum/memo/',
-        parent_dir: 'cli/third-party',
-        basename: 'claude',
-        content: TEST_CLAUDE_FILE_CONTENT
+        absolute_path: '/Users/hy/repo/memorandum/memo/cli/third-party/claude.md',
+        parent_directory: '/Users/hy/repo/memorandum/memo/cli/third-party/',
+        parent_rel_path: 'cli/third-party/',
+        filename: 'claude',
+        file_content: TEST_CLAUDE_FILE_CONTENT,
+        tags: ['CLI', 'External Command', 'AI', 'CLI client']
       },
       {
         target_dir: '/Users/hy/repo/memorandum/memo/',
-        parent_dir: 'cli/third-party',
-        basename: 'gh',
-        content: TEST_GH_FILE_CONTENT
+        absolute_path: '/Users/hy/repo/memorandum/memo/cli/third-party/gh.md',
+        parent_directory: '/Users/hy/repo/memorandum/memo/cli/third-party/',
+        parent_rel_path: 'cli/third-party/',
+        filename: 'gh',
+        file_content: TEST_GH_FILE_CONTENT,
+        tags: ['CLI', 'Third Party', 'git', 'CI/CD', 'CLI client']
       },
       {
         target_dir: '/Users/hy/repo/memorandum/memo/',
-        parent_dir: 'cli/third-party',
-        basename: 'nkf',
-        content: TEST_NKF_FILE_CONTENT
+        absolute_path: '/Users/hy/repo/memorandum/memo/cli/third-party/mise.md',
+        parent_directory: '/Users/hy/repo/memorandum/memo/cli/third-party/',
+        parent_rel_path: 'cli/third-party/',
+        filename: 'mise',
+        file_content: TEST_MISE_FILE_CONTENT,
+        tags: ['CLI', 'External Command', 'Package Manager', 'Runtime Version Manager']
       },
       {
         target_dir: '/Users/hy/repo/memorandum/memo/',
-        parent_dir: 'cli',
-        basename: 'units',
-        content: TEST_UNITS_FILE_CONTENT
+        absolute_path: '/Users/hy/repo/memorandum/memo/cli/third-party/nkf.md',
+        parent_directory: '/Users/hy/repo/memorandum/memo/cli/third-party/',
+        parent_rel_path: 'cli/third-party/',
+        filename: 'nkf',
+        file_content: TEST_NKF_FILE_CONTENT,
+        tags: ['CLI', 'External Command', 'text', '表示', '変換', 'Character Inspection', 'edit']
       },
       {
         target_dir: '/Users/hy/repo/memorandum/memo/',
-        parent_dir: 'git',
-        basename: 'branch',
-        content: TEST_BRANCH_FILE_CONTENT
+        absolute_path: '/Users/hy/repo/memorandum/memo/cli/units.md',
+        parent_directory: '/Users/hy/repo/memorandum/memo/cli/',
+        parent_rel_path: 'cli/',
+        filename: 'units',
+        file_content: TEST_UNITS_FILE_CONTENT,
+        tags: ['CLI']
       },
       {
         target_dir: '/Users/hy/repo/memorandum/memo/',
-        parent_dir: 'git',
-        basename: 'config',
-        content: TEST_CONFIG_FILE_CONTENT
+        absolute_path: '/Users/hy/repo/memorandum/memo/db/sqlite3/sqlite3.md',
+        parent_directory: '/Users/hy/repo/memorandum/memo/db/sqlite3/',
+        parent_rel_path: 'db/sqlite3/',
+        filename: 'sqlite3',
+        file_content: TEST_SQLITE3_FILE_CONTENT,
+        tags: []
       },
       {
         target_dir: '/Users/hy/repo/memorandum/memo/',
-        parent_dir: 'git',
-        basename: 'diff',
-        content: TEST_GIT_DIFF_FILE_CONTENT
+        absolute_path: '/Users/hy/repo/memorandum/memo/git/branch.md',
+        parent_directory: '/Users/hy/repo/memorandum/memo/git/',
+        parent_rel_path: 'git/',
+        filename: 'branch',
+        file_content: TEST_BRANCH_FILE_CONTENT,
+        tags: ['CLI', 'git', 'Branching and Merging']
       },
       {
         target_dir: '/Users/hy/repo/memorandum/memo/',
-        parent_dir: 'git',
-        basename: 'gitignore',
-        content: TEST_GITIGNORE_FILE_CONTENT
+        absolute_path: '/Users/hy/repo/memorandum/memo/git/config.md',
+        parent_directory: '/Users/hy/repo/memorandum/memo/git/',
+        parent_rel_path: 'git/',
+        filename: 'config',
+        file_content: TEST_CONFIG_FILE_CONTENT,
+        tags: %w[CLI git Setting]
       },
       {
         target_dir: '/Users/hy/repo/memorandum/memo/',
-        parent_dir: 'git',
-        basename: 'merge',
-        content: TEST_MERGE_FILE_CONTENT
+        absolute_path: '/Users/hy/repo/memorandum/memo/git/diff.md',
+        parent_directory: '/Users/hy/repo/memorandum/memo/git/',
+        parent_rel_path: 'git/',
+        filename: 'diff',
+        file_content: TEST_GIT__FILE_CONTENT,
+        tags: ['CLI', 'git', 'Basic Snapshotting', 'Comparison Version', 'Patching']
       },
       {
         target_dir: '/Users/hy/repo/memorandum/memo/',
-        parent_dir: 'git',
-        basename: 'pull',
-        content: TEST_PULL_FILE_CONTENT
+        absolute_path: '/Users/hy/repo/memorandum/memo/git/git.md',
+        parent_directory: '/Users/hy/repo/memorandum/memo/git/',
+        parent_rel_path: 'git/',
+        filename: 'git',
+        file_content: TEST_GIT_FILE_CONTENT,
+        tags: %w[CLI git documentation]
       },
       {
         target_dir: '/Users/hy/repo/memorandum/memo/',
-        parent_dir: 'git',
-        basename: 'rebase',
-        content: TEST_REBASE_FILE_CONTENT
+        absolute_path: '/Users/hy/repo/memorandum/memo/git/log.md',
+        parent_directory: '/Users/hy/repo/memorandum/memo/git/',
+        parent_rel_path: 'git/',
+        filename: 'log',
+        file_content: TEST_LOG_FILE_CONTENT,
+        tags: ['CLI', 'git', 'Branching and Merging', 'Inspection Version']
       },
       {
         target_dir: '/Users/hy/repo/memorandum/memo/',
-        parent_dir: 'git',
-        basename: 'restore',
-        content: TEST_RESTORE_FILE_CONTENT
+        absolute_path: '/Users/hy/repo/memorandum/memo/git/old/checkout.md',
+        parent_directory: '/Users/hy/repo/memorandum/memo/git/old/',
+        parent_rel_path: 'git/old/',
+        filename: 'checkout',
+        file_content: TEST_CHECKOUT_FILE_CONTENT,
+        tags: ['CLI', 'git', 'Branching and Merging', 'legacy']
       },
       {
         target_dir: '/Users/hy/repo/memorandum/memo/',
-        parent_dir: 'git',
-        basename: 'switch',
-        content: TEST_SWITCH_FILE_CONTENT
+        absolute_path: '/Users/hy/repo/memorandum/memo/git/push.md',
+        parent_directory: '/Users/hy/repo/memorandum/memo/git/',
+        parent_rel_path: 'git/',
+        filename: 'push',
+        file_content: TEST_PUSH_FILE_CONTENT,
+        tags: ['CLI', 'git', 'Sharing and Updating Projects']
       },
       {
         target_dir: '/Users/hy/repo/memorandum/memo/',
-        parent_dir: 'memo',
-        basename: 'gitlab',
-        content: TEST_GITLAB_FILE_CONTENT
+        absolute_path: '/Users/hy/repo/memorandum/memo/git/reset.md',
+        parent_directory: '/Users/hy/repo/memorandum/memo/git/',
+        parent_rel_path: 'git/',
+        filename: 'reset',
+        file_content: TEST_RESET_FILE_CONTENT,
+        tags: ['CLI', 'git', 'Basic Snapshotting']
       },
       {
         target_dir: '/Users/hy/repo/memorandum/memo/',
-        parent_dir: 'how-to',
-        basename: 'directory',
-        content: TEST_DIRECTORY_FILE_CONTENT
+        absolute_path: '/Users/hy/repo/memorandum/memo/git/rev-parse.md',
+        parent_directory: '/Users/hy/repo/memorandum/memo/git/',
+        parent_rel_path: 'git/',
+        filename: 'rev-parse',
+        file_content: TEST_REV_PARSE_FILE_CONTENT,
+        tags: ['CLI', 'git', 'Plumbing Commands']
       },
       {
         target_dir: '/Users/hy/repo/memorandum/memo/',
-        parent_dir: 'how-to',
-        basename: 'server',
-        content: TEST_SERVER_FILE_CONTENT
+        absolute_path: '/Users/hy/repo/memorandum/memo/git/upstream.md',
+        parent_directory: '/Users/hy/repo/memorandum/memo/git/',
+        parent_rel_path: 'git/',
+        filename: 'upstream',
+        file_content: TEST_UPSTREAM_FILE_CONTENT,
+        tags: ['git', 'Sharing and Updating Projects', 'Branching and Merging', 'Option']
       },
       {
         target_dir: '/Users/hy/repo/memorandum/memo/',
-        parent_dir: 'lang/awk',
-        basename: 'awk',
-        content: TEST_AWK_FILE_CONTENT
+        absolute_path: '/Users/hy/repo/memorandum/memo/how-to/data-exchanger.md',
+        parent_directory: '/Users/hy/repo/memorandum/memo/how-to/',
+        parent_rel_path: 'how-to/',
+        filename: 'data-exchanger',
+        file_content: TEST_DATA_EXCHANGER_FILE_CONTENT,
+        tags: ['How to', 'Network']
       },
       {
         target_dir: '/Users/hy/repo/memorandum/memo/',
-        parent_dir: 'lang/javascript',
-        basename: 'array',
-        content: TEST_LANG_JAVASCRIPT_ARRAY_FILE_CONTENT
+        absolute_path: '/Users/hy/repo/memorandum/memo/how-to/random.md',
+        parent_directory: '/Users/hy/repo/memorandum/memo/how-to/',
+        parent_rel_path: 'how-to/',
+        filename: 'random',
+        file_content: TEST_RANDOM_FILE_CONTENT,
+        tags: ['How to', 'Generator']
       },
       {
         target_dir: '/Users/hy/repo/memorandum/memo/',
-        parent_dir: 'lang/javascript',
-        basename: 'jsdoc',
-        content: TEST_JSDOC_FILE_CONTENT
+        absolute_path: '/Users/hy/repo/memorandum/memo/how-to/special-characters.md',
+        parent_directory: '/Users/hy/repo/memorandum/memo/how-to/',
+        parent_rel_path: 'how-to/',
+        filename: 'special-characters',
+        file_content: TEST_SPECIAL_CHARACTERS_FILE_CONTENT,
+        tags: ['How to', 'Characters', 'Keyboard']
       },
       {
         target_dir: '/Users/hy/repo/memorandum/memo/',
-        parent_dir: 'lang/javascript',
-        basename: 'npm',
-        content: TEST_NPM_FILE_CONTENT
+        absolute_path: '/Users/hy/repo/memorandum/memo/lang/css/hover.md',
+        parent_directory: '/Users/hy/repo/memorandum/memo/lang/css/',
+        parent_rel_path: 'lang/css/',
+        filename: 'hover',
+        file_content: TEST_HOVER_FILE_CONTENT,
+        tags: %w[CSS 擬似クラス]
       },
       {
         target_dir: '/Users/hy/repo/memorandum/memo/',
-        parent_dir: 'lang/javascript',
-        basename: 'pnpm',
-        content: TEST_PNPM_FILE_CONTENT
+        absolute_path: '/Users/hy/repo/memorandum/memo/lang/javascript/console.md',
+        parent_directory: '/Users/hy/repo/memorandum/memo/lang/javascript/',
+        parent_rel_path: 'lang/javascript/',
+        filename: 'console',
+        file_content: TEST_CONSOLE_FILE_CONTENT,
+        tags: ['JavaScript', 'Debug', 'I/O']
       },
       {
         target_dir: '/Users/hy/repo/memorandum/memo/',
-        parent_dir: 'lang',
-        basename: 'naming-convention',
-        content: TEST_NAMING_CONVENTION_FILE_CONTENT
+        absolute_path: '/Users/hy/repo/memorandum/memo/lang/javascript/map.md',
+        parent_directory: '/Users/hy/repo/memorandum/memo/lang/javascript/',
+        parent_rel_path: 'lang/javascript/',
+        filename: 'map',
+        file_content: TEST_MAP_FILE_CONTENT,
+        tags: %w[JavaScript 連想配列 データ構造 Notation]
       },
       {
         target_dir: '/Users/hy/repo/memorandum/memo/',
-        parent_dir: 'lang/python',
-        basename: 'uv',
-        content: TEST_UV_FILE_CONTENT
+        absolute_path: '/Users/hy/repo/memorandum/memo/lang/javascript/package-json.md',
+        parent_directory: '/Users/hy/repo/memorandum/memo/lang/javascript/',
+        parent_rel_path: 'lang/javascript/',
+        filename: 'package-json',
+        file_content: TEST_PACKAGE_JSON_FILE_CONTENT,
+        tags: ['JavaScript', 'Package Manager', 'Setting']
       },
       {
         target_dir: '/Users/hy/repo/memorandum/memo/',
-        parent_dir: 'lang/ruby',
-        basename: 'array',
-        content: TEST_LANG_RUBY_ARRAY_FILE_CONTENT
+        absolute_path: '/Users/hy/repo/memorandum/memo/lang/lua/lua.md',
+        parent_directory: '/Users/hy/repo/memorandum/memo/lang/lua/',
+        parent_rel_path: 'lang/lua/',
+        filename: 'lua',
+        file_content: TEST_LUA_FILE_CONTENT,
+        tags: ['lua', 'Package Manager', 'Linter', 'Setting', 'Formatter']
       },
       {
         target_dir: '/Users/hy/repo/memorandum/memo/',
-        parent_dir: 'lang/ruby',
-        basename: 'bundle',
-        content: TEST_BUNDLE_FILE_CONTENT
+        absolute_path: '/Users/hy/repo/memorandum/memo/lang/perl/oneliner.md',
+        parent_directory: '/Users/hy/repo/memorandum/memo/lang/perl/',
+        parent_rel_path: 'lang/perl/',
+        filename: 'oneliner',
+        file_content: TEST_ONELINER_FILE_CONTENT,
+        tags: %w[perl oneliner 表示 edit substitute regex]
       },
       {
         target_dir: '/Users/hy/repo/memorandum/memo/',
-        parent_dir: 'lang/ruby',
-        basename: 'compare',
-        content: TEST_COMPARE_FILE_CONTENT
+        absolute_path: '/Users/hy/repo/memorandum/memo/lang/ruby/arguments.md',
+        parent_directory: '/Users/hy/repo/memorandum/memo/lang/ruby/',
+        parent_rel_path: 'lang/ruby/',
+        filename: 'arguments',
+        file_content: TEST_ARGUMENTS_FILE_CONTENT,
+        tags: %w[Ruby 引数 TODO]
       },
       {
         target_dir: '/Users/hy/repo/memorandum/memo/',
-        parent_dir: 'lang/ruby',
-        basename: 'minitest',
-        content: TEST_MINITEST_FILE_CONTENT
+        absolute_path: '/Users/hy/repo/memorandum/memo/lang/ruby/assignment.md',
+        parent_directory: '/Users/hy/repo/memorandum/memo/lang/ruby/',
+        parent_rel_path: 'lang/ruby/',
+        filename: 'assignment',
+        file_content: TEST_ASSIGNMENT_FILE_CONTENT,
+        tags: %w[Ruby 配列 演算子式 初期化]
       },
       {
         target_dir: '/Users/hy/repo/memorandum/memo/',
-        parent_dir: 'lang/ruby',
-        basename: 'print',
-        content: TEST_PRINT_FILE_CONTENT
+        absolute_path: '/Users/hy/repo/memorandum/memo/lang/ruby/bundle.md',
+        parent_directory: '/Users/hy/repo/memorandum/memo/lang/ruby/',
+        parent_rel_path: 'lang/ruby/',
+        filename: 'bundle',
+        file_content: TEST_BUNDLE_FILE_CONTENT,
+        tags: ['CLI', 'Ruby', 'Project Manager', 'Dependency Management']
       },
       {
         target_dir: '/Users/hy/repo/memorandum/memo/',
-        parent_dir: 'lang/ruby',
-        basename: 'ruby',
-        content: TEST_RUBY_FILE_CONTENT
+        absolute_path: '/Users/hy/repo/memorandum/memo/lang/ruby/compare.md',
+        parent_directory: '/Users/hy/repo/memorandum/memo/lang/ruby/',
+        parent_rel_path: 'lang/ruby/',
+        filename: 'compare',
+        file_content: TEST_COMPARE_FILE_CONTENT,
+        tags: %w[Ruby 比較]
       },
       {
         target_dir: '/Users/hy/repo/memorandum/memo/',
-        parent_dir: 'lang/ruby',
-        basename: 'struct',
-        content: TEST_STRUCT_FILE_CONTENT
+        absolute_path: '/Users/hy/repo/memorandum/memo/lang/ruby/index.md',
+        parent_directory: '/Users/hy/repo/memorandum/memo/lang/ruby/',
+        parent_rel_path: 'lang/ruby/',
+        filename: 'index',
+        file_content: TEST_INDEX_FILE_CONTENT,
+        tags: %w[Ruby Idiom]
       },
       {
         target_dir: '/Users/hy/repo/memorandum/memo/',
-        parent_dir: 'lang/ruby',
-        basename: 'yard',
-        content: TEST_YARD_FILE_CONTENT
+        absolute_path: '/Users/hy/repo/memorandum/memo/lang/ruby/module.md',
+        parent_directory: '/Users/hy/repo/memorandum/memo/lang/ruby/',
+        parent_rel_path: 'lang/ruby/',
+        filename: 'module',
+        file_content: TEST_MODULE_FILE_CONTENT,
+        tags: %w[Ruby TODO]
       },
       {
         target_dir: '/Users/hy/repo/memorandum/memo/',
-        parent_dir: 'meta',
-        basename: 'format',
-        content: TEST_FORMAT_FILE_CONTENT
+        absolute_path: '/Users/hy/repo/memorandum/memo/lang/ruby/rake.md',
+        parent_directory: '/Users/hy/repo/memorandum/memo/lang/ruby/',
+        parent_rel_path: 'lang/ruby/',
+        filename: 'rake',
+        file_content: TEST_RAKE_FILE_CONTENT,
+        tags: ['Ruby', 'Task Runner']
       },
       {
         target_dir: '/Users/hy/repo/memorandum/memo/',
-        parent_dir: 'neovim',
-        basename: 'buffer',
-        content: TEST_BUFFER_FILE_CONTENT
+        absolute_path: '/Users/hy/repo/memorandum/memo/lang/ruby/string.md',
+        parent_directory: '/Users/hy/repo/memorandum/memo/lang/ruby/',
+        parent_rel_path: 'lang/ruby/',
+        filename: 'string',
+        file_content: TEST_STRING_FILE_CONTENT,
+        tags: %w[Ruby string Creation Concatenation データ構造]
       },
       {
         target_dir: '/Users/hy/repo/memorandum/memo/',
-        parent_dir: 'neovim',
-        basename: 'commenting',
-        content: TEST_COMMENTING_FILE_CONTENT
+        absolute_path: '/Users/hy/repo/memorandum/memo/lang/ruby/type-check.md',
+        parent_directory: '/Users/hy/repo/memorandum/memo/lang/ruby/',
+        parent_rel_path: 'lang/ruby/',
+        filename: 'type-check',
+        file_content: TEST_TYPE_CHECK_FILE_CONTENT,
+        tags: %w[Ruby 型検査]
       },
       {
         target_dir: '/Users/hy/repo/memorandum/memo/',
-        parent_dir: 'neovim/plugin',
-        basename: 'neo-tree',
-        content: TEST_NEO_TREE_FILE_CONTENT
+        absolute_path: '/Users/hy/repo/memorandum/memo/lang/test-assertion.md',
+        parent_directory: '/Users/hy/repo/memorandum/memo/lang/',
+        parent_rel_path: 'lang/',
+        filename: 'test-assertion',
+        file_content: TEST_TEST_ASSERTION_FILE_CONTENT,
+        tags: ['テストコード']
       },
       {
         target_dir: '/Users/hy/repo/memorandum/memo/',
-        parent_dir: 'neovim/plugin',
-        basename: 'nvim-surround',
-        content: TEST_NVIM_SURROUND_FILE_CONTENT
+        absolute_path: '/Users/hy/repo/memorandum/memo/meta/format.md',
+        parent_directory: '/Users/hy/repo/memorandum/memo/meta/',
+        parent_rel_path: 'meta/',
+        filename: 'format',
+        file_content: TEST_FORMAT_FILE_CONTENT,
+        tags: %w[meta format]
       },
       {
         target_dir: '/Users/hy/repo/memorandum/memo/',
-        parent_dir: 'neovim',
-        basename: 'read-help',
-        content: TEST_READ_HELP_FILE_CONTENT
+        absolute_path: '/Users/hy/repo/memorandum/memo/neovim/buffer.md',
+        parent_directory: '/Users/hy/repo/memorandum/memo/neovim/',
+        parent_rel_path: 'neovim/',
+        filename: 'buffer',
+        file_content: TEST_BUFFER_FILE_CONTENT,
+        tags: ['neovim', 'buffer', 'Command Line Mode']
       },
       {
         target_dir: '/Users/hy/repo/memorandum/memo/',
-        parent_dir: 'neovim',
-        basename: 'script',
-        content: TEST_SCRIPT_FILE_CONTENT
+        absolute_path: '/Users/hy/repo/memorandum/memo/neovim/commenting.md',
+        parent_directory: '/Users/hy/repo/memorandum/memo/neovim/',
+        parent_rel_path: 'neovim/',
+        filename: 'commenting',
+        file_content: TEST_COMMENTING_FILE_CONTENT,
+        tags: ['neovim', 'Comment Out', 'documentation']
       },
       {
         target_dir: '/Users/hy/repo/memorandum/memo/',
-        parent_dir: 'neovim',
-        basename: 'tips',
-        content: TEST_TIPS_FILE_CONTENT
+        absolute_path: '/Users/hy/repo/memorandum/memo/neovim/plugin/neo-tree.md',
+        parent_directory: '/Users/hy/repo/memorandum/memo/neovim/plugin/',
+        parent_rel_path: 'neovim/plugin/',
+        filename: 'neo-tree',
+        file_content: TEST_NEO_TREE_FILE_CONTENT,
+        tags: %w[neovim plugin documentation]
       },
       {
         target_dir: '/Users/hy/repo/memorandum/memo/',
-        parent_dir: 'memo',
-        basename: 'react',
-        content: TEST_REACT_FILE_CONTENT
+        absolute_path: '/Users/hy/repo/memorandum/memo/neovim/plugin/nvim-surround.md',
+        parent_directory: '/Users/hy/repo/memorandum/memo/neovim/plugin/',
+        parent_rel_path: 'neovim/plugin/',
+        filename: 'nvim-surround',
+        file_content: TEST_NVIM_SURROUND_FILE_CONTENT,
+        tags: ['neovim', 'plugin', 'Operator', 'Normal Mode', 'documentation']
       },
       {
         target_dir: '/Users/hy/repo/memorandum/memo/',
-        parent_dir: 'setting',
-        basename: 'dockerfile',
-        content: TEST_DOCKERFILE_FILE_CONTENT
+        absolute_path: '/Users/hy/repo/memorandum/memo/neovim/read-help.md',
+        parent_directory: '/Users/hy/repo/memorandum/memo/neovim/',
+        parent_rel_path: 'neovim/',
+        filename: 'read-help',
+        file_content: TEST_READ_HELP_FILE_CONTENT,
+        tags: %w[neovim documentation]
       },
       {
         target_dir: '/Users/hy/repo/memorandum/memo/',
-        parent_dir: 'setting',
-        basename: 'makefile',
-        content: TEST_MAKEFILE_FILE_CONTENT
+        absolute_path: '/Users/hy/repo/memorandum/memo/neovim/script.md',
+        parent_directory: '/Users/hy/repo/memorandum/memo/neovim/',
+        parent_rel_path: 'neovim/',
+        filename: 'script',
+        file_content: TEST_SCRIPT_FILE_CONTENT,
+        tags: ['neovim']
       },
       {
         target_dir: '/Users/hy/repo/memorandum/memo/',
-        parent_dir: 'shell/bash',
-        basename: 'bash',
-        content: TEST_BASH_FILE_CONTENT
+        absolute_path: '/Users/hy/repo/memorandum/memo/neovim/tips.md',
+        parent_directory: '/Users/hy/repo/memorandum/memo/neovim/',
+        parent_rel_path: 'neovim/',
+        filename: 'tips',
+        file_content: TEST_TIPS_FILE_CONTENT,
+        tags: %w[neovim Tips Motion]
       },
       {
         target_dir: '/Users/hy/repo/memorandum/memo/',
-        parent_dir: 'shell/bash',
-        basename: 'exit-status',
-        content: TEST_EXIT_STATUS_FILE_CONTENT
+        absolute_path: '/Users/hy/repo/memorandum/memo/react.md',
+        parent_directory: '/Users/hy/repo/memorandum/memo/',
+        parent_rel_path: './',
+        filename: 'react',
+        file_content: TEST_REACT_FILE_CONTENT,
+        tags: ['Frontend']
       },
       {
         target_dir: '/Users/hy/repo/memorandum/memo/',
-        parent_dir: 'shell/bash/expansion',
-        basename: 'history-expansion',
-        content: TEST_HISTORY_EXPANSION_FILE_CONTENT
+        absolute_path: '/Users/hy/repo/memorandum/memo/setting/dockerfile.md',
+        parent_directory: '/Users/hy/repo/memorandum/memo/setting/',
+        parent_rel_path: 'setting/',
+        filename: 'dockerfile',
+        file_content: TEST_DOCKERFILE_FILE_CONTENT,
+        tags: ['Docker']
       },
       {
         target_dir: '/Users/hy/repo/memorandum/memo/',
-        parent_dir: 'shell/bash',
-        basename: 'for',
-        content: TEST_FOR_FILE_CONTENT
+        absolute_path: '/Users/hy/repo/memorandum/memo/setting/makefile.md',
+        parent_directory: '/Users/hy/repo/memorandum/memo/setting/',
+        parent_rel_path: 'setting/',
+        filename: 'makefile',
+        file_content: TEST_MAKEFILE_FILE_CONTENT,
+        tags: ['Task Runner']
       },
       {
         target_dir: '/Users/hy/repo/memorandum/memo/',
-        parent_dir: 'shell/bash',
-        basename: 'redirection',
-        content: TEST_REDIRECTION_FILE_CONTENT
+        absolute_path: '/Users/hy/repo/memorandum/memo/shell/bash/bash.md',
+        parent_directory: '/Users/hy/repo/memorandum/memo/shell/bash/',
+        parent_rel_path: 'shell/bash/',
+        filename: 'bash',
+        file_content: TEST_BASH_FILE_CONTENT,
+        tags: %w[bash documentation Tips]
       },
       {
         target_dir: '/Users/hy/repo/memorandum/memo/',
-        parent_dir: 'shell/bash',
-        basename: 'special-parameters',
-        content: TEST_SPECIAL_PARAMETERS_FILE_CONTENT
+        absolute_path: '/Users/hy/repo/memorandum/memo/shell/bash/exit-status.md',
+        parent_directory: '/Users/hy/repo/memorandum/memo/shell/bash/',
+        parent_rel_path: 'shell/bash/',
+        filename: 'exit-status',
+        file_content: TEST_EXIT_STATUS_FILE_CONTENT,
+        tags: %w[bash test status]
       },
       {
         target_dir: '/Users/hy/repo/memorandum/memo/',
-        parent_dir: 'shell/zsh',
-        basename: 'command-history',
-        content: TEST_COMMAND_HISTORY_FILE_CONTENT
+        absolute_path: '/Users/hy/repo/memorandum/memo/shell/bash/expansion/history-expansion.md',
+        parent_directory: '/Users/hy/repo/memorandum/memo/shell/bash/expansion/',
+        parent_rel_path: 'shell/bash/expansion/',
+        filename: 'history-expansion',
+        file_content: TEST_HISTORY_EXPANSION_FILE_CONTENT,
+        tags: %w[bash expansion]
       },
       {
         target_dir: '/Users/hy/repo/memorandum/memo/',
-        parent_dir: 'tui',
-        basename: 'emacs',
-        content: TEST_EMACS_FILE_CONTENT
+        absolute_path: '/Users/hy/repo/memorandum/memo/shell/bash/for.md',
+        parent_directory: '/Users/hy/repo/memorandum/memo/shell/bash/',
+        parent_rel_path: 'shell/bash/',
+        filename: 'for',
+        file_content: TEST_FOR_FILE_CONTENT,
+        tags: %w[bash syntax documentation]
       },
       {
         target_dir: '/Users/hy/repo/memorandum/memo/',
-        parent_dir: 'tui',
-        basename: 'lazygit',
-        content: TEST_LAZYGIT_FILE_CONTENT
+        absolute_path: '/Users/hy/repo/memorandum/memo/shell/bash/redirection.md',
+        parent_directory: '/Users/hy/repo/memorandum/memo/shell/bash/',
+        parent_rel_path: 'shell/bash/',
+        filename: 'redirection',
+        file_content: TEST_REDIRECTION_FILE_CONTENT,
+        tags: ['bash', 'Redirection', 'I/O', 'documentation']
       },
       {
         target_dir: '/Users/hy/repo/memorandum/memo/',
-        parent_dir: 'tui',
-        basename: 'tmux',
-        content: TEST_TMUX_FILE_CONTENT
+        absolute_path: '/Users/hy/repo/memorandum/memo/shell/bash/special-parameters.md',
+        parent_directory: '/Users/hy/repo/memorandum/memo/shell/bash/',
+        parent_rel_path: 'shell/bash/',
+        filename: 'special-parameters',
+        file_content: TEST_SPECIAL_PARAMETERS_FILE_CONTENT,
+        tags: %w[bash Notation Tips documentation]
+      },
+      {
+        target_dir: '/Users/hy/repo/memorandum/memo/',
+        absolute_path: '/Users/hy/repo/memorandum/memo/shell/zsh/command-history.md',
+        parent_directory: '/Users/hy/repo/memorandum/memo/shell/zsh/',
+        parent_rel_path: 'shell/zsh/',
+        filename: 'command-history',
+        file_content: TEST_COMMAND_HISTORY_FILE_CONTENT,
+        tags: ['zsh', 'documentation', 'command history']
+      },
+      {
+        target_dir: '/Users/hy/repo/memorandum/memo/',
+        absolute_path: '/Users/hy/repo/memorandum/memo/tui/emacs.md',
+        parent_directory: '/Users/hy/repo/memorandum/memo/tui/',
+        parent_rel_path: 'tui/',
+        filename: 'emacs',
+        file_content: TEST_EMACS_FILE_CONTENT,
+        tags: %w[TUI Tips]
+      },
+      {
+        target_dir: '/Users/hy/repo/memorandum/memo/',
+        absolute_path: '/Users/hy/repo/memorandum/memo/tui/lazygit.md',
+        parent_directory: '/Users/hy/repo/memorandum/memo/tui/',
+        parent_rel_path: 'tui/',
+        filename: 'lazygit',
+        file_content: TEST_LAZYGIT_FILE_CONTENT,
+        tags: %w[TUI Terminal git]
+      },
+      {
+        target_dir: '/Users/hy/repo/memorandum/memo/',
+        absolute_path: '/Users/hy/repo/memorandum/memo/tui/tmux.md',
+        parent_directory: '/Users/hy/repo/memorandum/memo/tui/',
+        parent_rel_path: 'tui/',
+        filename: 'tmux',
+        file_content: TEST_TMUX_FILE_CONTENT,
+        tags: %w[TUI Terminal]
       },
       {
         target_dir: '/Users/hy/repo/private-memo/memo/',
-        parent_dir: 'books/tdd',
-        basename: 'set-the-table',
-        content: TEST_SET_THE_TABLE_FILE_CONTENT
+        absolute_path: '/Users/hy/repo/private-memo/memo/architecture/null.md',
+        parent_directory: '/Users/hy/repo/private-memo/memo/architecture/',
+        parent_rel_path: 'architecture/',
+        filename: 'null',
+        file_content: TEST_NULL_FILE_CONTENT,
+        tags: []
       },
       {
         target_dir: '/Users/hy/repo/private-memo/memo/',
-        parent_dir: 'english',
-        basename: 'chat',
-        content: TEST_CHAT_FILE_CONTENT
+        absolute_path: '/Users/hy/repo/private-memo/memo/books/compiler/compiler-memo.md',
+        parent_directory: '/Users/hy/repo/private-memo/memo/books/compiler/',
+        parent_rel_path: 'books/compiler/',
+        filename: 'compiler-memo',
+        file_content: TEST_COMPILER_MEMO_FILE_CONTENT,
+        tags: ['コンパイラ']
       },
       {
         target_dir: '/Users/hy/repo/private-memo/memo/',
-        parent_dir: 'english',
-        basename: 'prompt-ai',
-        content: TEST_PROMPT_AI_FILE_CONTENT
+        absolute_path: '/Users/hy/repo/private-memo/memo/books/was-book/chapter-3.md',
+        parent_directory: '/Users/hy/repo/private-memo/memo/books/was-book/',
+        parent_rel_path: 'books/was-book/',
+        filename: 'chapter-3',
+        file_content: TEST_CHAPTER_3_FILE_CONTENT,
+        tags: %w[Security HTTP]
       },
       {
         target_dir: '/Users/hy/repo/private-memo/memo/',
-        parent_dir: 'english',
-        basename: 'vocabulary-about-computer',
-        content: TEST_VOCABULARY_ABOUT_COMPUTER_FILE_CONTENT
+        absolute_path: '/Users/hy/repo/private-memo/memo/english/commit-messages.md',
+        parent_directory: '/Users/hy/repo/private-memo/memo/english/',
+        parent_rel_path: 'english/',
+        filename: 'commit-messages',
+        file_content: TEST_COMMIT_MESSAGES_FILE_CONTENT,
+        tags: %w[English Messages git]
       },
       {
         target_dir: '/Users/hy/repo/private-memo/memo/',
-        parent_dir: 'japanese',
-        basename: 'ruigo',
-        content: TEST_RUIGO_FILE_CONTENT
+        absolute_path: '/Users/hy/repo/private-memo/memo/english/review.md',
+        parent_directory: '/Users/hy/repo/private-memo/memo/english/',
+        parent_rel_path: 'english/',
+        filename: 'review',
+        file_content: TEST_REVIEW_FILE_CONTENT,
+        tags: %w[English Messages]
       },
       {
-        target_dir: '/Users/hy/repo/memorandum/memo/',
-        parent_dir: 'cli/core/file',
-        basename: 'ls',
-        content: TEST_LS_FILE_CONTENT
+        target_dir: '/Users/hy/repo/private-memo/memo/',
+        absolute_path: '/Users/hy/repo/private-memo/memo/english/vocabulary.md',
+        parent_directory: '/Users/hy/repo/private-memo/memo/english/',
+        parent_rel_path: 'english/',
+        filename: 'vocabulary',
+        file_content: TEST_VOCABULARY_FILE_CONTENT,
+        tags: %w[English Vocabulary]
+      },
+      {
+        target_dir: '/Users/hy/repo/private-memo/memo/',
+        absolute_path: '/Users/hy/repo/private-memo/memo/japanese/ruigo.md',
+        parent_directory: '/Users/hy/repo/private-memo/memo/japanese/',
+        parent_rel_path: 'japanese/',
+        filename: 'ruigo',
+        file_content: TEST_RUIGO_FILE_CONTENT,
+        tags: ['日本語']
       }
     ].freeze
   end

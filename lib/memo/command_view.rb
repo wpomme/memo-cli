@@ -1,35 +1,35 @@
 # frozen_string_literal: true
 
 module Memo
-  class NeoView
+  class CommandView
     def read(word)
       puts read_file_by_found_result(word)
     end
 
     def search(word)
-      puts Memo::NewView::Search.run(word)
+      puts Memo::View::Search.run(word)
     end
 
     def tag(word)
-      puts Memo::NewView::Tag.run(word)
+      puts Memo::View::Tag.run(word)
     end
 
     def dirs(_)
-      puts Memo::NewView::Dirs.run
+      puts Memo::View::Dirs.run
     end
 
     def list(word = '')
-      puts Memo::NewView::List.run(word)
+      puts Memo::View::List.run(word)
     end
 
     def tags(option = '')
-      puts Memo::NewView::Tags.run(option)
+      puts Memo::View::Tags.run(option)
     end
 
     private
 
     def read_file_by_found_result(word)
-      found = Memo::NewView::Read.run(word)
+      found = Memo::View::Read.run(word)
       size = found.size
 
       return Memo::Message::NO_MEMOS_WEWE_FOUND.sub('word', word) if size.zero?

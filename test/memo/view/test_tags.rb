@@ -2,12 +2,12 @@
 
 # require_relative '../../helper'
 
-class TestNewViewTags < Minitest::Test
-  describe 'NewView::Tags' do
+class TestViewTags < Minitest::Test
+  describe 'View::Tags' do
     describe '#run' do
       # TODO: それぞれのタグの数が合うかどうかを確かめること。境界値条件
       it '引数がtrueの場合、タグとそれに紐づいたファイルの一覧を出力する' do
-        actual = Memo::NewView::Tags.run(true)
+        actual = Memo::View::Tags.run(true)
 
         _(actual).wont_be_empty
       end
@@ -15,7 +15,7 @@ class TestNewViewTags < Minitest::Test
       it ':nameを受け取った場合、タグ名だけを出力する。FileLoaderのtag_sizeと同じ数であること。' do
         option = :name
 
-        out = Memo::NewView::Tags.run(option)
+        out = Memo::View::Tags.run(option)
 
         actual = out.size
 
@@ -27,7 +27,7 @@ class TestNewViewTags < Minitest::Test
       it ':countを受け取った場合、タグ名とそのタグが付いたファイルの数を出力する。' do
         option = :count
 
-        out = Memo::NewView::Tags.run(option)
+        out = Memo::View::Tags.run(option)
 
         # actual = out.size
         #

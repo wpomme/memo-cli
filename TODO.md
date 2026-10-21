@@ -11,15 +11,13 @@
     - Command (<=> SubCommandParser) <=> View <=> Loader(Modelの役割)の構成にする？
     - 更新処理が出来たらCommandの次にControllerを導入してもいいかも
 
-### DB
-1. setup.rbのto_schemaをmodel/以下に入れたい
-2. Database以下の構成
+### DB・CLI・残タスク
+- setup.rbのto_schemaをmodel/以下に入れたい
+- Database以下の構成
     - setupは1. create/drop tables, 2. Seeder, 3. schemaの三つに分けられる
-
-### CLI・残タスク
 - memo help [sub_command]の作成
-- repository.rbなどを削除し、neo_viewなどをリネームする
 - モックデータからテストコードの検証を行うようにする
+- loaderフォルダについて、フォルダに入れるまでで充分。Loaderモジュールは削除する
 
 ## その他やりたいこと
 ## テスト系

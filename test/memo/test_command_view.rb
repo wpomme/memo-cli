@@ -2,15 +2,15 @@
 
 require_relative '../helper'
 
-class TestView < Minitest::Test
-  describe 'View' do
+class TestCommandView < Minitest::Test
+  describe 'CommandView' do
     def setup
-      @neo_view = Memo::NeoView.new
+      @command_view = Memo::CommandView.new
     end
 
     describe '#read' do
-      it 'NeoViewはreadメソッドを返す' do
-        actual = @neo_view
+      it 'Viewはreadメソッドを返す' do
+        actual = @command_view
 
         _(actual).must_respond_to(:read)
       end
@@ -19,7 +19,7 @@ class TestView < Minitest::Test
         target_filename = 'ls'
 
         out, = capture_io do
-          @neo_view.read(target_filename)
+          @command_view.read(target_filename)
         end
 
         _(out).wont_be_empty
@@ -33,7 +33,7 @@ class TestView < Minitest::Test
         # 最後の方を選択する
         $stdin = StringIO.new("#{count}\n")
         out, = capture_io do
-          @neo_view.read(target_filename)
+          @command_view.read(target_filename)
         end
 
         _(out).wont_be_empty
@@ -45,7 +45,7 @@ class TestView < Minitest::Test
         word = 'does_not_exist_files'
 
         out, = capture_io do
-          @neo_view.read(word)
+          @command_view.read(word)
         end
 
         _(out).must_equal(Memo::Message::NO_MEMOS_WEWE_FOUND.sub('word', word) << "\n")
@@ -53,8 +53,8 @@ class TestView < Minitest::Test
     end
 
     describe '#search' do
-      it 'NeoViewはsearchメソッドを返す' do
-        actual = @neo_view
+      it 'Viewはsearchメソッドを返す' do
+        actual = @command_view
 
         _(actual).must_respond_to(:search)
       end
@@ -63,7 +63,7 @@ class TestView < Minitest::Test
         search_word = 'ls'
 
         out, = capture_io do
-          @neo_view.search(search_word)
+          @command_view.search(search_word)
         end
 
         _(out).wont_be_empty
@@ -73,7 +73,7 @@ class TestView < Minitest::Test
         search_word = 'does_not_exist_word'
 
         out, = capture_io do
-          @neo_view.search(search_word)
+          @command_view.search(search_word)
         end
 
         expected = Memo::Message::NO_SEARCH_RESULTS_WERE_FOUND.sub('word', search_word) << "\n"
@@ -83,8 +83,8 @@ class TestView < Minitest::Test
     end
 
     describe '#tag' do
-      it 'NeoViewはtagメソッドを返す' do
-        actual = @neo_view
+      it 'Viewはtagメソッドを返す' do
+        actual = @command_view
 
         _(actual).must_respond_to(:tag)
       end
@@ -93,7 +93,7 @@ class TestView < Minitest::Test
         search_word = 'CLI'
 
         out, = capture_io do
-          @neo_view.tag(search_word)
+          @command_view.tag(search_word)
         end
 
         _(out).wont_be_empty
@@ -104,7 +104,7 @@ class TestView < Minitest::Test
         tag_list = Memo::Loader::FileLoader.new.sorted_tags
 
         out, = capture_io do
-          @neo_view.tag(search_word)
+          @command_view.tag(search_word)
         end
 
         expected = Memo::Message::NO_TAGS.sub('tag', search_word) << tag_list.join(' ') << "\n"
@@ -114,15 +114,15 @@ class TestView < Minitest::Test
     end
 
     describe '#list' do
-      it 'NeoViewはlistメソッドを返す' do
-        actual = @neo_view
+      it 'Viewはlistメソッドを返す' do
+        actual = @command_view
 
         _(actual).must_respond_to(:list)
       end
 
       it '引数を取らない場合' do
         out, = capture_io do
-          @neo_view.list
+          @command_view.list
         end
 
         _(out).wont_be_empty
@@ -132,7 +132,7 @@ class TestView < Minitest::Test
         word = 'git/'
 
         out, = capture_io do
-          @neo_view.list(word)
+          @command_view.list(word)
         end
 
         _(out).wont_be_empty
@@ -142,7 +142,7 @@ class TestView < Minitest::Test
         word = 'does_not_exist_dirname'
 
         out, = capture_io do
-          @neo_view.list(word)
+          @command_view.list(word)
         end
 
         _(out).must_equal("\n")
@@ -150,15 +150,15 @@ class TestView < Minitest::Test
     end
 
     describe '#tags' do
-      it 'NeoViewはtagsメソッドを返す' do
-        actual = @neo_view
+      it 'Viewはtagsメソッドを返す' do
+        actual = @command_view
 
         _(actual).must_respond_to(:tags)
       end
 
       it '引数を取らない場合' do
         out, = capture_io do
-          @neo_view.tags
+          @command_view.tags
         end
 
         _(out).wont_be_empty
@@ -166,7 +166,7 @@ class TestView < Minitest::Test
 
       it ':nameを取る場合' do
         out, = capture_io do
-          @neo_view.tags(:name)
+          @command_view.tags(:name)
         end
 
         _(out).wont_be_empty
@@ -174,7 +174,7 @@ class TestView < Minitest::Test
 
       it ':countを取る場合' do
         out, = capture_io do
-          @neo_view.tags(:count)
+          @command_view.tags(:count)
         end
 
         _(out).wont_be_empty

@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module Memo
-  module NewView
+  module View
     class Dirs
       def self.run
         new.execute

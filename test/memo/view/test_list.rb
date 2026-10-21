@@ -2,11 +2,11 @@
 
 # require_relative '../../helper'
 
-class TestNewViewList < Minitest::Test
-  describe 'NewView::List' do
+class TestViewList < Minitest::Test
+  describe 'View::List' do
     describe '#run' do
       it '引数がtrueの場合、対象のディレクトリの配列が返ってくる' do
-        actual = Memo::NewView::List.run(true)
+        actual = Memo::View::List.run(true)
 
         _(actual).must_be_instance_of(Array)
       end
@@ -14,7 +14,7 @@ class TestNewViewList < Minitest::Test
       it '有効な引数を取る場合、対象のディレクトリの配列が返ってくる' do
         dirname = 'git/'
 
-        actual = Memo::NewView::List.run(dirname)
+        actual = Memo::View::List.run(dirname)
 
         _(actual).must_be_instance_of(Array)
       end
@@ -22,7 +22,7 @@ class TestNewViewList < Minitest::Test
       it '末尾のスラッシュを付けなくても、対象のディレクトリの配列が返ってくる' do
         dirname = 'git'
 
-        actual = Memo::NewView::List.run(dirname)
+        actual = Memo::View::List.run(dirname)
 
         _(actual).must_be_instance_of(Array)
       end
@@ -30,7 +30,7 @@ class TestNewViewList < Minitest::Test
       it '有効な引数を取る場合、対象のディレクトリの配列が返ってくる' do
         dirname = 'lang/'
 
-        actual = Memo::NewView::List.run(dirname)
+        actual = Memo::View::List.run(dirname)
 
         _(actual).must_be_instance_of(Array)
       end
@@ -38,7 +38,7 @@ class TestNewViewList < Minitest::Test
       it '無効な引数を取る場合、nilが返ってくる。後ほどメッセージが返ってくるように修正する' do
         dirname = 'does_not_exist_dirname'
 
-        actual = Memo::NewView::List.run(dirname)
+        actual = Memo::View::List.run(dirname)
 
         _(actual).must_be_nil
       end

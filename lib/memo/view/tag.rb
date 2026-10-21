@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module Memo
-  module NewView
+  module View
     INDENT = ' '
 
     class Tag

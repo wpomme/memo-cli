@@ -46,7 +46,7 @@ mock_seeds = seeds.map do |seed|
   }
 end
 
-output = './test/new_mock_seeds.rb'
+output = './test/mock_seeds.rb'
 
 File.open(output, 'w') do |file|
   file.puts(['module Memo', 'module MockSeed'])

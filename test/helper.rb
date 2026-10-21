@@ -11,7 +11,6 @@ require 'minitest/mock'
 
 module MemoDBTestLifecycleHooks
   def setup
-    # TODO: DB名をmemo_test.dbにする
     super
     test_database_filename = 'memo_test.db'
     @test_database_path = Memo::Config.target_database(database_filename: test_database_filename)

@@ -2,7 +2,7 @@
 
 # require_relative '../helper'
 
-class TestNewSubCommandParser < Minitest::Test
+class TestSubCommandParser < Minitest::Test
   describe '#run' do
     describe '引数による分類' do
       it '引数がない場合はヘルプメッセージを表示する' do
@@ -14,7 +14,7 @@ class TestNewSubCommandParser < Minitest::Test
           skip 'TODO'
           argv = %w[foo]
 
-          actual = Memo::NewSubCommandParser.run(argv)
+          actual = Memo::SubCommandParser.run(argv)
 
           # 次のどちらかを返す
           _(actual).must_equal({ read: 'foo' })
@@ -24,7 +24,7 @@ class TestNewSubCommandParser < Minitest::Test
           skip 'TODO'
           argv = %w[foo bar]
 
-          Memo::NewSubCommandParser.run(argv)
+          Memo::SubCommandParser.run(argv)
         end
       end
     end
@@ -37,7 +37,7 @@ class TestNewSubCommandParser < Minitest::Test
           args.each do |arg|
             actual, = capture_io do
               exception = assert_raises(SystemExit) do
-                Memo::NewSubCommandParser.run([arg])
+                Memo::SubCommandParser.run([arg])
               end
 
               _(exception.status).must_equal(2)
@@ -57,7 +57,7 @@ class TestNewSubCommandParser < Minitest::Test
           arg2 = 'foo'
 
           arg1.each do |arg|
-            actual = Memo::NewSubCommandParser.run([arg, arg2])
+            actual = Memo::SubCommandParser.run([arg, arg2])
 
             _(actual).must_equal({ arg.intern => arg2 })
           end
@@ -72,7 +72,7 @@ class TestNewSubCommandParser < Minitest::Test
           arg1.each do |arg|
             actual, = capture_io do
               exception = assert_raises(SystemExit) do
-                Memo::NewSubCommandParser.run([arg, arg2, arg3])
+                Memo::SubCommandParser.run([arg, arg2, arg3])
               end
 
               _(exception.status).must_equal(2)
@@ -89,7 +89,7 @@ class TestNewSubCommandParser < Minitest::Test
         it '引数を取らない場合は、dirs: trueを返す' do
           argv = %w[dirs]
 
-          actual = Memo::NewSubCommandParser.run(argv)
+          actual = Memo::SubCommandParser.run(argv)
 
           _(actual).must_equal({ dirs: true })
         end
@@ -99,7 +99,7 @@ class TestNewSubCommandParser < Minitest::Test
             exception = assert_raises(SystemExit) do
               argv = %w[dirs foo]
 
-              Memo::NewSubCommandParser.run(argv)
+              Memo::SubCommandParser.run(argv)
             end
 
             _(exception.status).must_equal(2)
@@ -116,7 +116,7 @@ class TestNewSubCommandParser < Minitest::Test
         it 'tagsのみの場合は、tags: trueを返す' do
           argv = %w[tags]
 
-          actual = Memo::NewSubCommandParser.run(argv)
+          actual = Memo::SubCommandParser.run(argv)
 
           _(actual).must_equal({ tags: true })
         end
@@ -128,7 +128,7 @@ class TestNewSubCommandParser < Minitest::Test
           args = options.map { |opt| [arg, opt] }
 
           args.each do |arg|
-            actual = Memo::NewSubCommandParser.run(arg)
+            actual = Memo::SubCommandParser.run(arg)
             _(actual).must_equal({ tags: :count })
           end
         end
@@ -141,7 +141,7 @@ class TestNewSubCommandParser < Minitest::Test
           args = options.map { |opt| [arg, opt] }
 
           args.each do |arg|
-            actual = Memo::NewSubCommandParser.run(arg)
+            actual = Memo::SubCommandParser.run(arg)
             _(actual).must_equal({ tags: :name })
           end
         end
@@ -153,7 +153,7 @@ class TestNewSubCommandParser < Minitest::Test
           args = options.map { |opt| [arg, opt] }
 
           args.each do |arg|
-            actual = Memo::NewSubCommandParser.run(arg)
+            actual = Memo::SubCommandParser.run(arg)
             _(actual).must_equal({ tags: :name })
           end
         end
@@ -162,7 +162,7 @@ class TestNewSubCommandParser < Minitest::Test
           skip 'TODO'
           argv = %w[tags -cn]
 
-          actual = Memo::NewSubCommandParser.run(argv)
+          actual = Memo::SubCommandParser.run(argv)
 
           _(actual).must_equal({ tags: :name })
         end
@@ -176,7 +176,7 @@ class TestNewSubCommandParser < Minitest::Test
           # exit 2を使うかも
           options.map { |opt| [argv, opt, rest_argv] }
             .map do |args|
-            Memo::NewSubCommandParser.run(args)
+            Memo::SubCommandParser.run(args)
           end
         end
       end
@@ -185,7 +185,7 @@ class TestNewSubCommandParser < Minitest::Test
         it 'listのみの場合は、list: trueを返す' do
           argv = %w[list]
 
-          actual = Memo::NewSubCommandParser.run(argv)
+          actual = Memo::SubCommandParser.run(argv)
 
           _(actual).must_equal({ list: true })
         end
@@ -197,7 +197,7 @@ class TestNewSubCommandParser < Minitest::Test
           args = options.map { |opt| [arg, opt] }
 
           args.each do |arg|
-            actual = Memo::NewSubCommandParser.run(arg)
+            actual = Memo::SubCommandParser.run(arg)
             _(actual).must_equal({ list: :count })
           end
         end
@@ -205,7 +205,7 @@ class TestNewSubCommandParser < Minitest::Test
         it '引数を取る場合は、list:の値にその文字列を返す' do
           argv = %w[list foo]
 
-          actual = Memo::NewSubCommandParser.run(argv)
+          actual = Memo::SubCommandParser.run(argv)
 
           _(actual).must_equal({ list: 'foo' })
         end
@@ -214,7 +214,7 @@ class TestNewSubCommandParser < Minitest::Test
           arg1 = 'list'
           arg2 = 'あ' * 32
 
-          actual = Memo::NewSubCommandParser.run([arg1, arg2])
+          actual = Memo::SubCommandParser.run([arg1, arg2])
 
           _(actual).must_equal({ list: arg2 })
         end
@@ -225,7 +225,7 @@ class TestNewSubCommandParser < Minitest::Test
               arg1 = 'list'
               arg2 = 'あ' * 33
 
-              Memo::NewSubCommandParser.run([arg1, arg2])
+              Memo::SubCommandParser.run([arg1, arg2])
             end
 
             _(exception.status).must_equal(2)
@@ -244,7 +244,7 @@ class TestNewSubCommandParser < Minitest::Test
               args = %w[version -V]
 
               args.each do |arg|
-                Memo::NewSubCommandParser.run([arg])
+                Memo::SubCommandParser.run([arg])
               end
             end
 

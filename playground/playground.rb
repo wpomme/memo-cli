@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+
 #
 # 重複の集計
 ## filenameだけの配列も作っておく
