@@ -6,7 +6,7 @@ module Memo
     # 何度も走査しないように、キャッシュを取得する
     class FileLoader
       def initialize
-        @file_seeds_hash = load_file_seeds_hash
+        load_file_seeds
       end
 
       # 全てのタグの一覧をソートし、重複を排除してから、その一覧を返す
@@ -60,10 +60,28 @@ module Memo
         file_seeds.size
       end
 
-      def file_seeds(target_dirs = Memo::Config.target_dirs)
-        @file_seeds ||= target_dirs.flat_map do |target_dir|
-          @file_seeds_hash[target_dir]
+      # file_seedsからfile_contentとtagsを引いたもの
+      # => NOTE: load_file_seedsから直接生成できそう
+      def file_seeds_light
+        @file_seeds_light ||= file_seeds.map do |file_seed|
+          {
+            target_dir: file_seed[:target_dir],
+            absolute_path: file_seed[:absolute_path],
+            parent_directory: file_seed[:parent_directory],
+            parent_rel_path: file_seed[:parent_rel_path],
+            filename: file_seed[:filename]
+          }
         end
+      end
+
+      # 対象のディレクトリの中にあるファイルの情報を全て保存したもの
+      #
+      # FileSeed = {
+      #   target_dir, absolute_path, parent_directory, parent_rel_path, filename, file_content, tags,
+      # }
+      # @return [Array<FileSeed>]
+      def file_seeds
+        @file_seeds ||= @load_file_seeds.flatten
       end
 
       private
@@ -83,9 +101,9 @@ module Memo
       # 対象のディレクトリ内のファイルを読み込んで、DBに保存するためのfile_seeds_hashを作成する
       #
       # @return [Hash<String, Array>] 設定ディレクトリがキーで、そのディレクトリ内のファイルに関する情報の配列が値となるハッシュを返す
-      def load_file_seeds_hash(target_dirs = Memo::Config.target_dirs)
-        @load_file_seeds_hash ||= target_dirs.to_h do |target_dir|
-          file_seeds = Dir.glob('**/*.md', base: target_dir).filter_map do |rel_path|
+      def load_file_seeds(target_dirs = Memo::Config.target_dirs)
+        @load_file_seeds ||= target_dirs.filter_map do |target_dir|
+          Dir.glob('**/*.md', base: target_dir).filter_map do |rel_path|
             next if ['README.md'].include?(File.basename(rel_path))
 
             absolute_path = File.join(target_dir, rel_path)
@@ -107,8 +125,6 @@ module Memo
               tags: tags
             }
           end
-
-          [target_dir, file_seeds]
         end
       end
     end
