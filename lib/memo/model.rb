@@ -5,30 +5,31 @@ module Memo
     #  対象ディレクトリのファイル情報を保存するための値オブジェクト
     #  NOTE: Loaderのfile_seedに使えるかもしれない
     #
-    # @!attribute [w] full_path
-    #   @return [String] memoディレクトリの中にあるファイルの絶対パス。メモを読み取るために使う
-    # @!attribute [w] rel_path
-    #   @return [String] 対象のディレクトリからそのファイルへのパス
-    # @!attribute [w] target_dir
+    # @!attribute [r] target_dir
     #   @return [String] このSeedがどのtarget_dirから読み込まれているかを示す値
-    # @!attribute [w] parent_dir
+    # @!attribute [r] full_path
+    #   @return [String] memoディレクトリの中にあるファイルの絶対パス。メモを読み取るために使う
+    # @!attribute [r] parent_dir
     #   @return [String] そのファイルが格納されているディレクトリ
-    # @!attribute [w] basename
+    # @!attribute [r] parent_rel_path
+    #   @return [String] 対象のディレクトリからそのファイルへのパス
+    # @!attribute [r] filename
     #   @return [String] 対象のファイルのファイル名
-    # @!attribute [w] tags
+    # @!attribute [r] tags
     #   @return [Array<String>] 対象のファイルのフロントマター部分のtagsの値
-    Seed = Struct.new(:full_path, :rel_path, :target_dir, :parent_dir, :basename, :tags) do
+    FileSeed = Struct.new(:target_dir, :absolute_path, :parent_directory, :parent_rel_path, :filename, :file_content, :tags) do
       def initialize(...)
         super
         freeze
       end
+    end
 
-      def directory?
-        FileTest.directory?(full_path)
-      end
-
-      def file?
-        FileTest.file?(full_path)
+    # FileSeedを使うならこちも使う
+    # NOTE: target_dir => target_directory, parent_rel_path => relative_pathに変更したい
+    DirectorySeed = Struct.new(:target_dir, :absolute_path, :parent_rel_path) do
+      def initialize(...)
+        super
+        freeze
       end
     end
 

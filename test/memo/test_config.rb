@@ -1,7 +1,5 @@
 # frozen_string_literal: true
 
-# require_relative '../helper'
-
 class TestConfig < Minitest::Test
   describe 'Config' do
     describe '#load' do

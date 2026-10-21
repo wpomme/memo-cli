@@ -1,7 +1,5 @@
 # frozen_string_literal: true
 
-# require_relative '../helper'
-
 class TestSubCommandParser < Minitest::Test
   describe '#run' do
     describe '引数による分類' do

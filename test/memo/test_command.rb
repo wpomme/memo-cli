@@ -1,7 +1,5 @@
 # frozen_string_literal: true
 
-# require_relative '../helper'
-
 class TestCommand < Minitest::Test
   describe 'Command' do
     describe '#run' do

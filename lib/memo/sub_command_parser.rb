@@ -94,7 +94,7 @@ module Memo
 
       return { sym => :count } if ['-c', '--count'].include?(opt)
 
-      return { sym => :count } if ['-d', '--duplicate'].include?(opt)
+      return { sym => :duplicate } if ['-d', '--duplicate'].include?(opt)
 
       { sym => opt }
     end

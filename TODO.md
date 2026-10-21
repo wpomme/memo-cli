@@ -6,11 +6,6 @@
 ### バージョン
     - gemspecの件が終了したらバージョンを1.0.0にする
 
-## DB / CLIのUI
-- DBを作成したら、それに従ってアーキテクチャとCLIのUIを変更する予定
-    - Command (<=> SubCommandParser) <=> View <=> Loader(Modelの役割)の構成にする？
-    - 更新処理が出来たらCommandの次にControllerを導入してもいいかも
-
 ### DB・CLI・残タスク
 - setup.rbのto_schemaをmodel/以下に入れたい
 - Database以下の構成
@@ -18,12 +13,16 @@
 - memo help [sub_command]の作成
 - モックデータからテストコードの検証を行うようにする
 - loaderフォルダについて、フォルダに入れるまでで充分。Loaderモジュールは削除する
+    - Loaderに値を入れる場面で、FileSeed, DirectorySeedを使いたい
+- View::Listについて、ネストしたハッシュを配列・構造体・集合のどれかを使って直す
+    - コードが複雑になってしまったため
 
 ## その他やりたいこと
 ## テスト系
 ### 型検査・型のテスト・テスト拡張
 - Rdocかyard、型検査の導入、coverageの取得
     - coverage: https://docs.ruby-lang.org/ja/latest/library/coverage.html
+- e2eテストをコマンドごとに分けて、コマンドごとに実行する場合は、その結果を標準出力に渡すようにする
 
 ### expected, actual
 - expected, actualを意味的に逆に使っている箇所があるかもしれない
