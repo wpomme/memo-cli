@@ -92,6 +92,13 @@ module Memo
         end
       end
 
+      # タグの付いていないファイルのseedを配列で返す
+      def file_seeds_without_tags
+        file_seeds.filter do |file_seed|
+          file_seed[:tags].empty?
+        end
+      end
+
       # 対象のディレクトリの中にあるファイルの情報を全て保存したもの
       #
       # FileSeed = {

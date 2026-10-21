@@ -15,19 +15,39 @@ module Memo
       end
 
       def execute
-        tag_files_hash = @file_loader.tag_files_hash
-        tag_files_size = @file_loader.sorted_tag_files_size
+        return seeds_hash_to_view(@file_loader.tag_files_hash, :aqua) if @option == true
 
-        return seeds_hash_to_view(tag_files_hash, :aqua) if @option == true
+        return count_hash_to_view(@file_loader.sorted_tag_files_size) if @option == :count
 
-        return hash_to_view(tag_files_size) if @option == :count
+        return empty_seeds_to_view(@file_loader.file_seeds_without_tags) if @option == :empty
 
         @file_loader.sorted_tags if @option == :name
       end
 
       private
 
-      def hash_to_view(hash)
+      def empty_seeds_to_view(file_seeds)
+        grouped = file_seeds.group_by { |file_seed| file_seed[:parent_rel_path] }
+          .transform_values do |values|
+            values.map do |seed|
+              seed[:filename]
+            end
+          end
+
+        seeds_hash_to_view(grouped, :green)
+      end
+
+      def nest_hashs_to_view(nest_hash_array, key1_color, key2_color)
+        nest_hash_array.keys.map do |key1|
+          [Rainbow(key1).color(key1_color)].concat(
+            nest_hash_array[key1].flat_map do |key2, arr|
+              [Rainbow(key2).color(key2_color)].push(arr.join(' ')).push("\n")
+            end
+          )
+        end
+      end
+
+      def count_hash_to_view(hash)
         hash.map do |k, v|
           ["#{k}: #{v}"]
         end
