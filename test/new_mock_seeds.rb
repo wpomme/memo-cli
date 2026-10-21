@@ -2347,6 +2347,7 @@ module Memo
 
     TEST_MOCK_DATA_SEED = [
       {
+        target_dir: '/Users/hy/repo/memorandum/memo/',
         absolute_path: '/Users/hy/repo/memorandum/memo/ANSI-escape-code-and-set-color.md',
         parent_directory: '/Users/hy/repo/memorandum/memo/',
         parent_rel_path: './',
@@ -2355,6 +2356,7 @@ module Memo
         tags: %w[Terminal Charactor]
       },
       {
+        target_dir: '/Users/hy/repo/memorandum/memo/',
         absolute_path: '/Users/hy/repo/memorandum/memo/chrome.md',
         parent_directory: '/Users/hy/repo/memorandum/memo/',
         parent_rel_path: './',
@@ -2363,6 +2365,7 @@ module Memo
         tags: %w[Browser Frontend]
       },
       {
+        target_dir: '/Users/hy/repo/memorandum/memo/',
         absolute_path: '/Users/hy/repo/memorandum/memo/cli/core/builtin/builtin.md',
         parent_directory: '/Users/hy/repo/memorandum/memo/cli/core/builtin/',
         parent_rel_path: 'cli/core/builtin/',
@@ -2371,6 +2374,7 @@ module Memo
         tags: ['bash', 'CLI', 'builtin', 'Command inspection']
       },
       {
+        target_dir: '/Users/hy/repo/memorandum/memo/',
         absolute_path: '/Users/hy/repo/memorandum/memo/cli/core/builtin/hash.md',
         parent_directory: '/Users/hy/repo/memorandum/memo/cli/core/builtin/',
         parent_rel_path: 'cli/core/builtin/',
@@ -2379,6 +2383,7 @@ module Memo
         tags: ['bash', 'CLI', 'builtin', 'Command inspection']
       },
       {
+        target_dir: '/Users/hy/repo/memorandum/memo/',
         absolute_path: '/Users/hy/repo/memorandum/memo/cli/core/file/ls.md',
         parent_directory: '/Users/hy/repo/memorandum/memo/cli/core/file/',
         parent_rel_path: 'cli/core/file/',
@@ -2387,6 +2392,7 @@ module Memo
         tags: ['bash', 'CLI', 'File and Directory', '表示']
       },
       {
+        target_dir: '/Users/hy/repo/memorandum/memo/',
         absolute_path: '/Users/hy/repo/memorandum/memo/cli/core/old/groups.md',
         parent_directory: '/Users/hy/repo/memorandum/memo/cli/core/old/',
         parent_rel_path: 'cli/core/old/',
@@ -2395,6 +2401,7 @@ module Memo
         tags: %w[bash CLI legacy]
       },
       {
+        target_dir: '/Users/hy/repo/memorandum/memo/',
         absolute_path: '/Users/hy/repo/memorandum/memo/cli/core/process/lsof.md',
         parent_directory: '/Users/hy/repo/memorandum/memo/cli/core/process/',
         parent_rel_path: 'cli/core/process/',
@@ -2403,6 +2410,7 @@ module Memo
         tags: %w[bash CLI process terminate]
       },
       {
+        target_dir: '/Users/hy/repo/memorandum/memo/',
         absolute_path: '/Users/hy/repo/memorandum/memo/cli/core/search/find.md',
         parent_directory: '/Users/hy/repo/memorandum/memo/cli/core/search/',
         parent_rel_path: 'cli/core/search/',
@@ -2411,6 +2419,7 @@ module Memo
         tags: %w[bash CLI search bulk pipe recursive]
       },
       {
+        target_dir: '/Users/hy/repo/memorandum/memo/',
         absolute_path: '/Users/hy/repo/memorandum/memo/cli/core/text/cut.md',
         parent_directory: '/Users/hy/repo/memorandum/memo/cli/core/text/',
         parent_rel_path: 'cli/core/text/',
@@ -2419,6 +2428,7 @@ module Memo
         tags: %w[bash CLI text filter remove]
       },
       {
+        target_dir: '/Users/hy/repo/memorandum/memo/',
         absolute_path: '/Users/hy/repo/memorandum/memo/cli/core/text/diff.md',
         parent_directory: '/Users/hy/repo/memorandum/memo/cli/core/text/',
         parent_rel_path: 'cli/core/text/',
@@ -2427,6 +2437,7 @@ module Memo
         tags: %w[bash CLI text]
       },
       {
+        target_dir: '/Users/hy/repo/memorandum/memo/',
         absolute_path: '/Users/hy/repo/memorandum/memo/cli/core/text/ed.md',
         parent_directory: '/Users/hy/repo/memorandum/memo/cli/core/text/',
         parent_rel_path: 'cli/core/text/',
@@ -2435,6 +2446,7 @@ module Memo
         tags: %w[bash CLI text legacy]
       },
       {
+        target_dir: '/Users/hy/repo/memorandum/memo/',
         absolute_path: '/Users/hy/repo/memorandum/memo/cli/core/text/rev.md',
         parent_directory: '/Users/hy/repo/memorandum/memo/cli/core/text/',
         parent_rel_path: 'cli/core/text/',
@@ -2443,6 +2455,7 @@ module Memo
         tags: %w[bash CLI text reverse]
       },
       {
+        target_dir: '/Users/hy/repo/memorandum/memo/',
         absolute_path: '/Users/hy/repo/memorandum/memo/cli/core/text/tac.md',
         parent_directory: '/Users/hy/repo/memorandum/memo/cli/core/text/',
         parent_rel_path: 'cli/core/text/',
@@ -2451,6 +2464,7 @@ module Memo
         tags: %w[bash CLI text reverse]
       },
       {
+        target_dir: '/Users/hy/repo/memorandum/memo/',
         absolute_path: '/Users/hy/repo/memorandum/memo/cli/core/text/uniq.md',
         parent_directory: '/Users/hy/repo/memorandum/memo/cli/core/text/',
         parent_rel_path: 'cli/core/text/',
@@ -2459,6 +2473,7 @@ module Memo
         tags: %w[bash CLI text set edit filter remove 集計]
       },
       {
+        target_dir: '/Users/hy/repo/memorandum/memo/',
         absolute_path: '/Users/hy/repo/memorandum/memo/cli/core/text/xargs.md',
         parent_directory: '/Users/hy/repo/memorandum/memo/cli/core/text/',
         parent_rel_path: 'cli/core/text/',
@@ -2467,6 +2482,7 @@ module Memo
         tags: %w[bash CLI text bulk edit pipe search 集計]
       },
       {
+        target_dir: '/Users/hy/repo/memorandum/memo/',
         absolute_path: '/Users/hy/repo/memorandum/memo/cli/ifconfig.md',
         parent_directory: '/Users/hy/repo/memorandum/memo/cli/',
         parent_rel_path: 'cli/',
@@ -2475,6 +2491,7 @@ module Memo
         tags: %w[CLI Network 表示]
       },
       {
+        target_dir: '/Users/hy/repo/memorandum/memo/',
         absolute_path: '/Users/hy/repo/memorandum/memo/cli/tcpdump.md',
         parent_directory: '/Users/hy/repo/memorandum/memo/cli/',
         parent_rel_path: 'cli/',
@@ -2483,6 +2500,7 @@ module Memo
         tags: %w[CLI Network]
       },
       {
+        target_dir: '/Users/hy/repo/memorandum/memo/',
         absolute_path: '/Users/hy/repo/memorandum/memo/cli/third-party/claude.md',
         parent_directory: '/Users/hy/repo/memorandum/memo/cli/third-party/',
         parent_rel_path: 'cli/third-party/',
@@ -2491,6 +2509,7 @@ module Memo
         tags: ['CLI', 'External Command', 'AI', 'CLI client']
       },
       {
+        target_dir: '/Users/hy/repo/memorandum/memo/',
         absolute_path: '/Users/hy/repo/memorandum/memo/cli/third-party/gh.md',
         parent_directory: '/Users/hy/repo/memorandum/memo/cli/third-party/',
         parent_rel_path: 'cli/third-party/',
@@ -2499,6 +2518,7 @@ module Memo
         tags: ['CLI', 'Third Party', 'git', 'CI/CD', 'CLI client']
       },
       {
+        target_dir: '/Users/hy/repo/memorandum/memo/',
         absolute_path: '/Users/hy/repo/memorandum/memo/cli/third-party/mise.md',
         parent_directory: '/Users/hy/repo/memorandum/memo/cli/third-party/',
         parent_rel_path: 'cli/third-party/',
@@ -2507,6 +2527,7 @@ module Memo
         tags: ['CLI', 'External Command', 'Package Manager', 'Runtime Version Manager']
       },
       {
+        target_dir: '/Users/hy/repo/memorandum/memo/',
         absolute_path: '/Users/hy/repo/memorandum/memo/cli/third-party/nkf.md',
         parent_directory: '/Users/hy/repo/memorandum/memo/cli/third-party/',
         parent_rel_path: 'cli/third-party/',
@@ -2515,6 +2536,7 @@ module Memo
         tags: ['CLI', 'External Command', 'text', '表示', '変換', 'Character Inspection', 'edit']
       },
       {
+        target_dir: '/Users/hy/repo/memorandum/memo/',
         absolute_path: '/Users/hy/repo/memorandum/memo/cli/units.md',
         parent_directory: '/Users/hy/repo/memorandum/memo/cli/',
         parent_rel_path: 'cli/',
@@ -2523,6 +2545,7 @@ module Memo
         tags: ['CLI']
       },
       {
+        target_dir: '/Users/hy/repo/memorandum/memo/',
         absolute_path: '/Users/hy/repo/memorandum/memo/db/sqlite3/sqlite3.md',
         parent_directory: '/Users/hy/repo/memorandum/memo/db/sqlite3/',
         parent_rel_path: 'db/sqlite3/',
@@ -2531,6 +2554,7 @@ module Memo
         tags: []
       },
       {
+        target_dir: '/Users/hy/repo/memorandum/memo/',
         absolute_path: '/Users/hy/repo/memorandum/memo/git/branch.md',
         parent_directory: '/Users/hy/repo/memorandum/memo/git/',
         parent_rel_path: 'git/',
@@ -2539,6 +2563,7 @@ module Memo
         tags: ['CLI', 'git', 'Branching and Merging']
       },
       {
+        target_dir: '/Users/hy/repo/memorandum/memo/',
         absolute_path: '/Users/hy/repo/memorandum/memo/git/config.md',
         parent_directory: '/Users/hy/repo/memorandum/memo/git/',
         parent_rel_path: 'git/',
@@ -2547,6 +2572,7 @@ module Memo
         tags: %w[CLI git Setting]
       },
       {
+        target_dir: '/Users/hy/repo/memorandum/memo/',
         absolute_path: '/Users/hy/repo/memorandum/memo/git/diff.md',
         parent_directory: '/Users/hy/repo/memorandum/memo/git/',
         parent_rel_path: 'git/',
@@ -2555,6 +2581,7 @@ module Memo
         tags: ['CLI', 'git', 'Basic Snapshotting', 'Comparison Version', 'Patching']
       },
       {
+        target_dir: '/Users/hy/repo/memorandum/memo/',
         absolute_path: '/Users/hy/repo/memorandum/memo/git/git.md',
         parent_directory: '/Users/hy/repo/memorandum/memo/git/',
         parent_rel_path: 'git/',
@@ -2563,6 +2590,7 @@ module Memo
         tags: %w[CLI git documentation]
       },
       {
+        target_dir: '/Users/hy/repo/memorandum/memo/',
         absolute_path: '/Users/hy/repo/memorandum/memo/git/log.md',
         parent_directory: '/Users/hy/repo/memorandum/memo/git/',
         parent_rel_path: 'git/',
@@ -2571,6 +2599,7 @@ module Memo
         tags: ['CLI', 'git', 'Branching and Merging', 'Inspection Version']
       },
       {
+        target_dir: '/Users/hy/repo/memorandum/memo/',
         absolute_path: '/Users/hy/repo/memorandum/memo/git/old/checkout.md',
         parent_directory: '/Users/hy/repo/memorandum/memo/git/old/',
         parent_rel_path: 'git/old/',
@@ -2579,6 +2608,7 @@ module Memo
         tags: ['CLI', 'git', 'Branching and Merging', 'legacy']
       },
       {
+        target_dir: '/Users/hy/repo/memorandum/memo/',
         absolute_path: '/Users/hy/repo/memorandum/memo/git/push.md',
         parent_directory: '/Users/hy/repo/memorandum/memo/git/',
         parent_rel_path: 'git/',
@@ -2587,6 +2617,7 @@ module Memo
         tags: ['CLI', 'git', 'Sharing and Updating Projects']
       },
       {
+        target_dir: '/Users/hy/repo/memorandum/memo/',
         absolute_path: '/Users/hy/repo/memorandum/memo/git/reset.md',
         parent_directory: '/Users/hy/repo/memorandum/memo/git/',
         parent_rel_path: 'git/',
@@ -2595,6 +2626,7 @@ module Memo
         tags: ['CLI', 'git', 'Basic Snapshotting']
       },
       {
+        target_dir: '/Users/hy/repo/memorandum/memo/',
         absolute_path: '/Users/hy/repo/memorandum/memo/git/rev-parse.md',
         parent_directory: '/Users/hy/repo/memorandum/memo/git/',
         parent_rel_path: 'git/',
@@ -2603,6 +2635,7 @@ module Memo
         tags: ['CLI', 'git', 'Plumbing Commands']
       },
       {
+        target_dir: '/Users/hy/repo/memorandum/memo/',
         absolute_path: '/Users/hy/repo/memorandum/memo/git/upstream.md',
         parent_directory: '/Users/hy/repo/memorandum/memo/git/',
         parent_rel_path: 'git/',
@@ -2611,6 +2644,7 @@ module Memo
         tags: ['git', 'Sharing and Updating Projects', 'Branching and Merging', 'Option']
       },
       {
+        target_dir: '/Users/hy/repo/memorandum/memo/',
         absolute_path: '/Users/hy/repo/memorandum/memo/how-to/data-exchanger.md',
         parent_directory: '/Users/hy/repo/memorandum/memo/how-to/',
         parent_rel_path: 'how-to/',
@@ -2619,6 +2653,7 @@ module Memo
         tags: ['How to', 'Network']
       },
       {
+        target_dir: '/Users/hy/repo/memorandum/memo/',
         absolute_path: '/Users/hy/repo/memorandum/memo/how-to/random.md',
         parent_directory: '/Users/hy/repo/memorandum/memo/how-to/',
         parent_rel_path: 'how-to/',
@@ -2627,6 +2662,7 @@ module Memo
         tags: ['How to', 'Generator']
       },
       {
+        target_dir: '/Users/hy/repo/memorandum/memo/',
         absolute_path: '/Users/hy/repo/memorandum/memo/how-to/special-characters.md',
         parent_directory: '/Users/hy/repo/memorandum/memo/how-to/',
         parent_rel_path: 'how-to/',
@@ -2635,6 +2671,7 @@ module Memo
         tags: ['How to', 'Characters', 'Keyboard']
       },
       {
+        target_dir: '/Users/hy/repo/memorandum/memo/',
         absolute_path: '/Users/hy/repo/memorandum/memo/lang/css/hover.md',
         parent_directory: '/Users/hy/repo/memorandum/memo/lang/css/',
         parent_rel_path: 'lang/css/',
@@ -2643,6 +2680,7 @@ module Memo
         tags: %w[CSS 擬似クラス]
       },
       {
+        target_dir: '/Users/hy/repo/memorandum/memo/',
         absolute_path: '/Users/hy/repo/memorandum/memo/lang/javascript/console.md',
         parent_directory: '/Users/hy/repo/memorandum/memo/lang/javascript/',
         parent_rel_path: 'lang/javascript/',
@@ -2651,6 +2689,7 @@ module Memo
         tags: ['JavaScript', 'Debug', 'I/O']
       },
       {
+        target_dir: '/Users/hy/repo/memorandum/memo/',
         absolute_path: '/Users/hy/repo/memorandum/memo/lang/javascript/map.md',
         parent_directory: '/Users/hy/repo/memorandum/memo/lang/javascript/',
         parent_rel_path: 'lang/javascript/',
@@ -2659,6 +2698,7 @@ module Memo
         tags: %w[JavaScript 連想配列 データ構造 Notation]
       },
       {
+        target_dir: '/Users/hy/repo/memorandum/memo/',
         absolute_path: '/Users/hy/repo/memorandum/memo/lang/javascript/package-json.md',
         parent_directory: '/Users/hy/repo/memorandum/memo/lang/javascript/',
         parent_rel_path: 'lang/javascript/',
@@ -2667,6 +2707,7 @@ module Memo
         tags: ['JavaScript', 'Package Manager', 'Setting']
       },
       {
+        target_dir: '/Users/hy/repo/memorandum/memo/',
         absolute_path: '/Users/hy/repo/memorandum/memo/lang/lua/lua.md',
         parent_directory: '/Users/hy/repo/memorandum/memo/lang/lua/',
         parent_rel_path: 'lang/lua/',
@@ -2675,6 +2716,7 @@ module Memo
         tags: ['lua', 'Package Manager', 'Linter', 'Setting', 'Formatter']
       },
       {
+        target_dir: '/Users/hy/repo/memorandum/memo/',
         absolute_path: '/Users/hy/repo/memorandum/memo/lang/perl/oneliner.md',
         parent_directory: '/Users/hy/repo/memorandum/memo/lang/perl/',
         parent_rel_path: 'lang/perl/',
@@ -2683,6 +2725,7 @@ module Memo
         tags: %w[perl oneliner 表示 edit substitute regex]
       },
       {
+        target_dir: '/Users/hy/repo/memorandum/memo/',
         absolute_path: '/Users/hy/repo/memorandum/memo/lang/ruby/arguments.md',
         parent_directory: '/Users/hy/repo/memorandum/memo/lang/ruby/',
         parent_rel_path: 'lang/ruby/',
@@ -2691,6 +2734,7 @@ module Memo
         tags: %w[Ruby 引数 TODO]
       },
       {
+        target_dir: '/Users/hy/repo/memorandum/memo/',
         absolute_path: '/Users/hy/repo/memorandum/memo/lang/ruby/assignment.md',
         parent_directory: '/Users/hy/repo/memorandum/memo/lang/ruby/',
         parent_rel_path: 'lang/ruby/',
@@ -2699,6 +2743,7 @@ module Memo
         tags: %w[Ruby 配列 演算子式 初期化]
       },
       {
+        target_dir: '/Users/hy/repo/memorandum/memo/',
         absolute_path: '/Users/hy/repo/memorandum/memo/lang/ruby/bundle.md',
         parent_directory: '/Users/hy/repo/memorandum/memo/lang/ruby/',
         parent_rel_path: 'lang/ruby/',
@@ -2707,6 +2752,7 @@ module Memo
         tags: ['CLI', 'Ruby', 'Project Manager', 'Dependency Management']
       },
       {
+        target_dir: '/Users/hy/repo/memorandum/memo/',
         absolute_path: '/Users/hy/repo/memorandum/memo/lang/ruby/compare.md',
         parent_directory: '/Users/hy/repo/memorandum/memo/lang/ruby/',
         parent_rel_path: 'lang/ruby/',
@@ -2715,6 +2761,7 @@ module Memo
         tags: %w[Ruby 比較]
       },
       {
+        target_dir: '/Users/hy/repo/memorandum/memo/',
         absolute_path: '/Users/hy/repo/memorandum/memo/lang/ruby/index.md',
         parent_directory: '/Users/hy/repo/memorandum/memo/lang/ruby/',
         parent_rel_path: 'lang/ruby/',
@@ -2723,6 +2770,7 @@ module Memo
         tags: %w[Ruby Idiom]
       },
       {
+        target_dir: '/Users/hy/repo/memorandum/memo/',
         absolute_path: '/Users/hy/repo/memorandum/memo/lang/ruby/module.md',
         parent_directory: '/Users/hy/repo/memorandum/memo/lang/ruby/',
         parent_rel_path: 'lang/ruby/',
@@ -2731,6 +2779,7 @@ module Memo
         tags: %w[Ruby TODO]
       },
       {
+        target_dir: '/Users/hy/repo/memorandum/memo/',
         absolute_path: '/Users/hy/repo/memorandum/memo/lang/ruby/rake.md',
         parent_directory: '/Users/hy/repo/memorandum/memo/lang/ruby/',
         parent_rel_path: 'lang/ruby/',
@@ -2739,6 +2788,7 @@ module Memo
         tags: ['Ruby', 'Task Runner']
       },
       {
+        target_dir: '/Users/hy/repo/memorandum/memo/',
         absolute_path: '/Users/hy/repo/memorandum/memo/lang/ruby/string.md',
         parent_directory: '/Users/hy/repo/memorandum/memo/lang/ruby/',
         parent_rel_path: 'lang/ruby/',
@@ -2747,6 +2797,7 @@ module Memo
         tags: %w[Ruby string Creation Concatenation データ構造]
       },
       {
+        target_dir: '/Users/hy/repo/memorandum/memo/',
         absolute_path: '/Users/hy/repo/memorandum/memo/lang/ruby/type-check.md',
         parent_directory: '/Users/hy/repo/memorandum/memo/lang/ruby/',
         parent_rel_path: 'lang/ruby/',
@@ -2755,6 +2806,7 @@ module Memo
         tags: %w[Ruby 型検査]
       },
       {
+        target_dir: '/Users/hy/repo/memorandum/memo/',
         absolute_path: '/Users/hy/repo/memorandum/memo/lang/test-assertion.md',
         parent_directory: '/Users/hy/repo/memorandum/memo/lang/',
         parent_rel_path: 'lang/',
@@ -2763,6 +2815,7 @@ module Memo
         tags: ['テストコード']
       },
       {
+        target_dir: '/Users/hy/repo/memorandum/memo/',
         absolute_path: '/Users/hy/repo/memorandum/memo/meta/format.md',
         parent_directory: '/Users/hy/repo/memorandum/memo/meta/',
         parent_rel_path: 'meta/',
@@ -2771,6 +2824,7 @@ module Memo
         tags: %w[meta format]
       },
       {
+        target_dir: '/Users/hy/repo/memorandum/memo/',
         absolute_path: '/Users/hy/repo/memorandum/memo/neovim/buffer.md',
         parent_directory: '/Users/hy/repo/memorandum/memo/neovim/',
         parent_rel_path: 'neovim/',
@@ -2779,6 +2833,7 @@ module Memo
         tags: ['neovim', 'buffer', 'Command Line Mode']
       },
       {
+        target_dir: '/Users/hy/repo/memorandum/memo/',
         absolute_path: '/Users/hy/repo/memorandum/memo/neovim/commenting.md',
         parent_directory: '/Users/hy/repo/memorandum/memo/neovim/',
         parent_rel_path: 'neovim/',
@@ -2787,6 +2842,7 @@ module Memo
         tags: ['neovim', 'Comment Out', 'documentation']
       },
       {
+        target_dir: '/Users/hy/repo/memorandum/memo/',
         absolute_path: '/Users/hy/repo/memorandum/memo/neovim/plugin/neo-tree.md',
         parent_directory: '/Users/hy/repo/memorandum/memo/neovim/plugin/',
         parent_rel_path: 'neovim/plugin/',
@@ -2795,6 +2851,7 @@ module Memo
         tags: %w[neovim plugin documentation]
       },
       {
+        target_dir: '/Users/hy/repo/memorandum/memo/',
         absolute_path: '/Users/hy/repo/memorandum/memo/neovim/plugin/nvim-surround.md',
         parent_directory: '/Users/hy/repo/memorandum/memo/neovim/plugin/',
         parent_rel_path: 'neovim/plugin/',
@@ -2803,6 +2860,7 @@ module Memo
         tags: ['neovim', 'plugin', 'Operator', 'Normal Mode', 'documentation']
       },
       {
+        target_dir: '/Users/hy/repo/memorandum/memo/',
         absolute_path: '/Users/hy/repo/memorandum/memo/neovim/read-help.md',
         parent_directory: '/Users/hy/repo/memorandum/memo/neovim/',
         parent_rel_path: 'neovim/',
@@ -2811,6 +2869,7 @@ module Memo
         tags: %w[neovim documentation]
       },
       {
+        target_dir: '/Users/hy/repo/memorandum/memo/',
         absolute_path: '/Users/hy/repo/memorandum/memo/neovim/script.md',
         parent_directory: '/Users/hy/repo/memorandum/memo/neovim/',
         parent_rel_path: 'neovim/',
@@ -2819,6 +2878,7 @@ module Memo
         tags: ['neovim']
       },
       {
+        target_dir: '/Users/hy/repo/memorandum/memo/',
         absolute_path: '/Users/hy/repo/memorandum/memo/neovim/tips.md',
         parent_directory: '/Users/hy/repo/memorandum/memo/neovim/',
         parent_rel_path: 'neovim/',
@@ -2827,6 +2887,7 @@ module Memo
         tags: %w[neovim Tips Motion]
       },
       {
+        target_dir: '/Users/hy/repo/memorandum/memo/',
         absolute_path: '/Users/hy/repo/memorandum/memo/react.md',
         parent_directory: '/Users/hy/repo/memorandum/memo/',
         parent_rel_path: './',
@@ -2835,6 +2896,7 @@ module Memo
         tags: ['Frontend']
       },
       {
+        target_dir: '/Users/hy/repo/memorandum/memo/',
         absolute_path: '/Users/hy/repo/memorandum/memo/setting/dockerfile.md',
         parent_directory: '/Users/hy/repo/memorandum/memo/setting/',
         parent_rel_path: 'setting/',
@@ -2843,6 +2905,7 @@ module Memo
         tags: ['Docker']
       },
       {
+        target_dir: '/Users/hy/repo/memorandum/memo/',
         absolute_path: '/Users/hy/repo/memorandum/memo/setting/makefile.md',
         parent_directory: '/Users/hy/repo/memorandum/memo/setting/',
         parent_rel_path: 'setting/',
@@ -2851,6 +2914,7 @@ module Memo
         tags: ['Task Runner']
       },
       {
+        target_dir: '/Users/hy/repo/memorandum/memo/',
         absolute_path: '/Users/hy/repo/memorandum/memo/shell/bash/bash.md',
         parent_directory: '/Users/hy/repo/memorandum/memo/shell/bash/',
         parent_rel_path: 'shell/bash/',
@@ -2859,6 +2923,7 @@ module Memo
         tags: %w[bash documentation Tips]
       },
       {
+        target_dir: '/Users/hy/repo/memorandum/memo/',
         absolute_path: '/Users/hy/repo/memorandum/memo/shell/bash/exit-status.md',
         parent_directory: '/Users/hy/repo/memorandum/memo/shell/bash/',
         parent_rel_path: 'shell/bash/',
@@ -2867,6 +2932,7 @@ module Memo
         tags: %w[bash test status]
       },
       {
+        target_dir: '/Users/hy/repo/memorandum/memo/',
         absolute_path: '/Users/hy/repo/memorandum/memo/shell/bash/expansion/history-expansion.md',
         parent_directory: '/Users/hy/repo/memorandum/memo/shell/bash/expansion/',
         parent_rel_path: 'shell/bash/expansion/',
@@ -2875,6 +2941,7 @@ module Memo
         tags: %w[bash expansion]
       },
       {
+        target_dir: '/Users/hy/repo/memorandum/memo/',
         absolute_path: '/Users/hy/repo/memorandum/memo/shell/bash/for.md',
         parent_directory: '/Users/hy/repo/memorandum/memo/shell/bash/',
         parent_rel_path: 'shell/bash/',
@@ -2883,6 +2950,7 @@ module Memo
         tags: %w[bash syntax documentation]
       },
       {
+        target_dir: '/Users/hy/repo/memorandum/memo/',
         absolute_path: '/Users/hy/repo/memorandum/memo/shell/bash/redirection.md',
         parent_directory: '/Users/hy/repo/memorandum/memo/shell/bash/',
         parent_rel_path: 'shell/bash/',
@@ -2891,6 +2959,7 @@ module Memo
         tags: ['bash', 'Redirection', 'I/O', 'documentation']
       },
       {
+        target_dir: '/Users/hy/repo/memorandum/memo/',
         absolute_path: '/Users/hy/repo/memorandum/memo/shell/bash/special-parameters.md',
         parent_directory: '/Users/hy/repo/memorandum/memo/shell/bash/',
         parent_rel_path: 'shell/bash/',
@@ -2899,6 +2968,7 @@ module Memo
         tags: %w[bash Notation Tips documentation]
       },
       {
+        target_dir: '/Users/hy/repo/memorandum/memo/',
         absolute_path: '/Users/hy/repo/memorandum/memo/shell/zsh/command-history.md',
         parent_directory: '/Users/hy/repo/memorandum/memo/shell/zsh/',
         parent_rel_path: 'shell/zsh/',
@@ -2907,6 +2977,7 @@ module Memo
         tags: ['zsh', 'documentation', 'command history']
       },
       {
+        target_dir: '/Users/hy/repo/memorandum/memo/',
         absolute_path: '/Users/hy/repo/memorandum/memo/tui/emacs.md',
         parent_directory: '/Users/hy/repo/memorandum/memo/tui/',
         parent_rel_path: 'tui/',
@@ -2915,6 +2986,7 @@ module Memo
         tags: %w[TUI Tips]
       },
       {
+        target_dir: '/Users/hy/repo/memorandum/memo/',
         absolute_path: '/Users/hy/repo/memorandum/memo/tui/lazygit.md',
         parent_directory: '/Users/hy/repo/memorandum/memo/tui/',
         parent_rel_path: 'tui/',
@@ -2923,6 +2995,7 @@ module Memo
         tags: %w[TUI Terminal git]
       },
       {
+        target_dir: '/Users/hy/repo/memorandum/memo/',
         absolute_path: '/Users/hy/repo/memorandum/memo/tui/tmux.md',
         parent_directory: '/Users/hy/repo/memorandum/memo/tui/',
         parent_rel_path: 'tui/',
@@ -2931,6 +3004,7 @@ module Memo
         tags: %w[TUI Terminal]
       },
       {
+        target_dir: '/Users/hy/repo/private-memo/memo/',
         absolute_path: '/Users/hy/repo/private-memo/memo/architecture/null.md',
         parent_directory: '/Users/hy/repo/private-memo/memo/architecture/',
         parent_rel_path: 'architecture/',
@@ -2939,6 +3013,7 @@ module Memo
         tags: []
       },
       {
+        target_dir: '/Users/hy/repo/private-memo/memo/',
         absolute_path: '/Users/hy/repo/private-memo/memo/books/compiler/compiler-memo.md',
         parent_directory: '/Users/hy/repo/private-memo/memo/books/compiler/',
         parent_rel_path: 'books/compiler/',
@@ -2947,6 +3022,7 @@ module Memo
         tags: ['コンパイラ']
       },
       {
+        target_dir: '/Users/hy/repo/private-memo/memo/',
         absolute_path: '/Users/hy/repo/private-memo/memo/books/was-book/chapter-3.md',
         parent_directory: '/Users/hy/repo/private-memo/memo/books/was-book/',
         parent_rel_path: 'books/was-book/',
@@ -2955,6 +3031,7 @@ module Memo
         tags: %w[Security HTTP]
       },
       {
+        target_dir: '/Users/hy/repo/private-memo/memo/',
         absolute_path: '/Users/hy/repo/private-memo/memo/english/commit-messages.md',
         parent_directory: '/Users/hy/repo/private-memo/memo/english/',
         parent_rel_path: 'english/',
@@ -2963,6 +3040,7 @@ module Memo
         tags: %w[English Messages git]
       },
       {
+        target_dir: '/Users/hy/repo/private-memo/memo/',
         absolute_path: '/Users/hy/repo/private-memo/memo/english/review.md',
         parent_directory: '/Users/hy/repo/private-memo/memo/english/',
         parent_rel_path: 'english/',
@@ -2971,6 +3049,7 @@ module Memo
         tags: %w[English Messages]
       },
       {
+        target_dir: '/Users/hy/repo/private-memo/memo/',
         absolute_path: '/Users/hy/repo/private-memo/memo/english/vocabulary.md',
         parent_directory: '/Users/hy/repo/private-memo/memo/english/',
         parent_rel_path: 'english/',
@@ -2979,6 +3058,7 @@ module Memo
         tags: %w[English Vocabulary]
       },
       {
+        target_dir: '/Users/hy/repo/private-memo/memo/',
         absolute_path: '/Users/hy/repo/private-memo/memo/japanese/ruigo.md',
         parent_directory: '/Users/hy/repo/private-memo/memo/japanese/',
         parent_rel_path: 'japanese/',

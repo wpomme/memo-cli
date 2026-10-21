@@ -34,6 +34,7 @@ mock_seeds = seeds.map do |seed|
   heredoc = ["#{val_name} = <<~#{label}"] + content + [label] + ["\n"]
   {
     mock_seed: {
+      target_dir: seed[:target_dir],
       absolute_path: seed[:absolute_path],
       parent_directory: seed[:parent_directory],
       parent_rel_path: seed[:parent_rel_path],
@@ -56,6 +57,7 @@ File.open(output, 'w') do |file|
   test_mock_data_seed = mock_seeds.map do |seed|
     <<~MEMO_DATA
       {
+        target_dir: '#{seed[:mock_seed][:target_dir]}',
         absolute_path: '#{seed[:mock_seed][:absolute_path]}',
         parent_directory: '#{seed[:mock_seed][:parent_directory]}',
         parent_rel_path: '#{seed[:mock_seed][:parent_rel_path]}',

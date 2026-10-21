@@ -130,4 +130,10 @@ task :e2e do
   sh 'bundle exec exe/memo2 tag 2>&1 > /dev/null || true'
   sh 'bundle exec exe/memo2 tag CLI > /dev/null'
   sh 'bundle exec exe/memo2 tag does_not_exist_search_strings 2>&1 > /dev/null || true'
+  sh 'bundle exec exe/memo2 dirs > /dev/null'
+  sh 'bundle exec exe/memo2 dirs foo 2>&1 > /dev/null || true'
+  sh 'bundle exec exe/memo2 tags > /dev/null'
+  sh 'bundle exec exe/memo2 tags -n > /dev/null'
+  sh 'bundle exec exe/memo2 list > /dev/null'
+  sh 'bundle exec exe/memo2 list cli/ > /dev/null'
 end

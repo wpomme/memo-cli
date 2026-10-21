@@ -26,17 +26,12 @@ module Memo
       # @param word [string]
       # @return [Array]
       def search_file_seed(word)
-        Memo::Loader::FileLoader.new.file_seeds_with_content.filter_map do |_, file_hash_array|
-          file_hash_array
-            .filter_map do |file_hash|
-              file_hash[:file_content].split("\n").filter_map.with_index(1) do |line, idx|
-                path = "./#{File.join(file_hash[:parent_rel_path], file_hash[:filename])}"
-                Memo::Model::SearchLine.new(path: path, line_number: idx, line: line).to_view(word) if line.include?(word)
-              end
-            end
-            .reject(&:empty?)
-        end
-          .flatten
+        Memo::Loader::FileLoader.new.file_seeds.filter_map do |file_seed|
+          file_seed[:file_content].split("\n").filter_map.with_index(1) do |line, idx|
+            path = "./#{File.join(file_seed[:parent_rel_path], file_seed[:filename])}"
+            Memo::Model::SearchLine.new(path: path, line_number: idx, line: line).to_view(word) if line.include?(word)
+          end
+        end.reject(&:empty?).flatten
       end
     end
   end

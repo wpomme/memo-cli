@@ -27,7 +27,7 @@ module Memo
       when 'help'
         parse_help_command(first.intern, argv: argv)
       when 'version', '-V'
-        parse_version_command(first.intern, argv: argv)
+        parse_version_command
       else
         parse_one_argument(:read, argv: [first])
       end
@@ -104,8 +104,9 @@ module Memo
       { sym => opt }
     end
 
-    def parse_version_command(_sym, _argv: nil)
+    def parse_version_command
       puts Memo::VERSION
+      exit 0
     end
 
     def parse_help_command(_sym, argv: nil)

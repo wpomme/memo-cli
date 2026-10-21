@@ -55,15 +55,13 @@ module Memo
           path_to_id = Memo::Database::Controller::ConfigDirectory.new.path_to_id
           absolute_directory_path_to_id = Memo::Database::Controller::Directory.new.absolute_directory_path_to_id
 
-          Memo::Loader::FileLoader.new.file_seeds_with_content.flat_map do |target_dir, file_hash_array|
-            file_hash_array.flat_map do |file_hash|
-              @dataset.insert(
-                filename: file_hash[:filename],
-                config_directory_id: path_to_id[target_dir],
-                parent_directory_id: absolute_directory_path_to_id[file_hash[:parent_directory]],
-                file_content: file_hash[:file_content]
-              )
-            end
+          Memo::Loader::FileLoader.new.file_seeds.flat_map do |file_seed|
+            @dataset.insert(
+              filename: file_seed[:filename],
+              config_directory_id: path_to_id[file_seed[:target_dir]],
+              parent_directory_id: absolute_directory_path_to_id[file_seed[:parent_directory]],
+              file_content: file_seed[:file_content]
+            )
           end
         end
       end

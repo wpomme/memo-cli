@@ -305,6 +305,26 @@ class TestNewSubCommandParser < Minitest::Test
           _(actual).must_equal(expected)
         end
       end
+
+      describe 'version' do
+        it '"version", "-V"でバージョンを出力し、正常終了する' do
+          actual, = capture_io do
+            exception = assert_raises(SystemExit) do
+              args = %w[version -V]
+
+              args.each do |arg|
+                Memo::NewSubCommandParser.run([arg])
+              end
+            end
+
+            _(exception.status).must_equal(0)
+          end
+
+          expected = "#{Memo::VERSION}\n"
+
+          _(actual).must_equal(expected)
+        end
+      end
     end
   end
 end

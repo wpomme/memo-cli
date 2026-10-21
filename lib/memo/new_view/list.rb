@@ -11,8 +11,7 @@ module Memo
 
       def initialize(word)
         @word = unify_word(word)
-        @file_loader = Memo::Loader::FileLoader.new
-        @target_dirs = @file_loader.file_seeds_without_content.keys
+        @target_dirs = Memo::Config.target_dirs
       end
 
       def execute
@@ -78,21 +77,16 @@ module Memo
       end
 
       def hash_for_list
-        file_seeds = @file_loader.file_seeds_without_content
-
-        to_hash = @target_dirs.to_h do |target_dir|
-          [target_dir, file_seeds[target_dir].group_by { |file_seed| file_seed[:parent_rel_path] }]
-        end
-
-        @target_dirs.each do |target_dir|
-          to_hash[target_dir] = to_hash[target_dir].transform_values do |values|
+        grouped = Memo::Loader::FileLoader.new.file_seeds.group_by { |file_seed| file_seed[:parent_rel_path] }
+          .transform_values do |values|
             values.map do |file_seed|
               file_seed[:filename]
             end
           end
-        end
 
-        to_hash
+        @target_dirs.to_h do |target_dir|
+          [target_dir, grouped]
+        end
       end
     end
   end

@@ -34,8 +34,8 @@ module Memo
       #
       # @return [Hash<String, Array<String>>]
       def absolute_filename_to_tags
-        @file_seeds_hash.values.flatten.to_h do |file_hash|
-          [file_hash[:absolute_path], file_hash[:tags]]
+        @absolute_filename_to_tags ||= file_seeds.to_h do |file_seed|
+          [file_seed[:absolute_path], file_seed[:tags]]
         end
       end
 
@@ -46,11 +46,9 @@ module Memo
         tag_list.to_h do |tag|
           [
             tag,
-            @file_seeds_hash.keys.filter_map do |key|
-              @file_seeds_hash[key].filter_map do |file_hash|
-                file_hash[:filename] if file_hash[:tags].include?(tag)
-              end
-            end.flatten
+            file_seeds.filter_map do |file_seed|
+              file_seed[:filename] if file_seed[:tags].include?(tag)
+            end
           ]
         end
       end
@@ -59,42 +57,16 @@ module Memo
       #
       # @return [Integer]
       def file_list_size
-        file_list_size_by_config_directory.values.inject(:+)
+        file_seeds.size
       end
 
-      def file_seeds_without_content
-        @file_seeds_hash.transform_values do |values|
-          values.map do |value|
-            {
-              filename: value[:filename],
-              parent_directory: value[:parent_directory],
-              parent_rel_path: value[:parent_rel_path]
-            }
-          end
-        end
-      end
-
-      def file_seeds_with_content
-        @file_seeds_hash.transform_values do |values|
-          values.map do |value|
-            {
-              filename: value[:filename],
-              parent_directory: value[:parent_directory],
-              parent_rel_path: value[:parent_rel_path],
-              file_content: value[:file_content]
-            }
-          end
+      def file_seeds(target_dirs = Memo::Config.target_dirs)
+        @file_seeds ||= target_dirs.flat_map do |target_dir|
+          @file_seeds_hash[target_dir]
         end
       end
 
       private
-
-      # 設定ディレクトリごとのファイルの総数をハッシュで返す
-      #
-      # @return [Hash<String, Integer>]
-      def file_list_size_by_config_directory
-        @file_seeds_hash.transform_values(&:size)
-      end
 
       # ファイルごとに付いているタグの数をハッシュで返す
       def tag_size_by_filename
@@ -126,6 +98,7 @@ module Memo
             tags = front_matter['tags'].nil? ? [] : front_matter['tags']
 
             {
+              target_dir: target_dir,
               absolute_path: absolute_path,
               parent_directory: File.dirname(absolute_path) << '/',
               parent_rel_path: rel_dirname << '/',
