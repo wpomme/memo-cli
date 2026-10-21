@@ -10,7 +10,7 @@ module Memo
       end
 
       def initialize(word)
-        @word = unify_word(word)
+        @word = normalize(word)
         @target_dirs = Memo::Config.target_dirs
       end
 
@@ -36,7 +36,9 @@ module Memo
 
       private
 
-      def unify_word(word)
+      # 検索文字列の名寄せを行う
+      # また、引数なしの場合はbooleanのtrueが来るので、そちらの対応も行う
+      def normalize(word)
         return true if word == true
 
         return "#{word}/" unless word.end_with?('/')

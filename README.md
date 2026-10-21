@@ -15,24 +15,6 @@ memo help
 memo
 ```
 
-### memo tagsについて
-```bash
-# 対象のフォルダのメモファイルについて、そのメモに付いているタグの一覧を出力する
-memo tags
-
-# 全てのタグの一覧を表示する
-memo tags --list
-
-# タグの付いていないファイル名を出力する
-memo tags --empty
-
-# タグごとの出現回数を出力する
-# 例えば、"3: bulk"なら、bulkというタグが付いているファイルが三つ存在する
-# なお、bulkというタグが付いているファイル名を出力したい場合は
-# `memo tag bulk`を実行すればいい
-memo tags --tally
-```
-
 ## セットアップ
 ```bash
 bundle install
@@ -53,13 +35,14 @@ memo list
 # モックを作成
 rake seeds
 
-# 次の手順でも作成できる
-# モックを作成
-rake mock_make
-rake fix
+# DBにデータを挿入する
+rake db:seeds
 
 ## lintで何もなければOK
 rake lint
+
+## rubocopでフォーマットする
+rake fix
 ```
 
 ### テスト

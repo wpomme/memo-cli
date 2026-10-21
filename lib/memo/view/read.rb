@@ -8,13 +8,11 @@ module Memo
       end
 
       def initialize(word)
-        @word = word
+        @word = normalize(word)
       end
 
       def execute
-        unified = unify_word(@word)
-
-        find_files(unified)
+        find_files(@word)
       end
 
       private
@@ -34,7 +32,7 @@ module Memo
       # また、拡張子が付いていれば、取り除く
       #
       # @return [String]
-      def unify_word(word)
+      def normalize(word)
         File.basename(word, '.md')
       end
     end

@@ -9,7 +9,6 @@ class TestSubCommandParser < Minitest::Test
 
       describe '第一引数がサブコマンドではない場合' do
         it 'readコマンドとして解釈する' do
-          skip 'TODO'
           argv = %w[foo]
 
           actual = Memo::SubCommandParser.run(argv)
@@ -20,9 +19,6 @@ class TestSubCommandParser < Minitest::Test
 
         it '第二引数も存在する場合は、エラーメッセージを表示する' do
           skip 'TODO'
-          argv = %w[foo bar]
-
-          Memo::SubCommandParser.run(argv)
         end
       end
     end
@@ -109,7 +105,6 @@ class TestSubCommandParser < Minitest::Test
         end
       end
 
-      # TODO: #parse_with_option_parser: tagsを作成する
       describe 'tags' do
         it 'tagsのみの場合は、tags: trueを返す' do
           argv = %w[tags]

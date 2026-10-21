@@ -2,9 +2,11 @@
 
 module Memo
   class Command
-    def self.run(argv)
-      new.execute(argv)
+    def run(argv)
+      execute(argv)
     end
+
+    private
 
     def execute(argv)
       options = Memo::SubCommandParser.run(argv).to_a.flatten
