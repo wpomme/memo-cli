@@ -2,7 +2,8 @@
 
 module Memo
   class SubCommandParser
-    SUB_COMMANDS = %w[read search tag dirs tags list version].freeze
+    include Memo::HelpMessage
+
     Spec = Data.define(:short, :long, :desc)
 
     def self.run(argv)
@@ -69,9 +70,9 @@ module Memo
     end
 
     def tags_spec_list
-      name_spec = Spec.new('-n', '--name', 'タグ名のみを表示する')
-      count_spec = Spec.new('-c', '--count', 'タグ名とそのタグが付いているファイルの数を表示する')
-      empty_spec = Spec.new('-e', '--empty', 'タグの付いていないファイルの一覧を表示する')
+      name_spec = Spec.new('-n', '--name', TAGS_OPTIONS_NAME)
+      count_spec = Spec.new('-c', '--count', TAGS_OPTIONS_COUNT)
+      empty_spec = Spec.new('-e', '--empty', TAGS_OPTIONS_EMPTY)
 
       spec_list([name_spec, count_spec, empty_spec])
     end
@@ -105,8 +106,14 @@ module Memo
 
     def parse_help_command(argv: nil)
       # TODO: コマンドごとのヘルプが欲しい
-      Memo::SubCommandParser::SUB_COMMANDS.include?(argv)
-      puts Memo::HelpMessage::GENERAL
+      second = argv.first
+
+      if second == 'tags'
+        puts Memo::HelpMessage::TAGS_DETAIL
+      else
+        puts Memo::HelpMessage::GENERAL
+      end
+
       exit 0
     end
 

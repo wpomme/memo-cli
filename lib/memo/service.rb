@@ -25,12 +25,18 @@ module Memo
       choice_keys = choices.keys
 
       print_prompt(title: title, choice_keys: choice_keys)
-      input = gets.chomp.to_i
 
-      if input.between?(1, choices.length)
-        choices[choice_keys[input - 1]]
-      else
-        select_prompt(title: title, choices: choices)
+      begin
+        input = gets.chomp.to_i
+
+        if input.between?(1, choices.length)
+          choices[choice_keys[input - 1]]
+        else
+          select_prompt(title: title, choices: choices)
+        end
+      rescue Interrupt
+        puts Memo::Message::INTERRUPT_PROMPT
+        exit 0
       end
     end
 
@@ -40,8 +46,8 @@ module Memo
     # @params choice_keys [Array]
     def print_prompt(title:, choice_keys:)
       puts title
-      choice_keys.each_with_index do |key, index|
-        puts "[#{index + 1}] #{key}"
+      choice_keys.each.with_index(1) do |key, index|
+        puts "[#{index}] #{key}"
       end
     end
   end

@@ -21,5 +21,22 @@ module Memo
           help                       memoコマンドのヘルプ
           version                    memoコマンドのバージョン
     HELP_G
+    TAGS_OPTIONS_NAME = 'タグ名のみを表示する'
+    TAGS_OPTIONS_COUNT = 'タグ名とそのタグが付いているファイルの数を表示する'
+    TAGS_OPTIONS_EMPTY = 'タグの付いていないファイルの一覧を表示する'
+    TAGS_DETAIL = <<~TAGS_D
+      memo tags: メモフォルダに付いているタグの情報を表示するコマンド
+
+      使い方: memo tags [OPTION]
+          - オプションは任意で追加する
+
+      コマンドリスト
+      memo tags             => それぞれのタグと、そのタグが付けられているファイル名の一覧を表示する
+      memo tags -n(--name)  => #{TAGS_OPTIONS_NAME}
+      memo tags -c(--count) => #{TAGS_OPTIONS_COUNT}
+      memo tags -e(--empty) => #{TAGS_OPTIONS_EMPTY}
+      memo tags -h          => memo tagsのオプションについて簡単なヘルプを表示する
+    TAGS_D
+      .freeze
   end
 end

@@ -1,9 +1,11 @@
 # frozen_string_literal: true
 
-# require_relative '../../helper'
+require_relative '../../helper'
 
 class TestViewList < Minitest::Test
   describe 'View::List' do
+    include MemoLifecycleHooks
+
     describe '#run' do
       it '引数がtrueの場合、対象のディレクトリの配列が返ってくる' do
         actual = Memo::View::List.run(true)

@@ -32,5 +32,6 @@ module Memo
     NO_EMPTY_TAGS_FILE_LIST = <<~NO_EMPTY
       タグ付けされていないファイルはありませんでした。
     NO_EMPTY
+    INTERRUPT_PROMPT = '処理を中断します'
   end
 end
