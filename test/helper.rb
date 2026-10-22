@@ -26,8 +26,8 @@ end
 
 module MemoLifecycleHooks
   def setup
-    target_dir_hash = Memo::Config.target_dirs.map.with_index.to_h do |config_dir, index|
-      [config_dir, File.join(Dir.home, "/var/test-target-dir-#{index}")]
+    target_dir_hash = Memo::Config.target_dirs.map.with_index.to_h do |target_dir, index|
+      [target_dir, File.join(Dir.home, "/var/test-target-dir-#{index}")]
     end
     @test_target_dirs = target_dir_hash.values
     @test_target_dirs.each do |dir|
@@ -36,12 +36,12 @@ module MemoLifecycleHooks
 
     @test_root_dirnames = @test_target_dirs.map { |dir| File.basename(dir) }
 
-    Memo::NewMockSeed::TEST_MOCK_DATA_SEED.each do |seed|
+    Memo::MockSeed::TEST_MOCK_DATA_SEED.each do |seed|
       target_dir_hash.each do |orig_dir, test_dir|
-        test_child_dir = File.join(test_dir, seed[:parent_rel_dir])
+        test_child_dir = File.join(test_dir, seed[:parent_rel_path])
         FileUtils.mkdir_p(test_child_dir) unless FileTest.directory?(test_child_dir)
 
-        File.write(File.join(test_dir, seed[:parent_rel_dir], "#{seed[:filename]}.md"), seed[:file_content]) if orig_dir == seed[:target_dir]
+        File.write(File.join(test_dir, seed[:parent_rel_path], "#{seed[:filename]}.md"), seed[:file_content]) if orig_dir == seed[:target_dir]
       end
     end
 

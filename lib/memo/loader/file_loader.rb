@@ -2,8 +2,8 @@
 
 module Memo
   class FileLoader
-    def initialize
-      load_file_seeds
+    def initialize(target_dirs = Memo::Config.target_dirs)
+      load_file_seeds(target_dirs)
     end
 
     # 全てのタグの一覧をソートし、重複を排除してから、その一覧を返す
@@ -123,7 +123,7 @@ module Memo
     # 対象のディレクトリ内のファイルを読み込んで、DBに保存するためのfile_seeds_hashを作成する
     #
     # @return [Hash<String, Array>] 設定ディレクトリがキーで、そのディレクトリ内のファイルに関する情報の配列が値となるハッシュを返す
-    def load_file_seeds(target_dirs = Memo::Config.target_dirs)
+    def load_file_seeds(target_dirs)
       @load_file_seeds ||= target_dirs.filter_map do |target_dir|
         Dir.glob('**/*.md', base: target_dir).filter_map do |rel_path|
           next if ['README.md'].include?(File.basename(rel_path))
