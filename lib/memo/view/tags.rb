@@ -53,7 +53,6 @@ module Memo
         end
       end
 
-      # TODO: Strategyに移動する
       # グループ化されたSeedのハッシュについて、グループごとのファイル名を文字列にして返す
       #
       # @param seeds_hash [Hash<String, Array<Seed>>] 文字列がキーで、値がSeedの配列となるハッシュ

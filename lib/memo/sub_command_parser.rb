@@ -106,7 +106,7 @@ module Memo
 
     def parse_help_command(argv: nil)
       # TODO: コマンドごとのヘルプが欲しい
-      second = argv.first
+      second = argv.first unless argv.nil?
 
       if second == 'tags'
         puts Memo::HelpMessage::TAGS_DETAIL

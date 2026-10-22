@@ -6,30 +6,31 @@ module Memo
 
     class Tag
       def self.run(word)
-        new(word).execute
+        new.execute(word)
       end
 
-      def initialize(word)
-        @word = word
+      def initialize
         @file_loader = Memo::FileLoader.new
       end
 
-      def execute
+      def execute(word)
         tag_list = @file_loader.sorted_tags
         tag_files_hash = @file_loader.tag_files_hash
 
-        return seeds_key_to_view(tag_files_hash[@word], @word, :aqua) if tag_list.include?(@word)
+        return str_array_to_view(word, tag_files_hash[word], :aqua) if tag_list.include?(word)
 
-        Message::NO_TAGS.sub('tag', @word) << tag_list.join(INDENT)
+        Message::NO_TAGS.sub('tag', word) << tag_list.join(INDENT)
       end
 
       private
 
-      # TODO: Strategyに移動する
-      def seeds_key_to_view(files, key, color_symbol)
-        return [] if files.nil?
+      # 与えられた文字列と、文字列型の配列に従って、ユーザーに表示するための配列を作成する
+      #
+      # @return [Array<String>]
+      def str_array_to_view(str, arr, color_symbol)
+        return [] if arr.nil?
 
-        [Rainbow(key).color(color_symbol)] << files.join(INDENT)
+        [Rainbow(str).color(color_symbol)] << arr.join(INDENT)
       end
     end
   end
