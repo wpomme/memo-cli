@@ -31,7 +31,7 @@ end
 desc 'test/mock_seeds.rbにモックデータを作成する'
 task :seeds do
   sh 'ruby ./test/add_mock_seeds.rb'
-  sh 'bundle exec rubocop -A test/new_mock_seeds.rb'
+  sh 'bundle exec rubocop -A test/mock_seeds.rb'
 end
 
 namespace :db do

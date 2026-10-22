@@ -3,9 +3,9 @@
 require_relative '../../helper'
 
 class TestService < Minitest::Test
-  include MemoDBTestLifecycleHooks
-
   describe('Loader::DirectoryLoader') do
+    include MemoLifecycleHooks
+
     def setup
       super
       @directory_loader = Memo::DirectoryLoader.new
@@ -79,6 +79,18 @@ class TestService < Minitest::Test
         end
 
         _(actual).must_equal(true)
+      end
+    end
+
+    describe('#directory_seeds_hash') do
+      it('モックデータから作成したハッシュと同じ値となること') do
+        actual = @directory_loader.directory_seeds_hash(@test_target_dirs)
+
+        expected = @test_target_dirs.to_h do |target_dir|
+          [target_dir, ['./'].concat(Dir.glob('**/*/', base: target_dir))]
+        end
+
+        _(actual).must_equal(expected)
       end
     end
   end

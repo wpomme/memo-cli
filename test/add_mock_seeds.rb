@@ -3,18 +3,15 @@
 $LOAD_PATH.unshift File.expand_path('../lib', __dir__)
 require 'memo'
 
-target_dirs = Memo::Config.target_dirs
 file_loader = Memo::FileLoader.new
 
 # テストのために固定のファイルを選択しておく
 fixed_duplicated_filename = 'diff'
 fixed_mock_file = 'ls'
 
-seeds = target_dirs.filter_map do |target_dir|
-  file_loader.instance_variable_get(:@file_seeds_hash)[target_dir].filter.each.with_index do |file_seeds, idx|
-    idx.modulo(2).zero? || [fixed_duplicated_filename, fixed_mock_file].include?(file_seeds[:filename])
-  end
-end.flatten
+seeds = file_loader.file_seeds.filter.with_index do |file_seeds, idx|
+  idx.modulo(2).zero? || [fixed_duplicated_filename, fixed_mock_file].include?(file_seeds[:filename])
+end
 # uniq!
 
 ## ファイル名の一覧

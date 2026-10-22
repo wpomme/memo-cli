@@ -44,5 +44,14 @@ module Memo
         end]
       end
     end
+
+    # 対象のディレクトリをキーとし、その中に入っているディレクトリの一覧を値とするハッシュを返す
+    #
+    # @return[Hash<String, Array<String>>]
+    def directory_seeds_hash(target_dirs = Memo::Config.target_dirs)
+      @directory_seeds_hash ||= target_dirs.to_h do |target_dir|
+        [target_dir, ['./'].concat(Dir.glob('**/*/', base: target_dir))]
+      end
+    end
   end
 end
