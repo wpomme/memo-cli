@@ -15,23 +15,12 @@ module Memo
       end
 
       def execute
-        # return hash_for_list if @word.empty?
-        return nest_hashs_to_view(hash_for_list, :green, :cyan) if @word == true
+        return all_list_to_view if @word == true
 
         # そのようなディレクトリ名がないというメッセージを表示するのが適切
-        return unless hash_for_list.values.map(&:keys).flatten.include?(@word)
+        return if look_up_from_all_list.empty?
 
-        # 有効なワードを受け取った場合は、ハッシュのハッシュを返す
-        hash_given_word = @target_dirs.filter_map do |target_dir|
-          dirs = hash_for_list[target_dir][@word]
-          unless dirs.nil?
-            h = {}
-            h[@word] = dirs
-            { target_dir => h }
-          end
-        end.pop
-
-        nest_hash_to_view(hash_given_word, :green, :cyan)
+        list_by_dir_to_view
       end
 
       private
@@ -46,49 +35,54 @@ module Memo
         word
       end
 
-      # ネストしたハッシュをユーザー向けに表示できるように加工する
-      # ネストしたハッシュがあり、最後の値が文字列型の配列である場合に使用する
-      # 最初のハッシュのキーが複数ある場合はこちらを使う
+      # memo list [word]が入力されたときに、look_up_from_all_listに色付けをして返すメソッド
+      def list_by_dir_to_view
+        arr = look_up_from_all_list.flatten
+        [Rainbow(arr.shift).color(:green), Rainbow(arr.shift).color(:cyan)] << arr.join(' ')
+      end
+
+      # wordが入力された場合、ファイルごとの親ディレクトリと名前が一致すれば値を返す
+      # 一致しなければ空の配列を返す
       #
-      # nest_hash_array [Hash<String, Hash<String, Array<String>>>]
-      # key1_color [Symbol]
-      # key2_color [Symbol]
-      #
-      # @return [Array<String>]
-      def nest_hashs_to_view(nest_hash_array, key1_color, key2_color)
-        nest_hash_array.keys.map do |key1|
-          [Rainbow(key1).color(key1_color)].concat(
-            nest_hash_array[key1].flat_map do |key2, arr|
-              [Rainbow(key2).color(key2_color)].push(arr.join(' ')).push("\n")
-            end
-          )
+      def look_up_from_all_list
+        all_list.filter_map do |key, values|
+          files = values.filter do |dir_and_files|
+            dir_and_files[0] == @word
+          end
+          [key, files] unless files.empty?
         end
       end
 
-      # ネストしたハッシュをユーザー向けに表示できるように加工する
-      # 次のようなハッシュを対象とする
-      # {"A" => {"B" => ["foo", "bar", "baz"]}}
-      def nest_hash_to_view(nest_hash, key1_color, key2_color)
-        nest_hash.map do |key1, hash1|
-          [Rainbow(key1).color(key1_color)].concat(
-            hash1.map do |key2, arr|
-              [Rainbow(key2).color(key2_color)].push(arr.join(' '))
-            end
-          )
+      # memo listが入力されたときに、all_listを色付けして返すメソッド
+      def all_list_to_view
+        all_list.map do |key, dbl_arr|
+          [Rainbow(key).color(:green)].concat(dbl_arr.map do |arr|
+            [Rainbow(arr[0]).color(:cyan), arr[1].join(' '), "\n"]
+          end)
         end
       end
 
-      def hash_for_list
-        grouped = Memo::FileLoader.new.file_seeds_light.group_by { |file_seed| file_seed[:parent_rel_path] }
+      # 対象ディレクトリがキーで、二重配列の最初の要素に親ディレクトリ、最後の要素にファイル名を入れたものを返す
+      #
+      # @return [Hash<String, Array<Array<String, Array<String>>>>]
+      def all_list
+        grouped_file_seeds.group_by { |(k_arr, _)| k_arr[0] }
+          .transform_values do |values|
+          values.map do |arr|
+            [arr[0].last, arr[1]]
+          end
+        end
+      end
+
+      # 対象ディレクトリと親ディレクトリの配列がキーで、ファイル名の配列が値となるハッシュを返す
+      # {[target_dir, parent_rel_path] => [files]}
+      def grouped_file_seeds
+        Memo::FileLoader.new.file_seeds_light.group_by { |file_seed| [file_seed[:target_dir], file_seed[:parent_rel_path]] }
           .transform_values do |values|
             values.map do |file_seed|
               file_seed[:filename]
             end
           end
-
-        @target_dirs.to_h do |target_dir|
-          [target_dir, grouped]
-        end
       end
     end
   end
