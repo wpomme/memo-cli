@@ -38,7 +38,7 @@ module Memo
       # memo list [word]が入力されたときに、look_up_from_all_listに色付けをして返すメソッド
       def list_by_dir_to_view
         arr = look_up_from_all_list.flatten
-        [Rainbow(arr.shift).color(:green), Rainbow(arr.shift).color(:cyan)] << arr.join(' ')
+        [Rainbow(arr.shift).color(DIR_COLOR_MAIN), Rainbow(arr.shift).color(DIR_COLOR_SUB)] << arr.join(SPACE)
       end
 
       # wordが入力された場合、ファイルごとの親ディレクトリと名前が一致すれば値を返す
@@ -56,8 +56,8 @@ module Memo
       # memo listが入力されたときに、all_listを色付けして返すメソッド
       def all_list_to_view
         all_list.map do |key, dbl_arr|
-          [Rainbow(key).color(:green)].concat(dbl_arr.map do |arr|
-            [Rainbow(arr[0]).color(:cyan), arr[1].join(' '), "\n"]
+          [Rainbow(key).color(DIR_COLOR_MAIN)].concat(dbl_arr.map do |arr|
+            [Rainbow(arr[0]).color(DIR_COLOR_SUB), arr[1].join(SPACE), "\n"]
           end)
         end
       end

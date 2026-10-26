@@ -10,7 +10,7 @@ module Memo
       def execute
         Memo::DirectoryLoader.new.relative_path_hash.transform_values { |paths| paths.join("\n") }
           .map do |key, value|
-            [Rainbow("#{key}:").green].push(value).push('')
+            [Rainbow("#{key}:").color(DIR_COLOR_MAIN)].push(value).push('')
           end
       end
     end

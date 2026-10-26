@@ -15,7 +15,7 @@ module Memo
       end
 
       def execute
-        return seeds_hash_to_view(@file_loader.tag_files_hash, :aqua) if @option == true
+        return seeds_hash_to_view(@file_loader.tag_files_hash, TAG_COLOR) if @option == true
 
         return count_hash_to_view(@file_loader.sorted_tag_files_size) if @option == :count
 
@@ -34,14 +34,14 @@ module Memo
             end
           end
 
-        seeds_hash_to_view(grouped, :green)
+        seeds_hash_to_view(grouped, DIR_COLOR_MAIN)
       end
 
       def nest_hashs_to_view(nest_hash_array, key1_color, key2_color)
         nest_hash_array.keys.map do |key1|
           [Rainbow(key1).color(key1_color)].concat(
             nest_hash_array[key1].flat_map do |key2, arr|
-              [Rainbow(key2).color(key2_color)].push(arr.join(' ')).push("\n")
+              [Rainbow(key2).color(key2_color)].push(arr.join(SPACE)).push("\n")
             end
           )
         end
@@ -60,7 +60,7 @@ module Memo
       # @return [Array<String>]
       def seeds_hash_to_view(seeds_hash, color_symbol)
         seeds_hash.inject([]) do |result, (key, files)|
-          result << Rainbow("#{key}: #{files.size}").color(color_symbol) << files.join(INDENT) << "\n"
+          result << Rainbow("#{key}: #{files.size}").color(color_symbol) << files.join(SPACE) << "\n"
         end
       end
     end

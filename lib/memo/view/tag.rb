@@ -2,8 +2,6 @@
 
 module Memo
   module View
-    INDENT = ' '
-
     class Tag
       def self.run(word)
         new.execute(word)
@@ -17,9 +15,9 @@ module Memo
         tag_list = @file_loader.sorted_tags
         tag_files_hash = @file_loader.tag_files_hash
 
-        return str_array_to_view(word, tag_files_hash[word], :aqua) if tag_list.include?(word)
+        return str_array_to_view(word, tag_files_hash[word], TAG_COLOR) if tag_list.include?(word)
 
-        Message::NO_TAGS.sub('tag', word) << tag_list.join(INDENT)
+        Message::NO_TAGS.sub('tag', word) << tag_list.join(SPACE)
       end
 
       private
@@ -30,7 +28,7 @@ module Memo
       def str_array_to_view(str, arr, color_symbol)
         return [] if arr.nil?
 
-        [Rainbow(str).color(color_symbol)] << arr.join(INDENT)
+        [Rainbow(str).color(color_symbol)] << arr.join(SPACE)
       end
     end
   end

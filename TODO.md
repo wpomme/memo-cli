@@ -11,7 +11,6 @@
 - モックデータからテストコードの検証を行うようにする
 - Loaderに値を入れる場面で、FileSeed, DirectorySeedを使いたい
     - Structにメソッドを持たせることで、View以下のメソッドが簡潔になる
-- Viewに文字列の属性ごとのカラーコード、インデントの情報を定数として入れる
 - Serviceのselect_promptをControllerに持って行っても良いかも
 
 
@@ -37,8 +36,7 @@
 2. タグの英語・日本語の対応表があると嬉しい
 
 ## DBの更新
-1. 一度データを全て消してから全てのデータを入れ直す
-2. 最後にDBのデータをUpdateした時点から、ファイルのCreate, Update, Deleteを検知し、それぞれの更新を行う
+1. 最後にDBのデータをUpdateした時点から、ファイルのCreate, Update, Deleteを検知し、それぞれの更新を行う
 
 ### 補完(Completion)
 - zshでの補完を考える
