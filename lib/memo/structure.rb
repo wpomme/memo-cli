@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module Memo
-  module Model
+  module Structure
     #  対象ディレクトリのファイル情報を保存するための値オブジェクト
     #  NOTE: Loaderのfile_seedに使えるかもしれない
     #

@@ -29,7 +29,7 @@ module Memo
         Memo::FileLoader.new.file_seeds.filter_map do |file_seed|
           file_seed[:file_content].split("\n").filter_map.with_index(1) do |line, idx|
             path = "./#{File.join(file_seed[:parent_rel_path], file_seed[:filename])}.md"
-            Memo::Model::SearchLine.new(path: path, line_number: idx, line: line).to_view(word) if line.include?(word)
+            Memo::Structure::SearchLine.new(path: path, line_number: idx, line: line).to_view(word) if line.include?(word)
           end
         end.reject(&:empty?).flatten
       end
