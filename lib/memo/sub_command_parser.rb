@@ -6,9 +6,11 @@ module Memo
 
     Spec = Data.define(:short, :long, :desc)
 
-    def self.run(argv)
-      new.execute(argv)
+    def run(argv)
+      execute(argv)
     end
+
+    private
 
     def execute(argv)
       first = argv.shift
@@ -32,8 +34,6 @@ module Memo
         parse_one_argument(:read, argv: [first])
       end
     end
-
-    private
 
     def parse_no_arguments(sym: :dirs, argv: nil)
       to_error_message(:too_many_args, sym) unless argv.empty?

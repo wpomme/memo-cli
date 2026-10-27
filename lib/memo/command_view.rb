@@ -2,15 +2,15 @@
 
 module Memo
   class CommandView
-    def read(word)
+    def read(word:)
       puts read_file_by_found_result(word)
     end
 
-    def search(word)
+    def search(word:)
       puts Memo::View::Search.run(word)
     end
 
-    def tag(word)
+    def tag(word:)
       puts Memo::View::Tag.run(word)
     end
 
@@ -18,12 +18,12 @@ module Memo
       puts Memo::View::Dirs.run
     end
 
-    def list(word = '')
+    def list(word: '')
       puts Memo::View::List.run(word)
     end
 
-    def tags(option = '')
-      puts Memo::View::Tags.run(option)
+    def tags(word: '')
+      puts Memo::View::Tags.run(word)
     end
 
     private

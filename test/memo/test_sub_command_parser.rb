@@ -2,6 +2,10 @@
 
 class TestSubCommandParser < Minitest::Test
   describe '#run' do
+    def setup
+      @scp = Memo::SubCommandParser.new
+    end
+
     describe '引数による分類' do
       it '引数がない場合はヘルプメッセージを表示する' do
         skip 'TODO'
@@ -11,9 +15,8 @@ class TestSubCommandParser < Minitest::Test
         it 'readコマンドとして解釈する' do
           argv = %w[foo]
 
-          actual = Memo::SubCommandParser.run(argv)
+          actual = @scp.run(argv)
 
-          # 次のどちらかを返す
           _(actual).must_equal({ read: 'foo' })
         end
 
@@ -31,7 +34,7 @@ class TestSubCommandParser < Minitest::Test
           args.each do |arg|
             actual, = capture_io do
               exception = assert_raises(SystemExit) do
-                Memo::SubCommandParser.run([arg])
+                @scp.run([arg])
               end
 
               _(exception.status).must_equal(2)
@@ -43,15 +46,13 @@ class TestSubCommandParser < Minitest::Test
           end
         end
 
-        # TODO: FileLoaderからファイル名の一覧を取得する
-        # 拡張子がつく場合や、フォルダ名がつく場合のテストも欲しい
-        it '存在するファイル名なら引数として解釈できる' do
+        it '文字列をファイル名やタグ名として解釈できる' do
           arg1 = %w[read search tag]
 
           arg2 = 'foo'
 
           arg1.each do |arg|
-            actual = Memo::SubCommandParser.run([arg, arg2])
+            actual = @scp.run([arg, arg2])
 
             _(actual).must_equal({ arg.intern => arg2 })
           end
@@ -66,7 +67,7 @@ class TestSubCommandParser < Minitest::Test
           arg1.each do |arg|
             actual, = capture_io do
               exception = assert_raises(SystemExit) do
-                Memo::SubCommandParser.run([arg, arg2, arg3])
+                @scp.run([arg, arg2, arg3])
               end
 
               _(exception.status).must_equal(2)
@@ -83,7 +84,7 @@ class TestSubCommandParser < Minitest::Test
         it '引数を取らない場合は、dirs: trueを返す' do
           argv = %w[dirs]
 
-          actual = Memo::SubCommandParser.run(argv)
+          actual = @scp.run(argv)
 
           _(actual).must_equal({ dirs: true })
         end
@@ -93,7 +94,7 @@ class TestSubCommandParser < Minitest::Test
             exception = assert_raises(SystemExit) do
               argv = %w[dirs foo]
 
-              Memo::SubCommandParser.run(argv)
+              @scp.run(argv)
             end
 
             _(exception.status).must_equal(2)
@@ -109,7 +110,7 @@ class TestSubCommandParser < Minitest::Test
         it 'tagsのみの場合は、tags: trueを返す' do
           argv = %w[tags]
 
-          actual = Memo::SubCommandParser.run(argv)
+          actual = @scp.run(argv)
 
           _(actual).must_equal({ tags: true })
         end
@@ -121,7 +122,7 @@ class TestSubCommandParser < Minitest::Test
           args = options.map { |opt| [arg, opt] }
 
           args.each do |arg|
-            actual = Memo::SubCommandParser.run(arg)
+            actual = @scp.run(arg)
             _(actual).must_equal({ tags: :empty })
           end
         end
@@ -133,7 +134,7 @@ class TestSubCommandParser < Minitest::Test
           args = options.map { |opt| [arg, opt] }
 
           args.each do |arg|
-            actual = Memo::SubCommandParser.run(arg)
+            actual = @scp.run(arg)
             _(actual).must_equal({ tags: :count })
           end
         end
@@ -145,7 +146,7 @@ class TestSubCommandParser < Minitest::Test
           args = options.map { |opt| [arg, opt] }
 
           args.each do |arg|
-            actual = Memo::SubCommandParser.run(arg)
+            actual = @scp.run(arg)
             _(actual).must_equal({ tags: :name })
           end
         end
@@ -158,7 +159,7 @@ class TestSubCommandParser < Minitest::Test
           args = options.map { |opt| [arg, opt] }
 
           args.each do |arg|
-            actual = Memo::SubCommandParser.run(arg)
+            actual = @scp.run(arg)
             _(actual).must_equal({ tags: :name })
           end
         end
@@ -169,7 +170,7 @@ class TestSubCommandParser < Minitest::Test
 
           actual, = capture_io do
             exception = assert_raises(SystemExit) do
-              Memo::SubCommandParser.run(argv)
+              @scp.run(argv)
             end
 
             _(exception.status).must_equal(2)
@@ -189,7 +190,7 @@ class TestSubCommandParser < Minitest::Test
           # exit 2を使うかも
           options.map { |opt| [argv, opt, rest_argv] }
             .map do |args|
-            Memo::SubCommandParser.run(args)
+            @scp.run(args)
           end
         end
       end
@@ -198,7 +199,7 @@ class TestSubCommandParser < Minitest::Test
         it 'listのみの場合は、list: trueを返す' do
           argv = %w[list]
 
-          actual = Memo::SubCommandParser.run(argv)
+          actual = @scp.run(argv)
 
           _(actual).must_equal({ list: true })
         end
@@ -210,7 +211,7 @@ class TestSubCommandParser < Minitest::Test
           args = options.map { |opt| [arg, opt] }
 
           args.each do |arg|
-            actual = Memo::SubCommandParser.run(arg)
+            actual = @scp.run(arg)
             _(actual).must_equal({ list: :count })
           end
         end
@@ -218,7 +219,7 @@ class TestSubCommandParser < Minitest::Test
         it '引数を取る場合は、list:の値にその文字列を返す' do
           argv = %w[list foo]
 
-          actual = Memo::SubCommandParser.run(argv)
+          actual = @scp.run(argv)
 
           _(actual).must_equal({ list: 'foo' })
         end
@@ -227,7 +228,7 @@ class TestSubCommandParser < Minitest::Test
           arg1 = 'list'
           arg2 = 'あ' * 32
 
-          actual = Memo::SubCommandParser.run([arg1, arg2])
+          actual = @scp.run([arg1, arg2])
 
           _(actual).must_equal({ list: arg2 })
         end
@@ -238,7 +239,7 @@ class TestSubCommandParser < Minitest::Test
               arg1 = 'list'
               arg2 = 'あ' * 33
 
-              Memo::SubCommandParser.run([arg1, arg2])
+              @scp.run([arg1, arg2])
             end
 
             _(exception.status).must_equal(2)
@@ -257,7 +258,7 @@ class TestSubCommandParser < Minitest::Test
               args = %w[version -V]
 
               args.each do |arg|
-                Memo::SubCommandParser.run([arg])
+                @scp.run([arg])
               end
             end
 

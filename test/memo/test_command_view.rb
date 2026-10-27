@@ -19,7 +19,7 @@ class TestCommandView < Minitest::Test
         target_filename = 'ls'
 
         out, = capture_io do
-          @command_view.read(target_filename)
+          @command_view.read(word: target_filename)
         end
 
         _(out).wont_be_empty
@@ -33,7 +33,7 @@ class TestCommandView < Minitest::Test
         # 最後の方を選択する
         $stdin = StringIO.new("#{count}\n")
         out, = capture_io do
-          @command_view.read(target_filename)
+          @command_view.read(word: target_filename)
         end
 
         _(out).wont_be_empty
@@ -45,7 +45,7 @@ class TestCommandView < Minitest::Test
         word = 'does_not_exist_files'
 
         out, = capture_io do
-          @command_view.read(word)
+          @command_view.read(word: word)
         end
 
         _(out).must_equal(Memo::Message::NO_MEMOS_WEWE_FOUND.sub('word', word) << "\n")
@@ -63,7 +63,7 @@ class TestCommandView < Minitest::Test
         search_word = 'ls'
 
         out, = capture_io do
-          @command_view.search(search_word)
+          @command_view.search(word: search_word)
         end
 
         _(out).wont_be_empty
@@ -73,7 +73,7 @@ class TestCommandView < Minitest::Test
         search_word = 'does_not_exist_word'
 
         out, = capture_io do
-          @command_view.search(search_word)
+          @command_view.search(word: search_word)
         end
 
         expected = Memo::Message::NO_SEARCH_RESULTS_WERE_FOUND.sub('word', search_word) << "\n"
@@ -93,7 +93,7 @@ class TestCommandView < Minitest::Test
         search_word = 'CLI'
 
         out, = capture_io do
-          @command_view.tag(search_word)
+          @command_view.tag(word: search_word)
         end
 
         _(out).wont_be_empty
@@ -104,7 +104,7 @@ class TestCommandView < Minitest::Test
         tag_list = Memo::FileLoader.new.sorted_tags
 
         out, = capture_io do
-          @command_view.tag(search_word)
+          @command_view.tag(word: search_word)
         end
 
         expected = Memo::Message::NO_TAGS.sub('tag', search_word) << tag_list.join(' ') << "\n"
@@ -132,7 +132,7 @@ class TestCommandView < Minitest::Test
         word = 'git/'
 
         out, = capture_io do
-          @command_view.list(word)
+          @command_view.list(word: word)
         end
 
         _(out).wont_be_empty
@@ -142,7 +142,7 @@ class TestCommandView < Minitest::Test
         word = 'does_not_exist_dirname'
 
         out, = capture_io do
-          @command_view.list(word)
+          @command_view.list(word: word)
         end
 
         _(out).must_equal("\n")
@@ -166,7 +166,7 @@ class TestCommandView < Minitest::Test
 
       it ':nameを取る場合' do
         out, = capture_io do
-          @command_view.tags(:name)
+          @command_view.tags(word: :name)
         end
 
         _(out).wont_be_empty
@@ -174,7 +174,7 @@ class TestCommandView < Minitest::Test
 
       it ':countを取る場合' do
         out, = capture_io do
-          @command_view.tags(:count)
+          @command_view.tags(word: :count)
         end
 
         _(out).wont_be_empty

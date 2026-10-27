@@ -9,9 +9,9 @@ module Memo
     private
 
     def execute(argv)
-      options = Memo::SubCommandParser.run(argv).to_a.flatten
+      options = Memo::SubCommandParser.new.run(argv).to_a.flatten
 
-      Memo::CommandView.new.public_send(options.shift, options.shift)
+      Memo::CommandView.new.public_send(options.shift, word: options.shift)
     end
   end
 end
