@@ -3,28 +3,25 @@
 module Memo
   module View
     class Tags
-      #
-      # word [true | String]
-      def self.run(option)
-        new(option).execute
+      def run(option)
+        execute(option)
       end
 
-      def initialize(option)
-        @option = option
-        @file_loader = Memo::FileLoader.new
-      end
-
-      def execute
-        return seeds_hash_to_view(@file_loader.tag_files_hash, TAG_COLOR) if @option == true
-
-        return count_hash_to_view(@file_loader.sorted_tag_files_size) if @option == :count
-
-        return empty_seeds_to_view(@file_loader.file_seeds_without_tags) if @option == :empty
-
-        @file_loader.sorted_tags if @option == :name
+      def initialize(target_dirs: Memo::Config.target_dirs)
+        @file_loader = Memo::FileLoader.new(target_dirs: target_dirs)
       end
 
       private
+
+      def execute(option)
+        return seeds_hash_to_view(@file_loader.tag_files_hash, TAG_COLOR) if option == true
+
+        return count_hash_to_view(@file_loader.sorted_tag_files_size) if option == :count
+
+        return empty_seeds_to_view(@file_loader.file_seeds_without_tags) if option == :empty
+
+        @file_loader.sorted_tags if option == :name
+      end
 
       def empty_seeds_to_view(file_seeds)
         grouped = file_seeds.group_by { |file_seed| file_seed[:parent_rel_path] }

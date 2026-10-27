@@ -3,27 +3,26 @@
 module Memo
   module View
     class List
-      #
-      # word [true | String]
-      def self.run(word)
-        new(word).execute
+      def run(word)
+        execute(word)
       end
 
-      def initialize(word)
+      def initialize(target_dirs: Memo::Config.target_dirs)
+        @file_loader = Memo::FileLoader.new(target_dirs: target_dirs)
+      end
+
+      private
+
+      def execute(word)
+        return all_list_to_view if word == true
+
         @word = normalize(word)
-        @target_dirs = Memo::Config.target_dirs
-      end
-
-      def execute
-        return all_list_to_view if @word == true
 
         # そのようなディレクトリ名がないというメッセージを表示するのが適切
         return if look_up_from_all_list.empty?
 
         list_by_dir_to_view
       end
-
-      private
 
       # 検索文字列の名寄せを行う
       # また、引数なしの場合はbooleanのtrueが来るので、そちらの対応も行う
@@ -77,7 +76,7 @@ module Memo
       # 対象ディレクトリと親ディレクトリの配列がキーで、ファイル名の配列が値となるハッシュを返す
       # {[target_dir, parent_rel_path] => [files]}
       def grouped_file_seeds
-        Memo::FileLoader.new.file_seeds_light.group_by { |file_seed| [file_seed[:target_dir], file_seed[:parent_rel_path]] }
+        @file_loader.file_seeds_light.group_by { |file_seed| [file_seed[:target_dir], file_seed[:parent_rel_path]] }
           .transform_values do |values|
             values.map do |file_seed|
               file_seed[:filename]

@@ -9,7 +9,6 @@
     - setupは1. create/drop tables, 2. Seeder, 3. schemaの三つに分けられる
 - memo help [sub_command]の作成: コマンドごとのヘルプがほしい
 - モックデータからテストコードの検証を行うようにする
-- Viewなど、run, execute構造を見直す
 - Loaderに値を入れる場面で、FileSeed, DirectorySeedを使いたい
     - Structにメソッドを持たせることで、View以下のメソッドが簡潔になる
 - Serviceのselect_promptをControllerに持って行っても良いかも

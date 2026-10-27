@@ -8,7 +8,7 @@ class TestFileLoader < Minitest::Test
 
     def setup
       super
-      @file_loader = Memo::FileLoader.new(@test_target_dirs)
+      @file_loader = Memo::FileLoader.new(target_dirs: @test_target_dirs)
       @mock_file_size = Memo::MockSeed::TEST_MOCK_DATA_SEED.size
     end
 

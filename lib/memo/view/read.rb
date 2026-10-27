@@ -3,26 +3,26 @@
 module Memo
   module View
     class Read
-      def self.run(word)
-        new(word).execute
+      def run(word)
+        execute(normalize(word))
       end
 
-      def initialize(word)
-        @word = normalize(word)
-      end
-
-      def execute
-        find_files(@word)
+      def initialize(target_dirs: Memo::Config.target_dirs)
+        @file_loader = Memo::FileLoader.new(target_dirs: target_dirs)
       end
 
       private
+
+      def execute(word)
+        find_files(word)
+      end
 
       # 検索でヒットした文字列に色をつける
       #
       # @param word [string]
       # @return [Array]
       def find_files(word)
-        Memo::FileLoader.new.file_seeds.filter do |file_seed|
+        @file_loader.file_seeds.filter do |file_seed|
           file_seed[:filename] == word
         end
       end

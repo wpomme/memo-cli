@@ -7,29 +7,29 @@ module Memo
     end
 
     def search(word:)
-      puts Memo::View::Search.run(word)
+      puts Memo::View::Search.new.run(word)
     end
 
     def tag(word:)
-      puts Memo::View::Tag.run(word)
+      puts Memo::View::Tag.new.run(word)
     end
 
     def dirs(_)
-      puts Memo::View::Dirs.run
+      puts Memo::View::Dirs.new.run
     end
 
     def list(word: '')
-      puts Memo::View::List.run(word)
+      puts Memo::View::List.new.run(word)
     end
 
     def tags(word: '')
-      puts Memo::View::Tags.run(word)
+      puts Memo::View::Tags.new.run(word)
     end
 
     private
 
     def read_file_by_found_result(word)
-      found = Memo::View::Read.run(word)
+      found = Memo::View::Read.new.run(word)
       size = found.size
 
       return Memo::Message::NO_MEMOS_WEWE_FOUND.sub('word', word) if size.zero?

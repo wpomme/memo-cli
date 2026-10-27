@@ -3,12 +3,18 @@
 module Memo
   module View
     class Dirs
-      def self.run
-        new.execute
+      def run
+        execute
       end
 
+      def initialize(target_dirs: Memo::Config.target_dirs)
+        @directory_loader = Memo::DirectoryLoader.new(target_dirs: target_dirs)
+      end
+
+      private
+
       def execute
-        Memo::DirectoryLoader.new.relative_path_hash.transform_values { |paths| paths.join("\n") }
+        @directory_loader.relative_path_hash.transform_values { |paths| paths.join("\n") }
           .map do |key, value|
             [Rainbow("#{key}:").color(DIR_COLOR_MAIN)].push(value).push('')
           end

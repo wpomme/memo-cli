@@ -2,7 +2,7 @@
 
 module Memo
   class FileLoader
-    def initialize(target_dirs = Memo::Config.target_dirs)
+    def initialize(target_dirs: Memo::Config.target_dirs)
       load_file_seeds(target_dirs)
     end
 
