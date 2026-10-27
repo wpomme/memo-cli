@@ -21,7 +21,7 @@ module Memo
       when 'dirs'
         parse_no_arguments(argv: argv)
       when 'tags'
-        parse_with_option_parser(argv: argv)
+        parse_tags_command(argv: argv)
       when 'list'
         parse_list_command(argv: argv)
       when 'help'
@@ -49,7 +49,7 @@ module Memo
       { sym => argv[0] }
     end
 
-    def parse_with_option_parser(sym: :tags, argv: nil)
+    def parse_tags_command(sym: :tags, argv: nil)
       parsed = {}
 
       specs = tags_spec_list
@@ -61,8 +61,7 @@ module Memo
       end
         .parse(argv, into: parsed)
 
-      # TODO: 違うオプションを同時に取ることはできません。というようなエラーを返す
-      # to_error_message(:foo, :tags) if parsed.size > 1
+      to_error_message(:too_many_options, :tags) if parsed.size > 1
 
       value = parsed.empty? || parsed.keys[0]
 
@@ -130,12 +129,14 @@ module Memo
         search: 'search',
         dirs: 'dirs',
         list: 'list',
-        tag: 'tag'
+        tag: 'tag',
+        tags: 'tags'
       }.freeze
 
       error_message_map = {
         no_given_args: Message::NO_GIVEN_ARGS.gsub('CLI', dispatch[sub_command_symbol]),
         too_many_args: Message::TOO_MANY_ARGS.gsub('CLI', dispatch[sub_command_symbol]),
+        too_many_options: Message::TOO_MANY_OPTIONS.gsub('CLI', dispatch[sub_command_symbol]),
         too_long_args: Message::TOO_LONG_ARGS,
         unknown_command: Memo::Message::UNKNOWN_COMMAND
       }

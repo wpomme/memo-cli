@@ -25,6 +25,9 @@ module Memo
       memo CLIが引数として取る文字列が長すぎます。
       適切な長さの文字列を指定してください。
     TOO_LONG
+    TOO_MANY_OPTIONS = <<~TOO_OPTS
+      memo CLIのオプションは同時に指定することができません。
+    TOO_OPTS
     UNKNOWN_COMMAND = <<~UNKNOWN
       memo CLIにそのようなサブコマンドはありません。
       適切なサブコマンドを指定してください。

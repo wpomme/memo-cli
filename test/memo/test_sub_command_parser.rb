@@ -114,6 +114,18 @@ class TestSubCommandParser < Minitest::Test
           _(actual).must_equal({ tags: true })
         end
 
+        it '-e/--emptyがある場合は、tags: :emptyを返す' do
+          arg = 'tags'
+          options = ['-e', '--empty']
+
+          args = options.map { |opt| [arg, opt] }
+
+          args.each do |arg|
+            actual = Memo::SubCommandParser.run(arg)
+            _(actual).must_equal({ tags: :empty })
+          end
+        end
+
         it '-c/--countがある場合は、tags: :countを返す' do
           arg = 'tags'
           options = ['-c', '--count']
@@ -123,6 +135,18 @@ class TestSubCommandParser < Minitest::Test
           args.each do |arg|
             actual = Memo::SubCommandParser.run(arg)
             _(actual).must_equal({ tags: :count })
+          end
+        end
+
+        it '-n/--nameがある場合は、tags: :nameを返す' do
+          arg = 'tags'
+          options = ['-n', '--name']
+
+          args = options.map { |opt| [arg, opt] }
+
+          args.each do |arg|
+            actual = Memo::SubCommandParser.run(arg)
+            _(actual).must_equal({ tags: :name })
           end
         end
 
@@ -139,25 +163,21 @@ class TestSubCommandParser < Minitest::Test
           end
         end
 
-        it '-n/--nameがある場合は、tags: :nameを返す' do
-          arg = 'tags'
-          options = ['-n', '--name']
+        # TODO: 全通りについてテストする
+        it 'オプションを同時に指定した場合は、エラーを返す' do
+          argv = %w[tags -nc]
 
-          args = options.map { |opt| [arg, opt] }
+          actual, = capture_io do
+            exception = assert_raises(SystemExit) do
+              Memo::SubCommandParser.run(argv)
+            end
 
-          args.each do |arg|
-            actual = Memo::SubCommandParser.run(arg)
-            _(actual).must_equal({ tags: :name })
+            _(exception.status).must_equal(2)
           end
-        end
 
-        it '-nと-cを同時に指定した場合は、エラーを返す' do
-          skip 'TODO'
-          argv = %w[tags -cn]
+          expected = Memo::Message::TOO_MANY_OPTIONS.gsub('CLI', 'tags')
 
-          actual = Memo::SubCommandParser.run(argv)
-
-          _(actual).must_equal({ tags: :name })
+          _(actual).must_equal(expected)
         end
 
         it '第三引数も存在する場合は、エラーメッセージを表示する' do
