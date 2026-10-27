@@ -21,6 +21,15 @@ module Memo
           help                       memoコマンドのヘルプ
           version                    memoコマンドのバージョン
     HELP_G
+    READ_DETAIL = <<~READ_D
+      memo read: メモフォルダの中のファイルを全文表示するコマンド
+
+      使い方: memo read FILE_NAME
+          - ファイル名は必須
+
+      なお、メモフォルダに同じ名前のファイルが二つ以上存在する場合は、
+      その中からどのファイルを表示するかを選択するためのプロンプトが表示される。
+    READ_D
     TAGS_OPTIONS_NAME = 'タグ名のみを表示する'
     TAGS_OPTIONS_COUNT = 'タグ名とそのタグが付いているファイルの数を表示する'
     TAGS_OPTIONS_EMPTY = 'タグの付いていないファイルの一覧を表示する'

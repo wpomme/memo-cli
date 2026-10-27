@@ -109,6 +109,8 @@ module Memo
 
       if second == 'tags'
         puts Memo::HelpMessage::TAGS_DETAIL
+      elsif second == 'read'
+        puts Memo::HelpMessage::READ_DETAIL
       else
         puts Memo::HelpMessage::GENERAL
       end
