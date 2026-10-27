@@ -9,6 +9,7 @@
     - setupは1. create/drop tables, 2. Seeder, 3. schemaの三つに分けられる
 - memo help [sub_command]の作成: コマンドごとのヘルプがほしい
 - モックデータからテストコードの検証を行うようにする
+- Viewなど、run, execute構造を見直す
 - Loaderに値を入れる場面で、FileSeed, DirectorySeedを使いたい
     - Structにメソッドを持たせることで、View以下のメソッドが簡潔になる
 - Serviceのselect_promptをControllerに持って行っても良いかも
@@ -19,11 +20,6 @@
 ### 型検査・型のテスト・テスト拡張
 - Rdocかyard、型検査の導入、coverageの取得
     - coverage: https://docs.ruby-lang.org/ja/latest/library/coverage.html
-- e2eテストをコマンドごとに分けて、コマンドごとに実行する場合は、その結果を標準出力に渡すようにする
-
-### expected, actual
-- expected, actualを意味的に逆に使っている箇所があるかもしれない
-    - 洗い出す
 
 ## 機能追加
 - 各メモファイルのfront matterにcreated_at, updated_atを挿入する

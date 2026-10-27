@@ -51,21 +51,72 @@ end
 
 desc 'memo cliが成功するかテストする'
 task :e2e do
-  sh 'bundle exec exe/memo > /dev/null'
-  sh 'bundle exec exe/memo ls > /dev/null'
-  sh 'bundle exec exe/memo read 2>&1 > /dev/null || true'
-  sh 'bundle exec exe/memo read ls > /dev/null'
-  sh 'bundle exec exe/memo read does_not_exist_files 2>&1 > /dev/null || true'
-  sh 'bundle exec exe/memo search 2>&1 > /dev/null || true'
-  sh 'bundle exec exe/memo search ls > /dev/null'
-  sh 'bundle exec exe/memo search does_not_exist_search_strings 2>&1 > /dev/null || true'
-  sh 'bundle exec exe/memo tag 2>&1 > /dev/null || true'
-  sh 'bundle exec exe/memo tag CLI > /dev/null'
-  sh 'bundle exec exe/memo tag does_not_exist_search_strings 2>&1 > /dev/null || true'
-  sh 'bundle exec exe/memo dirs > /dev/null'
-  sh 'bundle exec exe/memo dirs foo 2>&1 > /dev/null || true'
-  sh 'bundle exec exe/memo tags > /dev/null'
-  sh 'bundle exec exe/memo tags -n > /dev/null'
-  sh 'bundle exec exe/memo list > /dev/null'
-  sh 'bundle exec exe/memo list cli/ > /dev/null'
+  sh 'bundle exec rake e2e:read'
+  sh 'bundle exec rake e2e:search'
+  sh 'bundle exec rake e2e:tag'
+  sh 'bundle exec rake e2e:list'
+  sh 'bundle exec rake e2e:dirs'
+  sh 'bundle exec rake e2e:tags'
+  sh 'bundle exec rake e2e:help'
+  sh 'bundle exec rake e2e:version'
+end
+
+namespace :e2e do
+  desc 'memo readコマンドのテスト'
+  task :read do
+    sh 'bundle exec exe/memo ls > /dev/null'
+    sh 'bundle exec exe/memo read 2>&1 > /dev/null || true'
+    sh 'bundle exec exe/memo read ls > /dev/null'
+    sh 'bundle exec exe/memo read does_not_exist_files 2>&1 > /dev/null || true'
+  end
+
+  desc 'memo searchコマンドのテスト'
+  task :search do
+    sh 'bundle exec exe/memo search 2>&1 > /dev/null || true'
+    sh 'bundle exec exe/memo search ls > /dev/null'
+    sh 'bundle exec exe/memo search does_not_exist_search_strings 2>&1 > /dev/null || true'
+  end
+
+  desc 'memo tagコマンドのテスト'
+  task :tag do
+    sh 'bundle exec exe/memo tag 2>&1 > /dev/null || true'
+    sh 'bundle exec exe/memo tag CLI > /dev/null'
+    sh 'bundle exec exe/memo tag does_not_exist_search_strings 2>&1 > /dev/null || true'
+  end
+
+  desc 'memo listコマンドのテスト'
+  task :list do
+    sh 'bundle exec exe/memo list > /dev/null'
+    sh 'bundle exec exe/memo list cli/ > /dev/null'
+    sh 'bundle exec exe/memo list cli > /dev/null'
+    sh 'bundle exec exe/memo list does_not_exist_directory 2>&1 > /dev/null || true'
+  end
+
+  desc 'memo dirsコマンドのテスト'
+  task :dirs do
+    sh 'bundle exec exe/memo dirs > /dev/null'
+    sh 'bundle exec exe/memo dirs foo 2>&1 > /dev/null || true'
+  end
+
+  desc 'memo tagsコマンドのテスト'
+  task :tags do
+    sh 'bundle exec exe/memo tags > /dev/null'
+    sh 'bundle exec exe/memo tags -n > /dev/null'
+    sh 'bundle exec exe/memo tags -e > /dev/null'
+    sh 'bundle exec exe/memo tags -c > /dev/null'
+    sh 'bundle exec exe/memo tags foo 2>&1 > /dev/null || true'
+  end
+
+  desc 'memo helpコマンドのテスト'
+  task :help do
+    sh 'bundle exec exe/memo > /dev/null'
+    sh 'bundle exec exe/memo help > /dev/null'
+    sh 'bundle exec exe/memo help tags > /dev/null'
+  end
+
+  desc 'memo versionコマンドのテスト'
+  task :version do
+    sh 'bundle exec exe/memo version > /dev/null'
+    sh 'bundle exec exe/memo -V > /dev/null'
+  end
 end
