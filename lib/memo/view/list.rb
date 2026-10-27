@@ -13,6 +13,9 @@ module Memo
 
       private
 
+      # TODO: -d/--duplicateと-c/--countの場合も作成する
+      #  -d: 重複しているファイル名を出力する
+      #  -c: ディレクトリごとのファイルについて、ファイルの数も出力する
       def execute(word)
         return all_list_to_view if word == true
 
@@ -54,11 +57,13 @@ module Memo
 
       # memo listが入力されたときに、all_listを色付けして返すメソッド
       def all_list_to_view
-        all_list.map do |key, dbl_arr|
+        result = all_list.map do |key, dbl_arr|
           [Rainbow(key).color(DIR_COLOR_MAIN)].concat(dbl_arr.map do |arr|
             [Rainbow(arr[0]).color(DIR_COLOR_SUB), arr[1].join(SPACE), "\n"]
           end)
-        end
+        end.flatten
+
+        remove_last_element(result)
       end
 
       # 対象ディレクトリがキーで、二重配列の最初の要素に親ディレクトリ、最後の要素にファイル名を入れたものを返す
@@ -82,6 +87,11 @@ module Memo
               file_seed[:filename]
             end
           end
+      end
+
+      def remove_last_element(arr)
+        arr.pop
+        arr
       end
     end
   end

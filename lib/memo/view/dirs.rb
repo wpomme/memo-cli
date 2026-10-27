@@ -14,10 +14,23 @@ module Memo
       private
 
       def execute
-        @directory_loader.relative_path_hash.transform_values { |paths| paths.join("\n") }
-          .map do |key, value|
-            [Rainbow("#{key}:").color(DIR_COLOR_MAIN)].push(value).push('')
-          end
+        directory_seeds_hash = @directory_loader.directory_seeds_hash
+
+        result = directory_seeds_hash.keys.map do |target_dir|
+          [Rainbow(target_dir).color(DIR_COLOR_MAIN)].push(
+            directory_seeds_hash[target_dir].reject do |rel_path|
+              rel_path == './'
+            end
+              .join("\n")
+          ).push("\n")
+        end.flatten
+
+        remove_last_element(result)
+      end
+
+      def remove_last_element(arr)
+        arr.pop
+        arr
       end
     end
   end

@@ -11,13 +11,13 @@ module Memo
     #   @return [String] memoディレクトリの中にあるファイルの絶対パス。メモを読み取るために使う
     # @!attribute [r] parent_dir
     #   @return [String] そのファイルが格納されているディレクトリ
-    # @!attribute [r] parent_rel_path
+    # @!attribute [r] relative_path
     #   @return [String] 対象のディレクトリからそのファイルへのパス
     # @!attribute [r] filename
     #   @return [String] 対象のファイルのファイル名
     # @!attribute [r] tags
     #   @return [Array<String>] 対象のファイルのフロントマター部分のtagsの値
-    FileSeed = Struct.new(:target_dir, :absolute_path, :parent_directory, :parent_rel_path, :filename, :file_content, :tags) do
+    FileSeed = Struct.new(:target_dir, :absolute_path, :parent_directory, :relative_path, :filename, :file_content, :tags) do
       def initialize(...)
         super
         freeze
@@ -26,7 +26,7 @@ module Memo
 
     # FileSeedを使うならこちも使う
     # NOTE: target_dir => target_directory, parent_rel_path => relative_pathに変更したい
-    DirectorySeed = Struct.new(:target_dir, :absolute_path, :parent_rel_path) do
+    DirectorySeed = Struct.new(:target_dir, :absolute_path, :relative_path) do
       def initialize(...)
         super
         freeze

@@ -2,6 +2,11 @@
 
 module Memo
   class DirectoryLoader
+    def initialize(target_dirs: Memo::Config.target_dirs)
+      @target_dirs = target_dirs
+    end
+
+    # Database::Controller::Directoryのテストコードで使用する
     def directory_path_size
       @directory_path_size ||= absolute_paths.size
     end
@@ -11,45 +16,18 @@ module Memo
     #
     # @return [Array<String>>]
     def absolute_paths
-      @absolute_paths ||= relative_path_hash.flat_map do |target_dir, dirs|
-        [target_dir].concat(
-          dirs.map do |dir|
-            File.join(target_dir, dir)
-          end
-        )
-      end
-        .uniq
-    end
-
-    # キーが設定ファイルで定義されたディレクトリで、そのキーの中のディレクトリの一覧が値となるハッシュを返す
-    # 値の方の配列に空文字を入れる。Directoryテーブルのdirectory_pathが空文字の場合は、Configディレクトリを表すため
-    #
-    # @return [Hash<String, Array<String>>]
-    def relative_path_hash(target_dirs = Memo::Config.target_dirs)
-      @relative_path_hash ||= directory_tree(target_dirs).transform_values do |dir_node|
-        dir_node.keys.flat_map do |key|
-          dir_node[key]
+      @absolute_paths ||= directory_seeds_hash.keys.map do |target_dir|
+        directory_seeds_hash[target_dir].map do |rel_path|
+          File.join(target_dir, rel_path == './' ? '' : rel_path)
         end
-          .uniq << ''
-      end
-    end
-
-    # ディレクトリの階層関係をハッシュで表す
-    #
-    # @return [Hash<String, Hash>]
-    def directory_tree(target_dirs = Memo::Config.target_dirs)
-      @directory_tree ||= target_dirs.to_h do |target_dir|
-        [target_dir, Dir.glob('**/*/', base: target_dir).group_by do |dir|
-          File.dirname(dir) << '/'
-        end]
-      end
+      end.flatten
     end
 
     # 対象のディレクトリをキーとし、その中に入っているディレクトリの一覧を値とするハッシュを返す
     #
     # @return[Hash<String, Array<String>>]
-    def directory_seeds_hash(target_dirs = Memo::Config.target_dirs)
-      @directory_seeds_hash ||= target_dirs.to_h do |target_dir|
+    def directory_seeds_hash
+      @directory_seeds_hash ||= @target_dirs.to_h do |target_dir|
         [target_dir, ['./'].concat(Dir.glob('**/*/', base: target_dir))]
       end
     end

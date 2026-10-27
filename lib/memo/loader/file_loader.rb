@@ -113,6 +113,35 @@ module Memo
       @tag_size_by_filename ||= absolute_filename_to_tags.transform_values(&:size)
     end
 
+    # 重複したファイル名を持つfile_seedの配列を返す
+    #
+    # @return [Hash<String, Integer>]
+    def duplicated_filenames_seeds
+      file_seeds.filter do |file_seed|
+        filenames.count(file_seed[:filename]) > 1
+      end
+    end
+
+    # 重複したファイル名があれば、次のようなハッシュが返ってくる
+    # {"array" => 2, "builtin" => 2, "command" => 2, "diff" => 2, "mise" => 2}
+    #
+    # @return [Hash<String, Integer>]
+    def duplicated_filenames_hash
+      filenames.filter do |filename|
+        filenames.count(filename) > 1
+      end.tally
+    end
+
+    # file_seedからファイル名の配列を作成したもの
+    # このままだとファイル名の重複などがあり、Viewで使用するなら、sortやuniqを行う必要がある
+    #
+    # @return [Array<String>]
+    def filenames_from_seeds
+      @filenames_from_seeds ||= file_seeds.map do |seed|
+        seed[:filename]
+      end
+    end
+
     # 全てのタグの一覧。ソートしていない
     #
     # [Array<String>]

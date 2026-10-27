@@ -56,9 +56,16 @@ module Memo
       # @param color_symbol [Symbol] キーの色付けを指定する
       # @return [Array<String>]
       def seeds_hash_to_view(seeds_hash, color_symbol)
-        seeds_hash.inject([]) do |result, (key, files)|
+        result = seeds_hash.inject([]) do |result, (key, files)|
           result << Rainbow("#{key}: #{files.size}").color(color_symbol) << files.join(SPACE) << "\n"
         end
+
+        remove_last_element(result)
+      end
+
+      def remove_last_element(arr)
+        arr.pop
+        arr
       end
     end
   end
