@@ -10,7 +10,7 @@
 - memo help [sub_command]の作成: コマンドごとのヘルプがほしい
 - モックデータからテストコードの検証を行うようにする
 - Loaderに値を入れる場面で、FileSeed, DirectorySeedを使いたい
-    - Structにメソッドを持たせることで、View以下のメソッドが簡潔になる
+    - View以下のロジック、データ構造の整理が必要
 - Serviceのselect_promptをControllerに持って行っても良いかも
 
 

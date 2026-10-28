@@ -3,6 +3,8 @@
 module Memo
   module View
     class List
+      include Memo::View
+
       def run(word)
         execute(word)
       end
@@ -40,7 +42,7 @@ module Memo
       # memo list [word]が入力されたときに、look_up_from_all_listに色付けをして返すメソッド
       def list_by_dir_to_view
         arr = look_up_from_all_list.flatten
-        [Rainbow(arr.shift).color(DIR_COLOR_MAIN), Rainbow(arr.shift).color(DIR_COLOR_SUB)] << arr.join(SPACE)
+        [dir_color_main(arr.shift), dir_color_sub(arr.shift)] << arr.join(SPACE)
       end
 
       # wordが入力された場合、ファイルごとの親ディレクトリと名前が一致すれば値を返す
@@ -58,8 +60,8 @@ module Memo
       # memo listが入力されたときに、all_listを色付けして返すメソッド
       def all_list_to_view
         result = all_list.map do |key, dbl_arr|
-          [Rainbow(key).color(DIR_COLOR_MAIN)].concat(dbl_arr.map do |arr|
-            [Rainbow(arr[0]).color(DIR_COLOR_SUB), arr[1].join(SPACE), "\n"]
+          [dir_color_main(key)].concat(dbl_arr.map do |arr|
+            [dir_color_sub(arr[0]), arr[1].join(SPACE), "\n"]
           end)
         end.flatten
 
@@ -82,16 +84,11 @@ module Memo
       # {[target_dir, parent_rel_path] => [files]}
       def grouped_file_seeds
         @file_loader.file_seeds_light.group_by { |file_seed| [file_seed[:target_dir], file_seed[:parent_rel_path]] }
-          .transform_values do |values|
-            values.map do |file_seed|
+          .transform_values do |grouped_seeds|
+            grouped_seeds.map do |file_seed|
               file_seed[:filename]
             end
           end
-      end
-
-      def remove_last_element(arr)
-        arr.pop
-        arr
       end
     end
   end

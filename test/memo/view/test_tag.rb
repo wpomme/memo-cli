@@ -3,6 +3,8 @@
 require_relative '../../helper'
 
 class TestViewTag < Minitest::Test
+  include Memo::Message
+
   describe 'View::Tag' do
     include MemoLifecycleHooks
 
@@ -30,7 +32,7 @@ class TestViewTag < Minitest::Test
 
         actual = @view.run(search_word)
 
-        expected = Memo::Message::NO_TAGS.sub('tag', search_word) << tag_list.join(' ')
+        expected = NO_TAGS.sub('tag', search_word) << tag_list.join(' ')
 
         _(actual).must_equal(expected)
       end

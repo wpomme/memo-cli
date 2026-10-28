@@ -3,6 +3,8 @@
 module Memo
   module View
     class Dirs
+      include Memo::View
+
       def run
         execute
       end
@@ -17,7 +19,7 @@ module Memo
         directory_seeds_hash = @directory_loader.directory_seeds_hash
 
         result = directory_seeds_hash.keys.map do |target_dir|
-          [Rainbow(target_dir).color(DIR_COLOR_MAIN)].push(
+          [dir_color_main(target_dir)].push(
             directory_seeds_hash[target_dir].reject do |rel_path|
               rel_path == './'
             end
@@ -26,11 +28,6 @@ module Memo
         end.flatten
 
         remove_last_element(result)
-      end
-
-      def remove_last_element(arr)
-        arr.pop
-        arr
       end
     end
   end

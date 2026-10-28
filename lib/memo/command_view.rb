@@ -2,34 +2,36 @@
 
 module Memo
   class CommandView
+    include Memo::View
+
     def read(word:)
       puts read_file_by_found_result(word)
     end
 
     def search(word:)
-      puts Memo::View::Search.new.run(word)
+      puts Search.new.run(word)
     end
 
     def tag(word:)
-      puts Memo::View::Tag.new.run(word)
+      puts Tag.new.run(word)
     end
 
     def dirs(_)
-      puts Memo::View::Dirs.new.run
+      puts Dirs.new.run
     end
 
     def list(word: '')
-      puts Memo::View::List.new.run(word)
+      puts List.new.run(word)
     end
 
     def tags(word: '')
-      puts Memo::View::Tags.new.run(word)
+      puts Tags.new.run(word)
     end
 
     private
 
     def read_file_by_found_result(word)
-      found = Memo::View::Read.new.run(word)
+      found = Read.new.run(word)
       size = found.size
 
       return Memo::Message::NO_MEMOS_WEWE_FOUND.sub('word', word) if size.zero?

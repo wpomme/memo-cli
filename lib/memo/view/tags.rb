@@ -3,6 +3,8 @@
 module Memo
   module View
     class Tags
+      include Memo::View
+
       def run(option)
         execute(option)
       end
@@ -61,11 +63,6 @@ module Memo
         end
 
         remove_last_element(result)
-      end
-
-      def remove_last_element(arr)
-        arr.pop
-        arr
       end
     end
   end

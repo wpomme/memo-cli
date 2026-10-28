@@ -12,6 +12,14 @@ class TestViewList < Minitest::Test
       @file_loader = Memo::FileLoader.new(target_dirs: @test_target_dirs)
     end
 
+    describe 'Listクラス' do
+      it 'ListはMemo::Viewをインクルードしていること' do
+        actual = Memo::View::List.include?(Memo::View)
+
+        _(actual).must_equal(true)
+      end
+    end
+
     describe '#run' do
       it '引数がtrueの場合、対象のディレクトリの配列が返ってくる' do
         actual = @view.run(true)

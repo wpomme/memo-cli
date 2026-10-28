@@ -1,9 +1,26 @@
 # frozen_string_literal: true
 
 class TestSubCommandParser < Minitest::Test
+  include Memo::Message
+  include Memo::HelpMessage
+
   describe '#run' do
     def setup
       @scp = Memo::SubCommandParser.new
+    end
+
+    describe 'SubCommandParserクラス' do
+      it 'SubCommandParserはMemo::Messageをインクルードしていること' do
+        actual = Memo::SubCommandParser.include?(Memo::Message)
+
+        _(actual).must_equal(true)
+      end
+
+      it 'SubCommandParserはMemo::HelpMessageをインクルードしていること' do
+        actual = Memo::SubCommandParser.include?(Memo::HelpMessage)
+
+        _(actual).must_equal(true)
+      end
     end
 
     describe '引数による分類' do
@@ -40,7 +57,7 @@ class TestSubCommandParser < Minitest::Test
               _(exception.status).must_equal(2)
             end
 
-            expected = Memo::Message::NO_GIVEN_ARGS.gsub('CLI', arg)
+            expected = NO_GIVEN_ARGS.gsub('CLI', arg)
 
             _(actual).must_equal(expected)
           end
@@ -73,7 +90,7 @@ class TestSubCommandParser < Minitest::Test
               _(exception.status).must_equal(2)
             end
 
-            expected = Memo::Message::TOO_MANY_ARGS.gsub('CLI', arg)
+            expected = TOO_MANY_ARGS.gsub('CLI', arg)
 
             _(actual).must_equal(expected)
           end
@@ -100,7 +117,7 @@ class TestSubCommandParser < Minitest::Test
             _(exception.status).must_equal(2)
           end
 
-          expected = Memo::Message::TOO_MANY_ARGS.gsub('CLI', 'dirs')
+          expected = TOO_MANY_ARGS.gsub('CLI', 'dirs')
 
           _(actual).must_equal(expected)
         end
@@ -176,7 +193,7 @@ class TestSubCommandParser < Minitest::Test
             _(exception.status).must_equal(2)
           end
 
-          expected = Memo::Message::TOO_MANY_OPTIONS.gsub('CLI', 'tags')
+          expected = TOO_MANY_OPTIONS.gsub('CLI', 'tags')
 
           _(actual).must_equal(expected)
         end
@@ -245,7 +262,7 @@ class TestSubCommandParser < Minitest::Test
             _(exception.status).must_equal(2)
           end
 
-          expected = Memo::Message::TOO_LONG_ARGS
+          expected = TOO_LONG_ARGS
 
           _(actual).must_equal(expected)
         end

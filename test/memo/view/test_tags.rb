@@ -12,6 +12,14 @@ class TestViewTags < Minitest::Test
       @file_loader = Memo::FileLoader.new(target_dirs: @test_target_dirs)
     end
 
+    describe 'Tagsクラス' do
+      it 'TagsはMemo::Viewをインクルードしていること' do
+        actual = Memo::View::Tags.include?(Memo::View)
+
+        _(actual).must_equal(true)
+      end
+    end
+
     describe '#run' do
       it '引数がtrueの場合、タグとそれに紐づいたファイルの一覧を出力する' do
         skip 'TODO: それぞれのタグの数が合うかどうかを確かめること。'

@@ -2,6 +2,7 @@
 
 module Memo
   class SubCommandParser
+    include Memo::Message
     include Memo::HelpMessage
 
     Spec = Data.define(:short, :long, :desc)
@@ -108,11 +109,11 @@ module Memo
       second = argv.first unless argv.nil?
 
       if second == 'tags'
-        puts Memo::HelpMessage::TAGS_DETAIL
+        puts TAGS_DETAIL
       elsif second == 'read'
-        puts Memo::HelpMessage::READ_DETAIL
+        puts READ_DETAIL
       else
-        puts Memo::HelpMessage::GENERAL
+        puts GENERAL
       end
 
       exit 0
@@ -136,11 +137,11 @@ module Memo
       }.freeze
 
       error_message_map = {
-        no_given_args: Message::NO_GIVEN_ARGS.gsub('CLI', dispatch[sub_command_symbol]),
-        too_many_args: Message::TOO_MANY_ARGS.gsub('CLI', dispatch[sub_command_symbol]),
-        too_many_options: Message::TOO_MANY_OPTIONS.gsub('CLI', dispatch[sub_command_symbol]),
-        too_long_args: Message::TOO_LONG_ARGS,
-        unknown_command: Memo::Message::UNKNOWN_COMMAND
+        no_given_args: NO_GIVEN_ARGS.gsub('CLI', dispatch[sub_command_symbol]),
+        too_many_args: TOO_MANY_ARGS.gsub('CLI', dispatch[sub_command_symbol]),
+        too_many_options: TOO_MANY_OPTIONS.gsub('CLI', dispatch[sub_command_symbol]),
+        too_long_args: TOO_LONG_ARGS,
+        unknown_command: UNKNOWN_COMMAND
       }
       puts error_message_map[error_message_symbol]
       exit 2

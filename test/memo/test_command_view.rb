@@ -3,6 +3,8 @@
 require_relative '../helper'
 
 class TestCommandView < Minitest::Test
+  include Memo::Message
+
   describe 'CommandView' do
     def setup
       @command_view = Memo::CommandView.new
@@ -48,7 +50,7 @@ class TestCommandView < Minitest::Test
           @command_view.read(word: word)
         end
 
-        _(out).must_equal(Memo::Message::NO_MEMOS_WEWE_FOUND.sub('word', word) << "\n")
+        _(out).must_equal(NO_MEMOS_WEWE_FOUND.sub('word', word) << "\n")
       end
     end
 
@@ -76,7 +78,7 @@ class TestCommandView < Minitest::Test
           @command_view.search(word: search_word)
         end
 
-        expected = Memo::Message::NO_SEARCH_RESULTS_WERE_FOUND.sub('word', search_word) << "\n"
+        expected = NO_SEARCH_RESULTS_WERE_FOUND.sub('word', search_word) << "\n"
 
         _(out).must_equal(expected)
       end
@@ -107,7 +109,7 @@ class TestCommandView < Minitest::Test
           @command_view.tag(word: search_word)
         end
 
-        expected = Memo::Message::NO_TAGS.sub('tag', search_word) << tag_list.join(' ') << "\n"
+        expected = NO_TAGS.sub('tag', search_word) << tag_list.join(' ') << "\n"
 
         _(out).must_equal(expected)
       end
