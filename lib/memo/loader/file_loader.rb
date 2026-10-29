@@ -77,6 +77,7 @@ module Memo
 
     # file_seedsからfile_contentとtagsを引いたもの
     # => NOTE: load_file_seedsから直接生成できそう
+    # TODO: 削除して、別のメソッドを用意する
     def file_seeds_light
       @file_seeds_light ||= file_seeds.map do |file_seed|
         {

@@ -3,6 +3,9 @@
 module Memo
   module View
     class Search
+      include Memo::Message
+      include Memo::Structure
+
       def run(word)
         execute(word)
       end
@@ -16,7 +19,7 @@ module Memo
       def execute(word)
         search_result = search_file_seed(word)
 
-        return Memo::Message::NO_SEARCH_RESULTS_WERE_FOUND.sub('word', word) if search_result.all?(&:empty?)
+        return NO_SEARCH_RESULTS_WERE_FOUND.sub('word', word) if search_result.all?(&:empty?)
 
         search_result
       end
@@ -29,7 +32,7 @@ module Memo
         @file_loader.file_seeds.filter_map do |file_seed|
           file_seed[:file_content].split("\n").filter_map.with_index(1) do |line, idx|
             path = "./#{File.join(file_seed[:parent_rel_path], file_seed[:filename])}.md"
-            Memo::Structure::SearchLine.new(path: path, line_number: idx, line: line).to_view(word) if line.include?(word)
+            SearchLine.new(path: path, line_number: idx, line: line).to_view(word) if line.include?(word)
           end
         end.reject(&:empty?).flatten
       end

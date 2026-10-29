@@ -2,6 +2,8 @@
 
 module Memo
   module Service
+    include Memo::Message
+
     module_function
 
     # マークダウンファイルについて、yaml形式で書かれたfront matterをパースする
@@ -35,7 +37,7 @@ module Memo
           select_prompt(title: title, choices: choices)
         end
       rescue Interrupt
-        puts Memo::Message::INTERRUPT_PROMPT
+        puts INTERRUPT_PROMPT
         exit 0
       end
     end

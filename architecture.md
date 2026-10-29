@@ -21,3 +21,8 @@
     - Memo CLIのバージョン情報
 
 ## 依存関係
+
+### includeの方針
+- メッセージなど定数については極力includeを使う
+- ServiceのようなModuleについても基本的にincludeを使う
+- Viewなどのクラスは、何回も現れるならinitializeで変数化するため、includeしなくもいい

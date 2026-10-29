@@ -7,11 +7,25 @@
 - setup.rbのto_schemaをmodel/以下に入れたい
 - Database以下の構成
     - setupは1. create/drop tables, 2. Seeder, 3. schemaの三つに分けられる
+    - prepare, serupのところのテストコードを追加する
 - memo help [sub_command]の作成: コマンドごとのヘルプがほしい
 - モックデータからテストコードの検証を行うようにする
+- 各クラスのrunとexecuteを入れ替える。プライベートにするrunは別の名前にする
 - Loaderに値を入れる場面で、FileSeed, DirectorySeedを使いたい
-    - View以下のロジック、データ構造の整理が必要
-- Serviceのselect_promptをControllerに持って行っても良いかも
+- Viewの課題
+    - 共通
+        - group_by, transform_valuesの周りの処理が複雑化している
+        - メソッドチェーン+ネストを減らす
+        - 各メソッドの整理を通じて、ロジック・データ構造・定数の整理を行う
+    - Tags
+        - タグの整列順を統一・整理すること
+    - List
+        - :duplicate, :countを作成する
+    - Read
+        - Serviceのselect_promptをControllerにしたい
+    - dirs
+        - DirectoryLoader#directory_seeds_hashについて、カレントディレクトリの場合はやはり空文字を入れておく
+            - そっちの方がコードが煩雑にならない
 
 
 ## その他やりたいこと

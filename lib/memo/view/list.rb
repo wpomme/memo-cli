@@ -68,27 +68,32 @@ module Memo
         remove_last_element(result)
       end
 
+      # NOTE: 配列となっているキーについて、表示で使いやすいように親ディレクトリの方を値に移動させる
       # 対象ディレクトリがキーで、二重配列の最初の要素に親ディレクトリ、最後の要素にファイル名を入れたものを返す
       #
       # @return [Hash<String, Array<Array<String, Array<String>>>>]
       def all_list
-        grouped_file_seeds.group_by { |(k_arr, _)| k_arr[0] }
-          .transform_values do |values|
-          values.map do |arr|
-            [arr[0].last, arr[1]]
-          end
+        result = {}
+
+        grouped_file_seeds.each_key do |key_arr|
+          filenames = grouped_file_seeds[key_arr]
+          (result[key_arr[0]] ||= []) << [key_arr[1], filenames]
         end
+
+        result
       end
 
+      # NOTE: ファイル名が重複しないように、対象ディレクトリと親ディレクトリの両方でキーを作成する必要がある
       # 対象ディレクトリと親ディレクトリの配列がキーで、ファイル名の配列が値となるハッシュを返す
       # {[target_dir, parent_rel_path] => [files]}
       def grouped_file_seeds
-        @file_loader.file_seeds_light.group_by { |file_seed| [file_seed[:target_dir], file_seed[:parent_rel_path]] }
-          .transform_values do |grouped_seeds|
-            grouped_seeds.map do |file_seed|
-              file_seed[:filename]
-            end
-          end
+        result = {}
+
+        @file_loader.file_seeds_light.each do |file_seed|
+          (result[[file_seed[:target_dir], file_seed[:parent_rel_path]]] ||= []) << file_seed[:filename]
+        end
+
+        result
       end
     end
   end

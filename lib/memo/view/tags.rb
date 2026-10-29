@@ -25,25 +25,38 @@ module Memo
         @file_loader.sorted_tags if option == :name
       end
 
-      def empty_seeds_to_view(file_seeds)
-        grouped = file_seeds.group_by { |file_seed| file_seed[:parent_rel_path] }
-          .transform_values do |values|
-            values.map do |seed|
-              seed[:filename]
-            end
-          end
+      def grouped_empty_seeds(file_seeds)
+        result = {}
 
-        seeds_hash_to_view(grouped, DIR_COLOR_MAIN)
+        file_seeds.each do |file_seed|
+          (result[[file_seed[:target_dir], file_seed[:parent_rel_path]]] ||= []) << file_seed[:filename]
+        end
+
+        result
+      end
+
+      # NOTE: WIP - Refactoring
+      def empty_seeds_to_view(file_seeds)
+        result1 = grouped_empty_seeds(file_seeds)
+
+        result2 = {}
+
+        result1.each_key do |key_arr|
+          filenames = result1[key_arr]
+          (result2[key_arr[0]] ||= []) << [key_arr[1], filenames]
+        end
+
+        nest_hashs_to_view(result2, :green, :cyan)
       end
 
       def nest_hashs_to_view(nest_hash_array, key1_color, key2_color)
         nest_hash_array.keys.map do |key1|
-          [Rainbow(key1).color(key1_color)].concat(
-            nest_hash_array[key1].flat_map do |key2, arr|
-              [Rainbow(key2).color(key2_color)].push(arr.join(SPACE)).push("\n")
-            end
-          )
-        end
+          ret = nest_hash_array[key1].flat_map do |key2, arr|
+            [Rainbow(key2).color(key2_color)].push(arr.join(SPACE)).push("\n")
+          end
+
+          [Rainbow(key1).color(key1_color)].concat(ret)
+        end.flatten
       end
 
       def count_hash_to_view(hash)
