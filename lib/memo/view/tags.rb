@@ -46,10 +46,10 @@ module Memo
           (result2[key_arr[0]] ||= []) << [key_arr[1], filenames]
         end
 
-        nest_hashs_to_view(result2, :green, :cyan)
+        nest_hash_to_view(result2, :green, :cyan)
       end
 
-      def nest_hashs_to_view(nest_hash_array, key1_color, key2_color)
+      def nest_hash_to_view(nest_hash_array, key1_color, key2_color)
         nest_hash_array.keys.map do |key1|
           ret = nest_hash_array[key1].flat_map do |key2, arr|
             [Rainbow(key2).color(key2_color)].push(arr.join(SPACE)).push("\n")

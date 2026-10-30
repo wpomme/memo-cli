@@ -11,6 +11,35 @@ module Memo
       @directory_path_size ||= absolute_paths.size
     end
 
+    def to_relative_dir
+      result = {}
+
+      @target_dirs.each do |target_dir|
+        directory_seeds_hash[target_dir].each do |rel_path|
+          parent_dir = File.join(target_dir, rel_path == './' ? '' : rel_path)
+          result[parent_dir] = rel_path
+        end
+      end
+
+      result
+    end
+
+    # 走査対象のディレクトリがキーで、そのディレクトリが属する対象のディレクトリが値となるハッシュを返す
+    #
+    # @return [Hash<String, String>]
+    def to_target_dir
+      result = {}
+
+      @target_dirs.each do |target_dir|
+        directory_seeds_hash[target_dir].map do |rel_path|
+          parent_dir = File.join(target_dir, rel_path == './' ? '' : rel_path)
+          result[parent_dir] = target_dir
+        end
+      end
+
+      result
+    end
+
     # 対象のディレクトリについて、その中のディレクトリの一覧を配列で返す
     # Configで設定されたディレクトリも含む
     #

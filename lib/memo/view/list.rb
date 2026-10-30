@@ -10,7 +10,9 @@ module Memo
       end
 
       def initialize(target_dirs: Memo::Config.target_dirs)
+        @target_dirs = target_dirs
         @file_loader = Memo::FileLoader.new(target_dirs: target_dirs)
+        @directory_loader = Memo::DirectoryLoader.new(target_dirs: target_dirs)
       end
 
       private
@@ -21,76 +23,100 @@ module Memo
       def execute(word)
         return all_list_to_view if word == true
 
-        @word = normalize(word)
+        list_by_dir_to_view(word)
+      end
+
+      def list_by_dir_to_view(word)
+        normalized = normalize(word)
+
+        found = look_up_from_dirs(normalized)
 
         # そのようなディレクトリ名がないというメッセージを表示するのが適切
-        return if look_up_from_all_list.empty?
+        return if found.nil?
 
-        list_by_dir_to_view
+        filtered = filter_all_list(found)
+
+        list_to_view_by_filtered(filtered)
+      end
+
+      # memo list [word]が入力されたときに、look_up_from_all_listに色付けをして返すメソッド
+      def list_to_view_by_filtered(filtered)
+        to_relative_dir = @directory_loader.to_relative_dir
+
+        [dir_color_main(filtered.shift), dir_color_sub(to_relative_dir[filtered.shift])] << filtered.join(SPACE)
+      end
+
+      # wordに従って見つかったディレクトリの文字列を引数にとり、
+      def filter_all_list(found)
+        all_list.filter_map do |target_dir, values|
+          dir_and_files = values.find do |arr|
+            arr[0] == found
+          end
+          [target_dir, dir_and_files]
+        end
+          .flatten
+      end
+
+      # memo list [word]が入力されたとき、まずwordに該当するディレクトリが存在するかどうかをチェックする
+      # wordが絶対パスか相対パスでマッチすれば、そのディレクトリの絶対パスを返す
+      # なければnilを返す
+      #
+      # @return [String | nil]
+      def look_up_from_dirs(word)
+        found = @directory_loader.to_relative_dir.find do |k, v|
+          k == word || v == word
+        end
+
+        return found[0] unless found.nil?
+
+        nil
       end
 
       # 検索文字列の名寄せを行う
-      # また、引数なしの場合はbooleanのtrueが来るので、そちらの対応も行う
       def normalize(word)
-        return true if word == true
-
         return "#{word}/" unless word.end_with?('/')
 
         word
       end
 
-      # memo list [word]が入力されたときに、look_up_from_all_listに色付けをして返すメソッド
-      def list_by_dir_to_view
-        arr = look_up_from_all_list.flatten
-        [dir_color_main(arr.shift), dir_color_sub(arr.shift)] << arr.join(SPACE)
-      end
-
-      # wordが入力された場合、ファイルごとの親ディレクトリと名前が一致すれば値を返す
-      # 一致しなければ空の配列を返す
-      #
-      def look_up_from_all_list
-        all_list.filter_map do |key, values|
-          files = values.filter do |dir_and_files|
-            dir_and_files[0] == @word
-          end
-          [key, files] unless files.empty?
-        end
-      end
-
       # memo listが入力されたときに、all_listを色付けして返すメソッド
       def all_list_to_view
-        result = all_list.map do |key, dbl_arr|
-          [dir_color_main(key)].concat(dbl_arr.map do |arr|
-            [dir_color_sub(arr[0]), arr[1].join(SPACE), "\n"]
-          end)
+        to_relative_dir = @directory_loader.to_relative_dir
+
+        result = all_list.map do |key, dir_and_files|
+          colored = dir_and_files.map do |(dir, files)|
+            [dir_color_sub(to_relative_dir[dir]), files.join(SPACE), "\n"]
+          end
+
+          [dir_color_main(key)].concat(colored)
         end.flatten
 
         remove_last_element(result)
       end
 
-      # NOTE: 配列となっているキーについて、表示で使いやすいように親ディレクトリの方を値に移動させる
-      # 対象ディレクトリがキーで、二重配列の最初の要素に親ディレクトリ、最後の要素にファイル名を入れたものを返す
+      # memo listコマンドが入力された場合の、描画のためのデータを作成する
+      # 対象ディレクトリがキーで、値については配列を使う
+      # 配列の第一引数が、ファイル名の親ディレクトリで、第二引数がファイル名一覧の配列
       #
-      # @return [Hash<String, Array<Array<String, Array<String>>>>]
+      # @return [Hash<String, Array<String, Array<String>>>]
       def all_list
         result = {}
+        to_target_dir = @directory_loader.to_target_dir
 
-        grouped_file_seeds.each_key do |key_arr|
-          filenames = grouped_file_seeds[key_arr]
-          (result[key_arr[0]] ||= []) << [key_arr[1], filenames]
+        parent_directory_to_filenames.each do |parent_dir, filenames|
+          target_dir = to_target_dir[parent_dir]
+          (result[target_dir] ||= []) << [parent_dir, filenames]
         end
 
         result
       end
 
-      # NOTE: ファイル名が重複しないように、対象ディレクトリと親ディレクトリの両方でキーを作成する必要がある
-      # 対象ディレクトリと親ディレクトリの配列がキーで、ファイル名の配列が値となるハッシュを返す
-      # {[target_dir, parent_rel_path] => [files]}
-      def grouped_file_seeds
+      # 親ディレクトリがキーで、その中のファイル名の一覧が配列となるハッシュ
+      def parent_directory_to_filenames
         result = {}
 
-        @file_loader.file_seeds_light.each do |file_seed|
-          (result[[file_seed[:target_dir], file_seed[:parent_rel_path]]] ||= []) << file_seed[:filename]
+        @file_loader.file_seeds.each do |file_seed|
+          (result[file_seed[:parent_directory]] ||= []) << file_seed[:filename]
         end
 
         result

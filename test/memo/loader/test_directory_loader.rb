@@ -11,6 +11,14 @@ class TestService < Minitest::Test
       @directory_loader = Memo::DirectoryLoader.new(target_dirs: @test_target_dirs)
     end
 
+    # describe("aaa") do
+    #   it ('bbb') do
+    #     actual = @directory_loader.to_relative_dir
+    #
+    #     _(actual).must_equal('')
+    #   end
+    # end
+
     describe('#absolute_paths') do
       it('configで設定されたディレクトリも含むこと') do
         actual = @test_target_dirs.all? do |target_dir|
