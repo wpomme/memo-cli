@@ -18,6 +18,11 @@ namespace :test do
   end
 end
 
+desc 'ソースコードのメトリクスを計測する'
+task :metrics do
+  sh 'bundle exec rubocop -c .rubocop.metrics.yml -a lib/ test/'
+end
+
 desc 'rake rubocop -aを実行する'
 task :lint do
   sh 'bundle exec rubocop -a lib/ test/ playground/*.rb Rakefile'

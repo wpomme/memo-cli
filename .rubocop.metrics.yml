@@ -1,0 +1,10 @@
+inherit_from:
+  - .rubocop.yml
+
+Metrics:
+  Enabled: true
+
+# テストコードのdescribeの中は、ある程度コードが長くなっても構わない
+Metrics/BlockLength:
+  Exclude:
+    - 'test/**/*'
