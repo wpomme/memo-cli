@@ -21,7 +21,7 @@ class TestViewTag < Minitest::Test
         # タグの文字列が入っている配列の方を取得して、スペースでsplitしてsizeを取る
         actual = @view.run(search_word).last.split.size
 
-        expected = @file_loader.tag_files_size[search_word]
+        expected = @file_loader.tag_files_hash.transform_values(&:size)[search_word]
 
         _(actual).must_equal(expected)
       end

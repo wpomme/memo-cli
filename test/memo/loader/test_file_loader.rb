@@ -32,11 +32,11 @@ class TestFileLoader < Minitest::Test
       end
     end
 
-    describe('#tag_file_size, #tag_files_hash') do
+    describe('#tag_files_hash') do
       it('要素数がモックデータと同じであること') do
         target_tag_name = 'CLI'
 
-        actual = @file_loader.tag_files_size[target_tag_name]
+        actual = @file_loader.tag_files_hash.transform_values(&:size)[target_tag_name]
 
         expected = Memo::MockSeed::TEST_MOCK_DATA_SEED.filter do |seed|
           seed[:tags].include?(target_tag_name)
