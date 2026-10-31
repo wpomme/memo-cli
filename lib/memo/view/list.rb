@@ -13,6 +13,7 @@ module Memo
         @target_dirs = target_dirs
         @file_loader = Memo::FileLoader.new(target_dirs: target_dirs)
         @directory_loader = Memo::DirectoryLoader.new(target_dirs: target_dirs)
+        @to_relative_dir = @directory_loader.to_relative_dir
       end
 
       private
@@ -41,9 +42,7 @@ module Memo
 
       # memo list [word]が入力されたときに、look_up_from_all_listに色付けをして返すメソッド
       def list_to_view_by_filtered(filtered)
-        to_relative_dir = @directory_loader.to_relative_dir
-
-        [dir_color_main(filtered.shift), dir_color_sub(to_relative_dir[filtered.shift])] << filtered.join(SPACE)
+        [dir_color_main(filtered.shift), dir_color_sub(@to_relative_dir[filtered.shift])] << filtered.join(SPACE)
       end
 
       # wordに従って見つかったディレクトリの文字列を引数にとり、
@@ -63,7 +62,7 @@ module Memo
       #
       # @return [String | nil]
       def look_up_from_dirs(word)
-        found = @directory_loader.to_relative_dir.find do |k, v|
+        found = @to_relative_dir.find do |k, v|
           k == word || v == word
         end
 
@@ -81,11 +80,9 @@ module Memo
 
       # memo listが入力されたときに、all_listを色付けして返すメソッド
       def all_list_to_view
-        to_relative_dir = @directory_loader.to_relative_dir
-
         result = all_list.map do |key, dir_and_files|
           colored = dir_and_files.map do |(dir, files)|
-            [dir_color_sub(to_relative_dir[dir]), files.join(SPACE), "\n"]
+            [dir_color_sub(@to_relative_dir[dir]), files.join(SPACE), "\n"]
           end
 
           [dir_color_main(key)].concat(colored)
@@ -101,10 +98,9 @@ module Memo
       # @return [Hash<String, Array<String, Array<String>>>]
       def all_list
         result = {}
-        to_target_dir = @directory_loader.to_target_dir
 
         parent_directory_to_filenames.each do |parent_dir, filenames|
-          target_dir = to_target_dir[parent_dir]
+          target_dir = @directory_loader.to_target_dir[parent_dir]
           (result[target_dir] ||= []) << [parent_dir, filenames]
         end
 

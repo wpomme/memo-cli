@@ -53,10 +53,8 @@ module Memo
     def parse_tags_command(sym: :tags, argv: nil)
       parsed = {}
 
-      specs = tags_spec_list
-
       OptionParser.new do |opt|
-        specs.each do |spec|
+        tags_spec_list.each do |spec|
           opt.on(spec.short, spec.long, spec.desc)
         end
       end
@@ -64,9 +62,7 @@ module Memo
 
       to_error_message(:too_many_options, :tags) if parsed.size > 1
 
-      value = parsed.empty? || parsed.keys[0]
-
-      { sym => value }
+      { sym => parsed.empty? || parsed.keys[0] }
     end
 
     def tags_spec_list
@@ -127,19 +123,10 @@ module Memo
     # end
 
     def to_error_message(error_message_symbol, sub_command_symbol)
-      dispatch = {
-        read: 'read',
-        search: 'search',
-        dirs: 'dirs',
-        list: 'list',
-        tag: 'tag',
-        tags: 'tags'
-      }.freeze
-
       error_message_map = {
-        no_given_args: NO_GIVEN_ARGS.gsub('CLI', dispatch[sub_command_symbol]),
-        too_many_args: TOO_MANY_ARGS.gsub('CLI', dispatch[sub_command_symbol]),
-        too_many_options: TOO_MANY_OPTIONS.gsub('CLI', dispatch[sub_command_symbol]),
+        no_given_args: NO_GIVEN_ARGS.gsub('CLI', sub_command_symbol.to_s),
+        too_many_args: TOO_MANY_ARGS.gsub('CLI', sub_command_symbol.to_s),
+        too_many_options: TOO_MANY_OPTIONS.gsub('CLI', sub_command_symbol.to_s),
         too_long_args: TOO_LONG_ARGS,
         unknown_command: UNKNOWN_COMMAND
       }

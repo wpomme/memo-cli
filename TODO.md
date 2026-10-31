@@ -11,6 +11,7 @@
 - memo help [sub_command]の作成: コマンドごとのヘルプがほしい
 - モックデータからテストコードの検証を行うようにする
 - 各クラスのrunとexecuteを入れ替える。プライベートにするrunは別の名前にする
+- rubocopのメトリクスによるリファクタリング
 - Loaderに値を入れる場面で、FileSeed, DirectorySeedを使いたい
 - Viewの課題
     - 共通

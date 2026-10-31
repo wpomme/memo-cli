@@ -159,25 +159,28 @@ module Memo
           next if ['README.md'].include?(File.basename(rel_path))
 
           absolute_path = File.join(target_dir, rel_path)
-          rel_dirname = File.dirname(rel_path)
           file_content = File.readlines(absolute_path).join
 
           # tagsのための処理
-          # add_file_path_tags_hash(absolute_path, file_content)
-          front_matter = Memo::Service.parse_yaml_front_matter(file_content)
-          tags = front_matter['tags'].nil? ? [] : front_matter['tags']
+          tags = get_tags_from_front_matter(file_content)
 
           {
             target_dir: target_dir,
             absolute_path: absolute_path,
             parent_directory: File.dirname(absolute_path) << '/',
-            parent_rel_path: rel_dirname << '/',
+            parent_rel_path: File.dirname(rel_path) << '/',
             filename: File.basename(absolute_path, '.md'),
             file_content: file_content,
             tags: tags
           }
         end
       end
+    end
+
+    # フロントマターからtagsの値を返す
+    def get_tags_from_front_matter(file_content)
+      front_matter = Memo::Service.parse_yaml_front_matter(file_content)
+      front_matter['tags'].nil? ? [] : front_matter['tags']
     end
   end
 end
