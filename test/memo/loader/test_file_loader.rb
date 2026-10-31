@@ -46,18 +46,6 @@ class TestFileLoader < Minitest::Test
       end
     end
 
-    describe('#total_tag_size') do
-      it('要素数がモックデータと同じであること') do
-        actual = @file_loader.total_tag_size
-
-        expected = Memo::MockSeed::TEST_MOCK_DATA_SEED.inject(0) do |result, seed|
-          result + seed[:tags].size
-        end
-
-        _(actual).must_equal(expected)
-      end
-    end
-
     describe('#sorted_tags') do
       it('モックデータからの加工したタグデータと同じ要素・要素数であること') do
         actual = @file_loader.sorted_tags

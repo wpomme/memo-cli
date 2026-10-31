@@ -6,6 +6,7 @@ module Memo
 
     attr_reader :file_seeds
 
+    # TODO: tagについて、tag_list由来とabsolute_filename_to_tags由来のものを整理する
     def initialize(target_dirs: Memo::Config.target_dirs)
       @file_seeds = load_file_seeds(target_dirs).flatten
     end
@@ -23,13 +24,6 @@ module Memo
     # @return [Integer]
     def tag_size
       tag_list.size
-    end
-
-    # 全てのファイルに出現するタグの数について、重複しているものをまとめないで返す
-    #
-    # @return [Integer]
-    def total_tag_size
-      tag_size_by_filename.values.inject(:+)
     end
 
     # 対象ファイルの絶対パスがキーで、そのファイルに付けられているタグの一覧をハッシュで返す
@@ -88,11 +82,6 @@ module Memo
     end
 
     private
-
-    # ファイルごとに付いているタグの数をハッシュで返す
-    def tag_size_by_filename
-      @tag_size_by_filename ||= absolute_filename_to_tags.transform_values(&:size)
-    end
 
     # TODO: View::Listと紐付けする
     # 重複したファイル名を持つfile_seedの配列を返す

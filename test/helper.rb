@@ -22,6 +22,11 @@ module MemoDBTestLifecycleHooks
     # puts "#{name}: #{Sequel::DATABASES.size}" unless Sequel::DATABASES.empty?
     # super
   end
+
+  def total_tag_size
+    tag_size_by_filename = Memo::FileLoader.new.absolute_filename_to_tags.transform_values(&:size)
+    tag_size_by_filename.values.inject(:+)
+  end
 end
 
 module MemoLifecycleHooks

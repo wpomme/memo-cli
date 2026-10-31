@@ -17,7 +17,16 @@
         - テストコード用のtag_sizeなどが整理対象
 - DirectoryLoader
     - DirectorySeedを使う
-- Viewの課題
+- MVCアーキテクチャについて
+    - View => ViewModelとしてMVVMにしてもいいかも
+    - 今のViewをViewModelとするなら、CommandViewをViewとして、このViewをコマンドごとにクラスを作成した方がいい
+        - CommandViewのテストコードが長くなってしまっている
+        - 今のViewが出力のためのデータ処理が大半 => ViewModelの処理が大半
+        - 表示だけをViewに任せるか、色付けもViewに任せるか
+    - LoaderがModelの役割、コマンド、SubCommandParserがControllerの役割
+        - Readのプロンプト部分もコントローラーの役割だと考えられる
+    - Commandが単なるRouterのような役割になっている
+        - 命名の変更を検討しても良さそう
     - 共通
         - メソッドチェーン+ネストを減らす
         - 各メソッドの整理を通じて、ロジック・データ構造・定数の整理を行う
