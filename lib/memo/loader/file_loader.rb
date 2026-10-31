@@ -75,21 +75,6 @@ module Memo
       file_seeds.size
     end
 
-    # file_seedsからfile_contentとtagsを引いたもの
-    # => NOTE: load_file_seedsから直接生成できそう
-    # TODO: 削除して、別のメソッドを用意する
-    def file_seeds_light
-      @file_seeds_light ||= file_seeds.map do |file_seed|
-        {
-          target_dir: file_seed[:target_dir],
-          absolute_path: file_seed[:absolute_path],
-          parent_directory: file_seed[:parent_directory],
-          parent_rel_path: file_seed[:parent_rel_path],
-          filename: file_seed[:filename]
-        }
-      end
-    end
-
     # タグの付いていないファイルのseedを配列で返す
     def file_seeds_without_tags
       file_seeds.filter do |file_seed|

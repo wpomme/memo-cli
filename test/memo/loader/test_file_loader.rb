@@ -12,20 +12,23 @@ class TestFileLoader < Minitest::Test
       @mock_file_size = Memo::MockSeed::TEST_MOCK_DATA_SEED.size
     end
 
-    describe('#file_seeds, #file_seeds_light, #file_list_size') do
+    describe('#file_seeds') do
       it('要素数がモックデータと同じであること') do
-        file_seeds = @file_loader.file_seeds.size
-        file_seeds_light = @file_loader.file_seeds_light.size
-        file_list_size = @file_loader.file_list_size
+        actual = @file_loader.file_seeds.size
 
-        act_size1 = [file_seeds, file_seeds_light].all?(file_list_size)
+        expected = @file_loader.file_list_size
 
-        act_size2 = file_list_size
+        _(actual).must_equal(expected)
+      end
+    end
+
+    describe('#file_list_size') do
+      it('要素数がモックデータと同じであること') do
+        actual = @file_loader.file_list_size
 
         expected = @mock_file_size
 
-        _(act_size1).must_equal(true)
-        _(act_size2).must_equal(expected)
+        _(actual).must_equal(expected)
       end
     end
 
