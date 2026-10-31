@@ -18,7 +18,7 @@ module Memo
       def execute(option)
         return seeds_hash_to_view(@file_loader.tag_files_hash, TAG_COLOR) if option == true
 
-        return count_hash_to_view(@file_loader.sorted_tag_files_size) if option == :count
+        return count_hash_to_view(@file_loader.tags_sorted_by_file_size) if option == :count
 
         return empty_seeds_to_view(@file_loader.file_seeds_without_tags) if option == :empty
 

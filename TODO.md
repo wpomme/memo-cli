@@ -12,10 +12,13 @@
 - モックデータからテストコードの検証を行うようにする
 - 各クラスのrunとexecuteを入れ替える。プライベートにするrunは別の名前にする
 - rubocopのメトリクスによるリファクタリング
-- Loaderに値を入れる場面で、FileSeed, DirectorySeedを使いたい
+- FileLoader
+    - tagに関するメソッドを整理する
+        - テストコード用のtag_sizeなどが整理対象
+- DirectoryLoader
+    - DirectorySeedを使う
 - Viewの課題
     - 共通
-        - group_by, transform_valuesの周りの処理が複雑化している
         - メソッドチェーン+ネストを減らす
         - 各メソッドの整理を通じて、ロジック・データ構造・定数の整理を行う
     - Tags

@@ -2,8 +2,12 @@
 
 module Memo
   class FileLoader
+    include Memo::Structure
+
+    attr_reader :file_seeds
+
     def initialize(target_dirs: Memo::Config.target_dirs)
-      load_file_seeds(target_dirs)
+      @file_seeds = load_file_seeds(target_dirs).flatten
     end
 
     # 全てのタグの一覧をソートし、重複を排除してから、その一覧を返す
@@ -29,6 +33,7 @@ module Memo
     end
 
     # 対象ファイルの絶対パスがキーで、そのファイルに付けられているタグの一覧をハッシュで返す
+    # Database::Setup#seedsに必要
     #
     # @return [Hash<String, Array<String>>]
     def absolute_filename_to_tags
@@ -40,8 +45,8 @@ module Memo
     # タグの付いている数が多いものから順に並べる
     #
     # @return [Array<Array<String, Integer>>]
-    def sorted_tag_files_size
-      @sorted_tag_files_size ||= tag_files_size.to_a.sort do |a, b|
+    def tags_sorted_by_file_size
+      @tags_sorted_by_file_size ||= tag_files_size.to_a.sort do |a, b|
         b[1] <=> a[1]
       end
     end
@@ -68,13 +73,6 @@ module Memo
       end
     end
 
-    # 対象となるファイルの総数を返す
-    #
-    # @return [Integer]
-    def file_list_size
-      file_seeds.size
-    end
-
     # タグの付いていないファイルのseedを配列で返す
     def file_seeds_without_tags
       file_seeds.filter do |file_seed|
@@ -82,14 +80,11 @@ module Memo
       end
     end
 
-    # 対象のディレクトリの中にあるファイルの情報を全て保存したもの
+    # 対象となるファイルの総数を返す
     #
-    # FileSeed = {
-    #   target_dir, absolute_path, parent_directory, parent_rel_path, filename, file_content, tags,
-    # }
-    # @return [Array<FileSeed>]
-    def file_seeds
-      @file_seeds ||= @load_file_seeds.flatten
+    # @return [Integer]
+    def file_list_size
+      file_seeds.size
     end
 
     private
@@ -99,6 +94,7 @@ module Memo
       @tag_size_by_filename ||= absolute_filename_to_tags.transform_values(&:size)
     end
 
+    # TODO: View::Listと紐付けする
     # 重複したファイル名を持つfile_seedの配列を返す
     #
     # @return [Hash<String, Integer>]
@@ -108,6 +104,7 @@ module Memo
       end
     end
 
+    # TODO: View::Listと紐付けする
     # 重複したファイル名があれば、次のようなハッシュが返ってくる
     # {"array" => 2, "builtin" => 2, "command" => 2, "diff" => 2, "mise" => 2}
     #
@@ -118,21 +115,13 @@ module Memo
       end.tally
     end
 
-    # file_seedからファイル名の配列を作成したもの
-    # このままだとファイル名の重複などがあり、Viewで使用するなら、sortやuniqを行う必要がある
-    #
-    # @return [Array<String>]
-    def filenames_from_seeds
-      @filenames_from_seeds ||= file_seeds.map do |seed|
-        seed[:filename]
-      end
-    end
-
     # 全てのタグの一覧。ソートしていない
     #
     # [Array<String>]
     def tag_list
-      @tag_list ||= absolute_filename_to_tags.values.flatten.uniq
+      @tag_list ||= file_seeds.map do |file_seed|
+        file_seed[:tags]
+      end.flatten.uniq
     end
 
     # 対象のディレクトリ内のファイルを読み込んで、DBに保存するためのfile_seeds_hashを作成する
@@ -146,20 +135,9 @@ module Memo
           absolute_path = File.join(target_dir, rel_path)
           file_content = File.readlines(absolute_path).join
 
-          # tagsのための処理
           tags = get_tags_from_file_content(file_content)
 
-          # Structure::FileSeed.create(target_dir, absolute_path, rel_path, file_content, tags)
-
-          {
-            target_dir: target_dir,
-            absolute_path: absolute_path,
-            parent_directory: File.dirname(absolute_path) << '/',
-            parent_rel_path: File.dirname(rel_path) << '/',
-            filename: File.basename(absolute_path, '.md'),
-            file_content: file_content,
-            tags: tags
-          }
+          FileSeed.create(target_dir, absolute_path, rel_path, file_content, tags)
         end
       end
     end
