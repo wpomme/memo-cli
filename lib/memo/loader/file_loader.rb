@@ -147,7 +147,9 @@ module Memo
           file_content = File.readlines(absolute_path).join
 
           # tagsのための処理
-          tags = get_tags_from_front_matter(file_content)
+          tags = get_tags_from_file_content(file_content)
+
+          # Structure::FileSeed.create(target_dir, absolute_path, rel_path, file_content, tags)
 
           {
             target_dir: target_dir,
@@ -163,7 +165,7 @@ module Memo
     end
 
     # フロントマターからtagsの値を返す
-    def get_tags_from_front_matter(file_content)
+    def get_tags_from_file_content(file_content)
       front_matter = Memo::Service.parse_yaml_front_matter(file_content)
       front_matter['tags'].nil? ? [] : front_matter['tags']
     end

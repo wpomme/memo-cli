@@ -18,6 +18,14 @@ module Memo
     # @!attribute [r] tags
     #   @return [Array<String>] 対象のファイルのフロントマター部分のtagsの値
     FileSeed = Struct.new(:target_dir, :absolute_path, :parent_directory, :relative_path, :filename, :file_content, :tags) do
+      def self.create(target_dir, absolute_path, rel_path, file_content, tags)
+        parent_directory = File.dirname(absolute_path) << '/'
+        parent_rel_path = File.dirname(rel_path) << '/'
+        filename = File.basename(absolute_path, '.md')
+
+        new(target_dir, absolute_path, parent_directory, parent_rel_path, filename, file_content, tags)
+      end
+
       def initialize(...)
         super
         freeze
