@@ -181,6 +181,11 @@ class TestSubCommandParser < Minitest::Test
           end
         end
 
+        it '登録されていないオプションが入力された場合は、エラーメッセージを返す' do
+          skip 'TODO'
+          ['-b']
+        end
+
         # TODO: 全通りについてテストする
         it 'オプションを同時に指定した場合は、エラーを返す' do
           argv = %w[tags -nc]

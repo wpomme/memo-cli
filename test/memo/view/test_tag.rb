@@ -28,7 +28,7 @@ class TestViewTag < Minitest::Test
 
       it '見つからなかった場合、エラーメッセージを表示する' do
         search_word = 'does_not_exist_words'
-        tag_list = @file_loader.sorted_tags
+        tag_list = @file_loader.tags_sorted_by_tag_name
 
         actual = @view.run(search_word)
 

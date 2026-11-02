@@ -14,7 +14,7 @@ module Memo
     # 名前順に並んでいる
     #
     # @return [Array<String>]
-    def sorted_tags
+    def tags_sorted_by_tag_name
       tag_list.sort
     end
 
@@ -23,16 +23,6 @@ module Memo
     # @return [Integer]
     def tag_size
       tag_list.size
-    end
-
-    # 対象ファイルの絶対パスがキーで、そのファイルに付けられているタグの一覧をハッシュで返す
-    # Database::Setup#seedsについて、DBに挿入するデータを作成するために使用するメソッド
-    #
-    # @return [Hash<String, Array<String>>]
-    def absolute_filename_to_tags
-      @absolute_filename_to_tags ||= file_seeds.to_h do |file_seed|
-        [file_seed[:absolute_path], file_seed[:tags]]
-      end
     end
 
     # タグの付いている数が多いものから順に並べる
@@ -65,11 +55,14 @@ module Memo
       end
     end
 
-    # 対象となるファイルの総数を返す
+    # 対象ファイルの絶対パスがキーで、そのファイルに付けられているタグの一覧をハッシュで返す
+    # Database::Setup#seedsについて、DBに挿入するデータを作成するために使用するメソッド
     #
-    # @return [Integer]
-    def file_list_size
-      file_seeds.size
+    # @return [Hash<String, Array<String>>]
+    def absolute_filename_to_tags
+      @absolute_filename_to_tags ||= file_seeds.to_h do |file_seed|
+        [file_seed[:absolute_path], file_seed[:tags]]
+      end
     end
 
     private

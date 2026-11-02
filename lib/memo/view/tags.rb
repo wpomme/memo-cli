@@ -22,7 +22,7 @@ module Memo
 
         return empty_seeds_to_view(@file_loader.file_seeds_without_tags) if option == :empty
 
-        @file_loader.sorted_tags if option == :name
+        @file_loader.tags_sorted_by_tag_name if option == :name
       end
 
       def grouped_empty_seeds(file_seeds)

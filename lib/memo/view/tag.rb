@@ -16,7 +16,7 @@ module Memo
       private
 
       def execute(word)
-        tag_list = @file_loader.sorted_tags
+        tag_list = @file_loader.tags_sorted_by_tag_name
         tag_files_hash = @file_loader.tag_files_hash
 
         return str_array_to_view(word, tag_files_hash[word], TAG_COLOR) if tag_list.include?(word)

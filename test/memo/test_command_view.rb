@@ -103,7 +103,7 @@ class TestCommandView < Minitest::Test
 
       it '検索結果が見つからなかった場合' do
         search_word = 'does_not_exist_word'
-        tag_list = Memo::FileLoader.new.sorted_tags
+        tag_list = Memo::FileLoader.new.tags_sorted_by_tag_name
 
         out, = capture_io do
           @command_view.tag(word: search_word)
