@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module Memo
-  module View
+  module ViewModel
     class Tag
       include Memo::Message
 

@@ -1,9 +1,9 @@
 # frozen_string_literal: true
 
 module Memo
-  module View
+  module ViewModel
     class List
-      include Memo::View
+      include Memo::ViewModel
 
       def run(word)
         execute(word)

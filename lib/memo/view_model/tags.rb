@@ -1,9 +1,9 @@
 # frozen_string_literal: true
 
 module Memo
-  module View
+  module ViewModel
     class Tags
-      include Memo::View
+      include Memo::ViewModel
 
       def run(option)
         execute(option)

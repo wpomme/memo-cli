@@ -18,10 +18,8 @@
 - DirectoryLoader
     - DirectorySeedを使う
 - MVCアーキテクチャについて
-    - View => ViewModelとしてMVVMにしてもいいかも
-    - 今のViewをViewModelとするなら、CommandViewをViewとして、このViewをコマンドごとにクラスを作成した方がいい
-        - CommandViewのテストコードが長くなってしまっている
-        - 今のViewが出力のためのデータ処理が大半 => ViewModelの処理が大半
+    - Viewをコマンドごとにクラスを分割する
+        - Viewのテストコードが長くなってしまっている
         - 表示だけをViewに任せるか、色付けもViewに任せるか
     - LoaderがModelの役割、コマンド、SubCommandParserがControllerの役割
         - Readのプロンプト部分もコントローラーの役割だと考えられる
@@ -46,6 +44,7 @@
 ### 型検査・型のテスト・テスト拡張
 - Rdocかyard、型検査の導入、coverageの取得
     - coverage: https://docs.ruby-lang.org/ja/latest/library/coverage.html
+        - simpleCov: https://github.com/simplecov-ruby/simplecov
 
 ## 機能追加
 - 各メモファイルのfront matterにcreated_at, updated_atを挿入する

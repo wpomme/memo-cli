@@ -1,9 +1,9 @@
 # frozen_string_literal: true
 
 module Memo
-  module View
+  module ViewModel
     class Dirs
-      include Memo::View
+      include Memo::ViewModel
 
       def run
         execute

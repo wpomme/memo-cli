@@ -3,18 +3,18 @@
 require_relative '../../helper'
 
 class TestViewTags < Minitest::Test
-  describe 'View::Tags' do
+  describe 'ViewModel::Tags' do
     include MemoLifecycleHooks
 
     def setup
       super
-      @view = Memo::View::Tags.new(target_dirs: @test_target_dirs)
+      @vm = Memo::ViewModel::Tags.new(target_dirs: @test_target_dirs)
       @file_loader = Memo::FileLoader.new(target_dirs: @test_target_dirs)
     end
 
     describe 'Tagsクラス' do
-      it 'TagsはMemo::Viewをインクルードしていること' do
-        actual = Memo::View::Tags.include?(Memo::View)
+      it 'TagsはMemo::ViewModelをインクルードしていること' do
+        actual = Memo::ViewModel::Tags.include?(Memo::ViewModel)
 
         _(actual).must_equal(true)
       end
@@ -23,7 +23,7 @@ class TestViewTags < Minitest::Test
     describe '#run' do
       it '引数がtrueの場合、タグとそれに紐づいたファイルの一覧を出力する' do
         skip 'TODO: それぞれのタグの数が合うかどうかを確かめること。'
-        actual = @view.run(true)
+        actual = @vm.run(true)
 
         _(actual).wont_be_empty
       end
@@ -31,7 +31,7 @@ class TestViewTags < Minitest::Test
       it ':nameを受け取った場合、タグ名だけを出力する。FileLoaderのtag_sizeと同じ数であること。' do
         option = :name
 
-        out = @view.run(option)
+        out = @vm.run(option)
 
         actual = out.size
 
@@ -44,7 +44,7 @@ class TestViewTags < Minitest::Test
         skip 'TODO: それぞれのタグの数が合うかどうかを確かめること。'
         option = :count
 
-        out = @view.run(option)
+        out = @vm.run(option)
 
         # actual = out.size
         #
@@ -58,7 +58,7 @@ class TestViewTags < Minitest::Test
         skip 'TODO'
         option = :empty
 
-        out = @view.run(option)
+        out = @vm.run(option)
 
         # actual = out.size
         #

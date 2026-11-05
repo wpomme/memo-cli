@@ -5,12 +5,12 @@ require_relative '../../helper'
 class TestViewTag < Minitest::Test
   include Memo::Message
 
-  describe 'View::Tag' do
+  describe 'ViewModel::Tag' do
     include MemoLifecycleHooks
 
     def setup
       super
-      @view = Memo::View::Tag.new(target_dirs: @test_target_dirs)
+      @vm = Memo::ViewModel::Tag.new(target_dirs: @test_target_dirs)
       @file_loader = Memo::FileLoader.new(target_dirs: @test_target_dirs)
     end
 
@@ -19,7 +19,7 @@ class TestViewTag < Minitest::Test
         search_word = 'CLI'
 
         # タグの文字列が入っている配列の方を取得して、スペースでsplitしてsizeを取る
-        actual = @view.run(search_word).last.split.size
+        actual = @vm.run(search_word).last.split.size
 
         expected = @file_loader.tag_files_hash.transform_values(&:size)[search_word]
 
@@ -30,7 +30,7 @@ class TestViewTag < Minitest::Test
         search_word = 'does_not_exist_words'
         tag_list = @file_loader.tags_sorted_by_tag_name
 
-        actual = @view.run(search_word)
+        actual = @vm.run(search_word)
 
         expected = NO_TAGS.sub('tag', search_word) << tag_list.join(' ')
 

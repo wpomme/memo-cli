@@ -5,7 +5,7 @@
 2. Command
     - 受け取った引数にしたがって、どのコマンドを実行するかを決定する
 
-3. CommandView
+3. View
     - 受け取ったコマンドにしたがって、表示する内容を決定する
 
 - Service
@@ -25,4 +25,4 @@
 ### includeの方針
 - メッセージなど定数については極力includeを使う
 - ServiceのようなModuleについても基本的にincludeを使う
-- Viewなどのクラスは、何回も現れるならinitializeで変数化するため、includeしなくもいい
+- ViewModelなどのクラスは、何回も現れるならinitializeで変数化するため、includeしなくもいい

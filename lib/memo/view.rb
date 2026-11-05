@@ -1,8 +1,8 @@
 # frozen_string_literal: true
 
 module Memo
-  class CommandView
-    include Memo::View
+  class View
+    include Memo::ViewModel
     include Memo::Message
     include Memo::Service
 

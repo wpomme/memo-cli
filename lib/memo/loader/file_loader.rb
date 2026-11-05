@@ -75,7 +75,7 @@ module Memo
         .transform_values(&:size)
     end
 
-    # TODO: View::Listと紐付けする
+    # TODO: ViewModel::Listと紐付けする
     # 重複したファイル名を持つfile_seedの配列を返す
     #
     # @return [Hash<String, Integer>]
@@ -85,7 +85,7 @@ module Memo
       end
     end
 
-    # TODO: View::Listと紐付けする
+    # TODO: ViewModel::Listと紐付けする
     # 重複したファイル名があれば、次のようなハッシュが返ってくる
     # {"array" => 2, "builtin" => 2, "command" => 2, "diff" => 2, "mise" => 2}
     #

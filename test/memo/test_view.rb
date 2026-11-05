@@ -2,17 +2,17 @@
 
 require_relative '../helper'
 
-class TestCommandView < Minitest::Test
+class TestView < Minitest::Test
   include Memo::Message
 
-  describe 'CommandView' do
+  describe 'View' do
     def setup
-      @command_view = Memo::CommandView.new
+      @view = Memo::View.new
     end
 
     describe '#read' do
-      it 'Viewはreadメソッドを返す' do
-        actual = @command_view
+      it 'ViewModelはreadメソッドを返す' do
+        actual = @view
 
         _(actual).must_respond_to(:read)
       end
@@ -21,7 +21,7 @@ class TestCommandView < Minitest::Test
         target_filename = 'ls'
 
         out, = capture_io do
-          @command_view.read(word: target_filename)
+          @view.read(word: target_filename)
         end
 
         _(out).wont_be_empty
@@ -35,7 +35,7 @@ class TestCommandView < Minitest::Test
         # 最後の方を選択する
         $stdin = StringIO.new("#{count}\n")
         out, = capture_io do
-          @command_view.read(word: target_filename)
+          @view.read(word: target_filename)
         end
 
         _(out).wont_be_empty
@@ -47,7 +47,7 @@ class TestCommandView < Minitest::Test
         word = 'does_not_exist_files'
 
         out, = capture_io do
-          @command_view.read(word: word)
+          @view.read(word: word)
         end
 
         _(out).must_equal(NO_MEMOS_WEWE_FOUND.sub('word', word) << "\n")
@@ -55,8 +55,8 @@ class TestCommandView < Minitest::Test
     end
 
     describe '#search' do
-      it 'Viewはsearchメソッドを返す' do
-        actual = @command_view
+      it 'ViewModelはsearchメソッドを返す' do
+        actual = @view
 
         _(actual).must_respond_to(:search)
       end
@@ -65,7 +65,7 @@ class TestCommandView < Minitest::Test
         search_word = 'ls'
 
         out, = capture_io do
-          @command_view.search(word: search_word)
+          @view.search(word: search_word)
         end
 
         _(out).wont_be_empty
@@ -75,7 +75,7 @@ class TestCommandView < Minitest::Test
         search_word = 'does_not_exist_word'
 
         out, = capture_io do
-          @command_view.search(word: search_word)
+          @view.search(word: search_word)
         end
 
         expected = NO_SEARCH_RESULTS_WERE_FOUND.sub('word', search_word) << "\n"
@@ -85,8 +85,8 @@ class TestCommandView < Minitest::Test
     end
 
     describe '#tag' do
-      it 'Viewはtagメソッドを返す' do
-        actual = @command_view
+      it 'ViewModelはtagメソッドを返す' do
+        actual = @view
 
         _(actual).must_respond_to(:tag)
       end
@@ -95,7 +95,7 @@ class TestCommandView < Minitest::Test
         search_word = 'CLI'
 
         out, = capture_io do
-          @command_view.tag(word: search_word)
+          @view.tag(word: search_word)
         end
 
         _(out).wont_be_empty
@@ -106,7 +106,7 @@ class TestCommandView < Minitest::Test
         tag_list = Memo::FileLoader.new.tags_sorted_by_tag_name
 
         out, = capture_io do
-          @command_view.tag(word: search_word)
+          @view.tag(word: search_word)
         end
 
         expected = NO_TAGS.sub('tag', search_word) << tag_list.join(' ') << "\n"
@@ -116,15 +116,15 @@ class TestCommandView < Minitest::Test
     end
 
     describe '#list' do
-      it 'Viewはlistメソッドを返す' do
-        actual = @command_view
+      it 'ViewModelはlistメソッドを返す' do
+        actual = @view
 
         _(actual).must_respond_to(:list)
       end
 
       it '引数を取らない場合' do
         out, = capture_io do
-          @command_view.list
+          @view.list
         end
 
         _(out).wont_be_empty
@@ -134,7 +134,7 @@ class TestCommandView < Minitest::Test
         word = 'git/'
 
         out, = capture_io do
-          @command_view.list(word: word)
+          @view.list(word: word)
         end
 
         _(out).wont_be_empty
@@ -144,7 +144,7 @@ class TestCommandView < Minitest::Test
         word = 'does_not_exist_dirname'
 
         out, = capture_io do
-          @command_view.list(word: word)
+          @view.list(word: word)
         end
 
         _(out).must_equal("\n")
@@ -152,15 +152,15 @@ class TestCommandView < Minitest::Test
     end
 
     describe '#tags' do
-      it 'Viewはtagsメソッドを返す' do
-        actual = @command_view
+      it 'ViewModelはtagsメソッドを返す' do
+        actual = @view
 
         _(actual).must_respond_to(:tags)
       end
 
       it '引数を取らない場合' do
         out, = capture_io do
-          @command_view.tags
+          @view.tags
         end
 
         _(out).wont_be_empty
@@ -168,7 +168,7 @@ class TestCommandView < Minitest::Test
 
       it ':nameを取る場合' do
         out, = capture_io do
-          @command_view.tags(word: :name)
+          @view.tags(word: :name)
         end
 
         _(out).wont_be_empty
@@ -176,7 +176,7 @@ class TestCommandView < Minitest::Test
 
       it ':countを取る場合' do
         out, = capture_io do
-          @command_view.tags(word: :count)
+          @view.tags(word: :count)
         end
 
         _(out).wont_be_empty
