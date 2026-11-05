@@ -3,4 +3,4 @@
 
 require 'memo'
 
-Memo::Command.new.run(ARGV)
+Memo::Command.new.execute(ARGV)

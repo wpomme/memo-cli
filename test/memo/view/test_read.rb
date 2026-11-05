@@ -11,17 +11,17 @@ class TestViewRead < Minitest::Test
     end
 
     describe '#read' do
-      it 'ViewModelはrunメソッドを返す' do
+      it 'ViewModelはexecuteメソッドを返す' do
         actual = @view
 
-        _(actual).must_respond_to(:run)
+        _(actual).must_respond_to(:execute)
       end
 
       it 'ファイルが一件見つかったとき、そのファイルを全文表示する' do
         target_filename = 'ls'
 
         out, = capture_io do
-          @view.run(word: target_filename)
+          @view.execute(word: target_filename)
         end
 
         _(out).wont_be_empty
@@ -35,7 +35,7 @@ class TestViewRead < Minitest::Test
         # 最後の方を選択する
         $stdin = StringIO.new("#{count}\n")
         out, = capture_io do
-          @view.run(word: target_filename)
+          @view.execute(word: target_filename)
         end
 
         _(out).wont_be_empty
@@ -47,7 +47,7 @@ class TestViewRead < Minitest::Test
         word = 'does_not_exist_files'
 
         out, = capture_io do
-          @view.run(word: word)
+          @view.execute(word: word)
         end
 
         _(out).must_equal(NO_MEMOS_WEWE_FOUND.sub('word', word) << "\n")

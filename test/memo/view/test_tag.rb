@@ -11,17 +11,17 @@ class TestViewTag < Minitest::Test
     end
 
     describe '#tag' do
-      it 'ViewModelはrunメソッドを返す' do
+      it 'ViewModelはexecuteメソッドを返す' do
         actual = @view
 
-        _(actual).must_respond_to(:run)
+        _(actual).must_respond_to(:execute)
       end
 
       it '検索結果が見つかった場合' do
         search_word = 'CLI'
 
         out, = capture_io do
-          @view.run(word: search_word)
+          @view.execute(word: search_word)
         end
 
         _(out).wont_be_empty
@@ -32,7 +32,7 @@ class TestViewTag < Minitest::Test
         tag_list = Memo::FileLoader.new.tags_sorted_by_tag_name
 
         out, = capture_io do
-          @view.run(word: search_word)
+          @view.execute(word: search_word)
         end
 
         expected = NO_TAGS.sub('tag', search_word) << tag_list.join(' ') << "\n"

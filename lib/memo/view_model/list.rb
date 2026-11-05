@@ -5,18 +5,12 @@ module Memo
     class List
       include Memo::ViewModel
 
-      def run(word)
-        execute(word)
-      end
-
       def initialize(target_dirs: Memo::Config.target_dirs)
         @target_dirs = target_dirs
         @file_loader = Memo::FileLoader.new(target_dirs: target_dirs)
         @directory_loader = Memo::DirectoryLoader.new(target_dirs: target_dirs)
         @to_relative_dir = @directory_loader.to_relative_dir
       end
-
-      private
 
       # TODO: -d/--duplicateと-c/--countの場合も作成する
       #  -d: 重複しているファイル名を出力する
@@ -26,6 +20,8 @@ module Memo
 
         list_by_dir_to_view(word)
       end
+
+      private
 
       def list_by_dir_to_view(word)
         normalized = normalize(word)

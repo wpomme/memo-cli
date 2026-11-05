@@ -3,8 +3,8 @@
 module Memo
   module View
     class Search
-      def run(word:)
-        puts Memo::ViewModel::Search.new.run(word)
+      def execute(word:)
+        puts Memo::ViewModel::Search.new.execute(word)
       end
     end
   end

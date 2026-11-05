@@ -11,15 +11,15 @@ class TestViewTags < Minitest::Test
     end
 
     describe '#tags' do
-      it 'ViewModelはrunメソッドを返す' do
+      it 'ViewModelはexecuteメソッドを返す' do
         actual = @view
 
-        _(actual).must_respond_to(:run)
+        _(actual).must_respond_to(:execute)
       end
 
       it '引数を取らない場合' do
         out, = capture_io do
-          @view.run
+          @view.execute
         end
 
         _(out).wont_be_empty
@@ -27,7 +27,7 @@ class TestViewTags < Minitest::Test
 
       it ':nameを取る場合' do
         out, = capture_io do
-          @view.run(word: :name)
+          @view.execute(word: :name)
         end
 
         _(out).wont_be_empty
@@ -35,7 +35,7 @@ class TestViewTags < Minitest::Test
 
       it ':countを取る場合' do
         out, = capture_io do
-          @view.run(word: :count)
+          @view.execute(word: :count)
         end
 
         _(out).wont_be_empty

@@ -5,15 +5,9 @@ module Memo
     class Dirs
       include Memo::ViewModel
 
-      def run
-        execute
-      end
-
       def initialize(target_dirs: Memo::Config.target_dirs)
         @directory_loader = Memo::DirectoryLoader.new(target_dirs: target_dirs)
       end
-
-      private
 
       def execute
         directory_seeds_hash = @directory_loader.directory_seeds_hash

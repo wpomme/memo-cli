@@ -7,12 +7,6 @@ module Memo
 
     Spec = Data.define(:short, :long, :desc)
 
-    def run(argv)
-      execute(argv)
-    end
-
-    private
-
     def execute(argv)
       first = argv.shift
 

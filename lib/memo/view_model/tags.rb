@@ -5,15 +5,9 @@ module Memo
     class Tags
       include Memo::ViewModel
 
-      def run(option)
-        execute(option)
-      end
-
       def initialize(target_dirs: Memo::Config.target_dirs)
         @file_loader = Memo::FileLoader.new(target_dirs: target_dirs)
       end
-
-      private
 
       def execute(option)
         return seeds_hash_to_view(@file_loader.tag_files_hash, TAG_COLOR) if option == true
@@ -24,6 +18,8 @@ module Memo
 
         @file_loader.tags_sorted_by_tag_name if option == :name
       end
+
+      private
 
       def grouped_empty_seeds(file_seeds)
         result = {}

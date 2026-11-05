@@ -11,17 +11,17 @@ class TestView < Minitest::Test
     end
 
     describe '#search' do
-      it 'View::Searchはrunメソッドを返す' do
+      it 'View::Searchはexecuteメソッドを返す' do
         actual = @view
 
-        _(actual).must_respond_to(:run)
+        _(actual).must_respond_to(:execute)
       end
 
       it '検索結果が見つかった場合' do
         search_word = 'ls'
 
         out, = capture_io do
-          @view.run(word: search_word)
+          @view.execute(word: search_word)
         end
 
         _(out).wont_be_empty
@@ -31,7 +31,7 @@ class TestView < Minitest::Test
         search_word = 'does_not_exist_word'
 
         out, = capture_io do
-          @view.run(word: search_word)
+          @view.execute(word: search_word)
         end
 
         expected = NO_SEARCH_RESULTS_WERE_FOUND.sub('word', search_word) << "\n"

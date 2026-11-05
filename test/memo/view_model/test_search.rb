@@ -12,11 +12,11 @@ class TestViewSearch < Minitest::Test
       @file_loader = Memo::FileLoader.new(target_dirs: @test_target_dirs)
     end
 
-    describe '#run' do
+    describe '#execute' do
       it '見つからなかった場合' do
         search_word = 'does_not_exist_words'
 
-        actual = @vm.run(search_word)
+        actual = @vm.execute(search_word)
 
         expected = Memo::Message::NO_SEARCH_RESULTS_WERE_FOUND.sub('word', search_word)
 
@@ -27,7 +27,7 @@ class TestViewSearch < Minitest::Test
         skip 'TODO'
         search_word = 'ls'
 
-        actual = @vm.run(search_word)
+        actual = @vm.execute(search_word)
 
         _(actual).must_equal(expected)
       end

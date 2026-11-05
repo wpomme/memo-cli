@@ -11,10 +11,10 @@ class TestViewDirs < Minitest::Test
     end
 
     describe '#dirs' do
-      it 'ViewModelはrunメソッドを返す' do
+      it 'ViewModelはexecuteメソッドを返す' do
         actual = @view
 
-        _(actual).must_respond_to(:run)
+        _(actual).must_respond_to(:execute)
       end
     end
   end

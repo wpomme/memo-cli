@@ -6,14 +6,14 @@ module Memo
       include Memo::Message
       include Memo::Service
 
-      def run(word:)
+      def execute(word:)
         puts read_file_by_found_result(word)
       end
 
       private
 
       def read_file_by_found_result(word)
-        found = Memo::ViewModel::Read.new.run(word)
+        found = Memo::ViewModel::Read.new.execute(word)
         size = found.size
 
         return NO_MEMOS_WEWE_FOUND.sub('word', word) if size.zero?

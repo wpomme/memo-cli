@@ -3,8 +3,8 @@
 module Memo
   module View
     class List
-      def run(word: '')
-        puts Memo::ViewModel::List.new.run(word)
+      def execute(word: '')
+        puts Memo::ViewModel::List.new.execute(word)
       end
     end
   end

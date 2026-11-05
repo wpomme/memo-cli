@@ -20,10 +20,10 @@ class TestViewTags < Minitest::Test
       end
     end
 
-    describe '#run' do
+    describe '#execute' do
       it '引数がtrueの場合、タグとそれに紐づいたファイルの一覧を出力する' do
         skip 'TODO: それぞれのタグの数が合うかどうかを確かめること。'
-        actual = @vm.run(true)
+        actual = @vm.execute(true)
 
         _(actual).wont_be_empty
       end
@@ -31,7 +31,7 @@ class TestViewTags < Minitest::Test
       it ':nameを受け取った場合、タグ名だけを出力する。FileLoaderのtag_sizeと同じ数であること。' do
         option = :name
 
-        out = @vm.run(option)
+        out = @vm.execute(option)
 
         actual = out.size
 
@@ -44,7 +44,7 @@ class TestViewTags < Minitest::Test
         skip 'TODO: それぞれのタグの数が合うかどうかを確かめること。'
         option = :count
 
-        out = @vm.run(option)
+        out = @vm.execute(option)
 
         # actual = out.size
         #
@@ -58,7 +58,7 @@ class TestViewTags < Minitest::Test
         skip 'TODO'
         option = :empty
 
-        out = @vm.run(option)
+        out = @vm.execute(option)
 
         # actual = out.size
         #

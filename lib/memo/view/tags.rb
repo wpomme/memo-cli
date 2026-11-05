@@ -3,8 +3,8 @@
 module Memo
   module View
     class Tags
-      def run(word: '')
-        puts Memo::ViewModel::Tags.new.run(word)
+      def execute(word: '')
+        puts Memo::ViewModel::Tags.new.execute(word)
       end
     end
   end

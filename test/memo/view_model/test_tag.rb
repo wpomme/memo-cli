@@ -14,12 +14,12 @@ class TestViewTag < Minitest::Test
       @file_loader = Memo::FileLoader.new(target_dirs: @test_target_dirs)
     end
 
-    describe '#run' do
-      it '見つかった場合、FileLoaderからのタグの数とTag.runによるタグの数は同じになる' do
+    describe '#execute' do
+      it '見つかった場合、FileLoaderからのタグの数とTag.executeによるタグの数は同じになる' do
         search_word = 'CLI'
 
         # タグの文字列が入っている配列の方を取得して、スペースでsplitしてsizeを取る
-        actual = @vm.run(search_word).last.split.size
+        actual = @vm.execute(search_word).last.split.size
 
         expected = @file_loader.tag_files_hash.transform_values(&:size)[search_word]
 
@@ -30,7 +30,7 @@ class TestViewTag < Minitest::Test
         search_word = 'does_not_exist_words'
         tag_list = @file_loader.tags_sorted_by_tag_name
 
-        actual = @vm.run(search_word)
+        actual = @vm.execute(search_word)
 
         expected = NO_TAGS.sub('tag', search_word) << tag_list.join(' ')
 

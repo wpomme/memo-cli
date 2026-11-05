@@ -12,11 +12,11 @@ class TestViewRead < Minitest::Test
       @file_loader = Memo::FileLoader.new(target_dirs: @test_target_dirs)
     end
 
-    describe '#run' do
+    describe '#execute' do
       it '見つからなかった場合' do
         search_word = 'does_not_exist_files'
 
-        actual = @vm.run(search_word)
+        actual = @vm.execute(search_word)
 
         expected = 0
 
@@ -26,7 +26,7 @@ class TestViewRead < Minitest::Test
       it '一件見つかった場合' do
         search_word = 'ls'
 
-        actual = @vm.run(search_word)
+        actual = @vm.execute(search_word)
 
         expected = 1
 
@@ -35,7 +35,7 @@ class TestViewRead < Minitest::Test
       it '複数件見つかった場合は、choicesを返して、viewに処理を任せる' do
         search_word = 'diff'
 
-        actual = @vm.run(search_word)
+        actual = @vm.execute(search_word)
 
         expected = 2
 

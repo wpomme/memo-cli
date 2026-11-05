@@ -6,15 +6,9 @@ module Memo
       include Memo::Message
       include Memo::Structure
 
-      def run(word)
-        execute(word)
-      end
-
       def initialize(target_dirs: Memo::Config.target_dirs)
         @file_loader = Memo::FileLoader.new(target_dirs: target_dirs)
       end
-
-      private
 
       def execute(word)
         search_result = search_file_seed(word)
@@ -23,6 +17,8 @@ module Memo
 
         search_result
       end
+
+      private
 
       # 検索でヒットした文字列に色をつける
       #

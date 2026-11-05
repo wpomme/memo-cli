@@ -32,7 +32,7 @@
     - List
         - :duplicate, :countを作成する
     - Read
-        - Serviceのselect_promptをControllerにしたい
+        - Serviceのselect_promptをViewModelに移動する
     - dirs
         - DirectoryLoader#directory_seeds_hashについて、カレントディレクトリの場合はやはり空文字を入れておく
             - そっちの方がコードが煩雑にならない

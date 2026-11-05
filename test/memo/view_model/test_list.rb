@@ -22,15 +22,15 @@ class TestViewList < Minitest::Test
       end
     end
 
-    describe '#run' do
+    describe '#execute' do
       it '引数がtrueの場合、対象のディレクトリの配列が返ってくる' do
-        actual = @vm.run(true)
+        actual = @vm.execute(true)
 
         _(actual).must_be_instance_of(Array)
       end
 
       it '引数がtrueの場合、対象のディレクトリの配列が返ってきて、その中に色付けされたディレクトリの一覧があること' do
-        result = @vm.run(true)
+        result = @vm.execute(true)
 
         result_set = Set.new(result)
 
@@ -59,7 +59,7 @@ class TestViewList < Minitest::Test
       it '有効な引数を取る場合、対象のディレクトリの配列が返ってくる' do
         dirname = 'git/'
 
-        actual = @vm.run(dirname)
+        actual = @vm.execute(dirname)
 
         _(actual).must_be_instance_of(Array)
       end
@@ -67,7 +67,7 @@ class TestViewList < Minitest::Test
       it '末尾のスラッシュを付けなくても、対象のディレクトリの配列が返ってくる' do
         dirname = 'git'
 
-        actual = @vm.run(dirname)
+        actual = @vm.execute(dirname)
 
         _(actual).must_be_instance_of(Array)
       end
@@ -75,7 +75,7 @@ class TestViewList < Minitest::Test
       it '有効な引数を取る場合、対象のディレクトリの配列が返ってくる' do
         dirname = 'lang/'
 
-        actual = @vm.run(dirname)
+        actual = @vm.execute(dirname)
 
         _(actual).must_be_instance_of(Array)
       end
@@ -83,7 +83,7 @@ class TestViewList < Minitest::Test
       it '無効な引数を取る場合、nilが返ってくる。後ほどメッセージが返ってくるように修正する' do
         dirname = 'does_not_exist_dirname'
 
-        actual = @vm.run(dirname)
+        actual = @vm.execute(dirname)
 
         _(actual).must_be_nil
       end

@@ -4,7 +4,7 @@ class TestSubCommandParser < Minitest::Test
   include Memo::Message
   include Memo::HelpMessage
 
-  describe '#run' do
+  describe '#execute' do
     def setup
       @scp = Memo::SubCommandParser.new
     end
@@ -32,7 +32,7 @@ class TestSubCommandParser < Minitest::Test
         it 'readコマンドとして解釈する' do
           argv = %w[foo]
 
-          actual = @scp.run(argv)
+          actual = @scp.execute(argv)
 
           _(actual).must_equal({ 'read' => 'foo' })
         end
@@ -51,7 +51,7 @@ class TestSubCommandParser < Minitest::Test
           args.each do |arg|
             actual, = capture_io do
               exception = assert_raises(SystemExit) do
-                @scp.run([arg])
+                @scp.execute([arg])
               end
 
               _(exception.status).must_equal(2)
@@ -69,7 +69,7 @@ class TestSubCommandParser < Minitest::Test
           arg2 = 'foo'
 
           arg1.each do |arg|
-            actual = @scp.run([arg, arg2])
+            actual = @scp.execute([arg, arg2])
 
             _(actual).must_equal({ arg => arg2 })
           end
@@ -84,7 +84,7 @@ class TestSubCommandParser < Minitest::Test
           arg1.each do |arg|
             actual, = capture_io do
               exception = assert_raises(SystemExit) do
-                @scp.run([arg, arg2, arg3])
+                @scp.execute([arg, arg2, arg3])
               end
 
               _(exception.status).must_equal(2)
@@ -101,7 +101,7 @@ class TestSubCommandParser < Minitest::Test
         it '引数を取らない場合は、dirs: trueを返す' do
           argv = %w[dirs]
 
-          actual = @scp.run(argv)
+          actual = @scp.execute(argv)
 
           _(actual).must_equal({ 'dirs' => true })
         end
@@ -111,7 +111,7 @@ class TestSubCommandParser < Minitest::Test
             exception = assert_raises(SystemExit) do
               argv = %w[dirs foo]
 
-              @scp.run(argv)
+              @scp.execute(argv)
             end
 
             _(exception.status).must_equal(2)
@@ -127,7 +127,7 @@ class TestSubCommandParser < Minitest::Test
         it 'tagsのみの場合は、tags: trueを返す' do
           argv = %w[tags]
 
-          actual = @scp.run(argv)
+          actual = @scp.execute(argv)
 
           _(actual).must_equal({ 'tags' => true })
         end
@@ -146,7 +146,7 @@ class TestSubCommandParser < Minitest::Test
           args_arr = option_hash.keys.map { |opt| [argv, opt] }
 
           args_arr.each do |args|
-            actual = @scp.run(args)
+            actual = @scp.execute(args)
             _(actual).must_equal({ argv => option_hash[args.last] })
           end
         end
@@ -159,7 +159,7 @@ class TestSubCommandParser < Minitest::Test
           args = options.map { |opt| [argv, opt] }
 
           args.each do |arg|
-            actual = @scp.run(arg)
+            actual = @scp.execute(arg)
             _(actual).must_equal({ argv => :name })
           end
         end
@@ -175,7 +175,7 @@ class TestSubCommandParser < Minitest::Test
 
           actual, = capture_io do
             exception = assert_raises(SystemExit) do
-              @scp.run(argv)
+              @scp.execute(argv)
             end
 
             _(exception.status).must_equal(2)
@@ -195,7 +195,7 @@ class TestSubCommandParser < Minitest::Test
           # exit 2を使うかも
           options.map { |opt| [argv, opt, rest_argv] }
             .map do |args|
-            @scp.run(args)
+            @scp.execute(args)
           end
         end
       end
@@ -204,7 +204,7 @@ class TestSubCommandParser < Minitest::Test
         it 'listのみの場合は、list: trueを返す' do
           argv = %w[list]
 
-          actual = @scp.run(argv)
+          actual = @scp.execute(argv)
 
           _(actual).must_equal({ 'list' => true })
         end
@@ -221,7 +221,7 @@ class TestSubCommandParser < Minitest::Test
           args_arr = option_hash.keys.map { |opt| [argv, opt] }
 
           args_arr.each do |args|
-            actual = @scp.run(args)
+            actual = @scp.execute(args)
             _(actual).must_equal({ argv => option_hash[args.last] })
           end
         end
@@ -229,7 +229,7 @@ class TestSubCommandParser < Minitest::Test
         it '引数を取る場合は、list:の値にその文字列を返す' do
           argv = %w[list foo]
 
-          actual = @scp.run(argv)
+          actual = @scp.execute(argv)
 
           _(actual).must_equal({ 'list' => 'foo' })
         end
@@ -238,7 +238,7 @@ class TestSubCommandParser < Minitest::Test
           arg1 = 'list'
           arg2 = 'あ' * 32
 
-          actual = @scp.run([arg1, arg2])
+          actual = @scp.execute([arg1, arg2])
 
           _(actual).must_equal({ 'list' => arg2 })
         end
@@ -249,7 +249,7 @@ class TestSubCommandParser < Minitest::Test
               arg1 = 'list'
               arg2 = 'あ' * 33
 
-              @scp.run([arg1, arg2])
+              @scp.execute([arg1, arg2])
             end
 
             _(exception.status).must_equal(2)
@@ -268,7 +268,7 @@ class TestSubCommandParser < Minitest::Test
               args = %w[version -V]
 
               args.each do |arg|
-                @scp.run([arg])
+                @scp.execute([arg])
               end
             end
 
