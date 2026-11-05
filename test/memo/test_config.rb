@@ -8,7 +8,7 @@ class TestConfig < Minitest::Test
           does_not_exist_config_path = File.expand_path('../../config/does_not_exist_config.yml', __dir__)
 
           load_method = Memo::Config.method(:load)
-          load_method.call(does_not_exist_config_path)
+          load_method.call(config_path: does_not_exist_config_path)
         end.must_raise(Errno::ENOENT)
       end
     end
@@ -55,7 +55,7 @@ class TestConfig < Minitest::Test
         end
 
         load_method = Memo::Config.method(:load)
-        load_method.call(test_config_yml_path)
+        load_method.call(config_path: test_config_yml_path)
 
         actual = Memo::Config.target_dirs
 
@@ -82,7 +82,7 @@ class TestConfig < Minitest::Test
         end
         _ do
           load_method = Memo::Config.method(:load)
-          load_method.call(test_config_yml_path)
+          load_method.call(config_path: test_config_yml_path)
 
           Memo::Config.target_dirs
         end.must_raise(StandardError)

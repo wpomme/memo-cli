@@ -21,7 +21,7 @@ module Memo
         end
       end
 
-      def load(config_path = CONFIG_PATH)
+      def load(config_path: CONFIG_PATH)
         @config = YAML.load_file(config_path)
       end
 

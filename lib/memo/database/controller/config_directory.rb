@@ -40,7 +40,7 @@ module Memo
         # 対象のデータをテーブルに一括して挿入する
         #
         # @return [Hash<String, Integer>] パス名がキーで、主キーが値となるハッシュを返す
-        def insert_all(target_dirs = Memo::Config.target_dirs)
+        def insert_all(target_dirs: Memo::Config.target_dirs)
           target_dirs.map do |path|
             @dataset.insert(directory_path: path)
           end
