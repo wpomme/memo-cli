@@ -34,7 +34,7 @@ class TestSubCommandParser < Minitest::Test
 
           actual = @scp.run(argv)
 
-          _(actual).must_equal({ read: 'foo' })
+          _(actual).must_equal({ 'read' => 'foo' })
         end
 
         it '第二引数も存在する場合は、エラーメッセージを表示する' do
@@ -71,7 +71,7 @@ class TestSubCommandParser < Minitest::Test
           arg1.each do |arg|
             actual = @scp.run([arg, arg2])
 
-            _(actual).must_equal({ arg.intern => arg2 })
+            _(actual).must_equal({ arg => arg2 })
           end
         end
 
@@ -103,7 +103,7 @@ class TestSubCommandParser < Minitest::Test
 
           actual = @scp.run(argv)
 
-          _(actual).must_equal({ dirs: true })
+          _(actual).must_equal({ 'dirs' => true })
         end
 
         it '引数がある場合は、エラーメッセージを表示する' do
@@ -129,55 +129,38 @@ class TestSubCommandParser < Minitest::Test
 
           actual = @scp.run(argv)
 
-          _(actual).must_equal({ tags: true })
+          _(actual).must_equal({ 'tags' => true })
         end
 
-        it '-e/--emptyがある場合は、tags: :emptyを返す' do
-          arg = 'tags'
-          options = ['-e', '--empty']
+        it '特定のオプションを受け取った場合は、それに対応するシンボルを返す' do
+          argv = 'tags'
+          option_hash = {
+            '-e' => :empty,
+            '--empty' => :empty,
+            '-c' => :count,
+            '--count' => :count,
+            '-n' => :name,
+            '--name' => :name
+          }
 
-          args = options.map { |opt| [arg, opt] }
+          args_arr = option_hash.keys.map { |opt| [argv, opt] }
 
-          args.each do |arg|
-            actual = @scp.run(arg)
-            _(actual).must_equal({ tags: :empty })
-          end
-        end
-
-        it '-c/--countがある場合は、tags: :countを返す' do
-          arg = 'tags'
-          options = ['-c', '--count']
-
-          args = options.map { |opt| [arg, opt] }
-
-          args.each do |arg|
-            actual = @scp.run(arg)
-            _(actual).must_equal({ tags: :count })
-          end
-        end
-
-        it '-n/--nameがある場合は、tags: :nameを返す' do
-          arg = 'tags'
-          options = ['-n', '--name']
-
-          args = options.map { |opt| [arg, opt] }
-
-          args.each do |arg|
-            actual = @scp.run(arg)
-            _(actual).must_equal({ tags: :name })
+          args_arr.each do |args|
+            actual = @scp.run(args)
+            _(actual).must_equal({ argv => option_hash[args.last] })
           end
         end
 
         it 'memo tags -hの場合' do
           skip 'TODO: ヘルプメッセージを表示する'
-          arg = 'tags'
+          argv = 'tags'
           options = ['-h', '--help']
 
-          args = options.map { |opt| [arg, opt] }
+          args = options.map { |opt| [argv, opt] }
 
           args.each do |arg|
             actual = @scp.run(arg)
-            _(actual).must_equal({ tags: :name })
+            _(actual).must_equal({ argv => :name })
           end
         end
 
@@ -223,18 +206,23 @@ class TestSubCommandParser < Minitest::Test
 
           actual = @scp.run(argv)
 
-          _(actual).must_equal({ list: true })
+          _(actual).must_equal({ 'list' => true })
         end
 
-        it '-c/--countがある場合は、list: :countを返す' do
-          arg = 'list'
-          options = ['-c', '--count']
+        it '特定のオプションを受け取った場合は、それに対応するシンボルを返す' do
+          argv = 'list'
+          option_hash = {
+            '-c' => :count,
+            '--count' => :count,
+            '-d' => :duplicate,
+            '--duplicate' => :duplicate
+          }
 
-          args = options.map { |opt| [arg, opt] }
+          args_arr = option_hash.keys.map { |opt| [argv, opt] }
 
-          args.each do |arg|
-            actual = @scp.run(arg)
-            _(actual).must_equal({ list: :count })
+          args_arr.each do |args|
+            actual = @scp.run(args)
+            _(actual).must_equal({ argv => option_hash[args.last] })
           end
         end
 
@@ -243,7 +231,7 @@ class TestSubCommandParser < Minitest::Test
 
           actual = @scp.run(argv)
 
-          _(actual).must_equal({ list: 'foo' })
+          _(actual).must_equal({ 'list' => 'foo' })
         end
 
         it '引数が32文字なら、list:の値にその文字列を返す' do
@@ -252,7 +240,7 @@ class TestSubCommandParser < Minitest::Test
 
           actual = @scp.run([arg1, arg2])
 
-          _(actual).must_equal({ list: arg2 })
+          _(actual).must_equal({ 'list' => arg2 })
         end
 
         it '引数が33文字なら、エラーメッセージを返す' do

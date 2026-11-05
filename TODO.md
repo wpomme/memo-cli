@@ -37,6 +37,12 @@
         - DirectoryLoader#directory_seeds_hashについて、カレントディレクトリの場合はやはり空文字を入れておく
             - そっちの方がコードが煩雑にならない
 
+- sub_option_parserについて
+    - sub_commandによってコマンドごとに新しいクラスに処理を委譲する
+        - Memo::NewCommandParser::Listなどのイメージ
+            - 最後にNewCommandParseをSubCommandParserにリネームする
+        - help, versionについて、Memo::Viewでヘルプやバージョンを表示するように修正する
+
 
 ## その他やりたいこと
 ## テスト系

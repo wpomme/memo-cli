@@ -20,7 +20,7 @@ module Memo
 
       case first
       when 'read', 'search', 'tag'
-        parse_one_argument(first.intern, argv: argv)
+        parse_one_argument(first, argv: argv)
       when 'dirs'
         parse_no_arguments(argv: argv)
       when 'tags'
@@ -32,25 +32,25 @@ module Memo
       when 'version', '-V'
         parse_version_command
       else
-        parse_one_argument(:read, argv: [first])
+        parse_one_argument('read', argv: [first])
       end
     end
 
-    def parse_no_arguments(sym: :dirs, argv: nil)
-      to_error_message(:too_many_args, sym) unless argv.empty?
+    def parse_no_arguments(str: 'dirs', argv: nil)
+      to_error_message(:too_many_args, str) unless argv.empty?
 
-      { sym => true }
+      { str => true }
     end
 
-    def parse_one_argument(sym, argv: nil)
-      to_error_message(:no_given_args, sym) if argv.empty?
+    def parse_one_argument(str, argv: nil)
+      to_error_message(:no_given_args, str) if argv.empty?
 
-      to_error_message(:too_many_args, sym) if argv.size > 1
+      to_error_message(:too_many_args, str) if argv.size > 1
 
-      { sym => argv[0] }
+      { str => argv[0] }
     end
 
-    def parse_tags_command(sym: :tags, argv: nil)
+    def parse_tags_command(str: 'tags', argv: nil)
       parsed = {}
 
       OptionParser.new do |opt|
@@ -60,9 +60,9 @@ module Memo
       end
         .parse(argv, into: parsed)
 
-      to_error_message(:too_many_options, :tags) if parsed.size > 1
+      to_error_message(:too_many_options, str) if parsed.size > 1
 
-      { sym => parsed.empty? || parsed.keys[0] }
+      { str => parsed.empty? || parsed.keys[0] }
     end
 
     def tags_spec_list
@@ -79,20 +79,20 @@ module Memo
       end
     end
 
-    def parse_list_command(sym: :list, argv: nil)
-      to_error_message(:too_many_args, sym) if argv.size > 1
+    def parse_list_command(str: 'list', argv: nil)
+      to_error_message(:too_many_args, str) if argv.size > 1
 
-      return { sym => true } if argv.empty?
+      return { str => true } if argv.empty?
 
       opt = argv[0]
 
-      to_error_message(:too_long_args, sym) if opt.size > 32
+      to_error_message(:too_long_args, str) if opt.size > 32
 
-      return { sym => :count } if ['-c', '--count'].include?(opt)
+      return { str => :count } if ['-c', '--count'].include?(opt)
 
-      return { sym => :duplicate } if ['-d', '--duplicate'].include?(opt)
+      return { str => :duplicate } if ['-d', '--duplicate'].include?(opt)
 
-      { sym => opt }
+      { str => opt }
     end
 
     def parse_version_command
@@ -122,11 +122,11 @@ module Memo
     #   word.size > 32
     # end
 
-    def to_error_message(error_message_symbol, sub_command_symbol)
+    def to_error_message(error_message_symbol, sub_command)
       error_message_map = {
-        no_given_args: NO_GIVEN_ARGS.gsub('CLI', sub_command_symbol.to_s),
-        too_many_args: TOO_MANY_ARGS.gsub('CLI', sub_command_symbol.to_s),
-        too_many_options: TOO_MANY_OPTIONS.gsub('CLI', sub_command_symbol.to_s),
+        no_given_args: NO_GIVEN_ARGS.gsub('CLI', sub_command),
+        too_many_args: TOO_MANY_ARGS.gsub('CLI', sub_command),
+        too_many_options: TOO_MANY_OPTIONS.gsub('CLI', sub_command),
         too_long_args: TOO_LONG_ARGS,
         unknown_command: UNKNOWN_COMMAND
       }
