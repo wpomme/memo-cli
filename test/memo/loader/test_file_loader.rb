@@ -9,14 +9,13 @@ class TestFileLoader < Minitest::Test
     def setup
       super
       @file_loader = Memo::FileLoader.new(target_dirs: @test_target_dirs)
-      @mock_file_size = Memo::MockSeed::TEST_MOCK_DATA_SEED.size
     end
 
     describe('#file_seeds') do
-      it('要素数がモックデータと同じであること') do
-        actual = @file_loader.file_seeds.size
+      it('モックデータと実際のデータが同じであること') do
+        actual = @file_loader.file_seeds
 
-        expected = @mock_file_size
+        expected = @test_file_seeds
 
         _(actual).must_equal(expected)
       end
