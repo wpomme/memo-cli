@@ -97,13 +97,13 @@ class TestSubCommandParser < Minitest::Test
         end
       end
 
-      describe '#parse_no_arguments: dirs' do
-        it '引数を取らない場合は、dirs: trueを返す' do
+      describe '#parse_no_arguments: dirs, version' do
+        it '引数を取らない場合は、dirs: nilを返す' do
           argv = %w[dirs]
 
           actual = @scp.execute(argv)
 
-          _(actual).must_equal({ 'dirs' => true })
+          _(actual).must_equal({ 'dirs' => nil })
         end
 
         it '引数がある場合は、エラーメッセージを表示する' do
@@ -120,6 +120,20 @@ class TestSubCommandParser < Minitest::Test
           expected = TOO_MANY_ARGS.gsub('CLI', 'dirs')
 
           _(actual).must_equal(expected)
+        end
+
+        describe 'version' do
+          it '"version", "-V"でバージョンを出力し、正常終了する' do
+            args = %w[version -V]
+
+            expected = { 'version' => nil }
+
+            args.each do |arg|
+              actual = @scp.execute([arg])
+
+              _(actual).must_equal(expected)
+            end
+          end
         end
       end
 
@@ -256,26 +270,6 @@ class TestSubCommandParser < Minitest::Test
           end
 
           expected = TOO_LONG_ARGS
-
-          _(actual).must_equal(expected)
-        end
-      end
-
-      describe 'version' do
-        it '"version", "-V"でバージョンを出力し、正常終了する' do
-          actual, = capture_io do
-            exception = assert_raises(SystemExit) do
-              args = %w[version -V]
-
-              args.each do |arg|
-                @scp.execute([arg])
-              end
-            end
-
-            _(exception.status).must_equal(0)
-          end
-
-          expected = "#{Memo::VERSION}\n"
 
           _(actual).must_equal(expected)
         end

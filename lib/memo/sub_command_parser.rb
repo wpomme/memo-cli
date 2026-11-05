@@ -16,7 +16,7 @@ module Memo
       when 'read', 'search', 'tag'
         parse_one_argument(first, argv: argv)
       when 'dirs'
-        parse_no_arguments(argv: argv)
+        parse_no_arguments(str: 'dirs', argv: argv)
       when 'tags'
         parse_tags_command(argv: argv)
       when 'list'
@@ -24,16 +24,16 @@ module Memo
       when 'help'
         parse_help_command(argv: argv)
       when 'version', '-V'
-        parse_version_command
+        parse_no_arguments(str: 'version', argv: argv)
       else
         parse_one_argument('read', argv: [first])
       end
     end
 
-    def parse_no_arguments(str: 'dirs', argv: nil)
+    def parse_no_arguments(str:, argv: nil)
       to_error_message(:too_many_args, str) unless argv.empty?
 
-      { str => true }
+      { str => nil }
     end
 
     def parse_one_argument(str, argv: nil)
@@ -87,11 +87,6 @@ module Memo
       return { str => :duplicate } if ['-d', '--duplicate'].include?(opt)
 
       { str => opt }
-    end
-
-    def parse_version_command
-      puts Memo::VERSION
-      exit 0
     end
 
     def parse_help_command(argv: nil)

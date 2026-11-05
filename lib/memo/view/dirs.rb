@@ -3,7 +3,7 @@
 module Memo
   module View
     class Dirs
-      def execute(_)
+      def execute(*)
         puts Memo::ViewModel::Dirs.new.execute
       end
     end

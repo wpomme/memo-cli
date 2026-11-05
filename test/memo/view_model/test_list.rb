@@ -23,12 +23,6 @@ class TestViewList < Minitest::Test
     end
 
     describe '#execute' do
-      it '引数がtrueの場合、対象のディレクトリの配列が返ってくる' do
-        actual = @vm.execute(true)
-
-        _(actual).must_be_instance_of(Array)
-      end
-
       it '引数がtrueの場合、対象のディレクトリの配列が返ってきて、その中に色付けされたディレクトリの一覧があること' do
         result = @vm.execute(true)
 
