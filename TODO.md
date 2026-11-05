@@ -19,7 +19,6 @@
     - DirectorySeedを使う
 - MVCアーキテクチャについて
     - Viewをコマンドごとにクラスを分割する
-        - Viewのテストコードが長くなってしまっている
         - 表示だけをViewに任せるか、色付けもViewに任せるか
     - LoaderがModelの役割、コマンド、SubCommandParserがControllerの役割
         - Readのプロンプト部分もコントローラーの役割だと考えられる
