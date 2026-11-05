@@ -25,7 +25,7 @@ end
 ## TEST_MOCK_DATAの元となるRubyのArray<Hash>とヒアドキュメントを返す
 mock_seeds = seeds.map do |seed|
   content = seed[:file_content].split("\n")
-  filename = duplicated_seeds.include?(seed) ? seed[:parent_rel_path].sub('.md', '').upcase.sub('-', '_').gsub('/', '_') : seed[:filename].upcase.gsub('-', '_')
+  filename = duplicated_seeds.include?(seed) ? seed[:relative_path].sub('.md', '').upcase.sub('-', '_').gsub('/', '_') : seed[:filename].upcase.gsub('-', '_')
   val_name = "TEST_#{filename}_FILE_CONTENT"
   label = "#{filename}_FILE"
   heredoc = ["#{val_name} = <<~#{label}"] + content + [label] + ["\n"]
@@ -34,7 +34,7 @@ mock_seeds = seeds.map do |seed|
       target_dir: seed[:target_dir],
       absolute_path: seed[:absolute_path],
       parent_directory: seed[:parent_directory],
-      parent_rel_path: seed[:parent_rel_path],
+      relative_path: seed[:relative_path],
       filename: seed[:filename],
       file_content: val_name.to_sym,
       tags: seed[:tags]
@@ -57,7 +57,7 @@ File.open(output, 'w') do |file|
         target_dir: '#{seed[:mock_seed][:target_dir]}',
         absolute_path: '#{seed[:mock_seed][:absolute_path]}',
         parent_directory: '#{seed[:mock_seed][:parent_directory]}',
-        parent_rel_path: '#{seed[:mock_seed][:parent_rel_path]}',
+        relative_path: '#{seed[:mock_seed][:relative_path]}',
         filename: '#{seed[:mock_seed][:filename]}',
         file_content: #{seed[:mock_seed][:file_content]},
         tags: #{seed[:mock_seed][:tags]},

@@ -43,10 +43,10 @@ module MemoLifecycleHooks
 
     Memo::MockSeed::TEST_MOCK_DATA_SEED.each do |seed|
       target_dir_hash.each do |orig_dir, test_dir|
-        test_child_dir = File.join(test_dir, seed[:parent_rel_path])
+        test_child_dir = File.join(test_dir, seed[:relative_path])
         FileUtils.mkdir_p(test_child_dir) unless FileTest.directory?(test_child_dir)
 
-        File.write(File.join(test_dir, seed[:parent_rel_path], "#{seed[:filename]}.md"), seed[:file_content]) if orig_dir == seed[:target_dir]
+        File.write(File.join(test_dir, seed[:relative_path], "#{seed[:filename]}.md"), seed[:file_content]) if orig_dir == seed[:target_dir]
       end
     end
 

@@ -8,9 +8,7 @@
 - Database以下の構成
     - setupは1. create/drop tables, 2. Seeder, 3. schemaの三つに分けられる
     - prepare, serupのところのテストコードを追加する
-- memo help [sub_command]の作成: コマンドごとのヘルプがほしい
 - モックデータからテストコードの検証を行うようにする
-- 各クラスのrunとexecuteを入れ替える。プライベートにするrunは別の名前にする
 - rubocopのメトリクスによるリファクタリング
 - FileLoader
     - tagに関するメソッドを整理する
@@ -42,6 +40,7 @@
         - Memo::NewCommandParser::Listなどのイメージ
             - 最後にNewCommandParseをSubCommandParserにリネームする
         - help, versionについて、Memo::Viewでヘルプやバージョンを表示するように修正する
+        - memo help [sub_command]の作成: コマンドごとのヘルプがほしい
 
 
 ## その他やりたいこと

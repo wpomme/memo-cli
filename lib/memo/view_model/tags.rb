@@ -25,7 +25,7 @@ module Memo
         result = {}
 
         file_seeds.each do |file_seed|
-          (result[[file_seed[:target_dir], file_seed[:parent_rel_path]]] ||= []) << file_seed[:filename]
+          (result[[file_seed[:target_dir], file_seed[:relative_path]]] ||= []) << file_seed[:filename]
         end
 
         result

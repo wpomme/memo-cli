@@ -970,36 +970,80 @@ module Memo
       tags: ["perl", "oneliner", "表示", "edit", "substitute", "regex"]
       ---
       ## Perl one-liners: Perlによるワンライナー
-      ```bash
-      ## ドキュメント: perlrunにperlコマンドのオプションの解説がある
-      man perlrun
+      ### ドキュメント
 
-      ## grep系
-      ### ドットファイルだけを取得
-      ls -alGpF | perl -lane 'print if $F[-1] =~ /^./'
+                  ## 総合的なドキュメント・目次
+                  man perl
 
-      ### bashのマニュアルから章を抜き出すコマンド
-      man bash | perl -ne 'print if /^[A-Z]/'
+                  ## コマンドラインのオプションはperlrunに解説がある
+                  man perlrun
 
-      ### 特定のフォルダから、"href="か"src="が含まれている行を抜き出すコマンド(正規表現の「選択」)
-      find packages/web/src | xargs -I@ perl -ne 'print if /href=|src=/' @
+                  ## 正規表現の場合は次の三つのうちのどれか
+                  man perlrequick
+                  man perlretut
+                  man perlre
 
-      ## sed系
-      ### 対象ファイルについて、文字列の一括置換を行う場合(in-place編集)
-      git grep -l NOT_FOUND_MESSAGE | xargs -I@ perl -pi -e 's/NOT_FOUND_MESSAGE/READ_RESULT_IS_NOT_FOUND/g' @
+      ### ファイルの編集と表示
 
-      ### マッチする部分が正規表現ではなくて文字列である場合は、正規表現の最初に\Qを付ける
-      ### 置換する文字列にも\Qを付けてしまうと、メタ文字も一緒に置換されてしまう
-      echo "_(expected).must_equal(actual)" | perl -p -e 's/\Q_(expected).must_equal(actual)/_(actual).must_equal(expected)/g'
+                  ## 1. 適当にファイルを作成する
+                  cat << EOF > foo.txt
+                  > aaa
+                  > bbb
+                  > ccc
+                  EOF
 
-      ### マッチングしたものを取り出す場合: https://perldoc.jp/docs/perl/5.22.1/perlretut.pod#Extracting32matches
-      ### グループ化メタ文字()の中でマッチしたものは、$1, $2, ...などで取り出せる
-      ### must_equalのカッコの中身にマッチさせて、その中身を_()の中に移動する
-      echo "_(expected).must_equal([:list, 'foo'])" | perl -p -e 's/\Q_(expected).must_equal(\E(.+))/_($1).must_equal(expected)/g'
-      # => _([:list, 'foo']).must_equal(expected)
+                  ## 2. ファイルの置換は次のように指定する
+                  perl -i -pe 's/bbb/ddd/g' foo.txt
+
+                  ## 3. 確認してみる
+                  cat foo.txt
+                  # 次のように表示される
+                  # > aaa
+                  # > ddd
+                  # > ccc
+
+                  ## 2.1. 表示も行う
+                  ## perl -ne 'say if /ddd/' foo.txtだと表示できないみたいだ
+                  perl -ne 'print if /ddd/' foo.txt
+                  # 次のように表示される
+                  # > ddd
+
+
+      ### 例
+      #### 正規表現の例
+      ```perl
+      # 空行
+      /\A\s*\Z/
       ```
 
-      ## オプション
+      #### 検索・表示
+
+                  ### ドットファイルだけを取得
+                  ls -alGpF | perl -lane 'print if $F[-1] =~ /^./'
+
+                  ### bashのマニュアルから章を抜き出すコマンド
+                  man bash | perl -ne 'print if /^[A-Z]/'
+
+                  ### 特定のフォルダから、"href="か"src="が含まれている行を抜き出すコマンド(正規表現の「選択」)
+                  find packages/web/src | xargs -I@ perl -ne 'print if /href=|src=/' @
+
+      #### 置換
+
+                  ### 対象ファイルについて、文字列の一括置換を行う場合
+                  git grep -l NOT_FOUND_MESSAGE | xargs -I@ perl -i -pe 's/NOT_FOUND_MESSAGE/READ_RESULT_IS_NOT_FOUND/g' @
+
+                  ### マッチする部分が正規表現ではなくて文字列である場合は、正規表現の最初に\Qを付ける
+                  ### 置換する文字列にも\Qを付けてしまうと、メタ文字も一緒に置換されてしまう
+                  echo "_(expected).must_equal(actual)" | perl -pe 's/\Q_(expected).must_equal(actual)/_(actual).must_equal(expected)/g'
+
+                  ### マッチングしたものを取り出す場合: https://perldoc.jp/docs/perl/5.22.1/perlretut.pod#Extracting32matches
+                  ### グループ化メタ文字()の中でマッチしたものは、$1, $2, ...などで取り出せる
+                  ### must_equalのカッコの中身にマッチさせて、その中身を_()の中に移動する
+                  echo "_(expected).must_equal([:list, 'foo'])" | perl -pe 's/\Q_(expected).must_equal(\E(.+))/_($1).must_equal(expected)/g'
+                  # => _([:list, 'foo']).must_equal(expected)
+
+
+      ### コマンドラインのオプション
           - `man perlrun`にオプションのドキュメントがある。詳しくはそちらを参照すること。
       - -e: perlのワンライナーを入力するために使用する。-eの後にワンライナーを入力すれば、perlはそのワンライナーを認識する
       - -n: 一行ずつ処理する。ダイアモンド演算子と`while (<>) {...}`と同じ。`sed -n`や`awk`と似たような処理を実行する
@@ -1007,9 +1051,14 @@ module Memo
       - -i: in-placeで編集する。-iの後に何も指定しなければ、同じファイルを編集する。バックアップが不要なら`perl -i -e '...' <filename>`のようにして使う。
       - -l: 行末処理の自動化を行う。入力時に改行を削除し、出力時に改行を追加する。
 
-      ## 正規表現のオプション
+      ### 正規表現のオプション
       - \Q: その正規表現のメタ文字をエスケープする
       - \E: \Qなどのエスケープを\Eが追加された位置で終了させる
+      - \A: 文字列の先頭にマッチする
+      - \Z: 文字列の末尾にマッチする。ただし、後ろに改行文字があっても構わない。
+      - \z: 文字列の完全な末尾にマッチする
+      - \b: ワード境界アンカー。`/\bhunt/`とすると、shuntにはマッチしないが、huntingにはマッチする。
+      - \B: 非ワード境界アンカー。`/\bsearch\B/`とすると、searchesなどにはマッチするが、search, researchingにはマッチしない。
     ONELINER_FILE
 
     TEST_ARGUMENTS_FILE_CONTENT = <<~ARGUMENTS_FILE
@@ -2006,22 +2055,50 @@ module Memo
           1. `tmux list-commnads | grep new`
     TMUX_FILE
 
-    TEST_PRINCIPLES_FILE_CONTENT = <<~PRINCIPLES_FILE
-      ## Principles: プログラミングのアーキテクチャに関する原理原則
+    TEST_NULL_FILE_CONTENT = <<~NULL_FILE
+      ## null: 存在しない・無効であることを示す
+      ### 定義
+          - ref: https://developer.mozilla.org/ja/docs/Glossary/Null
+              > 存在しないまたは無効なオブジェクトやアドレスへの"ポインター参照"を表します。
+          - ヌルポインタ: https://ja.wikipedia.org/wiki/%E3%83%8C%E3%83%AB%E3%83%9D%E3%82%A4%E3%83%B3%E3%82%BF
+              > 何のオブジェクトも指していないことを表す特別なポインタの値
 
-      ### コメントに変数のfooなどを書き込むことについて
-      - 次の原則に反する場合が多い
-          - コメントに実装の詳細を書かない
-              - Avoid implementation details in comments.
-          - 冗長なコメントを避ける
-              - Avoid redundant comments.
-          - 自己説明的なコードを優先する
-              - Prefer self-documenting code.
-          - コメントには、「what」ではなく「why」を書く
-              - Comments should explain why, not what.
-          - コメントとコードの内容を一致させる
-              - Keep comments in sync with the code.
-    PRINCIPLES_FILE
+      ### nullの分類
+      - nullには二つの分類がある
+          1. 未知(unknown)
+          2. 適用不能(Not Applicable, N/A)
+
+      ### 言語別のnull
+      - null: Java, JavaScript
+      - nil: Ruby, Go, Pasca
+      - None: Python
+      - (undefined): JavaScript
+          - ref: https://developer.mozilla.org/ja/docs/Glossary/Undefined
+    NULL_FILE
+
+    TEST_UNIT_TEST_FILE_CONTENT = <<~UNIT_TEST_FILE
+      ---
+      tags: ["architecture", "metrics", "テスト", "単体テスト"]
+      ---
+      ## Unit Test: 開発者向けの単体テストの手引き
+      1. これだけは開発者がやるべきテスト
+          1. 境界値テスト
+              - 入力値が0 < x <= 100なら-1, 0, 1, 99, 100, 101あたりのこと
+              - 入力値のエッジケースでもある
+          2. 状態遷移テスト
+              - 状態と遷移の二つを伴う機能の場合は、状態遷移テストが必要
+              - 状態遷移マトリックスを使用するとテストがしやすい
+          3. 組み合わせテスト
+              - 入力値が組み合わさって入力された場合など
+
+      2. そもそも「コードベースの単体テスト」とは
+          - 「関数の網羅率を計測しロジックの確からしさを確認するホワイトボックステスト」
+          - 具体的には次の三つをテストする
+          1. プログラムを実行した場合、システム上異常な振る舞いを行わないこと
+              (null pointerや0による徐算など)
+          2. 入力値とそれに対応する期待値を出力すること => 同値分析か？
+          3. すべての分岐が正しく処理されること(境界値テスト)
+    UNIT_TEST_FILE
 
     TEST_SET_THE_TABLE_FILE_CONTENT = <<~SET_THE_TABLE_FILE
       ---
@@ -2136,7 +2213,7 @@ module Memo
         target_dir: '/Users/hy/repo/memorandum/memo/',
         absolute_path: '/Users/hy/repo/memorandum/memo/ANSI-escape-code-and-set-color.md',
         parent_directory: '/Users/hy/repo/memorandum/memo/',
-        parent_rel_path: './',
+        relative_path: './',
         filename: 'ANSI-escape-code-and-set-color',
         file_content: TEST_ANSI_ESCAPE_CODE_AND_SET_COLOR_FILE_CONTENT,
         tags: %w[Terminal Charactor]
@@ -2145,7 +2222,7 @@ module Memo
         target_dir: '/Users/hy/repo/memorandum/memo/',
         absolute_path: '/Users/hy/repo/memorandum/memo/chrome.md',
         parent_directory: '/Users/hy/repo/memorandum/memo/',
-        parent_rel_path: './',
+        relative_path: './',
         filename: 'chrome',
         file_content: TEST_CHROME_FILE_CONTENT,
         tags: %w[Browser Frontend]
@@ -2154,7 +2231,7 @@ module Memo
         target_dir: '/Users/hy/repo/memorandum/memo/',
         absolute_path: '/Users/hy/repo/memorandum/memo/cli/core/builtin/builtin.md',
         parent_directory: '/Users/hy/repo/memorandum/memo/cli/core/builtin/',
-        parent_rel_path: 'cli/core/builtin/',
+        relative_path: 'cli/core/builtin/',
         filename: 'builtin',
         file_content: TEST_BUILTIN_FILE_CONTENT,
         tags: ['bash', 'CLI', 'builtin', 'Command inspection']
@@ -2163,7 +2240,7 @@ module Memo
         target_dir: '/Users/hy/repo/memorandum/memo/',
         absolute_path: '/Users/hy/repo/memorandum/memo/cli/core/builtin/hash.md',
         parent_directory: '/Users/hy/repo/memorandum/memo/cli/core/builtin/',
-        parent_rel_path: 'cli/core/builtin/',
+        relative_path: 'cli/core/builtin/',
         filename: 'hash',
         file_content: TEST_HASH_FILE_CONTENT,
         tags: ['bash', 'CLI', 'builtin', 'Command inspection']
@@ -2172,7 +2249,7 @@ module Memo
         target_dir: '/Users/hy/repo/memorandum/memo/',
         absolute_path: '/Users/hy/repo/memorandum/memo/cli/core/file/ls.md',
         parent_directory: '/Users/hy/repo/memorandum/memo/cli/core/file/',
-        parent_rel_path: 'cli/core/file/',
+        relative_path: 'cli/core/file/',
         filename: 'ls',
         file_content: TEST_LS_FILE_CONTENT,
         tags: ['bash', 'CLI', 'File and Directory', '表示']
@@ -2181,7 +2258,7 @@ module Memo
         target_dir: '/Users/hy/repo/memorandum/memo/',
         absolute_path: '/Users/hy/repo/memorandum/memo/cli/core/old/groups.md',
         parent_directory: '/Users/hy/repo/memorandum/memo/cli/core/old/',
-        parent_rel_path: 'cli/core/old/',
+        relative_path: 'cli/core/old/',
         filename: 'groups',
         file_content: TEST_GROUPS_FILE_CONTENT,
         tags: %w[bash CLI legacy]
@@ -2190,7 +2267,7 @@ module Memo
         target_dir: '/Users/hy/repo/memorandum/memo/',
         absolute_path: '/Users/hy/repo/memorandum/memo/cli/core/process/lsof.md',
         parent_directory: '/Users/hy/repo/memorandum/memo/cli/core/process/',
-        parent_rel_path: 'cli/core/process/',
+        relative_path: 'cli/core/process/',
         filename: 'lsof',
         file_content: TEST_LSOF_FILE_CONTENT,
         tags: %w[bash CLI process terminate]
@@ -2199,7 +2276,7 @@ module Memo
         target_dir: '/Users/hy/repo/memorandum/memo/',
         absolute_path: '/Users/hy/repo/memorandum/memo/cli/core/search/find.md',
         parent_directory: '/Users/hy/repo/memorandum/memo/cli/core/search/',
-        parent_rel_path: 'cli/core/search/',
+        relative_path: 'cli/core/search/',
         filename: 'find',
         file_content: TEST_FIND_FILE_CONTENT,
         tags: %w[bash CLI search bulk pipe recursive]
@@ -2208,7 +2285,7 @@ module Memo
         target_dir: '/Users/hy/repo/memorandum/memo/',
         absolute_path: '/Users/hy/repo/memorandum/memo/cli/core/text/cut.md',
         parent_directory: '/Users/hy/repo/memorandum/memo/cli/core/text/',
-        parent_rel_path: 'cli/core/text/',
+        relative_path: 'cli/core/text/',
         filename: 'cut',
         file_content: TEST_CUT_FILE_CONTENT,
         tags: %w[bash CLI text filter remove]
@@ -2217,7 +2294,7 @@ module Memo
         target_dir: '/Users/hy/repo/memorandum/memo/',
         absolute_path: '/Users/hy/repo/memorandum/memo/cli/core/text/diff.md',
         parent_directory: '/Users/hy/repo/memorandum/memo/cli/core/text/',
-        parent_rel_path: 'cli/core/text/',
+        relative_path: 'cli/core/text/',
         filename: 'diff',
         file_content: TEST_CLI_CORE_TEXT__FILE_CONTENT,
         tags: %w[bash CLI text]
@@ -2226,7 +2303,7 @@ module Memo
         target_dir: '/Users/hy/repo/memorandum/memo/',
         absolute_path: '/Users/hy/repo/memorandum/memo/cli/core/text/ed.md',
         parent_directory: '/Users/hy/repo/memorandum/memo/cli/core/text/',
-        parent_rel_path: 'cli/core/text/',
+        relative_path: 'cli/core/text/',
         filename: 'ed',
         file_content: TEST_ED_FILE_CONTENT,
         tags: %w[bash CLI text legacy]
@@ -2235,7 +2312,7 @@ module Memo
         target_dir: '/Users/hy/repo/memorandum/memo/',
         absolute_path: '/Users/hy/repo/memorandum/memo/cli/core/text/rev.md',
         parent_directory: '/Users/hy/repo/memorandum/memo/cli/core/text/',
-        parent_rel_path: 'cli/core/text/',
+        relative_path: 'cli/core/text/',
         filename: 'rev',
         file_content: TEST_REV_FILE_CONTENT,
         tags: %w[bash CLI text reverse]
@@ -2244,7 +2321,7 @@ module Memo
         target_dir: '/Users/hy/repo/memorandum/memo/',
         absolute_path: '/Users/hy/repo/memorandum/memo/cli/core/text/tac.md',
         parent_directory: '/Users/hy/repo/memorandum/memo/cli/core/text/',
-        parent_rel_path: 'cli/core/text/',
+        relative_path: 'cli/core/text/',
         filename: 'tac',
         file_content: TEST_TAC_FILE_CONTENT,
         tags: %w[bash CLI text reverse]
@@ -2253,7 +2330,7 @@ module Memo
         target_dir: '/Users/hy/repo/memorandum/memo/',
         absolute_path: '/Users/hy/repo/memorandum/memo/cli/core/text/uniq.md',
         parent_directory: '/Users/hy/repo/memorandum/memo/cli/core/text/',
-        parent_rel_path: 'cli/core/text/',
+        relative_path: 'cli/core/text/',
         filename: 'uniq',
         file_content: TEST_UNIQ_FILE_CONTENT,
         tags: %w[bash CLI text set edit filter remove 集計]
@@ -2262,7 +2339,7 @@ module Memo
         target_dir: '/Users/hy/repo/memorandum/memo/',
         absolute_path: '/Users/hy/repo/memorandum/memo/cli/core/text/xargs.md',
         parent_directory: '/Users/hy/repo/memorandum/memo/cli/core/text/',
-        parent_rel_path: 'cli/core/text/',
+        relative_path: 'cli/core/text/',
         filename: 'xargs',
         file_content: TEST_XARGS_FILE_CONTENT,
         tags: %w[bash CLI text bulk edit pipe search 集計]
@@ -2271,7 +2348,7 @@ module Memo
         target_dir: '/Users/hy/repo/memorandum/memo/',
         absolute_path: '/Users/hy/repo/memorandum/memo/cli/ifconfig.md',
         parent_directory: '/Users/hy/repo/memorandum/memo/cli/',
-        parent_rel_path: 'cli/',
+        relative_path: 'cli/',
         filename: 'ifconfig',
         file_content: TEST_IFCONFIG_FILE_CONTENT,
         tags: %w[CLI Network 表示]
@@ -2280,7 +2357,7 @@ module Memo
         target_dir: '/Users/hy/repo/memorandum/memo/',
         absolute_path: '/Users/hy/repo/memorandum/memo/cli/tcpdump.md',
         parent_directory: '/Users/hy/repo/memorandum/memo/cli/',
-        parent_rel_path: 'cli/',
+        relative_path: 'cli/',
         filename: 'tcpdump',
         file_content: TEST_TCPDUMP_FILE_CONTENT,
         tags: %w[CLI Network]
@@ -2289,7 +2366,7 @@ module Memo
         target_dir: '/Users/hy/repo/memorandum/memo/',
         absolute_path: '/Users/hy/repo/memorandum/memo/cli/third-party/claude.md',
         parent_directory: '/Users/hy/repo/memorandum/memo/cli/third-party/',
-        parent_rel_path: 'cli/third-party/',
+        relative_path: 'cli/third-party/',
         filename: 'claude',
         file_content: TEST_CLAUDE_FILE_CONTENT,
         tags: ['CLI', 'External Command', 'AI', 'CLI client']
@@ -2298,7 +2375,7 @@ module Memo
         target_dir: '/Users/hy/repo/memorandum/memo/',
         absolute_path: '/Users/hy/repo/memorandum/memo/cli/third-party/gh.md',
         parent_directory: '/Users/hy/repo/memorandum/memo/cli/third-party/',
-        parent_rel_path: 'cli/third-party/',
+        relative_path: 'cli/third-party/',
         filename: 'gh',
         file_content: TEST_GH_FILE_CONTENT,
         tags: ['CLI', 'Third Party', 'git', 'CI/CD', 'CLI client']
@@ -2307,7 +2384,7 @@ module Memo
         target_dir: '/Users/hy/repo/memorandum/memo/',
         absolute_path: '/Users/hy/repo/memorandum/memo/cli/third-party/mise.md',
         parent_directory: '/Users/hy/repo/memorandum/memo/cli/third-party/',
-        parent_rel_path: 'cli/third-party/',
+        relative_path: 'cli/third-party/',
         filename: 'mise',
         file_content: TEST_MISE_FILE_CONTENT,
         tags: ['CLI', 'External Command', 'Package Manager', 'Runtime Version Manager']
@@ -2316,7 +2393,7 @@ module Memo
         target_dir: '/Users/hy/repo/memorandum/memo/',
         absolute_path: '/Users/hy/repo/memorandum/memo/cli/third-party/nkf.md',
         parent_directory: '/Users/hy/repo/memorandum/memo/cli/third-party/',
-        parent_rel_path: 'cli/third-party/',
+        relative_path: 'cli/third-party/',
         filename: 'nkf',
         file_content: TEST_NKF_FILE_CONTENT,
         tags: ['CLI', 'External Command', 'text', '表示', '変換', 'Character Inspection', 'edit']
@@ -2325,7 +2402,7 @@ module Memo
         target_dir: '/Users/hy/repo/memorandum/memo/',
         absolute_path: '/Users/hy/repo/memorandum/memo/cli/units.md',
         parent_directory: '/Users/hy/repo/memorandum/memo/cli/',
-        parent_rel_path: 'cli/',
+        relative_path: 'cli/',
         filename: 'units',
         file_content: TEST_UNITS_FILE_CONTENT,
         tags: ['CLI']
@@ -2334,7 +2411,7 @@ module Memo
         target_dir: '/Users/hy/repo/memorandum/memo/',
         absolute_path: '/Users/hy/repo/memorandum/memo/db/sqlite3/sqlite3.md',
         parent_directory: '/Users/hy/repo/memorandum/memo/db/sqlite3/',
-        parent_rel_path: 'db/sqlite3/',
+        relative_path: 'db/sqlite3/',
         filename: 'sqlite3',
         file_content: TEST_SQLITE3_FILE_CONTENT,
         tags: []
@@ -2343,7 +2420,7 @@ module Memo
         target_dir: '/Users/hy/repo/memorandum/memo/',
         absolute_path: '/Users/hy/repo/memorandum/memo/git/branch.md',
         parent_directory: '/Users/hy/repo/memorandum/memo/git/',
-        parent_rel_path: 'git/',
+        relative_path: 'git/',
         filename: 'branch',
         file_content: TEST_BRANCH_FILE_CONTENT,
         tags: ['CLI', 'git', 'Branching and Merging']
@@ -2352,7 +2429,7 @@ module Memo
         target_dir: '/Users/hy/repo/memorandum/memo/',
         absolute_path: '/Users/hy/repo/memorandum/memo/git/config.md',
         parent_directory: '/Users/hy/repo/memorandum/memo/git/',
-        parent_rel_path: 'git/',
+        relative_path: 'git/',
         filename: 'config',
         file_content: TEST_CONFIG_FILE_CONTENT,
         tags: %w[CLI git Setting]
@@ -2361,7 +2438,7 @@ module Memo
         target_dir: '/Users/hy/repo/memorandum/memo/',
         absolute_path: '/Users/hy/repo/memorandum/memo/git/diff.md',
         parent_directory: '/Users/hy/repo/memorandum/memo/git/',
-        parent_rel_path: 'git/',
+        relative_path: 'git/',
         filename: 'diff',
         file_content: TEST_GIT__FILE_CONTENT,
         tags: ['CLI', 'git', 'Basic Snapshotting', 'Comparison Version', 'Patching']
@@ -2370,7 +2447,7 @@ module Memo
         target_dir: '/Users/hy/repo/memorandum/memo/',
         absolute_path: '/Users/hy/repo/memorandum/memo/git/git.md',
         parent_directory: '/Users/hy/repo/memorandum/memo/git/',
-        parent_rel_path: 'git/',
+        relative_path: 'git/',
         filename: 'git',
         file_content: TEST_GIT_FILE_CONTENT,
         tags: %w[CLI git documentation]
@@ -2379,7 +2456,7 @@ module Memo
         target_dir: '/Users/hy/repo/memorandum/memo/',
         absolute_path: '/Users/hy/repo/memorandum/memo/git/log.md',
         parent_directory: '/Users/hy/repo/memorandum/memo/git/',
-        parent_rel_path: 'git/',
+        relative_path: 'git/',
         filename: 'log',
         file_content: TEST_LOG_FILE_CONTENT,
         tags: ['CLI', 'git', 'Branching and Merging', 'Inspection Version']
@@ -2388,7 +2465,7 @@ module Memo
         target_dir: '/Users/hy/repo/memorandum/memo/',
         absolute_path: '/Users/hy/repo/memorandum/memo/git/old/checkout.md',
         parent_directory: '/Users/hy/repo/memorandum/memo/git/old/',
-        parent_rel_path: 'git/old/',
+        relative_path: 'git/old/',
         filename: 'checkout',
         file_content: TEST_CHECKOUT_FILE_CONTENT,
         tags: ['CLI', 'git', 'Branching and Merging', 'legacy']
@@ -2397,7 +2474,7 @@ module Memo
         target_dir: '/Users/hy/repo/memorandum/memo/',
         absolute_path: '/Users/hy/repo/memorandum/memo/git/push.md',
         parent_directory: '/Users/hy/repo/memorandum/memo/git/',
-        parent_rel_path: 'git/',
+        relative_path: 'git/',
         filename: 'push',
         file_content: TEST_PUSH_FILE_CONTENT,
         tags: ['CLI', 'git', 'Sharing and Updating Projects']
@@ -2406,7 +2483,7 @@ module Memo
         target_dir: '/Users/hy/repo/memorandum/memo/',
         absolute_path: '/Users/hy/repo/memorandum/memo/git/reset.md',
         parent_directory: '/Users/hy/repo/memorandum/memo/git/',
-        parent_rel_path: 'git/',
+        relative_path: 'git/',
         filename: 'reset',
         file_content: TEST_RESET_FILE_CONTENT,
         tags: ['CLI', 'git', 'Basic Snapshotting']
@@ -2415,7 +2492,7 @@ module Memo
         target_dir: '/Users/hy/repo/memorandum/memo/',
         absolute_path: '/Users/hy/repo/memorandum/memo/git/rev-parse.md',
         parent_directory: '/Users/hy/repo/memorandum/memo/git/',
-        parent_rel_path: 'git/',
+        relative_path: 'git/',
         filename: 'rev-parse',
         file_content: TEST_REV_PARSE_FILE_CONTENT,
         tags: ['CLI', 'git', 'Plumbing Commands']
@@ -2424,7 +2501,7 @@ module Memo
         target_dir: '/Users/hy/repo/memorandum/memo/',
         absolute_path: '/Users/hy/repo/memorandum/memo/git/upstream.md',
         parent_directory: '/Users/hy/repo/memorandum/memo/git/',
-        parent_rel_path: 'git/',
+        relative_path: 'git/',
         filename: 'upstream',
         file_content: TEST_UPSTREAM_FILE_CONTENT,
         tags: ['git', 'Sharing and Updating Projects', 'Branching and Merging', 'Option']
@@ -2433,7 +2510,7 @@ module Memo
         target_dir: '/Users/hy/repo/memorandum/memo/',
         absolute_path: '/Users/hy/repo/memorandum/memo/how-to/data-exchanger.md',
         parent_directory: '/Users/hy/repo/memorandum/memo/how-to/',
-        parent_rel_path: 'how-to/',
+        relative_path: 'how-to/',
         filename: 'data-exchanger',
         file_content: TEST_DATA_EXCHANGER_FILE_CONTENT,
         tags: ['How to', 'Network']
@@ -2442,7 +2519,7 @@ module Memo
         target_dir: '/Users/hy/repo/memorandum/memo/',
         absolute_path: '/Users/hy/repo/memorandum/memo/how-to/random.md',
         parent_directory: '/Users/hy/repo/memorandum/memo/how-to/',
-        parent_rel_path: 'how-to/',
+        relative_path: 'how-to/',
         filename: 'random',
         file_content: TEST_RANDOM_FILE_CONTENT,
         tags: ['How to', 'Generator']
@@ -2451,7 +2528,7 @@ module Memo
         target_dir: '/Users/hy/repo/memorandum/memo/',
         absolute_path: '/Users/hy/repo/memorandum/memo/how-to/special-characters.md',
         parent_directory: '/Users/hy/repo/memorandum/memo/how-to/',
-        parent_rel_path: 'how-to/',
+        relative_path: 'how-to/',
         filename: 'special-characters',
         file_content: TEST_SPECIAL_CHARACTERS_FILE_CONTENT,
         tags: ['How to', 'Characters', 'Keyboard']
@@ -2460,7 +2537,7 @@ module Memo
         target_dir: '/Users/hy/repo/memorandum/memo/',
         absolute_path: '/Users/hy/repo/memorandum/memo/lang/css/hover.md',
         parent_directory: '/Users/hy/repo/memorandum/memo/lang/css/',
-        parent_rel_path: 'lang/css/',
+        relative_path: 'lang/css/',
         filename: 'hover',
         file_content: TEST_HOVER_FILE_CONTENT,
         tags: %w[CSS 擬似クラス]
@@ -2469,7 +2546,7 @@ module Memo
         target_dir: '/Users/hy/repo/memorandum/memo/',
         absolute_path: '/Users/hy/repo/memorandum/memo/lang/javascript/console.md',
         parent_directory: '/Users/hy/repo/memorandum/memo/lang/javascript/',
-        parent_rel_path: 'lang/javascript/',
+        relative_path: 'lang/javascript/',
         filename: 'console',
         file_content: TEST_CONSOLE_FILE_CONTENT,
         tags: ['JavaScript', 'Debug', 'I/O']
@@ -2478,7 +2555,7 @@ module Memo
         target_dir: '/Users/hy/repo/memorandum/memo/',
         absolute_path: '/Users/hy/repo/memorandum/memo/lang/javascript/map.md',
         parent_directory: '/Users/hy/repo/memorandum/memo/lang/javascript/',
-        parent_rel_path: 'lang/javascript/',
+        relative_path: 'lang/javascript/',
         filename: 'map',
         file_content: TEST_MAP_FILE_CONTENT,
         tags: %w[JavaScript 連想配列 データ構造 Notation]
@@ -2487,7 +2564,7 @@ module Memo
         target_dir: '/Users/hy/repo/memorandum/memo/',
         absolute_path: '/Users/hy/repo/memorandum/memo/lang/javascript/package-json.md',
         parent_directory: '/Users/hy/repo/memorandum/memo/lang/javascript/',
-        parent_rel_path: 'lang/javascript/',
+        relative_path: 'lang/javascript/',
         filename: 'package-json',
         file_content: TEST_PACKAGE_JSON_FILE_CONTENT,
         tags: ['JavaScript', 'Package Manager', 'Setting']
@@ -2496,7 +2573,7 @@ module Memo
         target_dir: '/Users/hy/repo/memorandum/memo/',
         absolute_path: '/Users/hy/repo/memorandum/memo/lang/lua/lua.md',
         parent_directory: '/Users/hy/repo/memorandum/memo/lang/lua/',
-        parent_rel_path: 'lang/lua/',
+        relative_path: 'lang/lua/',
         filename: 'lua',
         file_content: TEST_LUA_FILE_CONTENT,
         tags: ['lua', 'Package Manager', 'Linter', 'Setting', 'Formatter']
@@ -2505,7 +2582,7 @@ module Memo
         target_dir: '/Users/hy/repo/memorandum/memo/',
         absolute_path: '/Users/hy/repo/memorandum/memo/lang/perl/oneliner.md',
         parent_directory: '/Users/hy/repo/memorandum/memo/lang/perl/',
-        parent_rel_path: 'lang/perl/',
+        relative_path: 'lang/perl/',
         filename: 'oneliner',
         file_content: TEST_ONELINER_FILE_CONTENT,
         tags: %w[perl oneliner 表示 edit substitute regex]
@@ -2514,7 +2591,7 @@ module Memo
         target_dir: '/Users/hy/repo/memorandum/memo/',
         absolute_path: '/Users/hy/repo/memorandum/memo/lang/ruby/arguments.md',
         parent_directory: '/Users/hy/repo/memorandum/memo/lang/ruby/',
-        parent_rel_path: 'lang/ruby/',
+        relative_path: 'lang/ruby/',
         filename: 'arguments',
         file_content: TEST_ARGUMENTS_FILE_CONTENT,
         tags: %w[Ruby 引数 TODO]
@@ -2523,7 +2600,7 @@ module Memo
         target_dir: '/Users/hy/repo/memorandum/memo/',
         absolute_path: '/Users/hy/repo/memorandum/memo/lang/ruby/assignment.md',
         parent_directory: '/Users/hy/repo/memorandum/memo/lang/ruby/',
-        parent_rel_path: 'lang/ruby/',
+        relative_path: 'lang/ruby/',
         filename: 'assignment',
         file_content: TEST_ASSIGNMENT_FILE_CONTENT,
         tags: %w[Ruby 配列 演算子式 初期化]
@@ -2532,7 +2609,7 @@ module Memo
         target_dir: '/Users/hy/repo/memorandum/memo/',
         absolute_path: '/Users/hy/repo/memorandum/memo/lang/ruby/bundle.md',
         parent_directory: '/Users/hy/repo/memorandum/memo/lang/ruby/',
-        parent_rel_path: 'lang/ruby/',
+        relative_path: 'lang/ruby/',
         filename: 'bundle',
         file_content: TEST_BUNDLE_FILE_CONTENT,
         tags: ['CLI', 'Ruby', 'Project Manager', 'Dependency Management']
@@ -2541,7 +2618,7 @@ module Memo
         target_dir: '/Users/hy/repo/memorandum/memo/',
         absolute_path: '/Users/hy/repo/memorandum/memo/lang/ruby/compare.md',
         parent_directory: '/Users/hy/repo/memorandum/memo/lang/ruby/',
-        parent_rel_path: 'lang/ruby/',
+        relative_path: 'lang/ruby/',
         filename: 'compare',
         file_content: TEST_COMPARE_FILE_CONTENT,
         tags: %w[Ruby 比較]
@@ -2550,7 +2627,7 @@ module Memo
         target_dir: '/Users/hy/repo/memorandum/memo/',
         absolute_path: '/Users/hy/repo/memorandum/memo/lang/ruby/index.md',
         parent_directory: '/Users/hy/repo/memorandum/memo/lang/ruby/',
-        parent_rel_path: 'lang/ruby/',
+        relative_path: 'lang/ruby/',
         filename: 'index',
         file_content: TEST_INDEX_FILE_CONTENT,
         tags: %w[Ruby Idiom]
@@ -2559,7 +2636,7 @@ module Memo
         target_dir: '/Users/hy/repo/memorandum/memo/',
         absolute_path: '/Users/hy/repo/memorandum/memo/lang/ruby/module.md',
         parent_directory: '/Users/hy/repo/memorandum/memo/lang/ruby/',
-        parent_rel_path: 'lang/ruby/',
+        relative_path: 'lang/ruby/',
         filename: 'module',
         file_content: TEST_MODULE_FILE_CONTENT,
         tags: %w[Ruby TODO]
@@ -2568,7 +2645,7 @@ module Memo
         target_dir: '/Users/hy/repo/memorandum/memo/',
         absolute_path: '/Users/hy/repo/memorandum/memo/lang/ruby/rake.md',
         parent_directory: '/Users/hy/repo/memorandum/memo/lang/ruby/',
-        parent_rel_path: 'lang/ruby/',
+        relative_path: 'lang/ruby/',
         filename: 'rake',
         file_content: TEST_RAKE_FILE_CONTENT,
         tags: ['Ruby', 'Task Runner']
@@ -2577,7 +2654,7 @@ module Memo
         target_dir: '/Users/hy/repo/memorandum/memo/',
         absolute_path: '/Users/hy/repo/memorandum/memo/lang/ruby/string.md',
         parent_directory: '/Users/hy/repo/memorandum/memo/lang/ruby/',
-        parent_rel_path: 'lang/ruby/',
+        relative_path: 'lang/ruby/',
         filename: 'string',
         file_content: TEST_STRING_FILE_CONTENT,
         tags: %w[Ruby string Creation Concatenation データ構造]
@@ -2586,7 +2663,7 @@ module Memo
         target_dir: '/Users/hy/repo/memorandum/memo/',
         absolute_path: '/Users/hy/repo/memorandum/memo/lang/ruby/type-check.md',
         parent_directory: '/Users/hy/repo/memorandum/memo/lang/ruby/',
-        parent_rel_path: 'lang/ruby/',
+        relative_path: 'lang/ruby/',
         filename: 'type-check',
         file_content: TEST_TYPE_CHECK_FILE_CONTENT,
         tags: %w[Ruby 型検査]
@@ -2595,7 +2672,7 @@ module Memo
         target_dir: '/Users/hy/repo/memorandum/memo/',
         absolute_path: '/Users/hy/repo/memorandum/memo/lang/test-assertion.md',
         parent_directory: '/Users/hy/repo/memorandum/memo/lang/',
-        parent_rel_path: 'lang/',
+        relative_path: 'lang/',
         filename: 'test-assertion',
         file_content: TEST_TEST_ASSERTION_FILE_CONTENT,
         tags: ['テストコード']
@@ -2604,7 +2681,7 @@ module Memo
         target_dir: '/Users/hy/repo/memorandum/memo/',
         absolute_path: '/Users/hy/repo/memorandum/memo/meta/format.md',
         parent_directory: '/Users/hy/repo/memorandum/memo/meta/',
-        parent_rel_path: 'meta/',
+        relative_path: 'meta/',
         filename: 'format',
         file_content: TEST_FORMAT_FILE_CONTENT,
         tags: %w[meta format]
@@ -2613,7 +2690,7 @@ module Memo
         target_dir: '/Users/hy/repo/memorandum/memo/',
         absolute_path: '/Users/hy/repo/memorandum/memo/neovim/buffer.md',
         parent_directory: '/Users/hy/repo/memorandum/memo/neovim/',
-        parent_rel_path: 'neovim/',
+        relative_path: 'neovim/',
         filename: 'buffer',
         file_content: TEST_BUFFER_FILE_CONTENT,
         tags: ['neovim', 'buffer', 'Command Line Mode']
@@ -2622,7 +2699,7 @@ module Memo
         target_dir: '/Users/hy/repo/memorandum/memo/',
         absolute_path: '/Users/hy/repo/memorandum/memo/neovim/commenting.md',
         parent_directory: '/Users/hy/repo/memorandum/memo/neovim/',
-        parent_rel_path: 'neovim/',
+        relative_path: 'neovim/',
         filename: 'commenting',
         file_content: TEST_COMMENTING_FILE_CONTENT,
         tags: ['neovim', 'Comment Out', 'documentation']
@@ -2631,7 +2708,7 @@ module Memo
         target_dir: '/Users/hy/repo/memorandum/memo/',
         absolute_path: '/Users/hy/repo/memorandum/memo/neovim/plugin/neo-tree.md',
         parent_directory: '/Users/hy/repo/memorandum/memo/neovim/plugin/',
-        parent_rel_path: 'neovim/plugin/',
+        relative_path: 'neovim/plugin/',
         filename: 'neo-tree',
         file_content: TEST_NEO_TREE_FILE_CONTENT,
         tags: %w[neovim plugin documentation]
@@ -2640,7 +2717,7 @@ module Memo
         target_dir: '/Users/hy/repo/memorandum/memo/',
         absolute_path: '/Users/hy/repo/memorandum/memo/neovim/plugin/nvim-surround.md',
         parent_directory: '/Users/hy/repo/memorandum/memo/neovim/plugin/',
-        parent_rel_path: 'neovim/plugin/',
+        relative_path: 'neovim/plugin/',
         filename: 'nvim-surround',
         file_content: TEST_NVIM_SURROUND_FILE_CONTENT,
         tags: ['neovim', 'plugin', 'Operator', 'Normal Mode', 'documentation']
@@ -2649,7 +2726,7 @@ module Memo
         target_dir: '/Users/hy/repo/memorandum/memo/',
         absolute_path: '/Users/hy/repo/memorandum/memo/neovim/read-help.md',
         parent_directory: '/Users/hy/repo/memorandum/memo/neovim/',
-        parent_rel_path: 'neovim/',
+        relative_path: 'neovim/',
         filename: 'read-help',
         file_content: TEST_READ_HELP_FILE_CONTENT,
         tags: %w[neovim documentation]
@@ -2658,7 +2735,7 @@ module Memo
         target_dir: '/Users/hy/repo/memorandum/memo/',
         absolute_path: '/Users/hy/repo/memorandum/memo/neovim/script.md',
         parent_directory: '/Users/hy/repo/memorandum/memo/neovim/',
-        parent_rel_path: 'neovim/',
+        relative_path: 'neovim/',
         filename: 'script',
         file_content: TEST_SCRIPT_FILE_CONTENT,
         tags: ['neovim']
@@ -2667,7 +2744,7 @@ module Memo
         target_dir: '/Users/hy/repo/memorandum/memo/',
         absolute_path: '/Users/hy/repo/memorandum/memo/neovim/tips.md',
         parent_directory: '/Users/hy/repo/memorandum/memo/neovim/',
-        parent_rel_path: 'neovim/',
+        relative_path: 'neovim/',
         filename: 'tips',
         file_content: TEST_TIPS_FILE_CONTENT,
         tags: %w[neovim Tips Motion]
@@ -2676,7 +2753,7 @@ module Memo
         target_dir: '/Users/hy/repo/memorandum/memo/',
         absolute_path: '/Users/hy/repo/memorandum/memo/react.md',
         parent_directory: '/Users/hy/repo/memorandum/memo/',
-        parent_rel_path: './',
+        relative_path: './',
         filename: 'react',
         file_content: TEST_REACT_FILE_CONTENT,
         tags: ['Frontend']
@@ -2685,7 +2762,7 @@ module Memo
         target_dir: '/Users/hy/repo/memorandum/memo/',
         absolute_path: '/Users/hy/repo/memorandum/memo/setting/dockerfile.md',
         parent_directory: '/Users/hy/repo/memorandum/memo/setting/',
-        parent_rel_path: 'setting/',
+        relative_path: 'setting/',
         filename: 'dockerfile',
         file_content: TEST_DOCKERFILE_FILE_CONTENT,
         tags: ['Docker']
@@ -2694,7 +2771,7 @@ module Memo
         target_dir: '/Users/hy/repo/memorandum/memo/',
         absolute_path: '/Users/hy/repo/memorandum/memo/setting/makefile.md',
         parent_directory: '/Users/hy/repo/memorandum/memo/setting/',
-        parent_rel_path: 'setting/',
+        relative_path: 'setting/',
         filename: 'makefile',
         file_content: TEST_MAKEFILE_FILE_CONTENT,
         tags: ['Task Runner']
@@ -2703,7 +2780,7 @@ module Memo
         target_dir: '/Users/hy/repo/memorandum/memo/',
         absolute_path: '/Users/hy/repo/memorandum/memo/shell/bash/bash.md',
         parent_directory: '/Users/hy/repo/memorandum/memo/shell/bash/',
-        parent_rel_path: 'shell/bash/',
+        relative_path: 'shell/bash/',
         filename: 'bash',
         file_content: TEST_BASH_FILE_CONTENT,
         tags: %w[bash documentation Tips]
@@ -2712,7 +2789,7 @@ module Memo
         target_dir: '/Users/hy/repo/memorandum/memo/',
         absolute_path: '/Users/hy/repo/memorandum/memo/shell/bash/exit-status.md',
         parent_directory: '/Users/hy/repo/memorandum/memo/shell/bash/',
-        parent_rel_path: 'shell/bash/',
+        relative_path: 'shell/bash/',
         filename: 'exit-status',
         file_content: TEST_EXIT_STATUS_FILE_CONTENT,
         tags: %w[bash test status]
@@ -2721,7 +2798,7 @@ module Memo
         target_dir: '/Users/hy/repo/memorandum/memo/',
         absolute_path: '/Users/hy/repo/memorandum/memo/shell/bash/expansion/history-expansion.md',
         parent_directory: '/Users/hy/repo/memorandum/memo/shell/bash/expansion/',
-        parent_rel_path: 'shell/bash/expansion/',
+        relative_path: 'shell/bash/expansion/',
         filename: 'history-expansion',
         file_content: TEST_HISTORY_EXPANSION_FILE_CONTENT,
         tags: %w[bash expansion]
@@ -2730,7 +2807,7 @@ module Memo
         target_dir: '/Users/hy/repo/memorandum/memo/',
         absolute_path: '/Users/hy/repo/memorandum/memo/shell/bash/for.md',
         parent_directory: '/Users/hy/repo/memorandum/memo/shell/bash/',
-        parent_rel_path: 'shell/bash/',
+        relative_path: 'shell/bash/',
         filename: 'for',
         file_content: TEST_FOR_FILE_CONTENT,
         tags: %w[bash syntax documentation]
@@ -2739,7 +2816,7 @@ module Memo
         target_dir: '/Users/hy/repo/memorandum/memo/',
         absolute_path: '/Users/hy/repo/memorandum/memo/shell/bash/redirection.md',
         parent_directory: '/Users/hy/repo/memorandum/memo/shell/bash/',
-        parent_rel_path: 'shell/bash/',
+        relative_path: 'shell/bash/',
         filename: 'redirection',
         file_content: TEST_REDIRECTION_FILE_CONTENT,
         tags: ['bash', 'Redirection', 'I/O', 'documentation']
@@ -2748,7 +2825,7 @@ module Memo
         target_dir: '/Users/hy/repo/memorandum/memo/',
         absolute_path: '/Users/hy/repo/memorandum/memo/shell/bash/special-parameters.md',
         parent_directory: '/Users/hy/repo/memorandum/memo/shell/bash/',
-        parent_rel_path: 'shell/bash/',
+        relative_path: 'shell/bash/',
         filename: 'special-parameters',
         file_content: TEST_SPECIAL_PARAMETERS_FILE_CONTENT,
         tags: %w[bash Notation Tips documentation]
@@ -2757,7 +2834,7 @@ module Memo
         target_dir: '/Users/hy/repo/memorandum/memo/',
         absolute_path: '/Users/hy/repo/memorandum/memo/shell/zsh/command-history.md',
         parent_directory: '/Users/hy/repo/memorandum/memo/shell/zsh/',
-        parent_rel_path: 'shell/zsh/',
+        relative_path: 'shell/zsh/',
         filename: 'command-history',
         file_content: TEST_COMMAND_HISTORY_FILE_CONTENT,
         tags: ['zsh', 'documentation', 'command history']
@@ -2766,7 +2843,7 @@ module Memo
         target_dir: '/Users/hy/repo/memorandum/memo/',
         absolute_path: '/Users/hy/repo/memorandum/memo/tui/emacs.md',
         parent_directory: '/Users/hy/repo/memorandum/memo/tui/',
-        parent_rel_path: 'tui/',
+        relative_path: 'tui/',
         filename: 'emacs',
         file_content: TEST_EMACS_FILE_CONTENT,
         tags: %w[TUI Tips]
@@ -2775,7 +2852,7 @@ module Memo
         target_dir: '/Users/hy/repo/memorandum/memo/',
         absolute_path: '/Users/hy/repo/memorandum/memo/tui/lazygit.md',
         parent_directory: '/Users/hy/repo/memorandum/memo/tui/',
-        parent_rel_path: 'tui/',
+        relative_path: 'tui/',
         filename: 'lazygit',
         file_content: TEST_LAZYGIT_FILE_CONTENT,
         tags: %w[TUI Terminal git]
@@ -2784,25 +2861,34 @@ module Memo
         target_dir: '/Users/hy/repo/memorandum/memo/',
         absolute_path: '/Users/hy/repo/memorandum/memo/tui/tmux.md',
         parent_directory: '/Users/hy/repo/memorandum/memo/tui/',
-        parent_rel_path: 'tui/',
+        relative_path: 'tui/',
         filename: 'tmux',
         file_content: TEST_TMUX_FILE_CONTENT,
         tags: %w[TUI Terminal]
       },
       {
         target_dir: '/Users/hy/repo/private-memo/memo/',
-        absolute_path: '/Users/hy/repo/private-memo/memo/architecture/principles.md',
+        absolute_path: '/Users/hy/repo/private-memo/memo/architecture/null.md',
         parent_directory: '/Users/hy/repo/private-memo/memo/architecture/',
-        parent_rel_path: 'architecture/',
-        filename: 'principles',
-        file_content: TEST_PRINCIPLES_FILE_CONTENT,
+        relative_path: 'architecture/',
+        filename: 'null',
+        file_content: TEST_NULL_FILE_CONTENT,
         tags: []
+      },
+      {
+        target_dir: '/Users/hy/repo/private-memo/memo/',
+        absolute_path: '/Users/hy/repo/private-memo/memo/architecture/unit-test.md',
+        parent_directory: '/Users/hy/repo/private-memo/memo/architecture/',
+        relative_path: 'architecture/',
+        filename: 'unit-test',
+        file_content: TEST_UNIT_TEST_FILE_CONTENT,
+        tags: %w[architecture metrics テスト 単体テスト]
       },
       {
         target_dir: '/Users/hy/repo/private-memo/memo/',
         absolute_path: '/Users/hy/repo/private-memo/memo/books/tdd/set-the-table.md',
         parent_directory: '/Users/hy/repo/private-memo/memo/books/tdd/',
-        parent_rel_path: 'books/tdd/',
+        relative_path: 'books/tdd/',
         filename: 'set-the-table',
         file_content: TEST_SET_THE_TABLE_FILE_CONTENT,
         tags: %w[テスト駆動開発 AAA]
@@ -2811,7 +2897,7 @@ module Memo
         target_dir: '/Users/hy/repo/private-memo/memo/',
         absolute_path: '/Users/hy/repo/private-memo/memo/english/chat.md',
         parent_directory: '/Users/hy/repo/private-memo/memo/english/',
-        parent_rel_path: 'english/',
+        relative_path: 'english/',
         filename: 'chat',
         file_content: TEST_CHAT_FILE_CONTENT,
         tags: %w[English Messages]
@@ -2820,7 +2906,7 @@ module Memo
         target_dir: '/Users/hy/repo/private-memo/memo/',
         absolute_path: '/Users/hy/repo/private-memo/memo/english/prompt-ai.md',
         parent_directory: '/Users/hy/repo/private-memo/memo/english/',
-        parent_rel_path: 'english/',
+        relative_path: 'english/',
         filename: 'prompt-ai',
         file_content: TEST_PROMPT_AI_FILE_CONTENT,
         tags: ['English', 'AI prompt']
@@ -2829,7 +2915,7 @@ module Memo
         target_dir: '/Users/hy/repo/private-memo/memo/',
         absolute_path: '/Users/hy/repo/private-memo/memo/english/vocabulary-about-computer.md',
         parent_directory: '/Users/hy/repo/private-memo/memo/english/',
-        parent_rel_path: 'english/',
+        relative_path: 'english/',
         filename: 'vocabulary-about-computer',
         file_content: TEST_VOCABULARY_ABOUT_COMPUTER_FILE_CONTENT,
         tags: %w[English Vocabulary]
@@ -2838,7 +2924,7 @@ module Memo
         target_dir: '/Users/hy/repo/private-memo/memo/',
         absolute_path: '/Users/hy/repo/private-memo/memo/etc/math.md',
         parent_directory: '/Users/hy/repo/private-memo/memo/etc/',
-        parent_rel_path: 'etc/',
+        relative_path: 'etc/',
         filename: 'math',
         file_content: TEST_MATH_FILE_CONTENT,
         tags: %w[math C floor ceil]
@@ -2847,7 +2933,7 @@ module Memo
         target_dir: '/Users/hy/repo/private-memo/memo/',
         absolute_path: '/Users/hy/repo/private-memo/memo/japanese/kotoba.md',
         parent_directory: '/Users/hy/repo/private-memo/memo/japanese/',
-        parent_rel_path: 'japanese/',
+        relative_path: 'japanese/',
         filename: 'kotoba',
         file_content: TEST_KOTOBA_FILE_CONTENT,
         tags: ['日本語']
@@ -2856,7 +2942,7 @@ module Memo
         target_dir: '/Users/hy/repo/private-memo/memo/',
         absolute_path: '/Users/hy/repo/private-memo/memo/japanese/yomikata.md',
         parent_directory: '/Users/hy/repo/private-memo/memo/japanese/',
-        parent_rel_path: 'japanese/',
+        relative_path: 'japanese/',
         filename: 'yomikata',
         file_content: TEST_YOMIKATA_FILE_CONTENT,
         tags: ['日本語']
