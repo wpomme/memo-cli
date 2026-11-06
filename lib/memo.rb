@@ -36,6 +36,8 @@ require_relative 'memo/view_model/tags'
 require_relative 'memo/view_model/dirs'
 require_relative 'memo/view_model/list'
 require_relative 'memo/sub_command_parser'
+require_relative 'memo/new_command_parser/common'
+require_relative 'memo/new_command_parser/tags'
 require_relative 'memo/command'
 
 module Memo

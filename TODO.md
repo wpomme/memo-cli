@@ -16,7 +16,7 @@
     - Tags
         - タグの整列順を統一・整理すること
     - List
-        - :duplicate, :countを作成する
+        - :duplicateを作成する
     - Read
         - Serviceのselect_promptをViewModelに移動する
     - dirs

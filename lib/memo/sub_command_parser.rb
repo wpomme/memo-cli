@@ -18,7 +18,7 @@ module Memo
       when 'dirs'
         parse_no_arguments(str: 'dirs', argv: argv)
       when 'tags'
-        parse_tags_command(argv: argv)
+        Memo::NewCommandParser::Tags.new.execute(argv: argv)
       when 'list'
         parse_list_command(argv: argv)
       when 'help'
@@ -44,35 +44,6 @@ module Memo
       { str => argv[0] }
     end
 
-    def parse_tags_command(str: 'tags', argv: nil)
-      parsed = {}
-
-      OptionParser.new do |opt|
-        tags_spec_list.each do |spec|
-          opt.on(spec.short, spec.long, spec.desc)
-        end
-      end
-        .parse(argv, into: parsed)
-
-      to_error_message(:too_many_options, str) if parsed.size > 1
-
-      { str => parsed.empty? || parsed.keys[0] }
-    end
-
-    def tags_spec_list
-      name_spec = Spec.new('-n', '--name', TAGS_OPTIONS_NAME)
-      count_spec = Spec.new('-c', '--count', TAGS_OPTIONS_COUNT)
-      empty_spec = Spec.new('-e', '--empty', TAGS_OPTIONS_EMPTY)
-
-      spec_list([name_spec, count_spec, empty_spec])
-    end
-
-    def spec_list(specs)
-      specs.map do |spec|
-        Spec.new(spec.short, spec.long, spec.desc)
-      end
-    end
-
     def parse_list_command(str: 'list', argv: nil)
       to_error_message(:too_many_args, str) if argv.size > 1
 
@@ -81,8 +52,6 @@ module Memo
       opt = argv[0]
 
       to_error_message(:too_long_args, str) if opt.size > 32
-
-      return { str => :count } if ['-c', '--count'].include?(opt)
 
       return { str => :duplicate } if ['-d', '--duplicate'].include?(opt)
 
