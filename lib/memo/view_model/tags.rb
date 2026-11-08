@@ -7,52 +7,54 @@ module Memo
 
       def initialize(target_dirs: Memo::Config.target_dirs)
         @file_loader = Memo::FileLoader.new(target_dirs: target_dirs)
+        @directory_loader = Memo::DirectoryLoader.new(target_dirs: target_dirs)
+        @to_relative_dir = @directory_loader.to_relative_dir
       end
 
       def execute(option)
-        return seeds_hash_to_view(@file_loader.tag_files_hash, TAG_COLOR) if option == true
+        return seeds_hash_to_view(@file_loader.tag_files_hash) if option == true
 
         return count_hash_to_view(@file_loader.tags_sorted_by_file_size) if option == :count
 
-        return empty_seeds_to_view(@file_loader.file_seeds_without_tags) if option == :empty
+        return empty_tags_to_view if option == :empty
 
         @file_loader.tags_sorted_by_tag_name if option == :name
       end
 
       private
 
-      def grouped_empty_seeds(file_seeds)
+      # empty_tags_to_view ~ parent_directory_to_filenames_without_tagsまで、memo listとほぼ同じロジック
+      def empty_tags_to_view
+        result = empty_tags_list.map do |key, dir_tags_hash|
+          colored = dir_tags_hash.map do |(dir, tags)|
+            [dir_color_sub(@to_relative_dir[dir]), tags.join(SPACE), "\n"]
+          end
+
+          [dir_color_main(key)].concat(colored)
+        end.flatten
+
+        remove_last_element(result)
+      end
+
+      def empty_tags_list
         result = {}
 
-        file_seeds.each do |file_seed|
-          (result[[file_seed[:target_dir], file_seed[:relative_path]]] ||= []) << file_seed[:filename]
+        parent_directory_to_filenames_without_tags.each do |parent_dir, filenames|
+          target_dir = @directory_loader.to_target_dir[parent_dir]
+          (result[target_dir] ||= []) << [parent_dir, filenames]
         end
 
         result
       end
 
-      # NOTE: WIP - Refactoring
-      def empty_seeds_to_view(file_seeds)
-        result1 = grouped_empty_seeds(file_seeds)
+      def parent_directory_to_filenames_without_tags
+        result = {}
 
-        result2 = {}
-
-        result1.each_key do |key_arr|
-          filenames = result1[key_arr]
-          (result2[key_arr[0]] ||= []) << [key_arr[1], filenames]
+        @file_loader.file_seeds.each do |file_seed|
+          (result[file_seed[:parent_directory]] ||= []) << file_seed[:filename] if file_seed[:tags].empty?
         end
 
-        nest_hash_to_view(result2, :green, :cyan)
-      end
-
-      def nest_hash_to_view(nest_hash_array, key1_color, key2_color)
-        nest_hash_array.keys.map do |key1|
-          ret = nest_hash_array[key1].flat_map do |key2, arr|
-            [Rainbow(key2).color(key2_color)].push(arr.join(SPACE)).push("\n")
-          end
-
-          [Rainbow(key1).color(key1_color)].concat(ret)
-        end.flatten
+        result
       end
 
       def count_hash_to_view(hash)
@@ -66,9 +68,9 @@ module Memo
       # @param seeds_hash [Hash<String, Array<Seed>>] 文字列がキーで、値がSeedの配列となるハッシュ
       # @param color_symbol [Symbol] キーの色付けを指定する
       # @return [Array<String>]
-      def seeds_hash_to_view(seeds_hash, color_symbol)
+      def seeds_hash_to_view(seeds_hash)
         result = seeds_hash.inject([]) do |result, (key, files)|
-          result << Rainbow("#{key}: #{files.size}").color(color_symbol) << files.join(SPACE) << "\n"
+          result << tag_color("#{key}: #{files.size}") << files.join(SPACE) << "\n"
         end
 
         remove_last_element(result)
