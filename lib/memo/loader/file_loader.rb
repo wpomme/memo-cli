@@ -48,13 +48,6 @@ module Memo
       end
     end
 
-    # タグの付いていないファイルのseedを配列で返す
-    def file_seeds_without_tags
-      file_seeds.filter do |file_seed|
-        file_seed[:tags].empty?
-      end
-    end
-
     # 対象ファイルの絶対パスがキーで、そのファイルに付けられているタグの一覧をハッシュで返す
     # Database::Setup#seedsについて、DBに挿入するデータを作成するために使用するメソッド
     #

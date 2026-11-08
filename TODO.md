@@ -13,10 +13,8 @@
 - DirectoryLoader
     - DirectorySeedを使う
 - MVCアーキテクチャについて
-    - Tags
-        - タグの整列順を統一・整理すること
-    - List
-        - :duplicateを作成する
+    - List, Tags
+        - :duplicateを作成する、ロジックの整理
     - Read
         - Serviceのselect_promptをViewModelに移動する
     - dirs
