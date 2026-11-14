@@ -12,16 +12,21 @@ module Memo
       def execute(word: '')
         if word == true
           @vw.default.each do |target_dir, seed_hash|
-            puts dir_color_sub(target_dir)
+            render_hash = {}
 
             seed_hash.each do |dir, seeds|
-              puts dir_color_main(dir)
-
               filenames = seeds.map do |seed|
                 seed[:filename]
               end
 
-              puts filenames.join(SPACE)
+              render_hash[dir] = filenames.join(SPACE)
+            end
+
+            puts dir_color_sub(target_dir)
+
+            render_hash.each do |dir, filenames|
+              puts dir_color_main(dir)
+              puts filenames
               # TODO: 最後の要素だけは改行を出力しないようにしたい
               puts
             end

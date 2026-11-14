@@ -27,6 +27,7 @@ module Memo
             next if render_hash.empty?
 
             puts dir_color_sub(target_dir)
+
             render_hash.each do |dir, filenames|
               puts dir_color_main(dir)
               puts filenames
