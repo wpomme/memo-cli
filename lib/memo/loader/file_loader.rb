@@ -10,14 +10,6 @@ module Memo
       @file_seeds = load_file_seeds(target_dirs).flatten
     end
 
-    # 全てのタグの一覧をソートし、重複を排除してから、その一覧を返す
-    # 名前順に並んでいる
-    #
-    # @return [Array<String>]
-    def tags_sorted_by_tag_name
-      tag_list.sort
-    end
-
     # 重複を排除した上で、全てのタグの総数を返す
     #
     # @return [Integer]
@@ -32,6 +24,14 @@ module Memo
       @tags_sorted_by_file_size ||= tag_files_size.to_a.sort do |a, b|
         b[1] <=> a[1]
       end
+    end
+
+    # 全てのタグの一覧をソートし、重複を排除してから、その一覧を返す
+    # 名前順に並んでいる
+    #
+    # @return [Array<String>]
+    def tags_sorted_by_tag_name
+      tag_list.sort
     end
 
     # それぞれのタグと、そのタグが付いているSeedの配列のハッシュを返す

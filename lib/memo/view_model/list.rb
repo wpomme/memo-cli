@@ -16,9 +16,31 @@ module Memo
         list_by_dir_to_view(word)
       end
 
-      # memo listを実行する際、引数を取らない場合
       def default
-        @file_loader.seeds_grouped_by_directory
+        result = []
+
+        # NOTE: memo tags -eと同じロジックになった
+        @file_loader.seeds_grouped_by_directory.each do |target_dir, seed_hash|
+          render_hash = {}
+
+          seed_hash.each do |dir, seeds|
+            filenames = seeds.map do |seed|
+              seed[:filename]
+            end
+
+            render_hash[dir] = filenames.join(SPACE)
+          end
+
+          result << dir_color_sub(target_dir)
+
+          render_hash.each do |dir, filenames|
+            result << dir_color_main(dir)
+            result << filenames
+            result << "\n"
+          end
+        end
+
+        remove_last_element(result)
       end
 
       def duplicate
