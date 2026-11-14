@@ -20,7 +20,8 @@ module Memo
       end
 
       def empty
-        @file_loader.seeds_grouped_by_directory
+        # @file_loader.seeds_grouped_by_directory
+        @file_loader.empty_tags_seeds_grouped_by_directory
       end
 
       private

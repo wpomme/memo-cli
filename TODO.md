@@ -15,8 +15,6 @@
 - MVCアーキテクチャについて
     - List, Tags
         - View, ViewModelを使ってロジックの整理
-    - List
-        - :duplicateを作成する
     - Read
         - Serviceのselect_promptをViewModelに移動する
     - dirs

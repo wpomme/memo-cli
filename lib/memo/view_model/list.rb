@@ -12,18 +12,17 @@ module Memo
         @to_relative_dir = @directory_loader.to_relative_dir
       end
 
-      # TODO: -d/--duplicateと-c/--countの場合も作成する
-      #  -d: 重複しているファイル名を出力する
-      #  -c: ディレクトリごとのファイルについて、ファイルの数も出力する
       def execute(word)
-        return all_list_to_view if word == true
-
         list_by_dir_to_view(word)
       end
 
       # memo listを実行する際、引数を取らない場合
       def default
         @file_loader.seeds_grouped_by_directory
+      end
+
+      def duplicate
+        @file_loader.duplicated_filenames_seeds
       end
 
       private

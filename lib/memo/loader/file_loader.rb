@@ -58,8 +58,23 @@ module Memo
       end
     end
 
-    def seeds_grouped_by_directory
-      group_by_target_dir = file_seeds.group_by do |seeds|
+    # 重複したファイル名を持つfile_seedの配列を返す
+    #
+    # @return [Hash<String, Integer>]
+    def duplicated_filenames_seeds
+      filenames = file_seeds.map do |seeds|
+        seeds[:filename]
+      end
+
+      file_seeds.filter do |file_seed|
+        filenames.count(file_seed[:filename]) > 1
+      end
+    end
+
+    # 対象ディレクトリ => 親ディレクトリ => seedsのネストしたハッシュを返す
+    # memo listで使用する
+    def seeds_grouped_by_directory(seeds: file_seeds)
+      group_by_target_dir = seeds.group_by do |seeds|
         seeds[:target_dir]
       end
 
@@ -70,7 +85,18 @@ module Memo
       end
     end
 
+    # タグが空の場合の、対象ディレクトリ => 親ディレクトリ => seedsのネストしたハッシュを返す
+    # memo tags --emptyで使用する
+    def empty_tags_seeds_grouped_by_directory
+      seeds_grouped_by_directory(seeds: empty_tags_seeds)
+    end
+
     private
+
+    # タグが空のseedsを返す
+    def empty_tags_seeds
+      file_seeds.select { |file_seed| file_seed[:tags].empty? }
+    end
 
     # それぞれのタグと、そのタグが付いているファイルの数のハッシュを返す
     #
@@ -78,27 +104,6 @@ module Memo
     def tag_files_size
       @tag_files_size ||= tag_files_hash
         .transform_values(&:size)
-    end
-
-    # TODO: ViewModel::Listと紐付けする
-    # 重複したファイル名を持つfile_seedの配列を返す
-    #
-    # @return [Hash<String, Integer>]
-    def duplicated_filenames_seeds
-      file_seeds.filter do |file_seed|
-        filenames.count(file_seed[:filename]) > 1
-      end
-    end
-
-    # TODO: ViewModel::Listと紐付けする
-    # 重複したファイル名があれば、次のようなハッシュが返ってくる
-    # {"array" => 2, "builtin" => 2, "command" => 2, "diff" => 2, "mise" => 2}
-    #
-    # @return [Hash<String, Integer>]
-    def duplicated_filenames_hash
-      filenames.filter do |filename|
-        filenames.count(filename) > 1
-      end.tally
     end
 
     # 全てのタグの一覧。ソートしていない
