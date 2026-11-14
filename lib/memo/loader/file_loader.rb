@@ -62,10 +62,6 @@ module Memo
     #
     # @return [Hash<String, Integer>]
     def duplicated_filenames_seeds
-      filenames = file_seeds.map do |seeds|
-        seeds[:filename]
-      end
-
       file_seeds.filter do |file_seed|
         filenames.count(file_seed[:filename]) > 1
       end
@@ -79,13 +75,8 @@ module Memo
     end
 
     # 対象ディレクトリ => 親ディレクトリ => seedsのネストしたハッシュを返す
-    # memo listで使用する
     def seeds_grouped_by_directory(seeds: file_seeds)
-      group_by_target_dir = seeds.group_by do |seeds|
-        seeds[:target_dir]
-      end
-
-      group_by_target_dir.transform_values do |seed|
+      group_by_target_dir(seeds: seeds).transform_values do |seed|
         seed.group_by do |s|
           s[:relative_path]
         end
@@ -99,6 +90,20 @@ module Memo
     end
 
     private
+
+    # 対象ディレクトリ => seedsのネストしたハッシュを返す
+    def group_by_target_dir(seeds: file_seeds)
+      @group_by_target_dir ||= seeds.group_by do |seeds|
+        seeds[:target_dir]
+      end
+    end
+
+    # ファイル名の一覧を返す
+    def filenames
+      @filenames ||= file_seeds.map do |seeds|
+        seeds[:filename]
+      end
+    end
 
     # タグが空のseedsを返す
     def empty_tags_seeds

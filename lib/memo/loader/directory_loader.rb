@@ -60,5 +60,16 @@ module Memo
         [target_dir, [''].concat(Dir.glob('**/*/', base: target_dir))]
       end
     end
+
+    # TODO: directory_seeds_hashと入れ替える
+    def directory_seeds
+      @directory_seeds ||= @target_dirs.flat_map do |target_dir|
+        Dir.glob('**/*/', base: target_dir).map do |rel_path|
+          absolute_path = File.join(target_dir, rel_path)
+
+          Structure::DirectorySeed.new(target_dir, absolute_path, rel_path)
+        end
+      end
+    end
   end
 end

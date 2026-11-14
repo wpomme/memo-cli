@@ -3,19 +3,15 @@
 ### gemspec
     - gemとして公開する必要がない。gemspecについて調査しておくこと
 
-### DB・CLI・残タスク
-- setup.rbのto_schemaをmodel/以下に入れたい
-- Database以下の構成
-    - setupは1. create/drop tables, 2. Seeder, 3. schemaの三つに分けられる
-    - prepare, serupのところのテストコードを追加する
+### 残タスク
+- テストコードを作成する
 - rubocopのメトリクスによるリファクタリング
-- MVCアーキテクチャについて
-    - Read
-        - Serviceのselect_promptをViewModelに移動する
-    - dirs
-        - DirectorySeedを使うように回収する
+- Read
+    - Serviceのselect_promptをViewModelに移動する
+- dirs
+    - DirectorySeedを使うように改修する
 
-- sub_option_parserについて
+- sub_option_parser => new_command_parserへ切り替え
     - sub_commandによってコマンドごとに新しいクラスに処理を委譲する
         - Memo::NewCommandParser::Listなどのイメージ
             - 最後にNewCommandParseをSubCommandParserにリネームする
@@ -24,6 +20,12 @@
 
 
 ## その他やりたいこと
+### DBに関するクラスの整理
+- setup.rbのto_schemaをmodel/以下に入れたい
+- Database以下の構成
+    - setupは1. create/drop tables, 2. Seeder, 3. schemaの三つに分けられる
+    - prepare, serupのところのテストコードを追加する
+
 ## テスト系
 ### 型検査・型のテスト・テスト拡張
 - Rdocかyard、型検査の導入、coverageの取得

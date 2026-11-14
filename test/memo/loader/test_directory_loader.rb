@@ -11,14 +11,6 @@ class TestService < Minitest::Test
       @directory_loader = Memo::DirectoryLoader.new(target_dirs: @test_target_dirs)
     end
 
-    # describe("aaa") do
-    #   it ('bbb') do
-    #     actual = @directory_loader.to_relative_dir
-    #
-    #     _(actual).must_equal('')
-    #   end
-    # end
-
     describe('#absolute_paths') do
       it('configで設定されたディレクトリも含むこと') do
         actual = @test_target_dirs.all? do |target_dir|
@@ -26,6 +18,22 @@ class TestService < Minitest::Test
         end
 
         _(actual).must_equal(true)
+      end
+    end
+
+    describe('#directory_seeds') do
+      it('モックデータから作成したハッシュと同じ値となること') do
+        actual = @directory_loader.directory_seeds
+
+        expected = @test_target_dirs.flat_map do |target_dir|
+          Dir.glob('**/*/', base: target_dir).map do |rel_path|
+            absolute_path = File.join(target_dir, rel_path)
+
+            Memo::Structure::DirectorySeed.new(target_dir, absolute_path, rel_path)
+          end
+        end
+
+        _(actual).must_equal(expected)
       end
     end
 

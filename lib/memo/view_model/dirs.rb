@@ -15,7 +15,7 @@ module Memo
         result = directory_seeds_hash.keys.map do |target_dir|
           [dir_color_main(target_dir)].push(
             directory_seeds_hash[target_dir].reject do |rel_path|
-              rel_path == './'
+              rel_path == ''
             end
               .join("\n")
           ).push("\n")

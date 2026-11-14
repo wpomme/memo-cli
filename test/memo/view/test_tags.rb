@@ -17,9 +17,17 @@ class TestViewTags < Minitest::Test
         _(actual).must_respond_to(:execute)
       end
 
-      it '引数を取らない場合' do
+      it 'trueを取る場合' do
         out, = capture_io do
-          @view.execute
+          @view.execute(word: true)
+        end
+
+        _(out).wont_be_empty
+      end
+
+      it ':emptyを取る場合' do
+        out, = capture_io do
+          @view.execute(word: :empty)
         end
 
         _(out).wont_be_empty
