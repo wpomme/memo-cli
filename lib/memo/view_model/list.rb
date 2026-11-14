@@ -44,12 +44,25 @@ module Memo
       end
 
       def duplicate
-        @file_loader.duplicated_filenames_seeds
+        grouped = @file_loader.duplicated_filenames_seeds.group_by do |file_seed|
+          file_seed[:filename]
+        end
+
+        result = []
+
+        grouped.each do |filename, seeds|
+          colored_dirs = seeds.map.with_index(1) do |seed, index|
+            dir_color_sub("[#{index}]: #{seed[:parent_directory]}")
+          end
+          result << filename
+          result << colored_dirs
+          result << "\n"
+        end
+
+        remove_last_element(result)
       end
 
-      private
-
-      def list_by_dir_to_view(word)
+      def directory(word)
         normalized = normalize(word)
 
         found = look_up_from_dirs(normalized)
@@ -57,26 +70,22 @@ module Memo
         # そのようなディレクトリ名がないというメッセージを表示するのが適切
         return if found.nil?
 
-        filtered = filter_all_list(found)
+        result = []
 
-        list_to_view_by_filtered(filtered)
+        filtered_seeds = @file_loader.seeds_by_parent_directory(found)
+
+        # target_dirとrelative_pathは全てのseedsで同じ値になる
+        result << dir_color_sub(filtered_seeds[0][:target_dir])
+        result << dir_color_main(filtered_seeds[0][:relative_path])
+
+        result << filtered_seeds.map do |seed|
+          seed[:filename]
+        end.join(SPACE)
+
+        result
       end
 
-      # memo list [word]が入力されたときに、look_up_from_all_listに色付けをして返すメソッド
-      def list_to_view_by_filtered(filtered)
-        [dir_color_main(filtered.shift), dir_color_sub(@to_relative_dir[filtered.shift])] << filtered.join(SPACE)
-      end
-
-      # wordに従って見つかったディレクトリの文字列を引数にとり、
-      def filter_all_list(found)
-        all_list.filter_map do |target_dir, values|
-          dir_and_files = values.find do |arr|
-            arr[0] == found
-          end
-          [target_dir, dir_and_files]
-        end
-          .flatten
-      end
+      private
 
       # memo list [word]が入力されたとき、まずwordに該当するディレクトリが存在するかどうかをチェックする
       # wordが絶対パスか相対パスでマッチすれば、そのディレクトリの絶対パスを返す
@@ -98,46 +107,6 @@ module Memo
         return "#{word}/" unless word.end_with?('/')
 
         word
-      end
-
-      # memo listが入力されたときに、all_listを色付けして返すメソッド
-      def all_list_to_view
-        result = all_list.map do |key, dir_and_files|
-          colored = dir_and_files.map do |(dir, files)|
-            [dir_color_sub(@to_relative_dir[dir]), files.join(SPACE), "\n"]
-          end
-
-          [dir_color_main(key)].concat(colored)
-        end.flatten
-
-        remove_last_element(result)
-      end
-
-      # memo listコマンドが入力された場合の、描画のためのデータを作成する
-      # 対象ディレクトリがキーで、値については配列を使う
-      # 配列の第一引数が、ファイル名の親ディレクトリで、第二引数がファイル名一覧の配列
-      #
-      # @return [Hash<String, Array<String, Array<String>>>]
-      def all_list
-        result = {}
-
-        parent_directory_to_filenames.each do |parent_dir, filenames|
-          target_dir = @directory_loader.to_target_dir[parent_dir]
-          (result[target_dir] ||= []) << [parent_dir, filenames]
-        end
-
-        result
-      end
-
-      # 親ディレクトリがキーで、その中のファイル名の一覧が配列となるハッシュ
-      def parent_directory_to_filenames
-        result = {}
-
-        @file_loader.file_seeds.each do |file_seed|
-          (result[file_seed[:parent_directory]] ||= []) << file_seed[:filename]
-        end
-
-        result
       end
     end
   end

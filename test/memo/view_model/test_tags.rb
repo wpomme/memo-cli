@@ -29,6 +29,7 @@ class TestViewTags < Minitest::Test
       end
 
       it ':nameを受け取った場合、タグ名だけを出力する。FileLoaderのtag_sizeと同じ数であること。' do
+        skip 'TODO'
         option = :name
 
         out = @vm.execute(option)

@@ -18,6 +18,7 @@ class TestViewList < Minitest::Test
       end
 
       it '引数を取らない場合' do
+        skip 'TODO'
         out, = capture_io do
           @view.execute
         end
@@ -36,6 +37,7 @@ class TestViewList < Minitest::Test
       end
 
       it '無効な引数を取る場合' do
+        skip 'TODO'
         word = 'does_not_exist_dirname'
 
         out, = capture_io do

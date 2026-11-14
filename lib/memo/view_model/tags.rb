@@ -11,12 +11,8 @@ module Memo
         @to_relative_dir = @directory_loader.to_relative_dir
       end
 
-      def execute(option)
-        return seeds_hash_to_view(@file_loader.tag_files_hash) if option == true
-
-        return count_hash_to_view(@file_loader.tags_sorted_by_file_size) if option == :count
-
-        @file_loader.tags_sorted_by_tag_name if option == :name
+      def execute
+        seeds_hash_to_view(@file_loader.tag_files_hash)
       end
 
       def empty
@@ -46,17 +42,15 @@ module Memo
         remove_last_element(result)
       end
 
-      private
-
-      def parent_directory_to_filenames_without_tags
-        result = {}
-
-        @file_loader.file_seeds.each do |file_seed|
-          (result[file_seed[:parent_directory]] ||= []) << file_seed[:filename] if file_seed[:tags].empty?
-        end
-
-        result
+      def count
+        count_hash_to_view(@file_loader.tags_sorted_by_file_size)
       end
+
+      def name
+        @file_loader.tags_sorted_by_tag_name
+      end
+
+      private
 
       def count_hash_to_view(hash)
         hash.map do |k, v|

@@ -10,12 +10,19 @@ module Memo
       end
 
       def execute(word: '')
-        if word == :empty
+        case word
+        when true
+          puts @vw.execute
+        when :empty
           @vw.empty.each do |line|
             puts line
           end
+        when :count
+          puts @vw.count
+        when :name
+          puts @vw.name
         else
-          puts @vw.execute(word)
+          raise StandardError, "There is wrong with the word: #{word}."
         end
       end
     end
