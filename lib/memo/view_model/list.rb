@@ -21,6 +21,11 @@ module Memo
         list_by_dir_to_view(word)
       end
 
+      # memo listを実行する際、引数を取らない場合
+      def default
+        @file_loader.seeds_grouped_by_directory
+      end
+
       private
 
       def list_by_dir_to_view(word)

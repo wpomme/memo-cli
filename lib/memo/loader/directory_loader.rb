@@ -16,7 +16,7 @@ module Memo
 
       @target_dirs.each do |target_dir|
         directory_seeds_hash[target_dir].each do |rel_path|
-          parent_dir = File.join(target_dir, rel_path == './' ? '' : rel_path)
+          parent_dir = File.join(target_dir, rel_path)
           result[parent_dir] = rel_path
         end
       end
@@ -32,7 +32,7 @@ module Memo
 
       @target_dirs.each do |target_dir|
         directory_seeds_hash[target_dir].map do |rel_path|
-          parent_dir = File.join(target_dir, rel_path == './' ? '' : rel_path)
+          parent_dir = File.join(target_dir, rel_path)
           result[parent_dir] = target_dir
         end
       end
@@ -47,7 +47,7 @@ module Memo
     def absolute_paths
       @absolute_paths ||= directory_seeds_hash.keys.map do |target_dir|
         directory_seeds_hash[target_dir].map do |rel_path|
-          File.join(target_dir, rel_path == './' ? '' : rel_path)
+          File.join(target_dir, rel_path)
         end
       end.flatten
     end
@@ -57,7 +57,7 @@ module Memo
     # @return[Hash<String, Array<String>>]
     def directory_seeds_hash
       @directory_seeds_hash ||= @target_dirs.to_h do |target_dir|
-        [target_dir, ['./'].concat(Dir.glob('**/*/', base: target_dir))]
+        [target_dir, [''].concat(Dir.glob('**/*/', base: target_dir))]
       end
     end
   end

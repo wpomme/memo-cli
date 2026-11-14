@@ -14,12 +14,13 @@
     - DirectorySeedを使う
 - MVCアーキテクチャについて
     - List, Tags
-        - :duplicateを作成する、ロジックの整理
+        - View, ViewModelを使ってロジックの整理
+    - List
+        - :duplicateを作成する
     - Read
         - Serviceのselect_promptをViewModelに移動する
     - dirs
-        - DirectoryLoader#directory_seeds_hashについて、カレントディレクトリの場合はやはり空文字を入れておく
-            - そっちの方がコードが煩雑にならない
+        - DirectorySeedを使うように回収する
 
 - sub_option_parserについて
     - sub_commandによってコマンドごとに新しいクラスに処理を委譲する

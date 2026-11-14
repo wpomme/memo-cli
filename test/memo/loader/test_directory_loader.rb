@@ -34,7 +34,7 @@ class TestService < Minitest::Test
         actual = @directory_loader.directory_seeds_hash
 
         expected = @test_target_dirs.to_h do |target_dir|
-          [target_dir, ['./'].concat(Dir.glob('**/*/', base: target_dir))]
+          [target_dir, [''].concat(Dir.glob('**/*/', base: target_dir))]
         end
 
         _(actual).must_equal(expected)

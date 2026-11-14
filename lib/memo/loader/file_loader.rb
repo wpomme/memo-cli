@@ -58,6 +58,18 @@ module Memo
       end
     end
 
+    def seeds_grouped_by_directory
+      group_by_target_dir = file_seeds.group_by do |seeds|
+        seeds[:target_dir]
+      end
+
+      group_by_target_dir.transform_values do |seed|
+        seed.group_by do |s|
+          s[:relative_path]
+        end
+      end
+    end
+
     private
 
     # それぞれのタグと、そのタグが付いているファイルの数のハッシュを返す

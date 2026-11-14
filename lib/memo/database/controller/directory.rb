@@ -60,7 +60,7 @@ module Memo
             rel_paths.flat_map do |rel_path|
               @dataset.insert(
                 config_directory_id: path_to_id[target_dir],
-                directory_path: rel_path == './' ? '' : rel_path
+                directory_path: rel_path
               )
             end
           end

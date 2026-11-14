@@ -16,36 +16,14 @@ module Memo
 
         return count_hash_to_view(@file_loader.tags_sorted_by_file_size) if option == :count
 
-        return empty_tags_to_view if option == :empty
-
         @file_loader.tags_sorted_by_tag_name if option == :name
       end
 
+      def empty
+        @file_loader.seeds_grouped_by_directory
+      end
+
       private
-
-      # empty_tags_to_view ~ parent_directory_to_filenames_without_tagsまで、memo listとほぼ同じロジック
-      def empty_tags_to_view
-        result = empty_tags_list.map do |key, dir_tags_hash|
-          colored = dir_tags_hash.map do |(dir, tags)|
-            [dir_color_sub(@to_relative_dir[dir]), tags.join(SPACE), "\n"]
-          end
-
-          [dir_color_main(key)].concat(colored)
-        end.flatten
-
-        remove_last_element(result)
-      end
-
-      def empty_tags_list
-        result = {}
-
-        parent_directory_to_filenames_without_tags.each do |parent_dir, filenames|
-          target_dir = @directory_loader.to_target_dir[parent_dir]
-          (result[target_dir] ||= []) << [parent_dir, filenames]
-        end
-
-        result
-      end
 
       def parent_directory_to_filenames_without_tags
         result = {}
