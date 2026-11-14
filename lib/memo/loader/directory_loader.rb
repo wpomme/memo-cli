@@ -12,32 +12,9 @@ module Memo
     end
 
     def to_relative_dir
-      result = {}
-
-      @target_dirs.each do |target_dir|
-        directory_seeds_hash[target_dir].each do |rel_path|
-          parent_dir = File.join(target_dir, rel_path)
-          result[parent_dir] = rel_path
-        end
+      directory_seeds.to_h do |seed|
+        [seed[:absolute_path], seed[:relative_path]]
       end
-
-      result
-    end
-
-    # 走査対象のディレクトリがキーで、そのディレクトリが属する対象のディレクトリが値となるハッシュを返す
-    #
-    # @return [Hash<String, String>]
-    def to_target_dir
-      result = {}
-
-      @target_dirs.each do |target_dir|
-        directory_seeds_hash[target_dir].map do |rel_path|
-          parent_dir = File.join(target_dir, rel_path)
-          result[parent_dir] = target_dir
-        end
-      end
-
-      result
     end
 
     # 対象のディレクトリについて、その中のディレクトリの一覧を配列で返す
@@ -45,30 +22,32 @@ module Memo
     #
     # @return [Array<String>>]
     def absolute_paths
-      @absolute_paths ||= directory_seeds_hash.keys.map do |target_dir|
-        directory_seeds_hash[target_dir].map do |rel_path|
-          File.join(target_dir, rel_path)
-        end
-      end.flatten
+      directory_seeds.map do |seeds|
+        seeds[:absolute_path]
+      end
     end
 
     # 対象のディレクトリをキーとし、その中に入っているディレクトリの一覧を値とするハッシュを返す
     #
     # @return[Hash<String, Array<String>>]
     def directory_seeds_hash
-      @directory_seeds_hash ||= @target_dirs.to_h do |target_dir|
-        [target_dir, [''].concat(Dir.glob('**/*/', base: target_dir))]
+      result = {}
+
+      directory_seeds.each do |seed|
+        (result[seed[:target_dir]] ||= []) << seed[:relative_path]
       end
+
+      result
     end
 
-    # TODO: directory_seeds_hashと入れ替える
     def directory_seeds
       @directory_seeds ||= @target_dirs.flat_map do |target_dir|
-        Dir.glob('**/*/', base: target_dir).map do |rel_path|
+        seeds = Dir.glob('**/*/', base: target_dir).map do |rel_path|
           absolute_path = File.join(target_dir, rel_path)
 
           Structure::DirectorySeed.new(target_dir, absolute_path, rel_path)
         end
+        [Structure::DirectorySeed.new(target_dir, target_dir, '')].concat(seeds)
       end
     end
   end

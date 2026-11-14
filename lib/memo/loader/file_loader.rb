@@ -76,7 +76,7 @@ module Memo
 
     # 対象ディレクトリ => 親ディレクトリ => seedsのネストしたハッシュを返す
     def seeds_grouped_by_directory(seeds: file_seeds)
-      group_by_target_dir(seeds: seeds).transform_values do |seed|
+      seeds_group_by_target_dir(seeds: seeds).transform_values do |seed|
         seed.group_by do |s|
           s[:relative_path]
         end
@@ -92,8 +92,8 @@ module Memo
     private
 
     # 対象ディレクトリ => seedsのネストしたハッシュを返す
-    def group_by_target_dir(seeds: file_seeds)
-      @group_by_target_dir ||= seeds.group_by do |seeds|
+    def seeds_group_by_target_dir(seeds: file_seeds)
+      @seeds_group_by_target_dir ||= seeds.group_by do |seeds|
         seeds[:target_dir]
       end
     end

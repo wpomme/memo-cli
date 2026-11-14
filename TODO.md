@@ -8,8 +8,6 @@
 - rubocopのメトリクスによるリファクタリング
 - Read
     - Serviceのselect_promptをViewModelに移動する
-- dirs
-    - DirectorySeedを使うように改修する
 
 - sub_option_parser => new_command_parserへ切り替え
     - sub_commandによってコマンドごとに新しいクラスに処理を委譲する
