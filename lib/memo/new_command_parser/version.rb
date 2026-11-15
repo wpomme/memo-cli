@@ -5,8 +5,8 @@ module Memo
     class Version
       include Memo::NewCommandParser
 
-      def execute(str: 'version', argv: '')
-        parse_no_arguments(str:, argv:)
+      def execute(argv: '')
+        parse_no_arguments(str: 'version', argv:)
       end
     end
   end

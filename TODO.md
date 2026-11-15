@@ -8,8 +8,7 @@
 - rubocopのメトリクスによるリファクタリング
 - sub_option_parser => new_command_parserへ切り替え
     - sub_commandによってコマンドごとに新しいクラスに処理を委譲する
-        - Memo::NewCommandParser::Listなどのイメージ
-            - 最後にNewCommandParseをSubCommandParserにリネームする
+        - 最後にNewCommandParseをSubCommandParserにリネームする
         - help, versionについて、Memo::Viewでヘルプやバージョンを表示するように修正する
         - memo help [sub_command]の作成: コマンドごとのヘルプがほしい
 

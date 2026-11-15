@@ -5,8 +5,8 @@ module Memo
     class Dirs
       include Memo::NewCommandParser
 
-      def execute(str: 'dirs', argv: '')
-        parse_no_arguments(str:, argv:)
+      def execute(argv: '')
+        parse_no_arguments(str: 'dirs', argv:)
       end
     end
   end
