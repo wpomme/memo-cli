@@ -21,5 +21,13 @@ module Memo
 
       { str => nil }
     end
+
+    def parse_one_argument(str:, argv: nil)
+      to_error_message(:no_given_args, str) if argv.empty?
+
+      to_error_message(:too_many_args, str) if argv.size > 1
+
+      { str => argv[0] }
+    end
   end
 end

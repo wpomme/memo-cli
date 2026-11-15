@@ -44,59 +44,6 @@ class TestSubCommandParser < Minitest::Test
     end
 
     describe 'サブコマンドによる分類' do
-      describe '#parse_one_argument: read, search, tag' do
-        it '引数が存在しない場合は、エラーメッセージを表示する' do
-          args = %w[read search tag]
-
-          args.each do |arg|
-            actual, = capture_io do
-              exception = assert_raises(SystemExit) do
-                @scp.execute([arg])
-              end
-
-              _(exception.status).must_equal(2)
-            end
-
-            expected = NO_GIVEN_ARGS.gsub('CLI', arg)
-
-            _(actual).must_equal(expected)
-          end
-        end
-
-        it '文字列をファイル名やタグ名として解釈できる' do
-          arg1 = %w[read search tag]
-
-          arg2 = 'foo'
-
-          arg1.each do |arg|
-            actual = @scp.execute([arg, arg2])
-
-            _(actual).must_equal({ arg => arg2 })
-          end
-        end
-
-        it '引数が二つ存在する場合は、エラーメッセージを表示する' do
-          arg1 = %w[read search tag]
-
-          arg2 = 'foo'
-          arg3 = 'bar'
-
-          arg1.each do |arg|
-            actual, = capture_io do
-              exception = assert_raises(SystemExit) do
-                @scp.execute([arg, arg2, arg3])
-              end
-
-              _(exception.status).must_equal(2)
-            end
-
-            expected = TOO_MANY_ARGS.gsub('CLI', arg)
-
-            _(actual).must_equal(expected)
-          end
-        end
-      end
-
       describe 'list' do
         it 'listのみの場合は、list: trueを返す' do
           argv = %w[list]

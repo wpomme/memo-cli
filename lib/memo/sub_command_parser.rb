@@ -13,8 +13,12 @@ module Memo
       return parse_help_command if first.nil?
 
       case first
-      when 'read', 'search', 'tag'
-        parse_one_argument(str: first, argv: argv)
+      when 'read'
+        Memo::NewCommandParser::Read.new.execute(argv: argv)
+      when 'search'
+        Memo::NewCommandParser::Search.new.execute(argv: argv)
+      when 'tag'
+        Memo::NewCommandParser::Tag.new.execute(argv: argv)
       when 'dirs'
         Memo::NewCommandParser::Dirs.new.execute(argv: argv)
       when 'tags'
@@ -26,16 +30,8 @@ module Memo
       when 'version', '-V'
         Memo::NewCommandParser::Version.new.execute(argv: argv)
       else
-        parse_one_argument(str: 'read', argv: [first])
+        Memo::NewCommandParser::Read.new.execute(argv: [first])
       end
-    end
-
-    def parse_one_argument(str:, argv: nil)
-      to_error_message(:no_given_args, str) if argv.empty?
-
-      to_error_message(:too_many_args, str) if argv.size > 1
-
-      { str => argv[0] }
     end
 
     def parse_list_command(str: 'list', argv: nil)
