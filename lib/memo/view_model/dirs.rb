@@ -12,14 +12,12 @@ module Memo
       def execute
         directory_seeds_hash = @directory_loader.directory_seeds_hash
 
-        result = directory_seeds_hash.keys.map do |target_dir|
-          [dir_color_main(target_dir)].push(
-            directory_seeds_hash[target_dir].reject do |rel_path|
-              rel_path == ''
-            end
-              .join("\n")
-          ).push("\n")
-        end.flatten
+        result = []
+
+        directory_seeds_hash.each_key do |target_dir|
+          directories = directory_seeds_hash[target_dir].reject { |rel_path| rel_path == '' }.join("\n")
+          result << dir_color_main(target_dir) << directories << "\n"
+        end
 
         remove_last_element(result)
       end
