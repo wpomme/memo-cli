@@ -15,5 +15,11 @@ module Memo
       puts error_message_map[error_message_symbol]
       exit 2
     end
+
+    def parse_no_arguments(str:, argv: '')
+      to_error_message(:too_many_args, str) unless argv.empty?
+
+      { str => nil }
+    end
   end
 end

@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-class TestNewCommandParser < Minitest::Test
+class TestNewCommandParserTags < Minitest::Test
   include Memo::Message
   include Memo::HelpMessage
 

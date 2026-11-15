@@ -8,7 +8,7 @@ module Memo
 
       Spec = Data.define(:short, :long, :desc)
 
-      def execute(str: 'tags', argv: nil)
+      def execute(str: 'tags', argv: '')
         parsed = {}
 
         OptionParser.new do |opt|

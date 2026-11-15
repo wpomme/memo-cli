@@ -97,46 +97,6 @@ class TestSubCommandParser < Minitest::Test
         end
       end
 
-      describe '#parse_no_arguments: dirs, version' do
-        it '引数を取らない場合は、dirs: nilを返す' do
-          argv = %w[dirs]
-
-          actual = @scp.execute(argv)
-
-          _(actual).must_equal({ 'dirs' => nil })
-        end
-
-        it '引数がある場合は、エラーメッセージを表示する' do
-          actual, = capture_io do
-            exception = assert_raises(SystemExit) do
-              argv = %w[dirs foo]
-
-              @scp.execute(argv)
-            end
-
-            _(exception.status).must_equal(2)
-          end
-
-          expected = TOO_MANY_ARGS.gsub('CLI', 'dirs')
-
-          _(actual).must_equal(expected)
-        end
-
-        describe 'version' do
-          it '"version", "-V"でバージョンを出力し、正常終了する' do
-            args = %w[version -V]
-
-            expected = { 'version' => nil }
-
-            args.each do |arg|
-              actual = @scp.execute([arg])
-
-              _(actual).must_equal(expected)
-            end
-          end
-        end
-      end
-
       describe 'list' do
         it 'listのみの場合は、list: trueを返す' do
           argv = %w[list]
