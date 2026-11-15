@@ -16,30 +16,7 @@ module Memo
       end
 
       def empty
-        result = []
-
-        # NOTE: memo listと同じロジックになった
-        @file_loader.empty_tags_seeds_grouped_by_directory.each do |target_dir, seed_hash|
-          render_hash = {}
-
-          seed_hash.each do |dir, seeds|
-            filenames = seeds.map do |seed|
-              seed[:filename]
-            end
-
-            render_hash[dir] = filenames.join(SPACE)
-          end
-
-          result << dir_color_sub(target_dir)
-
-          render_hash.each do |dir, filenames|
-            result << dir_color_main(dir)
-            result << filenames
-            result << "\n"
-          end
-        end
-
-        remove_last_element(result)
+        seeds_grouped_by_directory_to_view(@file_loader.empty_tags_seeds_grouped_by_directory)
       end
 
       def count

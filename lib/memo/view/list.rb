@@ -9,7 +9,7 @@ module Memo
 
       def execute(word: '')
         if word == true
-          @vw.default.each do |line|
+          @vw.execute.each do |line|
             puts line
           end
         elsif word == :duplicate

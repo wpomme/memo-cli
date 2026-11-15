@@ -24,5 +24,22 @@ module Memo
         Rainbow(str).color(cnst)
       end)
     end
+
+    # 対象ディレクトリ=>親ディレクトリ=>ファイル名
+    # というパターンの表示をユーザー向けに行うメソッド
+    def seeds_grouped_by_directory_to_view(grouped_seeds)
+      result = []
+
+      grouped_seeds.each do |target_dir, seed_hash|
+        result << dir_color_sub(target_dir)
+
+        seed_hash.each do |dir, seeds|
+          filenames = seeds.map { |s| s[:filename] }.join(SPACE)
+          result << dir_color_main(dir) << filenames << "\n"
+        end
+      end
+
+      remove_last_element(result)
+    end
   end
 end

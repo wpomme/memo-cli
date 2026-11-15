@@ -12,35 +12,8 @@ module Memo
         @to_relative_dir = @directory_loader.to_relative_dir
       end
 
-      def execute(word)
-        list_by_dir_to_view(word)
-      end
-
-      def default
-        result = []
-
-        # NOTE: memo tags -eと同じロジックになった
-        @file_loader.seeds_grouped_by_directory.each do |target_dir, seed_hash|
-          render_hash = {}
-
-          seed_hash.each do |dir, seeds|
-            filenames = seeds.map do |seed|
-              seed[:filename]
-            end
-
-            render_hash[dir] = filenames.join(SPACE)
-          end
-
-          result << dir_color_sub(target_dir)
-
-          render_hash.each do |dir, filenames|
-            result << dir_color_main(dir)
-            result << filenames
-            result << "\n"
-          end
-        end
-
-        remove_last_element(result)
+      def execute
+        seeds_grouped_by_directory_to_view(@file_loader.seeds_grouped_by_directory)
       end
 
       def duplicate
@@ -54,9 +27,7 @@ module Memo
           colored_dirs = seeds.map.with_index(1) do |seed, index|
             dir_color_sub("[#{index}]: #{seed[:parent_directory]}")
           end
-          result << filename
-          result << colored_dirs
-          result << "\n"
+          result << filename << colored_dirs << "\n"
         end
 
         remove_last_element(result)
