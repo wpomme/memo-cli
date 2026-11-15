@@ -6,9 +6,6 @@
 ### 残タスク
 - テストコードを作成する
 - rubocopのメトリクスによるリファクタリング
-- Read
-    - Serviceのselect_promptをViewModelに移動する
-
 - sub_option_parser => new_command_parserへ切り替え
     - sub_commandによってコマンドごとに新しいクラスに処理を委譲する
         - Memo::NewCommandParser::Listなどのイメージ
@@ -24,9 +21,8 @@
     - setupは1. create/drop tables, 2. Seeder, 3. schemaの三つに分けられる
     - prepare, serupのところのテストコードを追加する
 
-## テスト系
-### 型検査・型のテスト・テスト拡張
-- Rdocかyard、型検査の導入、coverageの取得
+## ドキュメント・テスト拡張
+- Rdocかyardの導入、coverageの取得
     - coverage: https://docs.ruby-lang.org/ja/latest/library/coverage.html
         - simpleCov: https://github.com/simplecov-ruby/simplecov
 

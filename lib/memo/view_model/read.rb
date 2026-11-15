@@ -3,18 +3,42 @@
 module Memo
   module ViewModel
     class Read
+      include Memo::Message
+      include Memo::Service
+
       def initialize(target_dirs: Memo::Config.target_dirs)
         @file_loader = Memo::FileLoader.new(target_dirs: target_dirs)
       end
 
       def execute(word)
-        normalized = normalize(word)
-        find_files(normalized)
+        @word = normalize(word)
+        found = find_files(@word)
+        show_files_by_found_size(found)
       end
 
       private
 
-      # 検索でヒットした文字列に色をつける
+      # 見つかったファイルの数によって表示する文字列を変える
+      def show_files_by_found_size(found)
+        size = found.size
+
+        case size
+        when 0
+          NO_MEMOS_WEWE_FOUND.sub('word', @word) if size.zero?
+        when 1
+          found[0][:file_content] if size == 1
+        else
+          read_prompt(found)
+        end
+      end
+
+      def read_prompt(found)
+        choices = found.to_h { |file_seed| [file_seed[:parent_directory], file_seed] }
+        choice = select_prompt(title: MULTIPLE_MEMOS_WEWE_FOUND.sub('size', found.size.to_s), choices: choices)
+        choice.values.flatten
+      end
+
+      # 検索文字列と合致するファイル名を検索し、見つけたらFileSeedの配列を返す
       #
       # @param word [string]
       # @return [Array]

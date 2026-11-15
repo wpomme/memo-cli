@@ -3,8 +3,6 @@
 module Memo
   module View
     class Tags
-      include Memo::View
-
       def initialize
         @vw = Memo::ViewModel::Tags.new
       end

@@ -3,8 +3,6 @@
 module Memo
   module View
     class List
-      include Memo::View
-
       def initialize
         @vw = Memo::ViewModel::List.new
       end
