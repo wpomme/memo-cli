@@ -6,9 +6,9 @@ module Memo
     #
     # @!attribute [r] target_dir
     #   @return [String] このSeedがどのtarget_dirから読み込まれているかを示す値
-    # @!attribute [r] full_path
+    # @!attribute [r] absolute_path
     #   @return [String] memoディレクトリの中にあるファイルの絶対パス。メモを読み取るために使う
-    # @!attribute [r] parent_dir
+    # @!attribute [r] parent_directory
     #   @return [String] そのファイルが格納されているディレクトリ
     # @!attribute [r] relative_path
     #   @return [String] 対象のディレクトリからそのファイルへのパス

@@ -23,7 +23,7 @@ class TestViewRead < Minitest::Test
         word = 'does_not_exist_files'
 
         actual, = capture_io do
-          @view.execute(word)
+          @view.execute(word: word)
         end
 
         expected = @vw.execute(word)
@@ -35,7 +35,7 @@ class TestViewRead < Minitest::Test
         word = 'ls'
 
         actual, = capture_io do
-          @view.execute(word)
+          @view.execute(word: word)
         end
 
         expected = @vw.execute(word)
@@ -52,7 +52,7 @@ class TestViewRead < Minitest::Test
         # 最後の方を選択する
         $stdin = StringIO.new("#{count}\n")
         actual, = capture_io do
-          @view.execute(word)
+          @view.execute(word: word)
         end
 
         expected = @vw.execute(word)

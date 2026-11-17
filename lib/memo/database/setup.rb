@@ -4,6 +4,33 @@ module Memo
   module Database
     TABLE_NAMES = %i[config_directories directories files tags files_tags].freeze
     CONTROLLER_NAMES = %w[ConfigDirectory Directory File Tag FileTag].freeze
+    TABLE_SCHEMAS = {
+      config_directories: proc do
+        primary_key :id
+        String :directory_path, null: false
+      end,
+      directories: proc do
+        primary_key :id
+        foreign_key :config_directory_id, :config_directories, null: false
+        String :directory_path, null: false
+      end,
+      files: proc do
+        primary_key :id
+        String :filename, null: false
+        foreign_key :config_directory_id, :config_directories, null: false
+        foreign_key :parent_directory_id, :directories, null: false
+        String :file_content, null: false
+      end,
+      tags: proc do
+        primary_key :id
+        String :tag_name, null: false, unique: true
+      end,
+      files_tags: proc do
+        primary_key :id
+        foreign_key :files_id, :files, null: false
+        foreign_key :tags_id, :tags, null: false
+      end
+    }.freeze
 
     def self.db(database_path: Memo::Config.target_database)
       @db ||= Memo::Database::Prepare.execute(database_path: database_path)
@@ -48,33 +75,7 @@ module Memo
       end
 
       def to_schema(table_symbol)
-        {
-          config_directories: proc do
-            primary_key :id
-            String :directory_path, null: false
-          end,
-          directories: proc do
-            primary_key :id
-            foreign_key :config_directory_id, :config_directories, null: false
-            String :directory_path, null: false
-          end,
-          files: proc do
-            primary_key :id
-            String :filename, null: false
-            foreign_key :config_directory_id, :config_directories, null: false
-            foreign_key :parent_directory_id, :directories, null: false
-            String :file_content, null: false
-          end,
-          tags: proc do
-            primary_key :id
-            String :tag_name, null: false, unique: true
-          end,
-          files_tags: proc do
-            primary_key :id
-            foreign_key :files_id, :files, null: false
-            foreign_key :tags_id, :tags, null: false
-          end
-        }[table_symbol]
+        TABLE_SCHEMAS[table_symbol]
       end
     end
   end

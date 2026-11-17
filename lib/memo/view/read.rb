@@ -7,7 +7,7 @@ module Memo
         @vw = Memo::ViewModel::Read.new(target_dirs: target_dirs)
       end
 
-      def execute(word)
+      def execute(word:)
         puts @vw.execute(word)
       end
     end

@@ -12,7 +12,8 @@ module Memo
 
       def execute(word)
         @word = normalize(word)
-        found = find_files(@word)
+
+        found = find_files
         show_files_by_found_size(found)
       end
 
@@ -40,11 +41,10 @@ module Memo
 
       # 検索文字列と合致するファイル名を検索し、見つけたらFileSeedの配列を返す
       #
-      # @param word [string]
       # @return [Array]
-      def find_files(word)
+      def find_files
         @file_loader.file_seeds.filter do |file_seed|
-          file_seed[:filename] == word
+          file_seed[:filename] == @word
         end
       end
 
