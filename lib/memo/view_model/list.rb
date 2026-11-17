@@ -13,7 +13,7 @@ module Memo
         @to_relative_dir = @directory_loader.to_relative_dir
       end
 
-      def execute
+      def default
         seeds_grouped_by_directory_to_view(@file_loader.seeds_grouped_by_directory)
       end
 
@@ -36,7 +36,7 @@ module Memo
           seed[:filename]
         end.join(SPACE)
 
-        [target_dir, relative_path, filenames]
+        "#{target_dir}\n#{relative_path}\n#{filenames}"
       end
 
       # wordに該当するディレクトリが存在するかどうかをチェックする

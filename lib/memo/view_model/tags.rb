@@ -11,7 +11,7 @@ module Memo
         @to_relative_dir = @directory_loader.to_relative_dir
       end
 
-      def execute
+      def default
         tags_to_view(@file_loader.tag_files_hash)
       end
 

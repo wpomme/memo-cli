@@ -8,31 +8,9 @@ module Memo
       end
 
       def execute(word: '')
-        return name if word == :name
+        return puts @vw.send(word) if %i[name count empty].include?(word)
 
-        return count if word == :count
-
-        return empty if word == :empty
-
-        default
-      end
-
-      private
-
-      def default
-        puts @vw.execute
-      end
-
-      def empty
-        puts @vw.empty
-      end
-
-      def count
-        puts @vw.count
-      end
-
-      def name
-        puts @vw.name
+        puts @vw.default
       end
     end
   end

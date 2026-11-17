@@ -21,6 +21,8 @@
 - その他修正点
     - memo.rbのrequire_relativeを簡単にする
     - View, ViewModel, SubCommandParserなどについて、各コマンドのメソッドを特異メソッドにするかどうか
+    - rake e2eを堅牢にする
+    - git push前のhooksを作成する
 
 
 ### 残タスク・テストコードの進捗表
