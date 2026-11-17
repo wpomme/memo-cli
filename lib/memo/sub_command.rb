@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module Memo
-  class SubCommandParser
+  class SubCommand
     SUB_COMMAND_DISPATCH = {
       'read' => 'Read',
       '-r' => 'Read',
@@ -22,13 +22,13 @@ module Memo
     def execute(argv)
       first = argv.shift
 
-      return Memo::NewCommandParser::Help.new.execute if first.nil?
+      return Memo::SubCommandParser::Help.new.execute if first.nil?
 
       klass_name = SUB_COMMAND_DISPATCH[first]
       if klass_name.nil?
-        Memo::NewCommandParser::Read.new.execute(argv: [first])
+        Memo::SubCommandParser::Read.new.execute(argv: [first])
       else
-        klass = Object.const_get("Memo::NewCommandParser::#{klass_name}")
+        klass = Object.const_get("Memo::SubCommandParser::#{klass_name}")
         klass.new.execute(argv: argv)
       end
     end

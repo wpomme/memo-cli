@@ -1,12 +1,12 @@
 # frozen_string_literal: true
 
-class TestSubCommandParser < Minitest::Test
+class TestSubCommand < Minitest::Test
   include Memo::Message
   include Memo::HelpMessage
 
   describe '#execute' do
     def setup
-      @scp = Memo::SubCommandParser.new
+      @scp = Memo::SubCommand.new
     end
 
     describe '引数による分類' do

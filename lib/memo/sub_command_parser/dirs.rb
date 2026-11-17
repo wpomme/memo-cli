@@ -1,9 +1,9 @@
 # frozen_string_literal: true
 
 module Memo
-  module NewCommandParser
+  module SubCommandParser
     class Dirs
-      include Memo::NewCommandParser
+      include Memo::SubCommandParser
 
       def execute(argv: '')
         parse_no_arguments(str: 'dirs', argv:)

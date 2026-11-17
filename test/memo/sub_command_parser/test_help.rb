@@ -1,23 +1,23 @@
 # frozen_string_literal: true
 
-class TestNewCommandParserHelp < Minitest::Test
+class TestSubCommandParserHelp < Minitest::Test
   include Memo::Message
   include Memo::HelpMessage
 
-  describe 'NewCommandParser::Help' do
+  describe 'SubCommandParser::Help' do
     def setup
-      @scp = Memo::NewCommandParser::Help.new
+      @scp = Memo::SubCommandParser::Help.new
     end
 
     describe '#execute' do
       it 'Memo::HelpMessageをインクルードしていること' do
-        actual = Memo::NewCommandParser::Help.include?(Memo::HelpMessage)
+        actual = Memo::SubCommandParser::Help.include?(Memo::HelpMessage)
 
         _(actual).must_equal(true)
       end
 
-      it 'Memo::NewCommandParserをインクルードしていること' do
-        actual = Memo::NewCommandParser::Help.include?(Memo::NewCommandParser)
+      it 'Memo::SubCommandParserをインクルードしていること' do
+        actual = Memo::SubCommandParser::Help.include?(Memo::SubCommandParser)
 
         _(actual).must_equal(true)
       end

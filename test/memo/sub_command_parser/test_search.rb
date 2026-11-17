@@ -1,18 +1,18 @@
 # frozen_string_literal: true
 
-class TestNewCommandParserSearch < Minitest::Test
+class TestSubCommandParserSearch < Minitest::Test
   include Memo::Message
   include Memo::HelpMessage
 
-  describe 'NewCommandParser::Search' do
+  describe 'SubCommandParser::Search' do
     def setup
-      @scp = Memo::NewCommandParser::Search.new
+      @scp = Memo::SubCommandParser::Search.new
       @cmd = 'search'
     end
 
     describe '#execute' do
-      it 'Memo::NewCommandParserをインクルードしていること' do
-        actual = Memo::NewCommandParser::Search.include?(Memo::NewCommandParser)
+      it 'Memo::SubCommandParserをインクルードしていること' do
+        actual = Memo::SubCommandParser::Search.include?(Memo::SubCommandParser)
 
         _(actual).must_equal(true)
       end

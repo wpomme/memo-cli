@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module Memo
-  module NewCommandParser
+  module SubCommandParser
     include Memo::Message
 
     def to_error_message(error_message_symbol, sub_command)

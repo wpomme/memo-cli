@@ -1,23 +1,23 @@
 # frozen_string_literal: true
 
-class TestNewCommandParserRead < Minitest::Test
+class TestSubCommandParserTag < Minitest::Test
   include Memo::Message
   include Memo::HelpMessage
 
-  describe 'NewCommandParser::Read' do
+  describe 'SubCommandParser::Tag' do
     def setup
-      @scp = Memo::NewCommandParser::Read.new
-      @cmd = 'read'
+      @scp = Memo::SubCommandParser::Tag.new
+      @cmd = 'tag'
     end
 
     describe '#execute' do
-      it 'Memo::NewCommandParserをインクルードしていること' do
-        actual = Memo::NewCommandParser::Read.include?(Memo::NewCommandParser)
+      it 'Memo::SubCommandParserをインクルードしていること' do
+        actual = Memo::SubCommandParser::Tag.include?(Memo::SubCommandParser)
 
         _(actual).must_equal(true)
       end
 
-      describe '#parse_one_argument: read' do
+      describe '#parse_one_argument: tag' do
         it '引数が存在しない場合は、エラーメッセージを表示する' do
           actual, = capture_io do
             exception = assert_raises(SystemExit) do

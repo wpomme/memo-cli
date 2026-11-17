@@ -1,12 +1,12 @@
 # frozen_string_literal: true
 
 module Memo
-  module NewCommandParser
+  module SubCommandParser
     class Help
       include Memo::HelpMessage
-      include Memo::NewCommandParser
+      include Memo::SubCommandParser
 
-      def execute(str: 'help', argv: nil)
+      def execute(argv: nil)
         # TODO: コマンドごとのヘルプが欲しい
         second = argv&.first
 

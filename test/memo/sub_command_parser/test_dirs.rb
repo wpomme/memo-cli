@@ -1,17 +1,17 @@
 # frozen_string_literal: true
 
-class TestNewCommandParserDirs < Minitest::Test
+class TestSubCommandParserDirs < Minitest::Test
   include Memo::Message
   include Memo::HelpMessage
 
-  describe 'NewCommandParser::Dirs' do
+  describe 'SubCommandParser::Dirs' do
     def setup
-      @scp = Memo::NewCommandParser::Dirs.new
+      @scp = Memo::SubCommandParser::Dirs.new
     end
 
     describe '#execute' do
-      it 'Memo::NewCommandParserをインクルードしていること' do
-        actual = Memo::NewCommandParser::Dirs.include?(Memo::NewCommandParser)
+      it 'Memo::SubCommandParserをインクルードしていること' do
+        actual = Memo::SubCommandParser::Dirs.include?(Memo::SubCommandParser)
 
         _(actual).must_equal(true)
       end

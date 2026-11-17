@@ -1,38 +1,34 @@
 # frozen_string_literal: true
 
 module Memo
-  module NewCommandParser
-    class List
+  module SubCommandParser
+    class Tags
       include Memo::HelpMessage
-      include Memo::NewCommandParser
+      include Memo::SubCommandParser
 
       Spec = Data.define(:short, :long, :desc)
 
-      def execute(str: 'list', argv: '')
+      def execute(str: 'tags', argv: '')
         parsed = {}
-        rest = OptionParser.new do |opt|
-          list_spec_list.each do |spec|
+
+        OptionParser.new do |opt|
+          tags_spec_list.each do |spec|
             opt.on(spec.short, spec.long, spec.desc)
           end
         end
           .parse(argv, into: parsed)
 
         to_error_message(:too_many_options, str) if parsed.size > 1
-        to_error_message(:too_many_args, str) if rest.size > 1
-
-        if rest.size == 1
-          to_error_message(:too_long_args, str) if rest[0].size > 32
-
-          return { str => rest[0] }
-        end
 
         { str => parsed.empty? || parsed.keys[0] }
       end
 
-      def list_spec_list
-        duplicate_spec = Spec.new('-d', '--duplicate', LIST_OPTIONS_DUPLICATE)
+      def tags_spec_list
+        name_spec = Spec.new('-n', '--name', TAGS_OPTIONS_NAME)
+        count_spec = Spec.new('-c', '--count', TAGS_OPTIONS_COUNT)
+        empty_spec = Spec.new('-e', '--empty', TAGS_OPTIONS_EMPTY)
 
-        spec_list([duplicate_spec])
+        spec_list([name_spec, count_spec, empty_spec])
       end
 
       def spec_list(specs)

@@ -1,9 +1,9 @@
 # frozen_string_literal: true
 
 module Memo
-  module NewCommandParser
+  module SubCommandParser
     class Search
-      include Memo::NewCommandParser
+      include Memo::SubCommandParser
 
       def execute(argv: '')
         parse_one_argument(str: 'search', argv:)

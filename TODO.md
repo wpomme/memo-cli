@@ -6,11 +6,16 @@
 ### 残タスク
 - テストコードを作成する
 - rubocopのメトリクスによるリファクタリング
-- sub_option_parser => new_command_parserへ切り替え
-    - sub_commandによってコマンドごとに新しいクラスに処理を委譲する
-        - 最後にNewCommandParseをSubCommandParserにリネームする
-        - help, versionについて、Memo::Viewでヘルプやバージョンを表示するように修正する
-        - memo help [sub_command]の作成: コマンドごとのヘルプがほしい
+- sub_command_parser関連
+    - memo help [sub_command]の作成: コマンドごとのヘルプを作成する
+    - memo list -d => memo checkに機能を移動させる？
+- git grep TODOで出てくるTODOを解消していく。また、テストコードのskipを外す
+- メソッドの可視性の調査 => 変更、オブジェクトについて、必要なものはfreezeする
+- Minitest::Testを継承しているクラス名がタイポしていないかどうかを確認する
+- タイポを見つける => 修正する
+- Rdocかyardの導入、coverageの取得
+    - coverage: https://docs.ruby-lang.org/ja/latest/library/coverage.html
+    - simpleCov: https://github.com/simplecov-ruby/simplecov
 
 
 ## その他やりたいこと
@@ -19,11 +24,6 @@
 - Database以下の構成
     - setupは1. create/drop tables, 2. Seeder, 3. schemaの三つに分けられる
     - prepare, serupのところのテストコードを追加する
-
-## ドキュメント・テスト拡張
-- Rdocかyardの導入、coverageの取得
-    - coverage: https://docs.ruby-lang.org/ja/latest/library/coverage.html
-        - simpleCov: https://github.com/simplecov-ruby/simplecov
 
 ## 機能追加
 - 各メモファイルのfront matterにcreated_at, updated_atを挿入する
@@ -42,9 +42,3 @@
 - zshでの補完を考える
     - zsh-completionsのコードを参照すること
     - https://github.com/zsh-users/zsh-completions/blob/master/src/_rev
-
-### その他
-- git grep TODOで出てくるTODOを解消していく。また、テストコードのskipを外す
-- メソッドの可視性の調査 => 変更、オブジェクトについて、必要なものはfreezeする
-- Minitest::Testを継承しているクラス名がタイポしていないかどうかを確認する
-- タイポを見つける => 修正する
