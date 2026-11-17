@@ -8,14 +8,22 @@ module Memo
       end
 
       def execute(word: '')
-        if word == true
-          @vw.execute.each do |line|
-            puts line
-          end
-        else
-          @vw.directory(word).each do |line|
-            puts line
-          end
+        return default if word == true
+
+        directory(word)
+      end
+
+      private
+
+      def default
+        @vw.execute.each do |line|
+          puts line
+        end
+      end
+
+      def directory(word)
+        @vw.directory(word).each do |line|
+          puts line
         end
       end
     end
