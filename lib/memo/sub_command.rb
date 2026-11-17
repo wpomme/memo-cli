@@ -3,22 +3,16 @@
 module Memo
   class SubCommand
     SUB_COMMAND_DISPATCH = {
-      'read' => 'Read',
-      '-r' => 'Read',
-      'search' => 'Search',
-      '-s' => 'Search',
-      'dirs' => 'Dirs',
-      '-d' => 'Dirs',
-      'tag' => 'Tag',
-      'tags' => 'Tags',
-      '-t' => 'Tags',
-      'list' => 'List',
-      '-l' => 'List',
-      'help' => 'Help',
-      '-h' => 'Help',
-      'version' => 'Version',
-      '-V' => 'Version'
-    }.freeze
+      'Read' => %w[read -r],
+      'Search' => %w[search -s],
+      'Dirs' => %w[dirs -d],
+      'Tag' => %w[tag],
+      'Tags' => %w[tags -t],
+      'List' => %w[list -l],
+      'Help' => %w[help -h],
+      'Version' => %w[version -V]
+    }.flat_map { |k, vs| vs.map { |v| [v, k] } }.to_h.freeze
+
     def execute(argv)
       first = argv.shift
 
