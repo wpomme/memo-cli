@@ -24,9 +24,7 @@ module Memo
       end
 
       def empty
-        @vw.empty.each do |line|
-          puts line
-        end
+        puts @vw.empty
       end
 
       def count

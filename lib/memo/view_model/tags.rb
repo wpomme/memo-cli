@@ -38,14 +38,12 @@ module Memo
       # memo tagsをユーザー向けに色付け・値の加工をして結果を返す
       #
       # @param seeds_hash [Hash<String, Array<Seed>>] 文字列がキーで、値がSeedの配列となるハッシュ
-      # @param color_symbol [Symbol] キーの色付けを指定する
-      # @return [Array<String>]
+      # @return [String]
       def tags_to_view(seeds_hash)
-        result = seeds_hash.inject([]) do |result, (key, files)|
-          result << tag_color("#{key}: #{files.size}") << files.join(SPACE) << "\n"
-        end
-
-        remove_last_element(result)
+        seeds_hash.map do |(key, files)|
+          tag_and_size = tag_color("#{key}: #{files.size}")
+          "#{tag_and_size}\n#{files.join(SPACE)}"
+        end.join("\n\n")
       end
     end
   end

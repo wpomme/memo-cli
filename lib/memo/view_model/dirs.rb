@@ -7,19 +7,14 @@ module Memo
 
       def initialize(target_dirs: Memo::Config.target_dirs)
         @directory_loader = Memo::DirectoryLoader.new(target_dirs: target_dirs)
+        @directory_seeds_hash = @directory_loader.directory_seeds_hash
       end
 
       def execute
-        directory_seeds_hash = @directory_loader.directory_seeds_hash
-
-        result = []
-
-        directory_seeds_hash.each_key do |target_dir|
-          directories = directory_seeds_hash[target_dir].reject { |rel_path| rel_path == '' }.join("\n")
-          result << dir_color_main(target_dir) << directories << "\n"
-        end
-
-        remove_last_element(result)
+        @directory_seeds_hash.map do |target_dir, dirs|
+          directories = dirs.reject { |rel_path| rel_path == '' }.join("\n")
+          "#{dir_color_main(target_dir)}\n#{directories}"
+        end.join("\n\n")
       end
     end
   end

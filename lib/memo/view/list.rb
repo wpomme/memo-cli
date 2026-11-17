@@ -16,9 +16,7 @@ module Memo
       private
 
       def default
-        @vw.execute.each do |line|
-          puts line
-        end
+        puts @vw.execute
       end
 
       def directory(word)

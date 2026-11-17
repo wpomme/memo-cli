@@ -8,9 +8,7 @@ module Memo
       end
 
       def execute(*)
-        @vw.execute.each do |line|
-          puts line
-        end
+        puts @vw.execute
       end
     end
   end

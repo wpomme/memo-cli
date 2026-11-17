@@ -22,12 +22,6 @@ class TestViewModelCheck < Minitest::Test
     end
 
     describe '#execute' do
-      it '重複するファイル名がある場合、Arrayを返すこと' do
-        actual = @vm.execute
-
-        _(actual).must_be_instance_of(Array)
-      end
-
       it '重複するファイル名がある場合、結果が空でないこと' do
         actual = @vm.execute
 

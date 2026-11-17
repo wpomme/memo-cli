@@ -22,16 +22,12 @@ module Memo
       private
 
       def duplicated_filenames_to_view(grouped_duplicated_seeds)
-        result = []
-
-        grouped_duplicated_seeds.each do |filename, seeds|
+        grouped_duplicated_seeds.map do |filename, seeds|
           colored_dirs = seeds.map.with_index(1) do |seed, index|
             dir_color_sub("[#{index}]: #{seed[:parent_directory]}")
           end
-          result << filename << colored_dirs << "\n"
-        end
-
-        remove_last_element(result)
+          "#{filename}\n#{colored_dirs.join("\n")}"
+        end.join("\n\n")
       end
     end
   end
