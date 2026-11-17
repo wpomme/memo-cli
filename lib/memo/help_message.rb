@@ -30,6 +30,7 @@ module Memo
       なお、メモフォルダに同じ名前のファイルが二つ以上存在する場合は、
       その中からどのファイルを表示するかを選択するためのプロンプトが表示される。
     READ_D
+    LIST_OPTIONS_DUPLICATE = '重複するファイル名のメモの一覧を表示する'
     TAGS_OPTIONS_NAME = 'タグ名のみを表示する'
     TAGS_OPTIONS_COUNT = 'タグ名とそのタグが付いているファイルの数を表示する'
     TAGS_OPTIONS_EMPTY = 'タグの付いていないファイルの一覧を表示する'

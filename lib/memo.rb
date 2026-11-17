@@ -43,6 +43,8 @@ require_relative 'memo/new_command_parser/tag'
 require_relative 'memo/new_command_parser/tags'
 require_relative 'memo/new_command_parser/dirs'
 require_relative 'memo/new_command_parser/version'
+require_relative 'memo/new_command_parser/list'
+require_relative 'memo/new_command_parser/help'
 require_relative 'memo/command'
 
 module Memo

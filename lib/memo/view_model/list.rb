@@ -4,6 +4,7 @@ module Memo
   module ViewModel
     class List
       include Memo::ViewModel
+      include Memo::Message
 
       def initialize(target_dirs: Memo::Config.target_dirs)
         @target_dirs = target_dirs
@@ -38,8 +39,7 @@ module Memo
 
         found = look_up_from_dirs(normalized)
 
-        # そのようなディレクトリ名がないというメッセージを表示するのが適切
-        return if found.nil?
+        return [NO_DIRECTORIES.gsub('dir', word)] if found.nil?
 
         result = []
 

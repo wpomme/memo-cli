@@ -7,7 +7,6 @@ module Memo
     NO_SEARCH_RESULTS_WERE_FOUND = 'wordで全文検索しましたが、そのような文字列は見当たりませんでした。'
     NO_DIRECTORIES = <<~NO_DIRS
       dirというディレクトリはありませんでした。
-      ディレクトリの一覧は次の通りです。
     NO_DIRS
     NO_TAGS = <<~NO_T
       tagというタグはありませんでした。
