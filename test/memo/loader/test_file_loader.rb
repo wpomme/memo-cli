@@ -15,7 +15,28 @@ class TestFileLoader < Minitest::Test
       it('モックデータと実際のデータが同じであること') do
         actual = @file_loader.file_seeds
 
-        expected = @test_file_seeds
+        expected = []
+
+        Memo::MockSeed::TEST_MOCK_DATA_SEED.each do |seed|
+          @target_dir_hash.each do |orig_dir, test_dir|
+            is_dir_top = seed[:target_dir] == seed[:parent_directory]
+
+            absolute_path = is_dir_top ? File.join(test_dir, "#{seed[:filename]}.md") : File.join(test_dir, seed[:relative_path], "#{seed[:filename]}.md")
+            parent_directory = is_dir_top ? "#{test_dir}/" : File.join(test_dir, seed[:relative_path])
+
+            next unless orig_dir == seed[:target_dir]
+
+            expected << Memo::Structure::FileSeed.new(
+              test_dir,
+              absolute_path,
+              parent_directory,
+              seed[:relative_path],
+              seed[:filename],
+              seed[:file_content],
+              seed[:tags]
+            )
+          end
+        end
 
         _(actual).must_equal(expected)
       end
