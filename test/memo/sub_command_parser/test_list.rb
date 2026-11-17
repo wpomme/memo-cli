@@ -2,7 +2,6 @@
 
 class TestSubCommandParserList < Minitest::Test
   include Memo::Message
-  include Memo::HelpMessage
 
   describe '#execute' do
     def setup
@@ -10,12 +9,6 @@ class TestSubCommandParserList < Minitest::Test
     end
 
     describe 'SubCommandParser::List' do
-      it 'Memo::HelpMessageをインクルードしていること' do
-        actual = Memo::SubCommandParser::List.include?(Memo::HelpMessage)
-
-        _(actual).must_equal(true)
-      end
-
       it 'Memo::SubCommandParserをインクルードしていること' do
         actual = Memo::SubCommandParser::List.include?(Memo::SubCommandParser)
 
@@ -29,19 +22,6 @@ class TestSubCommandParserList < Minitest::Test
           actual = @scp.execute(argv: argv)
 
           _(actual).must_equal({ 'list' => true })
-        end
-
-        it '特定のオプションを受け取った場合は、それに対応するシンボルを返す' do
-          str = 'list'
-          option_hash = {
-            '-d' => :duplicate,
-            '--duplicate' => :duplicate
-          }
-
-          option_hash.each do |opt, expected_value|
-            actual = @scp.execute(argv: [opt])
-            _(actual).must_equal({ str => expected_value })
-          end
         end
 
         it '引数を取る場合は、list:の値にその文字列を返す' do

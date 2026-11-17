@@ -17,23 +17,6 @@ module Memo
         seeds_grouped_by_directory_to_view(@file_loader.seeds_grouped_by_directory)
       end
 
-      def duplicate
-        grouped = @file_loader.duplicated_filenames_seeds.group_by do |file_seed|
-          file_seed[:filename]
-        end
-
-        result = []
-
-        grouped.each do |filename, seeds|
-          colored_dirs = seeds.map.with_index(1) do |seed, index|
-            dir_color_sub("[#{index}]: #{seed[:parent_directory]}")
-          end
-          result << filename << colored_dirs << "\n"
-        end
-
-        remove_last_element(result)
-      end
-
       def directory(word)
         normalized = normalize(word)
 

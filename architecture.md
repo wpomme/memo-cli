@@ -1,28 +1,25 @@
 ## Memoの内部構造
-1. SubCommandParser
-    - memo CLIで受け取った引数の解析
+1. 受け取った引数はSubCommandParserで解釈する
+2. 引数を解釈した後はViewにコマンドの結果を出力させる
+    a. SubCommandParserの後は、MVVMアーキテクチャを採用している
+        - LoaderがModelの役割を果たしている
 
-2. Command
-    - 受け取った引数にしたがって、どのコマンドを実行するかを決定する
+3. 実行順: Command => SubCommand => SubCommandParser => View => ViewModel => Loader
+4. その他のクラスやディレクトリについて
+    - database
+        - 対象のディレクトリの情報をsqlite3に保存するためのフォルダ
+        - 値を保存するまでで、実用には至っていない
+    - Config
+        - config/config.ymlを読み取るためのモジュール
 
-3. View
-    - 受け取ったコマンドにしたがって、表示する内容を決定する
+    - Message, HelpMessage
+        - ユーザーに表示するメッセージを保存するためのモジュール
 
-- Service
-    - Repositoryに依存しないメソッドを保存するモジュール
+    - Service
+        - 他のクラスに依存しないユーティリティ関数を置くためのモジュール
 
-- Config
-    - config/config.ymlを読み取るためのモジュール
+    - Structure
+        - 構造体を定義するためのモジュール
 
-- Message
-    - ユーザーに表示するメッセージを保存するためのモジュール
-
-- Version
-    - Memo CLIのバージョン情報
-
-## 依存関係
-
-### includeの方針
-- メッセージなど定数については極力includeを使う
-- ServiceのようなModuleについても基本的にincludeを使う
-- ViewModelなどのクラスは、何回も現れるならinitializeで変数化するため、includeしなくもいい
+    - Version
+        - Memo CLIのバージョン情報

@@ -8,6 +8,7 @@ module Memo
       'Dirs' => %w[dirs -d],
       'Tag' => %w[tag],
       'Tags' => %w[tags -t],
+      'Check' => %w[check -c],
       'List' => %w[list -l],
       'Help' => %w[help -h],
       'Version' => %w[version -V]

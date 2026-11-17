@@ -8,7 +8,6 @@
 - rubocopのメトリクスによるリファクタリング
 - sub_command_parser関連
     - memo help [sub_command]の作成: コマンドごとのヘルプを作成する
-    - memo list -d => memo checkに機能を移動させる？
 - git grep TODOで出てくるTODOを解消していく。また、テストコードのskipを外す
 - メソッドの可視性の調査 => 変更、オブジェクトについて、必要なものはfreezeする
 - Minitest::Testを継承しているクラス名がタイポしていないかどうかを確認する

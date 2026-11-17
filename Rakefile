@@ -60,6 +60,7 @@ task :e2e do
   sh 'bundle exec rake e2e:search'
   sh 'bundle exec rake e2e:tag'
   sh 'bundle exec rake e2e:list'
+  sh 'bundle exec rake e2e:check'
   sh 'bundle exec rake e2e:dirs'
   sh 'bundle exec rake e2e:tags'
   sh 'bundle exec rake e2e:help'
@@ -95,6 +96,13 @@ namespace :e2e do
     sh 'bundle exec exe/memo list cli/ > /dev/null'
     sh 'bundle exec exe/memo list cli > /dev/null'
     sh 'bundle exec exe/memo list does_not_exist_directory 2>&1 > /dev/null || true'
+  end
+
+  desc 'memo checkコマンドのテスト'
+  task :check do
+    sh 'bundle exec exe/memo check > /dev/null'
+    sh 'bundle exec exe/memo -c > /dev/null'
+    sh 'bundle exec exe/memo check foo 2>&1 > /dev/null || true'
   end
 
   desc 'memo dirsコマンドのテスト'

@@ -12,10 +12,6 @@ module Memo
           @vw.execute.each do |line|
             puts line
           end
-        elsif word == :duplicate
-          @vw.duplicate.each do |line|
-            puts line
-          end
         else
           @vw.directory(word).each do |line|
             puts line
