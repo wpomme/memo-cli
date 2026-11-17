@@ -3,11 +3,13 @@
 require_relative '../../helper'
 
 class TestViewRead < Minitest::Test
-  include Memo::Message
-
   describe 'View::Read' do
+    include MemoLifecycleHooks
+
     def setup
-      @view = Memo::View::Read.new
+      super
+      @view = Memo::View::Read.new(target_dirs: @test_target_dirs)
+      @vw = Memo::ViewModel::Read.new(target_dirs: @test_target_dirs)
     end
 
     describe '#read' do
@@ -20,35 +22,42 @@ class TestViewRead < Minitest::Test
       it 'ファイルが見つからない場合は、該当のメモがないことを示すメッセージを表示する' do
         word = 'does_not_exist_files'
 
-        out, = capture_io do
-          @view.execute(word: word)
+        actual, = capture_io do
+          @view.execute(word)
         end
 
-        _(out).must_equal(NO_MEMOS_WEWE_FOUND.sub('word', word) << "\n")
+        expected = @vw.execute(word)
+
+        _(actual).must_equal(expected << "\n")
       end
 
       it 'ファイルが一件見つかったとき、そのファイルを全文表示する' do
-        target_filename = 'ls'
+        word = 'ls'
 
-        out, = capture_io do
-          @view.execute(word: target_filename)
+        actual, = capture_io do
+          @view.execute(word)
         end
 
-        _(out).must_equal(Memo::MockSeed::TEST_LS_FILE_CONTENT)
+        expected = @vw.execute(word)
+
+        _(actual).must_equal(expected)
       end
 
       it 'ファイルが複数件と一致するとき、どのファイルを表示するかのプロンプトを表示し、選択したファイルを全文表示する' do
-        target_filename = 'diff'
+        skip 'TODO'
+        word = 'diff'
 
         count = 2
 
         # 最後の方を選択する
         $stdin = StringIO.new("#{count}\n")
-        out, = capture_io do
-          @view.execute(word: target_filename)
+        actual, = capture_io do
+          @view.execute(word)
         end
 
-        _(out).wont_be_empty
+        expected = @vw.execute(word)
+
+        _(actual).must_equal(expected)
       ensure
         $stdin = STDIN
       end

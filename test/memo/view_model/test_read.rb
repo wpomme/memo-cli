@@ -18,7 +18,7 @@ class TestViewRead < Minitest::Test
 
         actual = @vw.execute(word)
 
-        _(actual).must_equal(NO_MEMOS_WEWE_FOUND.sub('word', word))
+        _(actual).must_equal(Memo::Message::NO_MEMOS_WEWE_FOUND.sub('word', word))
       end
 
       it 'ファイルが一件見つかったとき、そのファイルを全文表示する' do

@@ -1,5 +1,7 @@
 # frozen_string_literal: true
 
+require_relative '../../helper'
+
 class TestSubCommandParserList < Minitest::Test
   include Memo::Message
 
