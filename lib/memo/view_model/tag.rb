@@ -3,6 +3,7 @@
 module Memo
   module ViewModel
     class Tag
+      include Memo::ViewModel
       include Memo::Message
 
       def initialize(target_dirs: Memo::Config.target_dirs)
@@ -13,7 +14,7 @@ module Memo
         tag_list = @file_loader.tags_sorted_by_tag_name
         tag_files_hash = @file_loader.tag_files_hash
 
-        return str_array_to_view(word, tag_files_hash[word], TAG_COLOR) if tag_list.include?(word)
+        return tag_to_view(word, tag_files_hash[word]) if tag_list.include?(word)
 
         NO_TAGS.sub('tag', word) << tag_list.join(SPACE)
       end
@@ -23,10 +24,10 @@ module Memo
       # 与えられた文字列と、文字列型の配列に従って、ユーザーに表示するための配列を作成する
       #
       # @return [Array<String>]
-      def str_array_to_view(str, arr, color_symbol)
-        return [] if arr.nil?
+      def tag_to_view(word, files)
+        return [] if files.nil?
 
-        [Rainbow(str).color(color_symbol)] << arr.join(SPACE)
+        [tag_color("#{word}: #{files.size}")] << files.join(SPACE)
       end
     end
   end

@@ -12,7 +12,7 @@ module Memo
       end
 
       def execute
-        seeds_hash_to_view(@file_loader.tag_files_hash)
+        tags_to_view(@file_loader.tag_files_hash)
       end
 
       def empty
@@ -35,12 +35,12 @@ module Memo
         end
       end
 
-      # グループ化されたSeedのハッシュについて、グループごとのファイル名を文字列にして返す
+      # memo tagsをユーザー向けに色付け・値の加工をして結果を返す
       #
       # @param seeds_hash [Hash<String, Array<Seed>>] 文字列がキーで、値がSeedの配列となるハッシュ
       # @param color_symbol [Symbol] キーの色付けを指定する
       # @return [Array<String>]
-      def seeds_hash_to_view(seeds_hash)
+      def tags_to_view(seeds_hash)
         result = seeds_hash.inject([]) do |result, (key, files)|
           result << tag_color("#{key}: #{files.size}") << files.join(SPACE) << "\n"
         end

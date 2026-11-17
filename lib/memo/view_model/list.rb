@@ -18,30 +18,28 @@ module Memo
       end
 
       def directory(word)
-        normalized = normalize(word)
-
-        found = look_up_from_dirs(normalized)
+        found = look_up_from_dirs(normalize(word))
 
         return [NO_DIRECTORIES.gsub('dir', word)] if found.nil?
 
-        result = []
-
-        filtered_seeds = @file_loader.seeds_by_parent_directory(found)
-
-        # target_dirとrelative_pathは全てのseedsで同じ値になる
-        result << dir_color_sub(filtered_seeds[0][:target_dir])
-        result << dir_color_main(filtered_seeds[0][:relative_path])
-
-        result << filtered_seeds.map do |seed|
-          seed[:filename]
-        end.join(SPACE)
-
-        result
+        list_by_directory_to_view(found)
       end
 
       private
 
-      # memo list [word]が入力されたとき、まずwordに該当するディレクトリが存在するかどうかをチェックする
+      def list_by_directory_to_view(found)
+        filtered_seeds = @file_loader.seeds_by_parent_directory(found)
+
+        target_dir = dir_color_sub(filtered_seeds[0][:target_dir])
+        relative_path = dir_color_main(filtered_seeds[0][:relative_path])
+        filenames = filtered_seeds.map do |seed|
+          seed[:filename]
+        end.join(SPACE)
+
+        [target_dir, relative_path, filenames]
+      end
+
+      # wordに該当するディレクトリが存在するかどうかをチェックする
       # wordが絶対パスか相対パスでマッチすれば、そのディレクトリの絶対パスを返す
       # なければnilを返す
       #

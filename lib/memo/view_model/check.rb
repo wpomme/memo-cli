@@ -12,13 +12,19 @@ module Memo
       end
 
       def execute
-        grouped = @file_loader.duplicated_filenames_seeds.group_by do |file_seed|
+        grouped_duplicated_seeds = @file_loader.duplicated_filenames_seeds.group_by do |file_seed|
           file_seed[:filename]
         end
 
+        duplicated_filenames_to_view(grouped_duplicated_seeds)
+      end
+
+      private
+
+      def duplicated_filenames_to_view(grouped_duplicated_seeds)
         result = []
 
-        grouped.each do |filename, seeds|
+        grouped_duplicated_seeds.each do |filename, seeds|
           colored_dirs = seeds.map.with_index(1) do |seed, index|
             dir_color_sub("[#{index}]: #{seed[:parent_directory]}")
           end
