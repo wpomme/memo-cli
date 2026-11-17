@@ -12,6 +12,26 @@ class TestFileLoader < Minitest::Test
     end
 
     describe('#file_seeds') do
+      it(':target_dir, :absolute_path, :parent_directory, :filename, :file_content, :tagsの七つについて、そのテストコードを作成する') do
+        skip 'TODO'
+      end
+
+      it(':relative_pathについて、モックデータと値が同じであること') do
+        actual = @file_loader.file_seeds.map { |seed| seed[:relative_path] }
+
+        expected = []
+
+        Memo::MockSeed::TEST_MOCK_DATA_SEED.each do |seed|
+          @orig_target_dirs.each do |target_dir|
+            next unless target_dir == seed[:target_dir]
+
+            expected << seed[:relative_path]
+          end
+        end
+
+        _(actual).must_equal(expected)
+      end
+
       it('モックデータと実際のデータが同じであること') do
         actual = @file_loader.file_seeds
 

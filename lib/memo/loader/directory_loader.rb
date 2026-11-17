@@ -47,7 +47,7 @@ module Memo
 
           Structure::DirectorySeed.new(target_dir, absolute_path, rel_path)
         end
-        [Structure::DirectorySeed.new(target_dir, target_dir, '')].concat(seeds)
+        [Structure::DirectorySeed.new(target_dir, "#{target_dir}/", '')].concat(seeds)
       end
     end
   end

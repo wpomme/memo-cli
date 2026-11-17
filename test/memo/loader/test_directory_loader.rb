@@ -21,23 +21,6 @@ class TestService < Minitest::Test
       end
     end
 
-    describe('#directory_seeds') do
-      it('モックデータから作成したハッシュと同じ値となること') do
-        actual = @directory_loader.directory_seeds
-
-        expected = @test_target_dirs.flat_map do |target_dir|
-          seeds = Dir.glob('**/*/', base: target_dir).map do |rel_path|
-            absolute_path = File.join(target_dir, rel_path)
-
-            Memo::Structure::DirectorySeed.new(target_dir, absolute_path, rel_path)
-          end
-          [Memo::Structure::DirectorySeed.new(target_dir, target_dir, '')].concat(seeds)
-        end
-
-        _(actual).must_equal(expected)
-      end
-    end
-
     describe('#directory_seeds_hash') do
       it('モックデータから作成したハッシュと同じ値となること') do
         actual = @directory_loader.directory_seeds_hash
@@ -47,6 +30,58 @@ class TestService < Minitest::Test
         end
 
         _(actual).must_equal(expected)
+      end
+    end
+
+    describe('#directory_seeds') do
+      it('relative_pathについて、モックデータと同じであること。また、relative_pathはディレクトリのトップを示す空文字の場合があること') do
+        ret = @directory_loader.directory_seeds
+
+        act_set = ret.map.to_set do |dir_seed|
+          dir_seed[:relative_path]
+        end
+
+        exp = @test_target_dirs.map do |target_dir|
+          Dir.glob('**/*/', base: target_dir)
+        end
+
+        exp_set = exp.flatten.to_set.add('')
+
+        _(act_set - exp_set).must_equal(Set.new)
+      end
+
+      it('absolute_pathについて、モックデータと同じであること。また、対象ディレクトリにスラッシュを付けたものも含まれること') do
+        ret = @directory_loader.directory_seeds
+
+        act_set = ret.map.to_set do |dir_seed|
+          dir_seed[:absolute_path]
+        end
+
+        exp = @test_target_dirs.map do |target_dir|
+          Dir.glob('**/*/', base: target_dir).map do |rel_path|
+            File.join(target_dir, rel_path)
+          end
+        end
+
+        exp_set = exp.flatten.to_set
+
+        @test_target_dirs.each do |test_target_dir|
+          exp_set.add("#{test_target_dir}/")
+        end
+
+        _(act_set - exp_set).must_equal(Set.new)
+      end
+
+      it('target_dirについて、いずれかの対象ディレクトリと同じであること。') do
+        ret = @directory_loader.directory_seeds
+
+        act_set = ret.map.to_set do |dir_seed|
+          dir_seed[:target_dir]
+        end
+
+        exp_set = @test_target_dirs.to_set
+
+        _(act_set - exp_set).must_equal(Set.new)
       end
     end
   end

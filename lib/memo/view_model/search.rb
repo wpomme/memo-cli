@@ -11,7 +11,7 @@ module Memo
       end
 
       def execute(word)
-        search_result = search_file_seed(word)
+        search_result = search_result_to_view(word)
 
         return NO_SEARCH_RESULTS_WERE_FOUND.sub('word', word) if search_result.all?(&:empty?)
 
@@ -24,10 +24,12 @@ module Memo
       #
       # @param word [string]
       # @return [Array]
-      def search_file_seed(word)
+      def search_result_to_view(word)
         @file_loader.file_seeds.filter_map do |file_seed|
           file_seed[:file_content].split("\n").filter_map.with_index(1) do |line, idx|
-            path = "./#{File.join(file_seed[:relative_path], file_seed[:filename])}.md"
+            rel_path = file_seed[:relative_path]
+            filename = file_seed[:filename]
+            path = rel_path == './' ? "./#{filename}.md" : "./#{File.join(rel_path, filename)}.md"
             SearchLine.new(path: path, line_number: idx, line: line).to_view(word) if line.include?(word)
           end
         end.reject(&:empty?).flatten

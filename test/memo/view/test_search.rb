@@ -18,23 +18,23 @@ class TestView < Minitest::Test
       end
 
       it '検索結果が見つかった場合' do
-        search_word = 'ls'
+        word = 'ls'
 
         out, = capture_io do
-          @view.execute(word: search_word)
+          @view.execute(word: word)
         end
 
         _(out).wont_be_empty
       end
 
       it '検索結果が見つからなかった場合' do
-        search_word = 'does_not_exist_word'
+        word = 'does_not_exist_word'
 
         out, = capture_io do
-          @view.execute(word: search_word)
+          @view.execute(word: word)
         end
 
-        expected = NO_SEARCH_RESULTS_WERE_FOUND.sub('word', search_word) << "\n"
+        expected = NO_SEARCH_RESULTS_WERE_FOUND.sub('word', word) << "\n"
 
         _(out).must_equal(expected)
       end

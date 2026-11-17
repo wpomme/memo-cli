@@ -5,6 +5,9 @@
 
 ### 残タスク
 - テストコードを作成する
+    - 作成方針
+    - ViewModel: 値の検査、View: 標準出力へ表示されているかどうか
+    - SubCommandParser: 入力値の検査、Command、SubCommand: クラスが呼び出されるかどうか
 - rubocopのメトリクスによるリファクタリング
 - sub_command_parser関連
     - memo help [sub_command]の作成: コマンドごとのヘルプを作成する
@@ -15,6 +18,48 @@
 - Rdocかyardの導入、coverageの取得
     - coverage: https://docs.ruby-lang.org/ja/latest/library/coverage.html
     - simpleCov: https://github.com/simplecov-ruby/simplecov
+- その他修正点
+    - memo.rbのrequire_relativeを簡単にする
+    - View, ViewModel, SubCommandParserなどについて、各コマンドのメソッドを特異メソッドにするかどうか
+
+
+### 残タスク・テストコードの進捗表
+- ViewModel
+    - [ ]: check
+    - [ ]: common
+    - [x]: dirs
+    - [ ]: list
+    - [△]: read => あと一つ
+    - [ ]: search
+    - [ ]: tag
+    - [ ]: tags
+
+- View
+    - [ ]: check
+    - [x]: dirs
+    - [ ]: list
+    - [x]: read
+    - [ ]: search
+    - [ ]: tag
+    - [ ]: tags
+    - [ ]: version
+    - [ ]: help
+
+- SubCommandParser
+    - [ ]: check
+    - [ ]: common
+    - [ ]: dirs
+    - [ ]: help
+    - [ ]: list
+    - [ ]: read
+    - [△]: search => あと一つ
+    - [ ]: tag
+    - [ ]: tags
+    - [ ]: version
+
+- loader
+    - [ ]: directory_loader
+    - [ ]: file_loader
 
 
 ## その他やりたいこと

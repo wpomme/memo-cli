@@ -34,7 +34,9 @@ module MemoLifecycleHooks
     @target_dir_hash = Memo::Config.target_dirs.map.with_index.to_h do |target_dir, index|
       [target_dir, File.join(Dir.home, "/var/test-target-dir-#{index}")]
     end
+    @orig_target_dirs = @target_dir_hash.keys
     @test_target_dirs = @target_dir_hash.values
+
     @test_target_dirs.each do |dir|
       FileUtils.mkdir_p(dir)
     end

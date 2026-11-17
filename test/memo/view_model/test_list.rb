@@ -50,7 +50,9 @@ class TestViewList < Minitest::Test
 
         _(result).must_be_instance_of(Array)
       end
+    end
 
+    describe('#directory') do
       it '有効な引数を取る場合、対象のディレクトリの配列が返ってくる' do
         skip 'TODO'
         dirname = 'git/'

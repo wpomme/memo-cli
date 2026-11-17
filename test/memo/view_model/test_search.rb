@@ -14,20 +14,20 @@ class TestViewSearch < Minitest::Test
 
     describe '#execute' do
       it '見つからなかった場合' do
-        search_word = 'does_not_exist_words'
+        word = 'does_not_exist_words'
 
-        actual = @vm.execute(search_word)
+        actual = @vm.execute(word)
 
-        expected = Memo::Message::NO_SEARCH_RESULTS_WERE_FOUND.sub('word', search_word)
+        expected = Memo::Message::NO_SEARCH_RESULTS_WERE_FOUND.sub('word', word)
 
         _(actual).must_equal(expected)
       end
 
       it '検索結果が見つかった場合' do
         skip 'TODO'
-        search_word = 'ls'
+        word = 'ls'
 
-        actual = @vm.execute(search_word)
+        actual = @vm.execute(word)
 
         _(actual).must_equal(expected)
       end

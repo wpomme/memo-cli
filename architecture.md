@@ -4,7 +4,7 @@
     a. SubCommandParserの後は、MVVMアーキテクチャを採用している
         - LoaderがModelの役割を果たしている
 
-3. 実行順: Command => SubCommand => SubCommandParser => View => ViewModel => Loader
+3. 実行順: Command => SubCommand => SubCommandParser => SubCommand => Command => View => ViewModel => Loader => ViewModel => View
 4. その他のクラスやディレクトリについて
     - database
         - 対象のディレクトリの情報をsqlite3に保存するためのフォルダ
