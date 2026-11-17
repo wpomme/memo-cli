@@ -3,18 +3,25 @@
 require_relative '../../helper'
 
 class TestViewDirs < Minitest::Test
-  include Memo::Message
-
   describe 'View::Dirs' do
+    include MemoLifecycleHooks
+    include Memo::Message
+
     def setup
-      @view = Memo::View::Dirs.new
+      super
+      @view = Memo::View::Dirs.new(target_dirs: @test_target_dirs)
+      @vw = Memo::ViewModel::Dirs.new(target_dirs: @test_target_dirs)
     end
 
-    describe '#dirs' do
-      it 'ViewModelはexecuteメソッドを返す' do
-        actual = @view
+    describe '#execute' do
+      it '所定の値を標準出力に返すこと' do
+        actual, = capture_io do
+          @view.execute
+        end
 
-        _(actual).must_respond_to(:execute)
+        expected = @vw.execute
+
+        _(actual).must_equal(expected << "\n")
       end
     end
   end
