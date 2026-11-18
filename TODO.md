@@ -9,8 +9,6 @@
     - ViewModel: 値の検査、View: 標準出力へ表示されているかどうか
     - SubCommandParser: 入力値の検査、Command、SubCommand: クラスが呼び出されるかどうか
 - rubocopのメトリクスによるリファクタリング
-- sub_command_parser関連
-    - memo help [sub_command]の作成: コマンドごとのヘルプを作成する
 - git grep TODOで出てくるTODOを解消していく。また、テストコードのskipを外す
 - メソッドの可視性の調査 => 変更、オブジェクトについて、必要なものはfreezeする
 - Minitest::Testを継承しているクラス名がタイポしていないかどうかを確認する
@@ -23,6 +21,7 @@
     - 各テストコードにrequire_relative helperを記載する
         - どこかのファイルで一括して定義したい
     - memo list [dirs]で、dirsが存在しなかった場合、取りうるディレクトリの一覧を出力する
+        - memo list booksと打つと、例外が送出されてしまう。要修正
     - 各クラスの呼び出しについて、簡単のため呼び出すメソッドを特異メソッドにする
         - 今のままでOK: ViewModel
         - 特異メソッドにする: View, Command, SubCommand

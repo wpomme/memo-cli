@@ -7,13 +7,26 @@ module Memo
       include Memo::SubCommandParser
 
       def execute(argv: nil)
-        # TODO: コマンドごとのヘルプが欲しい
+        # TODO: SubCommand::SubCommandDispatchを流用する
         second = argv&.first
 
-        if second == 'tags'
-          puts TAGS_DETAIL
-        elsif second == 'read'
+        case second
+        when 'check'
+          puts CHECK_DETAIL
+        when 'dirs'
+          puts DIRS_DETAIL
+        when 'list'
+          puts LIST_DETAIL
+        when 'read'
           puts READ_DETAIL
+        when 'search'
+          puts SEARCH_DETAIL
+        when 'tag'
+          puts TAG_DETAIL
+        when 'tags'
+          puts TAGS_DETAIL
+        when 'version'
+          puts VERSION_DETAIL
         else
           puts GENERAL
         end
