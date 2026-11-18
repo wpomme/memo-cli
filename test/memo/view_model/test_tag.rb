@@ -3,10 +3,9 @@
 require_relative '../../helper'
 
 class TestViewTag < Minitest::Test
-  include Memo::Message
-
   describe 'ViewModel::Tag' do
     include MemoLifecycleHooks
+    include Memo::ViewModel
 
     def setup
       super
@@ -15,24 +14,34 @@ class TestViewTag < Minitest::Test
     end
 
     describe '#execute' do
-      it '見つかった場合、FileLoaderからのタグの数とTag.executeによるタグの数は同じになる' do
-        search_word = 'CLI'
+      describe 'タグが見つかった場合、' do
+        word = 'CLI'
 
-        # タグの文字列が入っている配列の方を取得して、スペースでsplitしてsizeを取る
-        actual = @vm.execute(search_word).last.split.size
+        it 'タグ名とそのタグが付いたファイルの数に色を付けて出力すること' do
+          actual = @vm.execute(word).split("\n").first
 
-        expected = @file_loader.tag_files_hash.transform_values(&:size)[search_word]
+          file_size = @file_loader.tag_files_hash[word].size
+          expected = tag_color("#{word}: #{file_size}")
 
-        _(actual).must_equal(expected)
+          _(actual).must_equal(expected)
+        end
+
+        it 'そのタグに紐付いたファイル名を出力すること' do
+          act_set = @vm.execute(word).split("\n").last.split(Memo::ViewModel::SPACE).to_set
+
+          exp_set = @file_loader.tag_files_hash[word].to_set
+
+          _(act_set - exp_set).must_equal(Set.new)
+        end
       end
 
-      it '見つからなかった場合、エラーメッセージを表示する' do
-        search_word = 'does_not_exist_words'
-        tag_list = @file_loader.tags_sorted_by_tag_name
+      it '見つからなかった場合、その旨を示すエラーメッセージを表示すること' do
+        word = 'does_not_exist_words'
+        tag_list = @file_loader.tags_sorted_by_tag_name.join(Memo::ViewModel::SPACE)
 
-        actual = @vm.execute(search_word)
+        actual = @vm.execute(word)
 
-        expected = NO_TAGS.sub('tag', search_word) << tag_list.join(' ')
+        expected = Memo::Message::NO_TAGS.sub('tag', word) << tag_list
 
         _(actual).must_equal(expected)
       end

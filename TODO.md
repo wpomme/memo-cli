@@ -20,6 +20,7 @@
     - simpleCov: https://github.com/simplecov-ruby/simplecov
 - その他修正点
     - memo.rbのrequire_relativeを簡単にする
+    - memo list [dirs]で、dirsが存在しなかった場合、取りうるディレクトリの一覧を出力する
     - View, ViewModel, SubCommandParserなどについて、各コマンドのメソッドを特異メソッドにするかどうか
     - rake e2eを堅牢にする
     - git push前のhooksを作成する
@@ -33,7 +34,7 @@
     - [ ]: list
     - [△]: read => あと一つ
     - [ ]: search
-    - [ ]: tag
+    - [x]: tag
     - [ ]: tags
 
 - View
@@ -42,7 +43,7 @@
     - [ ]: list
     - [x]: read
     - [ ]: search
-    - [ ]: tag
+    - [x]: tag
     - [ ]: tags
     - [ ]: version
     - [ ]: help

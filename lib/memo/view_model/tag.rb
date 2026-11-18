@@ -11,12 +11,11 @@ module Memo
       end
 
       def execute(word)
-        tag_list = @file_loader.tags_sorted_by_tag_name
-        tag_files_hash = @file_loader.tag_files_hash
+        tag_files = @file_loader.tag_files_hash[word]
 
-        return tag_to_view(word, tag_files_hash[word]) if tag_list.include?(word)
+        return tag_to_view(word, tag_files) unless tag_files.nil?
 
-        NO_TAGS.sub('tag', word) << tag_list.join(SPACE)
+        NO_TAGS.sub('tag', word) << @file_loader.tags_sorted_by_tag_name.join(SPACE)
       end
 
       private
@@ -25,9 +24,8 @@ module Memo
       #
       # @return [Array<String>]
       def tag_to_view(word, files)
-        return [] if files.nil?
-
-        [tag_color("#{word}: #{files.size}")] << files.join(SPACE)
+        tag_and_size = tag_color("#{word}: #{files.size}")
+        "#{tag_and_size}\n#{files.join(SPACE)}"
       end
     end
   end

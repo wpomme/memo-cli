@@ -3,41 +3,39 @@
 require_relative '../../helper'
 
 class TestViewTag < Minitest::Test
-  include Memo::Message
-
   describe 'View::Tag' do
+    include MemoLifecycleHooks
+    include Memo::Message
+
     def setup
-      @view = Memo::View::Tag.new
+      super
+      @view = Memo::View::Tag.new(target_dirs: @test_target_dirs)
+      @vw = Memo::ViewModel::Tag.new(target_dirs: @test_target_dirs)
     end
 
     describe '#tag' do
-      it 'ViewModelはexecuteメソッドを返す' do
-        actual = @view
+      it '検索結果が見つかった場合、所定の値を標準出力に出すこと' do
+        word = 'CLI'
 
-        _(actual).must_respond_to(:execute)
-      end
-
-      it '検索結果が見つかった場合' do
-        search_word = 'CLI'
-
-        out, = capture_io do
-          @view.execute(word: search_word)
+        actual, = capture_io do
+          @view.execute(word: word)
         end
 
-        _(out).wont_be_empty
+        expected = @vw.execute(word)
+
+        _(actual).must_equal(expected << "\n")
       end
 
-      it '検索結果が見つからなかった場合' do
-        search_word = 'does_not_exist_word'
-        tag_list = Memo::FileLoader.new.tags_sorted_by_tag_name
+      it '検索結果が見つからなかった場合、所定の値を標準出力に出すこと' do
+        word = 'does_not_exist_word'
 
-        out, = capture_io do
-          @view.execute(word: search_word)
+        actual, = capture_io do
+          @view.execute(word: word)
         end
 
-        expected = NO_TAGS.sub('tag', search_word) << tag_list.join(' ') << "\n"
+        expected = @vw.execute(word)
 
-        _(out).must_equal(expected)
+        _(actual).must_equal(expected << "\n")
       end
     end
   end
