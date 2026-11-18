@@ -20,7 +20,7 @@ module Memo
       end
 
       def count
-        count_hash_to_view(@file_loader.tags_sorted_by_file_size)
+        tags_count_to_view(@file_loader.tags_sorted_by_file_size)
       end
 
       def name
@@ -29,7 +29,7 @@ module Memo
 
       private
 
-      def count_hash_to_view(hash)
+      def tags_count_to_view(hash)
         hash.map do |k, v|
           ["#{k}: #{v}"]
         end

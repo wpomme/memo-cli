@@ -12,7 +12,7 @@ module Memo
       end
 
       def execute
-        grouped_duplicated_seeds = @file_loader.duplicated_filenames_seeds.group_by do |file_seed|
+        grouped_duplicated_seeds = @file_loader.duplicated_seeds.group_by do |file_seed|
           file_seed[:filename]
         end
 

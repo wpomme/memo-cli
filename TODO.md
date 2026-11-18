@@ -32,27 +32,9 @@
 
 
 ### 残タスク・テストコードの進捗表
-- ViewModel
-    - [ ]: check
-    - [ ]: common
-    - [x]: dirs
-    - [ ]: list
-    - [△]: read => あと一つ
-    - [ ]: search
-    - [x]: tag
-    - [ ]: tags
-
-- View
-    - [ ]: check
-    - [x]: dirs
-    - [ ]: list
-    - [x]: read
-    - [ ]: search
-    - [x]: tag
-    - [ ]: tags
-    - [ ]: version
-    - [ ]: help
-
+- loader
+    - [ ]: directory_loader
+    - [ ]: file_loader
 - SubCommandParser
     - [ ]: check
     - [ ]: common
@@ -60,14 +42,29 @@
     - [ ]: help
     - [ ]: list
     - [ ]: read
-    - [△]: search => あと一つ
+    - [i]: search => あと一つ
     - [ ]: tag
     - [ ]: tags
     - [ ]: version
-
-- loader
-    - [ ]: directory_loader
-    - [ ]: file_loader
+- View
+    - [ ]: check
+    - [x]: dirs
+    - [ ]: list
+    - [i]: read => あと一つ
+    - [ ]: search
+    - [x]: tag
+    - [ ]: tags
+    - [ ]: version
+    - [ ]: help
+- ViewModel
+    - [ ]: check
+    - [ ]: common
+    - [x]: dirs
+    - [ ]: list
+    - [x]: read
+    - [ ]: search
+    - [x]: tag
+    - [i]: tags => あと一つ
 
 
 ## その他やりたいこと

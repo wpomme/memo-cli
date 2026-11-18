@@ -60,8 +60,8 @@ module Memo
 
     # 重複したファイル名を持つfile_seedの配列を返す
     #
-    # @return [Hash<String, Integer>]
-    def duplicated_filenames_seeds
+    # @return [Array<FileSeed>]
+    def duplicated_seeds
       file_seeds.filter do |file_seed|
         filenames.count(file_seed[:filename]) > 1
       end

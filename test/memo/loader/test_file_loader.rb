@@ -62,6 +62,22 @@ class TestFileLoader < Minitest::Test
       end
     end
 
+    describe('#duplicated_seeds') do
+      it('ファイル名で集計すると、実際にファイル名が二つ以上あること。また、重複したファイル名が存在しなければ、空の配列を返すこと') do
+        ret = @file_loader.duplicated_seeds
+
+        if ret.empty?
+          _(ret).must_equal([])
+        else
+          tallied = ret.map { |file_seed| file_seed[:filename] }.tally
+
+          actual = tallied.values.all? { |e| e > 1 }
+
+          _(actual).must_equal(true)
+        end
+      end
+    end
+
     describe('#tag_files_hash') do
       it('要素数がモックデータと同じであること') do
         target_tag_name = 'CLI'

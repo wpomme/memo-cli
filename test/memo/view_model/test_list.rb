@@ -24,7 +24,7 @@ class TestViewList < Minitest::Test
 
     describe '#execute' do
       it '引数がtrueの場合、対象のディレクトリの配列が返ってきて、その中に色付けされたディレクトリの一覧があること' do
-        skip 'TODO'
+        skip '先に#directoryの方を作成する。その際、ディレクトリの値とファイル名の値を個別にテストする。その応用として#executeのテストコードを作成する'
         result = @vm.execute(true)
 
         result_set = Set.new(result)
