@@ -10,14 +10,8 @@ module Memo
       @file_seeds = load_file_seeds(target_dirs).flatten
     end
 
-    # 重複を排除した上で、全てのタグの総数を返す
-    #
-    # @return [Integer]
-    def tag_size
-      tag_list.size
-    end
-
-    # タグの付いている数が多いものから順に並べる
+    # タグの付いている数が多いものから順に並べる。
+    # 戻り値はタグとファイル名のセットを配列としたものをさらに配列で囲んだものを返す
     #
     # @return [Array<Array<String, Integer>>]
     def tags_sorted_by_file_size
@@ -31,14 +25,14 @@ module Memo
     #
     # @return [Array<String>]
     def tags_sorted_by_tag_name
-      tag_list.sort
+      unsorted_tag_list.sort
     end
 
     # それぞれのタグと、そのタグが付いているSeedの配列のハッシュを返す
     #
     # @return [Hash<String, Array<String>>]
     def tag_files_hash
-      @tag_files_hash ||= tag_list.to_h do |tag|
+      @tag_files_hash ||= unsorted_tag_list.to_h do |tag|
         [
           tag,
           file_seeds.filter_map do |file_seed|
@@ -121,8 +115,8 @@ module Memo
     # 全てのタグの一覧。ソートしていない
     #
     # [Array<String>]
-    def tag_list
-      @tag_list ||= file_seeds.map do |file_seed|
+    def unsorted_tag_list
+      @unsorted_tag_list ||= file_seeds.map do |file_seed|
         file_seed[:tags]
       end.flatten.uniq
     end

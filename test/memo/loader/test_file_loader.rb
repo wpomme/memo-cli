@@ -12,7 +12,7 @@ class TestFileLoader < Minitest::Test
     end
 
     describe('#file_seeds') do
-      it(':target_dir, :absolute_path, :parent_directory, :filename, :file_content, :tagsの七つについて、そのテストコードを作成する') do
+      it(':target_dir, :absolute_path, :parent_directory, :filename, :file_content, :tagsについて、テストコードを作成する') do
         skip 'TODO'
       end
 
@@ -62,45 +62,59 @@ class TestFileLoader < Minitest::Test
       end
     end
 
-    describe('#duplicated_seeds') do
-      it('ファイル名で集計すると、実際にファイル名が二つ以上あること。また、重複したファイル名が存在しなければ、空の配列を返すこと') do
-        ret = @file_loader.duplicated_seeds
+    describe('#public_methods') do
+      it('tags_sorted_by_file_size, tags_sorted_by_tag_name, tag_files_hashをグループ化してテストコードを作成する') do
+        skip 'TODO'
+      end
 
-        if ret.empty?
-          _(ret).must_equal([])
-        else
-          tallied = ret.map { |file_seed| file_seed[:filename] }.tally
+      describe('#tag_files_hash') do
+        it('要素数がモックデータと同じであること') do
+          target_tag_name = 'CLI'
 
-          actual = tallied.values.all? { |e| e > 1 }
+          actual = @file_loader.tag_files_hash.transform_values(&:size)[target_tag_name]
 
-          _(actual).must_equal(true)
+          expected = Memo::MockSeed::TEST_MOCK_DATA_SEED.filter do |seed|
+            seed[:tags].include?(target_tag_name)
+          end.size
+
+          _(actual).must_equal(expected)
         end
       end
-    end
 
-    describe('#tag_files_hash') do
-      it('要素数がモックデータと同じであること') do
-        target_tag_name = 'CLI'
+      describe('#tags_sorted_by_tag_name') do
+        it('モックデータからの加工したタグデータと同じ要素・要素数であること') do
+          actual = @file_loader.tags_sorted_by_tag_name
 
-        actual = @file_loader.tag_files_hash.transform_values(&:size)[target_tag_name]
+          expected = Memo::MockSeed::TEST_MOCK_DATA_SEED.flat_map do |seed|
+            seed[:tags]
+          end.uniq.sort
 
-        expected = Memo::MockSeed::TEST_MOCK_DATA_SEED.filter do |seed|
-          seed[:tags].include?(target_tag_name)
-        end.size
-
-        _(actual).must_equal(expected)
+          _(actual).must_equal(expected)
+        end
       end
-    end
 
-    describe('#tags_sorted_by_tag_name') do
-      it('モックデータからの加工したタグデータと同じ要素・要素数であること') do
-        actual = @file_loader.tags_sorted_by_tag_name
+      it('duplicated_seeds, seeds_by_parent_directory, seeds_grouped_by_directory, empty_tags_seeds_grouped_by_directoryをグループ化してテストコードを作成する') do
+        skip 'TODO'
+      end
 
-        expected = Memo::MockSeed::TEST_MOCK_DATA_SEED.flat_map do |seed|
-          seed[:tags]
-        end.uniq.sort
+      describe('#duplicated_seeds') do
+        it('ファイル名で集計すると、実際にファイル名が二つ以上あること。また、重複したファイル名が存在しなければ、空の配列を返すこと') do
+          ret = @file_loader.duplicated_seeds
 
-        _(actual).must_equal(expected)
+          if ret.empty?
+            _(ret).must_equal([])
+          else
+            tallied = ret.map { |file_seed| file_seed[:filename] }.tally
+
+            actual = tallied.values.all? { |e| e > 1 }
+
+            _(actual).must_equal(true)
+          end
+        end
+      end
+
+      it('absolute_filename_to_tagsのテストコードも作成する') do
+        skip 'TODO'
       end
     end
   end

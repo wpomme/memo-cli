@@ -36,16 +36,16 @@
     - [ ]: directory_loader
     - [ ]: file_loader
 - SubCommandParser
-    - [ ]: check
+    - [x]: check
     - [ ]: common
-    - [ ]: dirs
+    - [x]: dirs
     - [ ]: help
     - [ ]: list
-    - [ ]: read
-    - [i]: search => あと一つ
-    - [ ]: tag
+    - [x]: read
+    - [x]: search
+    - [x]: tag
     - [ ]: tags
-    - [ ]: version
+    - [x]: version
 - View
     - [ ]: check
     - [x]: dirs
