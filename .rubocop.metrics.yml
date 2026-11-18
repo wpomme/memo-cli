@@ -8,3 +8,8 @@ Metrics:
 Metrics/BlockLength:
   Exclude:
     - 'test/**/*'
+
+# 自動で生成したモックデータは、モジュールが長くなっても問題ない
+Metrics/ModuleLength:
+  Exclude:
+    - 'test/mock_seeds.rb'

@@ -36,11 +36,21 @@ module MemoLifecycleHooks
     end
     @orig_target_dirs = @target_dir_hash.keys
     @test_target_dirs = @target_dir_hash.values
+    @fixed_mock_file = 'ls'
+    @fixed_search_word = 'ls'
+    @fixed_duplicated_filename = 'diff'
 
+    create_dirs
+    create_files
+  end
+
+  def create_dirs
     @test_target_dirs.each do |dir|
       FileUtils.mkdir_p(dir)
     end
+  end
 
+  def create_files
     Memo::MockSeed::TEST_MOCK_DATA_SEED.each do |seed|
       @target_dir_hash.each do |orig_dir, test_dir|
         test_child_dir = File.join(test_dir, seed[:relative_path])
@@ -51,10 +61,6 @@ module MemoLifecycleHooks
         File.write(File.join(test_dir, seed[:relative_path], "#{seed[:filename]}.md"), seed[:file_content])
       end
     end
-
-    @fixed_mock_file = 'ls'
-    @fixed_search_word = 'ls'
-    @fixed_duplicated_filename = 'diff'
   end
 
   def teardown

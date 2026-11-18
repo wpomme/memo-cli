@@ -2,11 +2,18 @@
 
 class TestCommand < Minitest::Test
   describe 'Command' do
-    it '#execute' do
-      skip 'TODO: サブコマンドによって該当のクラスを呼び出していることを確認したい'
-      actual = Memo::Command.new.execute(['dirs'])
+    describe '#execute' do
+      it 'listを受け取ったら、Memo::View::List#executeを呼び出すこと' do
+        skip 'TODO'
+        mock = Minitest::Mock.new
+        mock.expect(:execute, nil, [{ word: nil }])
 
-      _(actual).must_equal(false)
+        Memo::View::List.stub(:new, mock) do
+          Memo::Command.new.execute(['list'])
+        end
+
+        mock.verify
+      end
     end
   end
 end

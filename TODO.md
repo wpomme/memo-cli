@@ -20,8 +20,13 @@
     - simpleCov: https://github.com/simplecov-ruby/simplecov
 - その他修正点
     - memo.rbのrequire_relativeを簡単にする
+    - 各テストコードにrequire_relative helperを記載する
+        - どこかのファイルで一括して定義したい
     - memo list [dirs]で、dirsが存在しなかった場合、取りうるディレクトリの一覧を出力する
-    - View, ViewModel, SubCommandParserなどについて、各コマンドのメソッドを特異メソッドにするかどうか
+    - 各クラスの呼び出しについて、簡単のため呼び出すメソッドを特異メソッドにする
+        - 今のままでOK: ViewModel
+        - 特異メソッドにする: View, Command, SubCommand
+        - 未定: SubCommandParser
     - rake e2eを堅牢にする
     - git push前のhooksを作成する
 
