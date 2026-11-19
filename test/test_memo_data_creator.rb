@@ -5,7 +5,7 @@ require 'memo'
 require_relative 'mock_seeds'
 require 'fileutils'
 
-class TestDirectoryCreator
+class TestMemoDataCreator
   def initialize
     this_repo_dir = `git rev-parse --show-toplevel`.chomp
     mock_target_dirs = Memo::Config.target_dirs << File.join(this_repo_dir, '/mock-data/')

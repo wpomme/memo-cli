@@ -48,15 +48,15 @@ namespace :mock do
 
   desc '/var/にテスト用のデータを作成する'
   task :create_test_data do
-    require_relative 'test/test_directory_creator'
-    tdc = TestDirectoryCreator.new
+    require_relative 'test/test_memo_data_creator'
+    tdc = TestMemoDataCreator.new
     tdc.create
   end
 
   desc '/var/のテスト用のデータを削除する'
   task :delete_test_data do
-    require_relative 'test/test_directory_creator'
-    tdc = TestDirectoryCreator.new
+    require_relative 'test/test_memo_data_creator'
+    tdc = TestMemoDataCreator.new
     tdc.delete
   end
 end
