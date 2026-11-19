@@ -13,7 +13,7 @@ class TestViewSearch < Minitest::Test
     end
 
     describe '#execute' do
-      it '見つからなかった場合' do
+      it '検索文字列でヒットしなかった場合は、その旨のメッセージを表示すること' do
         word = 'does_not_exist_words'
 
         actual = @vm.execute(word)
@@ -23,13 +23,17 @@ class TestViewSearch < Minitest::Test
         _(actual).must_equal(expected)
       end
 
-      it '検索結果が見つかった場合' do
-        skip 'TODO'
-        word = 'ls'
+      it '検索文字列でヒットした場合は、行ごとに一定の形式に沿った文字列を表示すること' do
+        word = 'a'
 
-        actual = @vm.execute(word)
+        ret = @vm.execute(word)
 
-        _(actual).must_equal(expected)
+        actual = ret.all? do |line|
+          # ./[任意の文字列].md:(数字):[任意の文字列]
+          %r{\A\./.+\.md:\d+:.+\Z}.match?(line)
+        end
+
+        _(actual).must_equal(true)
       end
     end
   end

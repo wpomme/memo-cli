@@ -9,54 +9,81 @@ class TestFileLoader < Minitest::Test
     def setup
       super
       @file_loader = Memo::FileLoader.new(target_dirs: @test_target_dirs)
+      @mock_seeds = Memo::MockSeed::TEST_MOCK_DATA_SEED
     end
 
-    describe('#file_seeds') do
-      it(':target_dir, :absolute_path, :parent_directory, :filename, :file_content, :tagsについて、テストコードを作成する') do
-        skip 'TODO'
+    describe('#file_seeds: FileSeedの各項目について値のテストを行う') do
+      it(':target_dirについて、テストデータの対象ディレクトリと同じ値になること') do
+        actual = @file_loader.file_seeds.map { |seed| seed[:target_dir] }
+          .uniq
+
+        expected = @test_target_dirs
+
+        _(actual).must_equal(expected)
       end
 
-      it(':relative_pathについて、モックデータと値が同じであること') do
-        actual = @file_loader.file_seeds.map { |seed| seed[:relative_path] }
+      it(':absolute_pathについて、モックデータと実際のデータが同じであること') do
+        actual = @file_loader.file_seeds.map { |seed| seed[:absolute_path] }
 
-        expected = []
+        expected = @mock_seeds.flat_map do |seed|
+          @target_dir_hash.filter_map do |orig_dir, test_dir|
+            is_dir_top = seed[:target_dir] == seed[:parent_directory]
 
-        Memo::MockSeed::TEST_MOCK_DATA_SEED.each do |seed|
-          @orig_target_dirs.each do |target_dir|
-            next unless target_dir == seed[:target_dir]
+            absolute_path = is_dir_top ? File.join(test_dir, "#{seed[:filename]}.md") : File.join(test_dir, seed[:relative_path], "#{seed[:filename]}.md")
 
-            expected << seed[:relative_path]
+            absolute_path if orig_dir == seed[:target_dir]
           end
         end
 
         _(actual).must_equal(expected)
       end
 
-      it('モックデータと実際のデータが同じであること') do
-        actual = @file_loader.file_seeds
+      it(':relative_pathについて、重複を排除したものがモックデータと同じ値になること') do
+        actual = @file_loader.file_seeds.map { |seed| seed[:relative_path] }
+          .uniq
 
-        expected = []
+        expected = @mock_seeds.map { |seed| seed[:relative_path] }
+          .uniq
 
-        Memo::MockSeed::TEST_MOCK_DATA_SEED.each do |seed|
-          @target_dir_hash.each do |orig_dir, test_dir|
+        _(actual).must_equal(expected)
+      end
+
+      it(':parent_directoryについて、モックデータと実際のデータが同じであること') do
+        actual = @file_loader.file_seeds.map { |seed| seed[:parent_directory] }
+
+        expected = @mock_seeds.flat_map do |seed|
+          @target_dir_hash.filter_map do |orig_dir, test_dir|
             is_dir_top = seed[:target_dir] == seed[:parent_directory]
 
-            absolute_path = is_dir_top ? File.join(test_dir, "#{seed[:filename]}.md") : File.join(test_dir, seed[:relative_path], "#{seed[:filename]}.md")
             parent_directory = is_dir_top ? "#{test_dir}/" : File.join(test_dir, seed[:relative_path])
 
-            next unless orig_dir == seed[:target_dir]
-
-            expected << Memo::Structure::FileSeed.new(
-              test_dir,
-              absolute_path,
-              parent_directory,
-              seed[:relative_path],
-              seed[:filename],
-              seed[:file_content],
-              seed[:tags]
-            )
+            parent_directory if orig_dir == seed[:target_dir]
           end
         end
+
+        _(actual).must_equal(expected)
+      end
+
+      it(':filenameについて、モックデータと実際のデータが同じであること') do
+        actual = @file_loader.file_seeds.map { |seed| seed[:filename] }
+
+        expected = @mock_seeds.map { |seed| seed[:filename] }
+
+        _(actual).must_equal(expected)
+      end
+
+      it(':file_contentについて、モックデータと実際のデータが同じであること') do
+        actual = @file_loader.file_seeds.map { |seed| seed[:file_content] }
+
+        expected = @mock_seeds.map { |seed| seed[:file_content] }
+
+        _(actual).must_equal(expected)
+      end
+
+      it(':tagsについて、モックデータと実際のデータが同じであること') do
+        actual = @file_loader.file_seeds.map { |seed| seed[:tags] }
+
+        expected = @mock_seeds.map { |seed| seed[:tags] }
 
         _(actual).must_equal(expected)
       end
@@ -73,7 +100,7 @@ class TestFileLoader < Minitest::Test
 
           actual = @file_loader.tag_files_hash.transform_values(&:size)[target_tag_name]
 
-          expected = Memo::MockSeed::TEST_MOCK_DATA_SEED.filter do |seed|
+          expected = @mock_seeds.filter do |seed|
             seed[:tags].include?(target_tag_name)
           end.size
 
@@ -85,9 +112,8 @@ class TestFileLoader < Minitest::Test
         it('モックデータからの加工したタグデータと同じ要素・要素数であること') do
           actual = @file_loader.tags_sorted_by_tag_name
 
-          expected = Memo::MockSeed::TEST_MOCK_DATA_SEED.flat_map do |seed|
-            seed[:tags]
-          end.uniq.sort
+          expected = @mock_seeds.flat_map { |seed| seed[:tags] }
+            .uniq.sort
 
           _(actual).must_equal(expected)
         end
@@ -101,6 +127,7 @@ class TestFileLoader < Minitest::Test
         it('ファイル名で集計すると、実際にファイル名が二つ以上あること。また、重複したファイル名が存在しなければ、空の配列を返すこと') do
           ret = @file_loader.duplicated_seeds
 
+          # NOTE: 分岐を消したい
           if ret.empty?
             _(ret).must_equal([])
           else

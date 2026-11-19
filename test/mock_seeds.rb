@@ -2125,29 +2125,72 @@ module Memo
       2. I have a basic command of reading and writing in English.
     CHAT_FILE
 
-    TEST_PROMPT_AI_FILE_CONTENT = <<~PROMPT_AI_FILE
+    TEST_PHONETIC_FILE_CONTENT = <<~PHONETIC_FILE
       ---
-      tags: ["English", "AI prompt"]
+      tags: ["English", "Vocabulary", "phonetic", "keyboard"]
       ---
-      ## Prompt AI: AIとの対話用
-      ### 修正依頼
-          - エラーがあれば直してほしい
-      1. Please fix any errors. -> 少し丁寧
-      2. Fix any errors if found. -> 自然
+      ## Phonetic: 発音記号とその打ち方
+      - ∫: opt + b
+          - 無声後部歯茎摩擦音(むせいこうぶ しけいまさつおん)
+          - voiceless postalveolar fricative
+      - ú: (opt + e) + u
+          - アキュートアクセント、アクサンテギュ
+    PHONETIC_FILE
 
-      ### 出力して欲しい・AIが読みやすい形で
-          - AIが読みやすいようにpbcopyに渡して
-      - Please pipe the output to pbcopy in an AI-readable format.
-    PROMPT_AI_FILE
+    TEST_REVIEW_FILE_CONTENT = <<~REVIEW_FILE
+      ---
+      tags: ["English", "Messages"]
+      ---
+      ## Review: レビューに関するやり取り
 
-    TEST_VOCABULARY_ABOUT_COMPUTER_FILE_CONTENT = <<~VOCABULARY_ABOUT_COMPUTER_FILE
+      ### レビューを見てもらうとき
+      1. Could you review my PR at your Convenience?
+      2. Could you take a look at my PR when you get a chance?
+
+      ### 再レビュー
+      1. Could you re-review my PR when you get a chance?
+      2. Could you re-review my PR and also check this when you get a chance?
+          a. これも見てほしい、のニュアンス
+
+      ### 指摘事項の修正
+      1. Updated the code based on feedback from AI.
+
+      ### PRの説明
+      1. This PR only changes the folder structure for domain/report.
+      2. This PR fixes the bug in report list table.
+    REVIEW_FILE
+
+    TEST_VOCABULARY_ABOUT_POEM_FILE_CONTENT = <<~VOCABULARY_ABOUT_POEM_FILE
       ---
-      tags: ["English", "Vocabulary"]
+      tags: ["English", "Vocabulary", "poem", "books"]
       ---
-      ## Vocabulary about computer: 計算機科学に関する英単語
-      - Instance: 例、実例
-          - プログラミングだと具体的なオブジェクトのことをいう
-    VOCABULARY_ABOUT_COMPUTER_FILE
+      ## Vocabulary about books: 洋書に関する英単語
+      ### Sunflower Sutra
+      - Allen Ginsberg
+      - the banks of the tincan banana dock
+          - bank: 土手、堤防、築堤、河岸、ほとり
+          - tincan: ブリキ缶、空き缶
+          - dock: 波止場、埠頭
+      - ?: a Southern Pacific locomotive
+      - ?: the box house hills
+      - a busted rusty iron pole
+          - bust: 破裂する(させる)、壊す、潰す
+          - rusty: 錆びた、錆色の
+      - bleak and blue and sad-eyed
+          - bleak: 荒涼とした
+      - gnarl: n - (木の)節、こぶ、vi - ねじる、ねじ曲げる;節ができる
+      - Frisco peaks: ユタ州のあたりにある山脈
+      - hermit: 隠者、遁世者、世捨て人;(特に初期キリスト教の)隠修士
+      - rheum /rú:m/: 粘膜の水性分泌物(涙、唾液、鼻汁など);カタル、感冒;(古)涙
+          - rheumy-eyed => 涙目
+
+      ###
+      #### Early Shôwa and war in the Pacific
+      - simmer: ぐつぐつ煮える、今にも沸騰(爆発)しようとしている、(いらいらなどが)たまる、鬱積する、くすぶる
+      - chic /∫í:k/: シック、流行
+      - euphemism: 婉曲法
+      - prostitute: n - 売春婦、vt - 売春させる
+    VOCABULARY_ABOUT_POEM_FILE
 
     TEST_MATH_FILE_CONTENT = <<~MATH_FILE
       ---
@@ -2904,21 +2947,30 @@ module Memo
       },
       {
         target_dir: '/Users/hy/repo/private-memo/memo/',
-        absolute_path: '/Users/hy/repo/private-memo/memo/english/prompt-ai.md',
+        absolute_path: '/Users/hy/repo/private-memo/memo/english/phonetic.md',
         parent_directory: '/Users/hy/repo/private-memo/memo/english/',
         relative_path: 'english/',
-        filename: 'prompt-ai',
-        file_content: TEST_PROMPT_AI_FILE_CONTENT,
-        tags: ['English', 'AI prompt']
+        filename: 'phonetic',
+        file_content: TEST_PHONETIC_FILE_CONTENT,
+        tags: %w[English Vocabulary phonetic keyboard]
       },
       {
         target_dir: '/Users/hy/repo/private-memo/memo/',
-        absolute_path: '/Users/hy/repo/private-memo/memo/english/vocabulary-about-computer.md',
+        absolute_path: '/Users/hy/repo/private-memo/memo/english/review.md',
         parent_directory: '/Users/hy/repo/private-memo/memo/english/',
         relative_path: 'english/',
-        filename: 'vocabulary-about-computer',
-        file_content: TEST_VOCABULARY_ABOUT_COMPUTER_FILE_CONTENT,
-        tags: %w[English Vocabulary]
+        filename: 'review',
+        file_content: TEST_REVIEW_FILE_CONTENT,
+        tags: %w[English Messages]
+      },
+      {
+        target_dir: '/Users/hy/repo/private-memo/memo/',
+        absolute_path: '/Users/hy/repo/private-memo/memo/english/vocabulary-about-poem.md',
+        parent_directory: '/Users/hy/repo/private-memo/memo/english/',
+        relative_path: 'english/',
+        filename: 'vocabulary-about-poem',
+        file_content: TEST_VOCABULARY_ABOUT_POEM_FILE_CONTENT,
+        tags: %w[English Vocabulary poem books]
       },
       {
         target_dir: '/Users/hy/repo/private-memo/memo/',

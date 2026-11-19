@@ -4,6 +4,17 @@
     - gemとして公開する必要がない。gemspecについて調査しておくこと
 
 ### 残タスク
+- テストデータ再作成
+    - 固定のディレクトリ・ファイルが欲しい
+        - /mock-dir/mock-file.md
+    - 固定の対象ディレクトリ直下にあるファイルが欲しい
+        - ./mock-top-file.md
+    - 固定の重複したファイル・タグのないファイルが欲しい
+        - このファイルはsetupで外せるようにしたい
+        - /mock-dir/mock-duplicated-file.md * 2
+        - /mock-dir/mock-empty-tag-file.md
+    - 固定のデータとは別に、本番から作成したデータも使う
+        - 本番のデータを1/2か1/3くらいにしたデータがあればいい
 - テストコードを作成する
     - 作成方針
     - ViewModel: 値の検査、View: 標準出力へ表示されているかどうか
@@ -28,6 +39,8 @@
         - 未定: SubCommandParser
     - rake e2eを堅牢にする
     - git push前のhooksを作成する
+    - test/helper.rbの分割
+        - Lifecyclehooksとrequireを分離して、全てのテストコードにhelperをrequireしなくてもいいようにしたい
 
 
 ### 残タスク・テストコードの進捗表
@@ -53,15 +66,14 @@
     - [ ]: search
     - [x]: tag
     - [ ]: tags
-    - [ ]: version
-    - [ ]: help
+    - [x]: version
 - ViewModel
     - [ ]: check
     - [ ]: common
     - [x]: dirs
     - [ ]: list
     - [x]: read
-    - [ ]: search
+    - [i]: search => あと一歩
     - [x]: tag
     - [i]: tags => あと一つ
 
