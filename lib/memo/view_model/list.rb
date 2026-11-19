@@ -20,7 +20,7 @@ module Memo
       def directory(word)
         found = look_up_from_dirs(normalize(word))
 
-        return [NO_DIRECTORIES.gsub('dir', word)] if found.nil?
+        return NO_DIRECTORIES.gsub('dir', word) if found.nil?
 
         list_by_directory_to_view(found)
       end

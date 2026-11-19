@@ -53,7 +53,26 @@ class TestViewList < Minitest::Test
     end
 
     describe('#directory') do
-      it '有効な引数を取る場合、対象のディレクトリの配列が返ってくる' do
+      it '有効な引数を取った場合、そのディレクトリと、その中のファイル名一覧と、対象のディレクトリを含む文字列が返ってくること' do
+        dirname = @test_mock_dir
+
+        target_dir = @test_mock_target_dir
+        filenames = @file_loader.file_seeds.filter { |seed| seed[:parent_directory] == dirname }
+          .map { |seed| seed[:filename] }
+
+        ret = @vm.directory(dirname)
+
+        actual = [target_dir, dirname].concat(filenames).all? do |elem|
+          ret.include?(elem)
+        end
+
+        _(actual).must_equal(true)
+      end
+
+      # TODO: 入力値に関するテストコードを作成する
+      # 有効値: 末尾のスラッシュの有無・ディレクトリの一覧を全て入力値として入れてみる
+
+      it '有効な引数を取る場合、対象のディレクトリの配列が返ってくるTODO' do
         skip 'TODO'
         dirname = 'git/'
 
@@ -62,31 +81,12 @@ class TestViewList < Minitest::Test
         _(actual).must_be_instance_of(Array)
       end
 
-      it '末尾のスラッシュを付けなくても、対象のディレクトリの配列が返ってくる' do
-        skip 'TODO'
-        dirname = 'git'
-
-        actual = @vm.execute(dirname)
-
-        _(actual).must_be_instance_of(Array)
-      end
-
-      it '有効な引数を取る場合、対象のディレクトリの配列が返ってくる' do
-        skip 'TODO'
-        dirname = 'lang/'
-
-        actual = @vm.execute(dirname)
-
-        _(actual).must_be_instance_of(Array)
-      end
-
-      it '無効な引数を取る場合、nilが返ってくる。後ほどメッセージが返ってくるように修正する' do
-        skip 'TODO'
+      it '無効な引数を取る場合、そのようなディレクトリがないことを示す文字列を返すこと' do
         dirname = 'does_not_exist_dirname'
 
-        actual = @vm.execute(dirname)
+        actual = @vm.directory(dirname)
 
-        _(actual).must_be_nil
+        _(actual).must_equal(Memo::Message::NO_DIRECTORIES.gsub('dir', dirname))
       end
     end
   end
