@@ -5,16 +5,8 @@
 
 ### 残タスク
 - テストデータ再作成
-    - 固定のディレクトリ・ファイルが欲しい
-        - /mock-dir/mock-file.md
-    - 固定の対象ディレクトリ直下にあるファイルが欲しい
-        - ./mock-top-file.md
-    - 固定の重複したファイル・タグのないファイルが欲しい
-        - このファイルはsetupで外せるようにしたい
-        - /mock-dir/mock-duplicated-file.md * 2
-        - /mock-dir/mock-empty-tag-file.md
-    - 固定のデータとは別に、本番から作成したデータも使う
-        - 本番のデータを1/2か1/3くらいにしたデータがあればいい
+    - 今までのモックデータの作成方法が間違っていて、[this-repo]/var以下のフォルダ構成がおかしい
+        - 修正が必要
 - テストコードを作成する
     - 作成方針
     - ViewModel: 値の検査、View: 標準出力へ表示されているかどうか
@@ -23,14 +15,13 @@
 - git grep TODOで出てくるTODOを解消していく。また、テストコードのskipを外す
 - メソッドの可視性の調査 => 変更、オブジェクトについて、必要なものはfreezeする
 - Minitest::Testを継承しているクラス名がタイポしていないかどうかを確認する
-- タイポを見つける => 修正する
 - Rdocかyardの導入、coverageの取得
     - coverage: https://docs.ruby-lang.org/ja/latest/library/coverage.html
     - simpleCov: https://github.com/simplecov-ruby/simplecov
 - その他修正点
     - memo.rbのrequire_relativeを簡単にする
-    - 各テストコードにrequire_relative helperを記載する
-        - どこかのファイルで一括して定義したい
+    - test/helperを分割する
+        - 少なくとも、require部分とhooks部分に分ける
     - memo list [dirs]で、dirsが存在しなかった場合、取りうるディレクトリの一覧を出力する
         - memo list booksと打つと、例外が送出されてしまう。要修正
     - 各クラスの呼び出しについて、簡単のため呼び出すメソッドを特異メソッドにする
@@ -39,9 +30,6 @@
         - 未定: SubCommandParser
     - rake e2eを堅牢にする
     - git push前のhooksを作成する
-    - test/helper.rbの分割
-        - Lifecyclehooksとrequireを分離して、全てのテストコードにhelperをrequireしなくてもいいようにしたい
-
 
 ### 残タスク・テストコードの進捗表
 - loader

@@ -33,7 +33,7 @@ memo list
 ### モックファイルの作り方
 ```bash
 # モックを作成
-rake seeds
+rake mock
 
 # DBにデータを挿入する
 rake db:seeds

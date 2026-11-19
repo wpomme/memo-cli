@@ -33,10 +33,23 @@ task :fix do
   sh 'bundle exec rubocop -A lib/ test/ playground/*.rb Rakefile'
 end
 
-desc 'test/mock_seeds.rbにモックデータを作成する'
-task :seeds do
-  sh 'ruby ./test/add_mock_seeds.rb'
-  sh 'bundle exec rubocop -A test/mock_seeds.rb'
+desc 'テスト用のモックデータを作成する'
+task :mock do
+  sh 'bundle exec rake mock:create_mock_seeds'
+  sh 'bundle exec rake mock:create_test_data'
+end
+
+namespace :mock do
+  desc 'test/mock_seeds.rbにモックデータを作成する'
+  task :create_mock_seeds do
+    sh 'ruby ./test/create_mock_seeds.rb'
+    sh 'bundle exec rubocop -A test/mock_seeds.rb'
+  end
+
+  desc '/var/にテスト用のデータを作成する'
+  task :create_test_data do
+    sh 'ruby ./test/create_test_data.rb'
+  end
 end
 
 namespace :db do

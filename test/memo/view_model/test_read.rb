@@ -30,7 +30,7 @@ class TestViewRead < Minitest::Test
       end
 
       it 'ファイルが複数件と一致するとき、どのファイルを表示するかのプロンプトを表示し、選択したファイルを全文表示する' do
-        target_filename = 'diff'
+        target_filename = @fixed_duplicated_filename
 
         count = 2
 

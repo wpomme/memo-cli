@@ -215,68 +215,6 @@ module Memo
           - `-w` : デリミタとしてホワイトスペースを使う
     CUT_FILE
 
-    TEST_CLI_CORE_TEXT__FILE_CONTENT = <<~CLI_CORE_TEXT__FILE
-      ---
-      tags: ["bash", "CLI", "text"]
-      ---
-      ## diff: ファイルやディレクトリの差分を取得する
-
-      - origfileとpatchfileの内容が次の場合、diffの結果は次の通り
-      ```bash
-      cat origfile
-      > 1
-      > 12
-      > 123
-
-      cat patchfile
-      > 123
-      > 123
-      > 123
-
-      diff origfile patchfile
-      ```
-
-      ```diff
-      1,2d0
-      < 1
-      < 12
-      3a2,3
-      > 123
-      > 123
-      ```
-
-      - a unified diff形式(-uオプション)
-      ```
-      # -u を付けると、 a unified diff の形式で差分を出力する
-      # 先頭の三行に、パッチファイルとパッチを当てるファイルの情報と、差分の概要を出力する
-      # patch コマンドは、この情報をみて、パッチファイルとパッチを当てるファイルを識別する
-      # なお、-c オプションでも同様の情報を出力する。-c の場合は、context diffs の形式でこの情報を出力する
-
-      # a unified diff について
-      # --- が付いている方がパッチを当てる方のファイル("old")
-      # +++ が付いている方がパッチファイル("new")
-
-      diff -u origfile patchfile
-      ```
-
-      ```diff
-      --- origfile	2026-05-22 08:53:21
-      +++ patchfile	2026-05-22 08:53:27
-      @@ -1,3 +1,3 @@
-      -1
-      -12
-       123
-      +123
-      +123
-      ```
-
-      #TODO origfileにパッチファイルを適用する
-      # diff からパイプでpatchに繋げるとreversed patchと判定されるときがある
-      ```bash
-      diff -u origfile patchfile | patch -u
-      ```
-    CLI_CORE_TEXT__FILE
-
     TEST_ED_FILE_CONTENT = <<~ED_FILE
       ---
       tags: ["bash", "CLI", "text", "legacy"]
@@ -625,7 +563,7 @@ module Memo
       ```
     CONFIG_FILE
 
-    TEST_GIT__FILE_CONTENT = <<~GIT__FILE
+    TEST_DIFF_FILE_CONTENT = <<~DIFF_FILE
       ---
       tags: ["CLI", "git", "Basic Snapshotting", "Comparison Version", "Patching"]
       ---
@@ -651,7 +589,7 @@ module Memo
       # patchファイルを作成
       git diff HEAD^ HEAD > patch.diff
       ```
-    GIT__FILE
+    DIFF_FILE
 
     TEST_GIT_FILE_CONTENT = <<~GIT_FILE
       ---
@@ -2251,6 +2189,48 @@ module Memo
           - 鳩ヶ谷: はとがや
     YOMIKATA_FILE
 
+    TEST_MOCK_DIR__FILE_CONTENT = <<~MOCK_DIR__FILE
+      ---
+      tags: ["モックデータ", "重複", "テストデータ"]
+      ---
+      ## Mock Dup File
+      - モックデータ用のマークダウンファイル
+      - ファイル名が他のフォルダのものと重複している
+    MOCK_DIR__FILE
+
+    TEST_MOCK_EMPTY_TAGS_FILE_FILE_CONTENT = <<~MOCK_EMPTY_TAGS_FILE_FILE
+      ## Mock Empty Tags File
+      - モックデータ用のマークダウンファイル
+      - フロントマターに記載するタグがない
+    MOCK_EMPTY_TAGS_FILE_FILE
+
+    TEST_MOCK_FILE_FILE_CONTENT = <<~MOCK_FILE_FILE
+      ---
+      tags: ["モックデータ"]
+      ---
+      ## Mock File
+      - モックデータ用のマークダウンファイル
+    MOCK_FILE_FILE
+
+    TEST_MOCK_DIR2__FILE_CONTENT = <<~MOCK_DIR2__FILE
+      ---
+      tags: ["モックデータ", "重複", "テストデータ"]
+      ---
+      ## Mock Dup File
+      - モックデータ用のマークダウンファイル
+      - ファイル名が他のフォルダのものと重複している
+      - ファイルの内容は異なる
+    MOCK_DIR2__FILE
+
+    TEST_MOCK_TOP_FILE_FILE_CONTENT = <<~MOCK_TOP_FILE_FILE
+      ---
+      tags: ["モックデータ", "トップ階層"]
+      ---
+      ## Mock Top File
+      - モックデータ用のマークダウンファイル
+      - メモフォルダの直下にあるファイル
+    MOCK_TOP_FILE_FILE
+
     TEST_MOCK_DATA_SEED = [
       {
         target_dir: '/Users/hy/repo/memorandum/memo/',
@@ -2332,15 +2312,6 @@ module Memo
         filename: 'cut',
         file_content: TEST_CUT_FILE_CONTENT,
         tags: %w[bash CLI text filter remove]
-      },
-      {
-        target_dir: '/Users/hy/repo/memorandum/memo/',
-        absolute_path: '/Users/hy/repo/memorandum/memo/cli/core/text/diff.md',
-        parent_directory: '/Users/hy/repo/memorandum/memo/cli/core/text/',
-        relative_path: 'cli/core/text/',
-        filename: 'diff',
-        file_content: TEST_CLI_CORE_TEXT__FILE_CONTENT,
-        tags: %w[bash CLI text]
       },
       {
         target_dir: '/Users/hy/repo/memorandum/memo/',
@@ -2483,7 +2454,7 @@ module Memo
         parent_directory: '/Users/hy/repo/memorandum/memo/git/',
         relative_path: 'git/',
         filename: 'diff',
-        file_content: TEST_GIT__FILE_CONTENT,
+        file_content: TEST_DIFF_FILE_CONTENT,
         tags: ['CLI', 'git', 'Basic Snapshotting', 'Comparison Version', 'Patching']
       },
       {
@@ -2998,6 +2969,51 @@ module Memo
         filename: 'yomikata',
         file_content: TEST_YOMIKATA_FILE_CONTENT,
         tags: ['日本語']
+      },
+      {
+        target_dir: '/Users/hy/repo/memo-cli/mock-data/',
+        absolute_path: '/Users/hy/repo/memo-cli/mock-data/mock-dir/mock-dup-file.md',
+        parent_directory: '/Users/hy/repo/memo-cli/mock-data/mock-dir/',
+        relative_path: 'mock-dir/',
+        filename: 'mock-dup-file',
+        file_content: TEST_MOCK_DIR__FILE_CONTENT,
+        tags: %w[モックデータ 重複 テストデータ]
+      },
+      {
+        target_dir: '/Users/hy/repo/memo-cli/mock-data/',
+        absolute_path: '/Users/hy/repo/memo-cli/mock-data/mock-dir/mock-empty-tags-file.md',
+        parent_directory: '/Users/hy/repo/memo-cli/mock-data/mock-dir/',
+        relative_path: 'mock-dir/',
+        filename: 'mock-empty-tags-file',
+        file_content: TEST_MOCK_EMPTY_TAGS_FILE_FILE_CONTENT,
+        tags: []
+      },
+      {
+        target_dir: '/Users/hy/repo/memo-cli/mock-data/',
+        absolute_path: '/Users/hy/repo/memo-cli/mock-data/mock-dir/mock-file.md',
+        parent_directory: '/Users/hy/repo/memo-cli/mock-data/mock-dir/',
+        relative_path: 'mock-dir/',
+        filename: 'mock-file',
+        file_content: TEST_MOCK_FILE_FILE_CONTENT,
+        tags: ['モックデータ']
+      },
+      {
+        target_dir: '/Users/hy/repo/memo-cli/mock-data/',
+        absolute_path: '/Users/hy/repo/memo-cli/mock-data/mock-dir2/mock-dup-file.md',
+        parent_directory: '/Users/hy/repo/memo-cli/mock-data/mock-dir2/',
+        relative_path: 'mock-dir2/',
+        filename: 'mock-dup-file',
+        file_content: TEST_MOCK_DIR2__FILE_CONTENT,
+        tags: %w[モックデータ 重複 テストデータ]
+      },
+      {
+        target_dir: '/Users/hy/repo/memo-cli/mock-data/',
+        absolute_path: '/Users/hy/repo/memo-cli/mock-data/mock-top-file.md',
+        parent_directory: '/Users/hy/repo/memo-cli/mock-data/',
+        relative_path: './',
+        filename: 'mock-top-file',
+        file_content: TEST_MOCK_TOP_FILE_FILE_CONTENT,
+        tags: %w[モックデータ トップ階層]
       }
     ].freeze
   end

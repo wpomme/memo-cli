@@ -13,3 +13,6 @@
 ## DB
 /db/memo_production.db
 /db/memo_test.db
+
+## Test Data
+/var/*

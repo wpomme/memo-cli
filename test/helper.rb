@@ -18,10 +18,10 @@ module MemoDBTestLifecycleHooks
     Memo::Database::Setup.new(@db).prepare
   end
 
-  def teardown
-    # puts "#{name}: #{Sequel::DATABASES.size}" unless Sequel::DATABASES.empty?
-    # super
-  end
+  # def teardown
+  #   puts "#{name}: #{Sequel::DATABASES.size}" unless Sequel::DATABASES.empty?
+  #   super
+  # end
 
   def total_tag_size
     tag_size_by_filename = Memo::FileLoader.new.absolute_filename_to_tags.transform_values(&:size)
@@ -31,42 +31,18 @@ end
 
 module MemoLifecycleHooks
   def setup
-    @target_dir_hash = Memo::Config.target_dirs.map.with_index.to_h do |target_dir, index|
-      [target_dir, File.join(Dir.home, "/var/test-target-dir-#{index}")]
+    super
+    # TODO: パフォーマンスのために`git rev-parse --show-toplevel`の結果は共有したい
+    # this_repo_dir = `git rev-parse --show-toplevel`.chomp
+    this_repo_dir = '/Users/hy/repo/memo-cli'
+    mock_target_dirs = Memo::Config.target_dirs << File.join(this_repo_dir, '/mock-data/')
+    @target_dir_hash = mock_target_dirs.map.with_index.to_h do |target_dir, index|
+      [target_dir, File.join(this_repo_dir, "/var/test-target-dir-#{index}")]
     end
+
     @orig_target_dirs = @target_dir_hash.keys
     @test_target_dirs = @target_dir_hash.values
-    @fixed_mock_file = 'ls'
-    @fixed_search_word = 'ls'
-    @fixed_duplicated_filename = 'diff'
-
-    create_dirs
-    create_files
-  end
-
-  def create_dirs
-    @test_target_dirs.each do |dir|
-      FileUtils.mkdir_p(dir)
-    end
-  end
-
-  def create_files
-    Memo::MockSeed::TEST_MOCK_DATA_SEED.each do |seed|
-      @target_dir_hash.each do |orig_dir, test_dir|
-        test_child_dir = File.join(test_dir, seed[:relative_path])
-        FileUtils.mkdir_p(test_child_dir) unless FileTest.directory?(test_child_dir)
-
-        next unless orig_dir == seed[:target_dir]
-
-        File.write(File.join(test_dir, seed[:relative_path], "#{seed[:filename]}.md"), seed[:file_content])
-      end
-    end
-  end
-
-  def teardown
-    # ~/var/memo-cli-test-dirまでは削除して、~/var/は消さずに残しておく
-    @test_target_dirs.each do |dir|
-      FileUtils.remove_entry_secure(dir)
-    end
+    @fixed_mock_file = 'mock-file'
+    @fixed_duplicated_filename = 'mock-dup-file'
   end
 end

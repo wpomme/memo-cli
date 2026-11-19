@@ -5,14 +5,13 @@ require 'memo'
 
 file_loader = Memo::FileLoader.new
 
-# テストのために固定のファイルを選択しておく
-fixed_duplicated_filename = 'diff'
-fixed_mock_file = 'ls'
-
-seeds = file_loader.file_seeds.filter.with_index do |file_seeds, idx|
-  idx.modulo(2).zero? || [fixed_duplicated_filename, fixed_mock_file].include?(file_seeds[:filename])
+seeds = file_loader.file_seeds.filter.with_index do |_file_seeds, idx|
+  idx.modulo(2).zero?
 end
 # uniq!
+
+# /mock-data/からモックデータを作成する
+seeds.concat(Memo::FileLoader.new(target_dirs: [File.join(`git rev-parse --show-toplevel`.chomp, '/mock-data/')]).file_seeds)
 
 ## ファイル名の一覧
 filenames = seeds.map { |seed| seed[:filename] }
