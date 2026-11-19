@@ -33,11 +33,13 @@ module MemoLifecycleHooks
   def setup
     super
     # TODO: パフォーマンスのために`git rev-parse --show-toplevel`の結果は共有したい
+    # TODO: test_memo_data_creatorのnewと共用にする。ロジックが同じで、片方を変更すると、テストが失敗するため
     # this_repo_dir = `git rev-parse --show-toplevel`.chomp
     this_repo_dir = '/Users/hy/repo/memo-cli'
     mock_target_dirs = Memo::Config.target_dirs << File.join(this_repo_dir, '/mock-data/')
-    @target_dir_hash = mock_target_dirs.map.with_index.to_h do |target_dir, index|
-      [target_dir, File.join(this_repo_dir, "/var/test-target-dir-#{index}")]
+    @target_dir_hash = mock_target_dirs.map.with_index(1).to_h do |target_dir, index|
+      basename = File.basename(target_dir)
+      [target_dir, File.join(this_repo_dir, '/var/', "test#{index}-#{basename}")]
     end
 
     @orig_target_dirs = @target_dir_hash.keys
