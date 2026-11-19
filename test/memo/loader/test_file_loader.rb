@@ -123,16 +123,18 @@ class TestFileLoader < Minitest::Test
           it('ファイル名で集計すると、実際にファイル名が二つ以上あること。また、重複したファイル名が存在しなければ、空の配列を返すこと') do
             ret = @file_loader.duplicated_seeds
 
-            # NOTE: 分岐を消したい
-            if ret.empty?
-              _(ret).must_equal([])
-            else
-              tallied = ret.map { |file_seed| file_seed[:filename] }.tally
+            tallied = ret.map { |file_seed| file_seed[:filename] }.tally
 
-              actual = tallied.values.all? { |e| e > 1 }
+            actual = tallied.values.all? { |e| e > 1 }
 
-              _(actual).must_equal(true)
-            end
+            _(actual).must_equal(true)
+          end
+
+          it('重複したファイル名が存在しなければ、空の配列を返すこと') do
+            skip 'TODO'
+            ret = @file_loader.duplicated_seeds
+
+            _(ret).must_equal([])
           end
         end
       end

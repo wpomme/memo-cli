@@ -4,13 +4,13 @@
     - gemとして公開する必要がない。gemspecについて調査しておくこと
 
 ### 残タスク
-- テストデータ再作成
-    - 今までのモックデータの作成方法が間違っていて、[this-repo]/var以下のフォルダ構成がおかしい
-        - 修正が必要
 - テストコードを作成する
     - 作成方針
     - ViewModel: 値の検査、View: 標準出力へ表示されているかどうか
     - SubCommandParser: 入力値の検査、Command、SubCommand: クラスが呼び出されるかどうか
+    - test_loader.rbがあってもいいかもしれない
+        - DirとFileの統合テスト
+        - Dirの方とFileの方のディレクトリの数は合っているか？など
 - rubocopのメトリクスによるリファクタリング
 - git grep TODOで出てくるTODOを解消していく。また、テストコードのskipを外す
 - メソッドの可視性の調査 => 変更、オブジェクトについて、必要なものはfreezeする
@@ -56,7 +56,7 @@
     - [ ]: tags
     - [x]: version
 - ViewModel
-    - [ ]: check
+    - [x]: check
     - [ ]: common
     - [x]: dirs
     - [ ]: list

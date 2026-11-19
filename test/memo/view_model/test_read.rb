@@ -22,11 +22,13 @@ class TestViewRead < Minitest::Test
       end
 
       it 'ファイルが一件見つかったとき、そのファイルを全文表示する' do
-        target_filename = 'ls'
+        target_filename = @fixed_filename
 
         actual = @vw.execute(target_filename)
 
-        _(actual).must_equal(Memo::MockSeed::TEST_LS_FILE_CONTENT)
+        expected = @file_loader.file_seeds.find { |seed| seed[:filename] == target_filename }
+
+        _(actual).must_equal(expected[:file_content])
       end
 
       it 'ファイルが複数件と一致するとき、どのファイルを表示するかのプロンプトを表示し、選択したファイルを全文表示する' do

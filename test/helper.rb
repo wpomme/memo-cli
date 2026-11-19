@@ -36,7 +36,7 @@ module MemoLifecycleHooks
     # TODO: test_memo_data_creatorのnewと共用にする。ロジックが同じで、片方を変更すると、テストが失敗するため
     # this_repo_dir = `git rev-parse --show-toplevel`.chomp
     this_repo_dir = '/Users/hy/repo/memo-cli'
-    mock_target_dirs = Memo::Config.target_dirs << File.join(this_repo_dir, '/mock-data/')
+    mock_target_dirs = [File.join(this_repo_dir, '/mock-data/')].concat(Memo::Config.target_dirs)
     @target_dir_hash = mock_target_dirs.map.with_index(1).to_h do |target_dir, index|
       basename = File.basename(target_dir)
       [target_dir, File.join(this_repo_dir, '/var/', "test#{index}-#{basename}")]
@@ -44,7 +44,9 @@ module MemoLifecycleHooks
 
     @orig_target_dirs = @target_dir_hash.keys
     @test_target_dirs = @target_dir_hash.values
-    @fixed_mock_file = 'mock-file'
+    # TODO: mock_filenameにする
+    @fixed_filename = 'mock-file'
+    # TODO: mock_duplicated_filenameにする
     @fixed_duplicated_filename = 'mock-dup-file'
   end
 end

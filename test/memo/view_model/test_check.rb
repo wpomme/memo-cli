@@ -22,16 +22,22 @@ class TestViewModelCheck < Minitest::Test
     end
 
     describe '#execute' do
-      it '重複するファイル名がある場合、結果が空でないこと' do
-        actual = @vm.execute
-
-        _(actual).wont_be_empty
-      end
-
       it '重複するファイル名のファイルが含まれていること' do
         actual = @vm.execute
 
         _(actual).must_include(@fixed_duplicated_filename)
+      end
+
+      it '重複するファイル名について、そのディレクトリ名が含まれていること' do
+        ret = @vm.execute
+
+        dup_seeds = @file_loader.duplicated_seeds
+
+        actual = dup_seeds.all? do |mock_seed|
+          ret.include?(mock_seed[:parent_directory])
+        end
+
+        _(actual).must_equal(true)
       end
     end
   end
