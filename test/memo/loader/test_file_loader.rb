@@ -23,7 +23,6 @@ class TestFileLoader < Minitest::Test
       end
 
       it(':absolute_pathについて、モックデータと実際のデータが同じであること') do
-        skip 'TODO'
         actual = @file_loader.file_seeds.map { |seed| seed[:absolute_path] }
 
         expected = @mock_seeds.flat_map do |seed|
@@ -64,7 +63,6 @@ class TestFileLoader < Minitest::Test
       end
 
       it(':filenameについて、モックデータと実際のデータが同じであること') do
-        skip 'TODO'
         actual = @file_loader.file_seeds.map { |seed| seed[:filename] }
 
         expected = @mock_seeds.map { |seed| seed[:filename] }
@@ -73,7 +71,6 @@ class TestFileLoader < Minitest::Test
       end
 
       it(':file_contentについて、モックデータと実際のデータが同じであること') do
-        skip 'TODO'
         act_set = @file_loader.file_seeds.map { |seed| seed[:file_content] }
 
         exp_set = @mock_seeds.map { |seed| seed[:file_content] }
@@ -84,7 +81,6 @@ class TestFileLoader < Minitest::Test
       end
 
       it(':tagsについて、モックデータと実際のデータが同じであること') do
-        skip 'TODO'
         actual = @file_loader.file_seeds.map { |seed| seed[:tags] }
 
         expected = @mock_seeds.map { |seed| seed[:tags] }
@@ -93,14 +89,11 @@ class TestFileLoader < Minitest::Test
       end
     end
 
-    describe('#public_methods') do
-      it('tags_sorted_by_file_size, tags_sorted_by_tag_name, tag_files_hashをグループ化してテストコードを作成する') do
-        skip 'TODO'
-      end
+    describe('#file seeds about tags') do
+      # TODO: tags_sorted_by_file_size, tags_sorted_by_tag_name, tag_files_hashをグループ化してテストコードを作成する
 
       describe('#tag_files_hash') do
         it('要素数がモックデータと同じであること') do
-          skip 'TODO'
           target_tag_name = 'CLI'
 
           actual = @file_loader.tag_files_hash.transform_values(&:size)[target_tag_name]
@@ -124,23 +117,22 @@ class TestFileLoader < Minitest::Test
         end
       end
 
-      it('duplicated_seeds, seeds_by_parent_directory, seeds_grouped_by_directory, empty_tags_seeds_grouped_by_directoryをグループ化してテストコードを作成する') do
-        skip 'TODO'
-      end
+      # TODO: duplicated_seeds, seeds_by_parent_directory, seeds_grouped_by_directory, empty_tags_seeds_grouped_by_directoryをグループ化してテストコードを作成する
+      it('seeds2') do
+        describe('#duplicated_seeds') do
+          it('ファイル名で集計すると、実際にファイル名が二つ以上あること。また、重複したファイル名が存在しなければ、空の配列を返すこと') do
+            ret = @file_loader.duplicated_seeds
 
-      describe('#duplicated_seeds') do
-        it('ファイル名で集計すると、実際にファイル名が二つ以上あること。また、重複したファイル名が存在しなければ、空の配列を返すこと') do
-          ret = @file_loader.duplicated_seeds
+            # NOTE: 分岐を消したい
+            if ret.empty?
+              _(ret).must_equal([])
+            else
+              tallied = ret.map { |file_seed| file_seed[:filename] }.tally
 
-          # NOTE: 分岐を消したい
-          if ret.empty?
-            _(ret).must_equal([])
-          else
-            tallied = ret.map { |file_seed| file_seed[:filename] }.tally
+              actual = tallied.values.all? { |e| e > 1 }
 
-            actual = tallied.values.all? { |e| e > 1 }
-
-            _(actual).must_equal(true)
+              _(actual).must_equal(true)
+            end
           end
         end
       end
