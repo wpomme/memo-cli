@@ -3,17 +3,11 @@
 $LOAD_PATH.unshift File.expand_path('../lib', __dir__)
 require 'memo'
 
-file_loader = Memo::FileLoader.new
-
-seeds = file_loader.file_seeds.filter.with_index do |_file_seeds, idx|
-  idx.modulo(2).zero?
-end
-# uniq!
-
 # /mock-data/からモックデータを作成する
-seeds.concat(Memo::FileLoader.new(target_dirs: [File.join(`git rev-parse --show-toplevel`.chomp, '/mock-data/')]).file_seeds)
+seeds = Memo::FileLoader.new(target_dirs: [File.join(`git rev-parse --show-toplevel`.chomp, '/mock-data/')]).file_seeds
 
-## ファイル名の一覧
+seeds.concat(Memo::FileLoader.new.file_seeds.filter.with_index { |_, idx| idx.modulo(2).zero? })
+
 filenames = seeds.map { |seed| seed[:filename] }
 
 duplicated_seeds = seeds.filter do |seed|

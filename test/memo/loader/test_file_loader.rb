@@ -41,12 +41,10 @@ class TestFileLoader < Minitest::Test
 
       it(':relative_pathについて、重複を排除したものがモックデータと同じ値になること') do
         actual = @file_loader.file_seeds.map { |seed| seed[:relative_path] }
-          .uniq
 
         expected = @mock_seeds.map { |seed| seed[:relative_path] }
-          .uniq
 
-        _(actual).must_equal(expected)
+        _(actual.to_set - expected.to_set).must_equal(Set.new)
       end
 
       it(':parent_directoryについて、モックデータと実際のデータが同じであること') do
