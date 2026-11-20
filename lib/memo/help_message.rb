@@ -21,6 +21,15 @@ module Memo
           help                       memoコマンドのヘルプ
           version                    memoコマンドのバージョン
     HELP_G
+    HELP_DETAIL = <<~HELP_D
+      memo help: memo CLIについて、コマンドの使い方を表示する
+
+      使い方:
+        memo help => コマンドの概要を表示する
+        memo help read => memo readのヘルプを表示する
+        memo help -r => ショートオプションでもヘルプを表示できる
+        memo help help => helpコマンドのドキュメントを表示する(このドキュメント)
+    HELP_D
     CHECK_DETAIL = <<~CHECK_D
       memo check: メモフォルダの中について、ファイル名が重複しているものを表示するコマンド
 

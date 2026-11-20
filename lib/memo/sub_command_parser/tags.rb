@@ -23,6 +23,8 @@ module Memo
         { str => parsed.empty? || parsed.keys[0] }
       end
 
+      private
+
       def tags_spec_list
         name_spec = Spec.new('-n', '--name', TAGS_OPTIONS_NAME)
         count_spec = Spec.new('-c', '--count', TAGS_OPTIONS_COUNT)

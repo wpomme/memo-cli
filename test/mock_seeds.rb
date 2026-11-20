@@ -44,6 +44,15 @@ module Memo
       - メモフォルダの直下にあるファイル
     MOCK_TOP_FILE_FILE
 
+    TEST_MOCK_FOO_FILE_FILE_CONTENT = <<~MOCK_FOO_FILE_FILE
+      ---
+      tags: ["モックデータ"]
+      ---
+      ## Mock Foo File
+      - モックデータ用のマークダウンファイル
+      - mock-without-fileディレクトリにはファイルを入れないこと
+    MOCK_FOO_FILE_FILE
+
     TEST_ANSI_ESCAPE_CODE_AND_SET_COLOR_FILE_CONTENT = <<~ANSI_ESCAPE_CODE_AND_SET_COLOR_FILE
       ---
       tags: ["Terminal", "Charactor"]
@@ -2249,6 +2258,15 @@ module Memo
         filename: 'mock-top-file',
         file_content: TEST_MOCK_TOP_FILE_FILE_CONTENT,
         tags: %w[モックデータ トップ階層]
+      },
+      {
+        target_dir: '/Users/hy/repo/memo-cli/mock-data/',
+        absolute_path: '/Users/hy/repo/memo-cli/mock-data/mock-without-files/foo-dir/mock-foo-file.md',
+        parent_directory: '/Users/hy/repo/memo-cli/mock-data/mock-without-files/foo-dir/',
+        relative_path: 'mock-without-files/foo-dir/',
+        filename: 'mock-foo-file',
+        file_content: TEST_MOCK_FOO_FILE_FILE_CONTENT,
+        tags: ['モックデータ']
       },
       {
         target_dir: '/Users/hy/repo/memorandum/memo/',

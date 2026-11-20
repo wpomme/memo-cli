@@ -3,48 +3,51 @@
 require_relative '../../helper'
 
 class TestViewList < Minitest::Test
-  include Memo::Message
+  describe 'View::List' do
+    include MemoLifecycleHooks
+    include Memo::Message
 
-  describe 'View' do
     def setup
-      @view = Memo::View::List.new
+      super
+      @view = Memo::View::List.new(target_dirs: @test_target_dirs)
+      @vw = Memo::ViewModel::List.new(target_dirs: @test_target_dirs)
     end
 
-    describe '#list' do
-      it 'ViewModelはexecuteメソッドを返す' do
-        actual = @view
-
-        _(actual).must_respond_to(:execute)
-      end
-
-      it '引数を取らない場合' do
-        skip 'TODO'
-        out, = capture_io do
-          @view.execute
+    describe '#default' do
+      it '所定の値を標準出力に返すこと' do
+        actual, = capture_io do
+          @view.execute(word: true)
         end
 
-        _(out).wont_be_empty
+        expected = @vw.default
+
+        _(actual).must_equal(expected << "\n")
       end
+    end
 
-      it '有効な引数を取る場合' do
-        word = 'git/'
+    describe '#directory' do
+      it '有効なディレクトリ名を渡した場合、所定の値を標準出力に返すこと' do
+        word = @test_mock_dir
 
-        out, = capture_io do
+        actual, = capture_io do
           @view.execute(word: word)
         end
 
-        _(out).wont_be_empty
+        expected = @vw.directory(word)
+
+        _(actual).must_equal(expected << "\n")
       end
 
-      it '無効な引数を取る場合' do
-        skip 'TODO'
+      it '無効なディレクトリ名を渡した場合、所定の値を標準出力に返すこと' do
         word = 'does_not_exist_dirname'
 
-        out, = capture_io do
+        actual, = capture_io do
           @view.execute(word: word)
         end
 
-        _(out).must_equal("\n")
+        expected = @vw.directory(word)
+
+        _(actual).must_equal(expected)
       end
     end
   end

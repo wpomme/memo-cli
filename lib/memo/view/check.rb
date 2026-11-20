@@ -3,8 +3,8 @@
 module Memo
   module View
     class Check
-      def initialize
-        @vw = Memo::ViewModel::Check.new
+      def initialize(target_dirs: Memo::Config.target_dirs)
+        @vw = Memo::ViewModel::Check.new(target_dirs: target_dirs)
       end
 
       def execute(*)

@@ -2,41 +2,40 @@
 
 require_relative '../../helper'
 
-class TestView < Minitest::Test
-  include Memo::Message
+class TestViewSearch < Minitest::Test
+  describe 'View::Search' do
+    include MemoLifecycleHooks
+    include Memo::Message
 
-  describe 'View' do
     def setup
-      @view = Memo::View::Search.new
+      super
+      @view = Memo::View::Search.new(target_dirs: @test_target_dirs)
+      @vw = Memo::ViewModel::Search.new(target_dirs: @test_target_dirs)
     end
 
-    describe '#search' do
-      it 'View::Searchはexecuteメソッドを返す' do
-        actual = @view
-
-        _(actual).must_respond_to(:execute)
-      end
-
-      it '検索結果が見つかった場合' do
+    describe '#execute' do
+      it '検索結果が見つかった場合、所定の値を標準出力に返すこと' do
         word = 'ls'
 
-        out, = capture_io do
+        actual, = capture_io do
           @view.execute(word: word)
         end
 
-        _(out).wont_be_empty
+        expected = @vw.execute(word).join("\n")
+
+        _(actual).must_equal(expected << "\n")
       end
 
-      it '検索結果が見つからなかった場合' do
+      it '検索結果が見つからなかった場合、所定の値を標準出力に返すこと' do
         word = 'does_not_exist_word'
 
-        out, = capture_io do
+        actual, = capture_io do
           @view.execute(word: word)
         end
 
-        expected = NO_SEARCH_RESULTS_WERE_FOUND.sub('word', word) << "\n"
+        expected = @vw.execute(word)
 
-        _(out).must_equal(expected)
+        _(actual).must_equal(expected << "\n")
       end
     end
   end

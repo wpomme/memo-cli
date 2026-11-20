@@ -3,8 +3,8 @@
 module Memo
   module View
     class List
-      def initialize
-        @vw = Memo::ViewModel::List.new
+      def initialize(target_dirs: Memo::Config.target_dirs)
+        @vw = Memo::ViewModel::List.new(target_dirs: target_dirs)
       end
 
       def execute(word: '')

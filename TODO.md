@@ -4,32 +4,21 @@
     - gemとして公開する必要がない。gemspecについて調査しておくこと
 
 ### 残タスク
-- テストコードを作成する
-    - 作成方針
-    - ViewModel: 値の検査、View: 標準出力へ表示されているかどうか
-    - SubCommandParser: 入力値の検査、Command、SubCommand: クラスが呼び出されるかどうか
-    - test_loader.rbがあってもいいかもしれない
-        - DirとFileの統合テスト
-        - Dirの方とFileの方のディレクトリの数は合っているか？など
 - rubocopのメトリクスによるリファクタリング
-- git grep TODOで出てくるTODOを解消していく。また、テストコードのskipを外す
+- git grep TODO, git grep skip => 修正
 - メソッドの可視性の調査 => 変更、オブジェクトについて、必要なものはfreezeする
 - Minitest::Testを継承しているクラス名がタイポしていないかどうかを確認する
 - Rdocかyardの導入、coverageの取得
     - coverage: https://docs.ruby-lang.org/ja/latest/library/coverage.html
     - simpleCov: https://github.com/simplecov-ruby/simplecov
 - その他修正点
-    - memo.rbのrequire_relativeを簡単にする
-    - test/helperを分割する
-        - 少なくとも、require部分とhooks部分に分ける
-    - memo list [dirs]で、dirsが存在しなかった場合、取りうるディレクトリの一覧を出力する
-        - memo list booksと打つと、例外が送出されてしまう。要修正
-    - 各クラスの呼び出しについて、簡単のため呼び出すメソッドを特異メソッドにする
-        - 今のままでOK: ViewModel
-        - 特異メソッドにする: View, Command, SubCommand
-        - 未定: SubCommandParser
-    - rake e2eを堅牢にする
-    - git push前のhooksを作成する
+- memo.rbのrequire_relativeを簡単にする
+    - ディレクトリごとにincludeできそう
+- test/helperを分割する
+    - 少なくとも、require部分とhooks部分に分ける
+- 特異メソッドにする: View, Command, SubCommand, SubCommandParser
+- rake e2eを堅牢にする
+- git push前のhooksを作成する
 
 ### 残タスク・テストコードの進捗表(残り)
 - loader
@@ -40,12 +29,7 @@
     - [ ]: list
     - [ ]: tags
 - View
-    - [ ]: check
-    - [ ]: list
     - [i]: read => あと一つ
-    - [ ]: search
-- ViewModel
-    - [i]: list => あとは入力値の検査のみ
 
 
 ## その他やりたいこと

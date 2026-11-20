@@ -20,6 +20,7 @@ module Memo
       return Memo::SubCommandParser::Help.new.execute if first.nil?
 
       klass_name = SUB_COMMAND_DISPATCH[first]
+
       if klass_name.nil?
         Memo::SubCommandParser::Read.new.execute(argv: [first])
       else

@@ -7,30 +7,19 @@ module Memo
       include Memo::SubCommandParser
 
       def execute(argv: nil)
-        # TODO: 1. SubCommand::SubCommandDispatchを流用する
-        # 2. argv == nilの場合はGENERALを表示する
-        # 3. case second ~ elseの場合は、そのようなコマンドがないというメッセージを表示する
         second = argv&.first
 
-        case second
-        when 'check'
-          puts CHECK_DETAIL
-        when 'dirs'
-          puts DIRS_DETAIL
-        when 'list'
-          puts LIST_DETAIL
-        when 'read'
-          puts READ_DETAIL
-        when 'search'
-          puts SEARCH_DETAIL
-        when 'tag'
-          puts TAG_DETAIL
-        when 'tags'
-          puts TAGS_DETAIL
-        when 'version'
-          puts VERSION_DETAIL
-        else
+        # memo / memo helpの場合は、ヘルプの概要を表示する
+        if second.nil? || argv.nil?
           puts GENERAL
+        else
+          dispatched = Memo::SubCommand::SUB_COMMAND_DISPATCH[second]
+
+          if dispatched.nil?
+            to_error_message(:unknown_command, second)
+          else
+            puts Object.const_get("Memo::HelpMessage::#{dispatched.upcase}_DETAIL")
+          end
         end
 
         exit 0

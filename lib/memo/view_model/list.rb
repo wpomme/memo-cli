@@ -22,16 +22,16 @@ module Memo
 
         return NO_DIRECTORIES.gsub('dir', word) if found.nil?
 
-        list_by_directory_to_view(found)
+        filtered_seeds = filtered_seeds_by_directory(found)
+
+        return NO_FILES_IN_THE_DIR.gsub('dir', word) if filtered_seeds.empty?
+
+        list_by_directory_to_view(filtered_seeds)
       end
 
       private
 
-      def list_by_directory_to_view(found)
-        filtered_seeds = filtered_seeds_by_directory(found)
-
-        return NO_FILES_IN_THE_DIR.gsub('dir', found) if filtered_seeds.empty?
-
+      def list_by_directory_to_view(filtered_seeds)
         target_dir = dir_color_sub(filtered_seeds[0][:target_dir])
         relative_path = dir_color_main(filtered_seeds[0][:relative_path])
         filenames = filtered_seeds.map do |seed|

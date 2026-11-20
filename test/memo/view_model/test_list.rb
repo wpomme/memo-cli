@@ -74,27 +74,46 @@ class TestViewList < Minitest::Test
         _(actual).must_equal(true)
       end
 
-      # TODO: 入力値に関するテストコードを作成する
-      # 有効値: 末尾のスラッシュの有無・ディレクトリの一覧を全て入力値として入れてみる
+      describe('#入力値チェック') do
+        it 'ディレクトリ名について、末尾のスラッシュはあってもなくてもいい' do
+          dirnames = ['mock-dir', 'mock-dir/']
 
-      it 'file_seedsの相対パスに含まれているディレクトリなら、ディレクトリ名などが返ってくる' do
-        dirnames = @file_loader.file_seeds.map do |seed|
-          seed[:relative_path]
-        end.uniq
+          dirnames.each do |dirname|
+            actual = @vm.directory(dirname)
 
-        actual = dirnames.any? do |dirname|
-          @vm.directory(dirname).include?(Memo::Message::NO_FILES_IN_THE_DIR.gsub('dir', dirname))
+            colored_target_dir = dir_color_sub(@test_mock_target_dir)
+
+            _(actual).must_include(colored_target_dir)
+          end
         end
 
-        _(actual).must_equal(false)
-      end
+        it 'file_seedsの相対パスに含まれているディレクトリなら、ディレクトリ名などが返ってくる' do
+          dirnames = @file_loader.file_seeds.map do |seed|
+            seed[:relative_path]
+          end.uniq
 
-      it '無効な引数を取る場合、そのようなディレクトリがないことを示す文字列を返すこと' do
-        dirname = 'does_not_exist_dirname'
+          actual = dirnames.any? do |dirname|
+            @vm.directory(dirname).include?(Memo::Message::NO_FILES_IN_THE_DIR.gsub('dir', dirname))
+          end
 
-        actual = @vm.directory(dirname)
+          _(actual).must_equal(false)
+        end
 
-        _(actual).must_equal(Memo::Message::NO_DIRECTORIES.gsub('dir', dirname))
+        it '直下にディレクトリしかないディレクトリを指定すると、その旨を知らせるユーザーメッセージが返ってくる' do
+          dirname = 'mock-without-files'
+
+          actual = @vm.directory(dirname)
+
+          _(actual).must_equal(Memo::Message::NO_FILES_IN_THE_DIR.gsub('dir', dirname))
+        end
+
+        it '無効な引数を取る場合、そのようなディレクトリがないことを示す文字列を返すこと' do
+          dirname = 'does_not_exist_dirname'
+
+          actual = @vm.directory(dirname)
+
+          _(actual).must_equal(Memo::Message::NO_DIRECTORIES.gsub('dir', dirname))
+        end
       end
     end
   end
