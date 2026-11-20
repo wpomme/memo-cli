@@ -18,6 +18,7 @@ class TestMemoDataCreator
   end
 
   def create
+    delete
     create_dirs
     create_files
   end

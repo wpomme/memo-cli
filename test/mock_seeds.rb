@@ -406,420 +406,393 @@ module Memo
       - Macなら`networksetup -listallhardwareports`を実行すると全てのネットワークハードウェアの一覧が取得できる
     IFCONFIG_FILE
 
-    TEST_TCPDUMP_FILE_CONTENT = <<~TCPDUMP_FILE
+    TEST_SSH_FILE_CONTENT = <<~SSH_FILE
       ---
       tags: ["CLI", "Network"]
       ---
-      ## tcpdump: ネットワークの交信ログを取得
-      - 使い方
-      ```bash
-      ## 対象のインターファイスを指定すること
-      tcpdump -i en0
-
-      ## パケット回数を10回に制限して、その内容をASCII文字で出力する
-      tcpdump -i en0 -c 10 -A
-
-      ## 使用できるインターフェイスの一覧
-      tcpdump -D
-
-      ## アプリケーションのサービス名で絞り込む
-      tcpdump -i en0 port https
-      ### dnsは"domain"と指定する
-      tcpdump -i en0 port domain
-      ## ホスト名でなくポート番号で指定するな-nnを指定する
-      tcpdump -i en0 port -nn 443
-      ```
-
-      ## ポート番号とサービス名の定義ファイル
-      - `/etc/services`を確認すること
-    TCPDUMP_FILE
-
-    TEST_CLAUDE_FILE_CONTENT = <<~CLAUDE_FILE
-      ---
-      tags: ["CLI", "External Command", "AI", "CLI client"]
-      ---
-      # claude CLI
-      - `/resume`
-      過去のセッションを選択して再開する
-    CLAUDE_FILE
-
-    TEST_GH_FILE_CONTENT = <<~GH_FILE
-      ---
-      tags: ["CLI", "Third Party", "git", "CI/CD", "CLI client"]
-      ---
-      ## gh: github CLI
-      ```bash
-      # 現在のブランチのPR のステータスを確認する場合
-      ## マージ済みかどうかなどが分かる
-      gh pr status
-
-      # より詳細な情報 (タイトル、本文、レビュー状態など)
-      gh pr view
-
-      # CI チェックの結果一覧
-      # URL からCI のRun ID が分かる
-      gh pr checks
-
-      # CI を再実行する
-      gh run rerun <run-id>
-      ## 詳細に指定する場合
-      gh run rerun <run-id>  --repo <repo-name> --failed
-      ```
-    GH_FILE
-
-    TEST_MISE_FILE_CONTENT = <<~MISE_FILE
-      ---
-      tags: ["CLI", "External Command", "Package Manager", "Runtime Version Manager"]
-      ---
-      # mise.md
-      # TODO: mise の設定に関することは docs/setting/mise.md に書く
-      ## mise
-      - nodejsやpythonなど、ランタイムのバージョンを管理できるツール
-          - 他にも使い出がありそう
-
-      ### 例
-      ```bash
-      # サブコマンドの一覧を表示
-      mise
-
-      # サブコマンドのヘルプを表示
-      mise help <subcommand>
-
-      # パッケージをインストールしてmise.toml. にパッケージを追加するコマンド
-      # mise で利用できるパッケージの一覧が見れる
-      mise use
-
-      # 利用できるRubyのランタイムを全て表示
-      mise ls-remote ruby
-
-      # 利用できるRubyのランタイムのうち、バージョンが4系のものを表示する
-      mise ls-remote ruby@4
-      ```
-
-      - miseのconfigファイルを管理する
-      ```bash
-      # miseのコンフィグファイルの一覧を見る
-      mise config
-      ```
-
-      - 管理しているランタイムやパッケージの詳細情報を確認
-      ```
-      mise ls
-      ```
-
-      - nodejsの最新のLTSをインストールする
-      ```
-      mise use -g node@lts
-
-      # mise で管理できるプラグインの一覧をみる
-      mise registry
-      ```
-    MISE_FILE
-
-    TEST_NKF_FILE_CONTENT = <<~NKF_FILE
-      ---
-      tags: ["CLI", "External Command", "text", "表示", "変換", "Character Inspection", "edit"]
-      ---
-      - nkf: 文字コードの判定・変換
-      ```bash
-      # 文字コードを推測する
-      nkf --guess <filename>
-
-      # 例 ls のドキュメントの文字コード
-      nkf --guess <(man ls)
-      UTF-8 (LF)
-
-      # ISO-2022-JP (JIS code) 形式のテキストを表示する
-      nkf -J <filename>
-      ```
-    NKF_FILE
-
-    TEST_UNITS_FILE_CONTENT = <<~UNITS_FILE
-      ---
-      tags: ["CLI"]
-      ---
-      - units: 単位の計算ができる
-          - mac版だと'/usr/share/misc/units.lib'に使える単位の一覧がある
-    UNITS_FILE
-
-    TEST_SQLITE3_FILE_CONTENT = <<~SQLITE3_FILE
-      ## sqlite3: sqlite3 CLIの使い方など
-      ### 使い方
-      ```bash
-      ## DBを読み込む
-      sqlite3 test.db
-      ```
-
-      ### 例
-      ```
-      -- テーブルの一覧を表示する
-      .table
-
-      -- テーブルのスキーマを確認する
-      .schema <table_name>
-
-      -- 結果をHTMLにしてブラウザで表示する
-          - .wwwの後にEnterを押して、その後にSQLを実行するとブラウザが起動して結果がテーブルで確認できる
-      .www
-      ```
-    SQLITE3_FILE
-
-    TEST_BRANCH_FILE_CONTENT = <<~BRANCH_FILE
-      ---
-      tags: ["CLI", "git", "Branching and Merging"]
-      ---
-      - branch: ブランチの作成など
-      ```bash
-      # 基本: ブランチの作成
-      git branch <branch>
-
-      # 特定のコミット・ブランチから新しいブランチを作成するが、そのブランチには切り替えない場合
-      git branch <branch> <commit>
-
-      # ブランチを新規作成して、そのブランチに切り替えるならgit switchが使える
-      git switch -c <branch>
-      ```
-    BRANCH_FILE
-
-    TEST_CONFIG_FILE_CONTENT = <<~CONFIG_FILE
-      ---
-      tags: ["CLI", "git", "Setting"]
-      ---
-      - gitのアカウント情報などの確認
-      ```bash
-      git config -l
-      ```
-
-      - ローカルのgitアカウント作成
-      ```bash
-      git config --local user.name "<username>"
-      git config --local user.email "<email>"
-      ```
-
-      ```bash
-      # テキストエディタをneovimにする
-      git config --global core.editor 'nvim'
-
-      # テキストエディタをVimにする
-      git config --global core.editor 'vim -c "set fenc=utf-8"'
-      ```
-    CONFIG_FILE
-
-    TEST_DIFF_FILE_CONTENT = <<~DIFF_FILE
-      ---
-      tags: ["CLI", "git", "Basic Snapshotting", "Comparison Version", "Patching"]
-      ---
-      ## git diff: 差分を取る
+      ## ssh: sshでログインする
       - 例
       ```bash
-      # stagedしたファイルのdiff
-      git diff --cached
-
-      # ファイル名だけ取得
-      git diff --name-only
-
-      # git diff を標準出力に書き出す
-      git --no-pager diff
-
-      # なお、`--no-pager`は`git`コマンド全体で使える。
-      git --no-pager <subcommand> <options>
-
-      # 直前のコミットとdiffをとる
-      # patchファイルを作成するときなどに使う
-      git diff HEAD^ HEAD
-
-      # patchファイルを作成
-      git diff HEAD^ HEAD > patch.diff
+      ssh <login name>@<address>
       ```
-    DIFF_FILE
+    SSH_FILE
 
-    TEST_GIT_FILE_CONTENT = <<~GIT_FILE
+    TEST_BREW_FILE_CONTENT = <<~BREW_FILE
       ---
-      tags: ["CLI", "git", "documentation"]
+      tags: ["CLI", "External Command", "Package Manager", "Mac"]
       ---
-      - git
-      ## ドキュメント
-      https://git-scm.com/about
-          - git用のTUIなどの一覧が載っている
-    GIT_FILE
-
-    TEST_LOG_FILE_CONTENT = <<~LOG_FILE
-      ---
-      tags: ["CLI", "git", "Branching and Merging", "Inspection Version"]
-      ---
-      - 基本的なログ表示
+      - 自分でインストールしたパッケージを確認するとき
+      # TODO: homebrew の設定に関することは docs/setting/homebrew.md に書く
       ```bash
-      git log --oneline
+      brew leaves -r
       ```
+      - -r, --installed-on-request: 自分で入れたパッケージ
+      - -p, --installed-as-dependency: 他と依存関係がないパッケージ
 
-      - ブランチの分岐を視覚的に表示
+      - パッケージの情報を確認するとき
+          - インストールしたパッケージについて、warningが出た場合の対処法などが書いてあったりする
       ```bash
-      git log --graph --oneline --all
+      brew info <package>
       ```
+    BREW_FILE
 
-      - 特定のファイルの変更履歴
-          - ファイル名の変更があっても、その前のコミットログまで追うことができる
-      ```bash
-      git log --follow -- filename
-      ```
-
-      - developにはない現在のブランチのみのコミットを表示する
-      ```bash
-      git log develop..HEAD
-
-      # -p で差分も確認できる
-      git log -p develop..HEAD
-
-      # ここからmergeコミットを取り除くには
-      git log --no-merges develop..HEAD
-
-      # tig でも同様
-      tig -p --no-merges develop..HEAD
-      ```
-    LOG_FILE
-
-    TEST_CHECKOUT_FILE_CONTENT = <<~CHECKOUT_FILE
+    TEST_DOCKER_FILE_CONTENT = <<~DOCKER_FILE
       ---
-      tags: ["CLI", "git", "Branching and Merging", "legacy"]
+      tags: ["CLI", "External Command", "container", "CLI client"]
       ---
-      ## git checkout: git restore + git switchの機能があるgit CLI
-      ## `git checkout`から`git switch`, `git restore`へ
-      - `git checkout`の役割
-          - ブランチの切り替え
-          - 新規ブランチの作成
-          - ファイルの復元
-          - コミットのチェックアウト
-
-          -> これらを`git switch`か`git restore`へ
-    CHECKOUT_FILE
-
-    TEST_PUSH_FILE_CONTENT = <<~PUSH_FILE
-      ---
-      tags: ["CLI", "git", "Sharing and Updating Projects"]
-      ---
-      - 現在チェックアウトしているブランチをpushする
-      ```bash
-      # 最もシンプルな方法
-      git push origin HEAD
-      # 上流ブランチ(upstream)が設定済みならgit push でOK
-      git push
-      # 最初に-uを付けて上流を設定しておけばいい
-      git push -u origin HEAD
+      # docker CLI: dockerを操作するためのCLI
+      ## 起動しているdocker containerにログイン
+      ```
+      docker exec -it <NAMES or CONTAINER ID> <Shell to login>
+      ```
+      # 使用したことのあるコマンド
+      ## cp
+      ```
+      # ホストからコンテナへファイルをコピー
+      # 例: ホストのデータをdevコンテナの/homeへコピー
+      docker cp ./share_data/world-db dev:/home
       ```
 
-      ## 上流ブランチ(Upstream Branch)
-      - ローカルブランチが追跡(トラッキング)しているリモートブランチのこと
+      ## dockerコンテナの整理
       ```bash
-      ## 上流ブランチの設定方法
-      # -u(--set-upstream)オプションを追加する
-      git push -u origin <branch-name>
+      #! /bin/sh
+      CONTAINER_ID=$(docker ps -aq)
 
-      ## 現在のブランチが上流ブランチに設定されているかどうかを確認
-      git rev-parse --abbrev-ref @{upstream}
-      # -> 未設定の場合はエラーになる
+      for ID in $CONTAINER_ID
+      do
+          docker stop $ID
+          docker rm $ID
+      done
       ```
-    PUSH_FILE
+    DOCKER_FILE
 
-    TEST_RESET_FILE_CONTENT = <<~RESET_FILE
+    TEST_JQ_FILE_CONTENT = <<~JQ_FILE
+      ---
+      tags: ["CLI", "External Command", "text", "json", "filter", "pretty", "表示"]
+      ---
+      - jq: CLI JSON Processor
+      ```bash
+      # 整形 -> ファイルへ出力
+      cat <json-file> | jq > <file-name>.json
+
+      # キーでフィルター
+      cat <json-file> | jq '.["<key>"]'
+
+      # 配列から該当のキーの値を取得する
+      cat <json-file> | jq '.[]["<key>"]'
+
+      ## key, value, length
+      ### keys
+      # 配列から該当のキーの値を取得する
+      cat <json-file> | jq 'keys'
+
+      # -c を付けると、keyの配列が一行で表示される
+      cat <json-file> | jq -c 'keys'
+
+      ### has
+      # そのkeyがあればtrue, なければfalseを返す
+      cat <json-file> | jq 'has("<key?>")'
+
+      ### value
+      # .[] を指定すると、valueの一覧が取得できる
+      cat <json-file> | jq '.[]'
+
+      ## その他、型チェックなど
+      ## それぞれの値について、型のチェックができる
+      ```
+    JQ_FILE
+
+    TEST_MYSQL_FILE_CONTENT = <<~MYSQL_FILE
+      ---
+      tags: ["CLI", "External Command", "DB", "CLI client"]
+      ---
+      ## mysql-client
+      # TODO: mysql のmemo はまた別のところに置く
+      #       docs/db/mysql/ など
+      ### データベースの探索
+      ```
+      # データベースの一覧を取得
+      show databases;
+
+      # 操作するデータベースを指定
+      use <database-name>;
+
+      # テーブルの一覧を取得
+      show tables;
+
+      # カラム名を取得
+      SHOW columns FROM <table-name>;
+
+      # テーブルのレコード件数を取得
+      SELECT count(*) FROM <table-name>;
+      ```
+
+      ### ソート
+      ```
+      SELECT * FROM departments ORDER BY dept_no;
+      ```
+    MYSQL_FILE
+
+    TEST_ZOXIDE_FILE_CONTENT = <<~ZOXIDE_FILE
+      ---
+      tags: ["CLI", "External Command", "Modern CLI", "Directory Navigation"]
+      ---
+      ## zoxide: ナイスなcdコマンド
+      ```bash
+      ## ドキュメントやヘルプ
+      ## z -hやman zだとドキュメントが参照できない
+      man zoxide
+      zoxide --help
+
+      ## 記憶させたパスの消去
+      # zoxide editで記憶させたパスの一覧が表示される
+      zoxide edit
+
+      ```
+      ## 補足
+      - zoxide editで表示されるパス一覧とzoxide query -lで表示されるパスの一覧が一致しない
+      - たぶん、query -lの方は、存在しないパスは大体表示しないようにしてるっぽい
+          - zoxide query -lから存在しないパスを抜き出そうとしたのだけど...
+    ZOXIDE_FILE
+
+    TEST_SQL_FILE_CONTENT = <<~SQL_FILE
+      ## SQL: データベースを操作するための言語
+      ### 例
+      ```sql
+      -- テーブルを消去する
+      DROP TABLE [IF EXISTS] <table_name>;
+      ```
+
+      ### SQLの実行順序
+      - FROM, WHERE, GROUP BY, HAVING, SELECT, (ORDER BY)
+    SQL_FILE
+
+    TEST_APPLY_FILE_CONTENT = <<~APPLY_FILE
+      ---
+      tags: ["CLI", "git", "Email", "Patching"]
+      ---
+      - パッチファイルを適用する
+      ```bash
+      git apply <filename>
+
+      # 例
+      git apply patch.diff
+      ```
+
+      - patchコマンドでも差分を取り込めるらしい
+    APPLY_FILE
+
+    TEST_COMMIT_FILE_CONTENT = <<~COMMIT_FILE
       ---
       tags: ["CLI", "git", "Basic Snapshotting"]
       ---
-      ## git reset
-      - resetとrevertの違い
-          - reset -> コミットログが残らない
-          - revert -> コミットログが残る
+      ## commit: コードの変更をコミットする
 
-      - featureブランチで直前のコミットを取り消す
+      ## 例
       ```bash
-      git reset --soft HEAD^
+      ## --amendを使うと、ステージ済みの変更を直前のコミットに統合できる
+      git commit --amend
+
+      ## メッセージの変更が不要な場合
+      git commit --amend --no-edit
       ```
-    RESET_FILE
+    COMMIT_FILE
 
-    TEST_REV_PARSE_FILE_CONTENT = <<~REV_PARSE_FILE
+    TEST_CONFLICT_FILE_CONTENT = <<~CONFLICT_FILE
       ---
-      tags: ["CLI", "git", "Plumbing Commands"]
+      tags: ["CLI", "git", "Conflict"]
       ---
-      - rev-parse
-          - "Pick out and massage parameters"というporcelain command
-
-      - `git rev-parse --show-toplevel`
-          - 対象のgitリポジトリの第一階層のディレクトリを取得できるコマンド
-          - このコマンドをスクリプトで使用する際の注意点
-          1. gitリポジトリ外で実行するとエラーになる
-          2. worktree内での実行、シンボリックリンク経由による実行、サブモジュール内での実行
-
-          - 改善版
+      - fix conflict
       ```bash
-      # Add Error Handling
-      REPO_ROOT=$(git rev-parse --show-toplevel 2>/dev/null) || {
-        echo "Error: not inside a git repository" >&2
-        exit 1
-      }
-
-      TARGET_PATH="$REPO_ROOT/path/to/target"
+      $ vimdiff  # alias vimdiff="git mergetool -t vimdiff"
       ```
 
-      - なお、gitに依存したくない場合はこちら
+      - マージしてきた方のブランチにコードを合わせる場合
       ```bash
-      SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-      REPO_ROOT="$(cd "$SCRIPT_DIR/path/to/target" && pwd)"
-      ```
-    REV_PARSE_FILE
+      # マージしてきた方のブランチを採用する
+      # 注意: file に. を指定すると、マージしてきた方のブランチを全て採用してしまう。
+      # file は個別に指定すること
+      git restore --theirs <file>
 
-    TEST_UPSTREAM_FILE_CONTENT = <<~UPSTREAM_FILE
+      # または、次のコマンドで取り込む
+      # --staged と --worktree の両方を指定してgit add <file> と同様の動作をする
+      git restore --source=MERGE_HEAD --staged --worktree <file>
+
+      # 現在のブランチ(HEAD)の方を採用する
+      git restore --ours <file>
+      ```
+
+      - 特殊なHEADリファレンス
+          - `HEAD`: 現在チェックアウトしているコミット
+          - `MERGE_HEAD`: マージ中の相手ブランチの先頭コミット
+          - `ORIG_HEAD`: merge/rebase/reset実行前のHEADの位置
+          - `FETCH_HEAD`	直前のgit fetchで取得したリモートの先頭
+          - `CHERRY_PICK_HEAD`: cherry-pick中の対象コミット
+          - `REBASE_HEAD`: rebase中に現在適用しているコミット
+
+      - コンフリクトマーカーの見方
+      ```diff
+      <<<<<<< HEAD
+      現在のブランチの内容（ours / stage 2）
+      ||||||| abc1234  ← diff3 スタイルの場合のみ表示
+      共通祖先の内容（base / stage 1）
+      =======
+      マージしてくるブランチの内容（theirs / stage 3）
+      >>>>>>> feature-branch
+      ```
+
+      - diff3スタイルを有効にする
+      ```bash
+      git config --global merge.conflictstyle diff3
+      ```
+    CONFLICT_FILE
+
+    TEST_GIT_TAG_FILE_CONTENT = <<~GIT_TAG_FILE
       ---
-      tags: ["git", "Sharing and Updating Projects", "Branching and Merging", "Option"]
+      tags: ["CLI", "tag"]
       ---
-      ## upstream: 追跡ブランチ
+      ## git tag: コミットにタグ付けする
+
+      ### 例: タグの履歴を追って、そのコミットに一時的に切り替える場合
+      ```bash
+      # tagの一覧を表示する
+      git tag
+
+      # 特定のタグの詳細を確認する
+      git show <tag-name>
+
+      # そのタグのコミットを元に、そのコミットに一時的に切り替える
+      git switch --detach <commit-hash>
+
+      # 最後に、元のブランチに戻るには
+      git switch -
+      ```
+    GIT_TAG_FILE
+
+    TEST_GITIGNORE_FILE_CONTENT = <<~GITIGNORE_FILE
+      ---
+      tags: ["git", "Git Guides", "Setting"]
+      ---
+      - .gitignore
+      ## ローカル環境だけでgitignoreを設定するには
+      .git/info/excludeに該当のファイル・フォルダ名を書けばいい
+    GITIGNORE_FILE
+
+    TEST_MERGE_FILE_CONTENT = <<~MERGE_FILE
+      ---
+      tags: ["CLI", "git", "Branching and Merging"]
+      ---
+      ## git merge
+      ```bash
+      # git squashしてマージ
+      git merge --squash origin/feature/foo
+
+      # コンフリクトの事前確認
+      git merge --no-commit --no-ff feature/foo
+      ```
+    MERGE_FILE
+
+    TEST_PULL_FILE_CONTENT = <<~PULL_FILE
+      ---
+      tags: ["CLI", "git", "Sharing and Updating Projects"]
+      ---
+      ## pull: リモートからブランチを取得し、ローカルのブランチとマージする
+
+      ### ローカルとリモートの履歴が分岐していた場合のwaringについて
+      1. pull.ff only: fast-forwardできる場合だけpull。分岐していたらエラー
+      2. pull.rebase true: ローカルのコミットをリモートブランチの先頭に載せる
+      3. pull.rebase false: マージコミットを作成して統合する
+
+      #### 設定方法
+      ```bash
+      # 1.の場合
+      git config --global pull.ff only
+
+      # 2.の場合
+      git config --global pull.rebase true
+      ```
+    PULL_FILE
+
+    TEST_REBASE_FILE_CONTENT = <<~REBASE_FILE
+      ---
+      tags: ["CLI", "git", "Patching"]
+      ---
+      ## rebase: Reapply commits on top of another base tip
+
+      ## 例
+      ```bash
+      ## 対話的にリベースする場合
+      ### 例: 直前の二つのコミットをsquashしたい場合
+      ### 直前の二つのコミットHEAD~2を指定して、リベース用のエディタを開く
+      git rebase -i HEAD~2
+      ## -> 二番目のコミットのpickをs(squash)に変更して保存する。
+      ```
+    REBASE_FILE
+
+    TEST_RESTORE_FILE_CONTENT = <<~RESTORE_FILE
+      ---
+      tags: ["CLI", "git", "Basic Snapshotting"]
+      ---
+      - `git restore`: ファイルの復元
 
       ```bash
-      ## git pushするときに-u(--set-upstream) originを付けると、そのブランチは追跡ブランチとなる
-      git push -u origin feature/foobar
-      # -> 次回以降はgit pushだけでpushできる
+      # staged ではないファイルを元に戻す
+      git restore <filename>
 
-      ## 追跡ブランチが設定されているかどうかを確認するには
-      git branch -vv
-      # -> 三番目の項目に[origin/feature/foobar]などと表示されていれば、そのブランチは追跡ブランチ
-      ## コマンドで抽出するなら:
-      git branch -vv | grep '[origin/'
-
-      ## 追跡ブランチを取り消すには
-      git branch --unset-upstream develop
-
-      ## ただし、git pullするときにorigin developを追加する必要がある
-      git pull origin develop
+      # staged のファイルを not staged に戻す
+      git restore --staged <filename>
       ```
-    UPSTREAM_FILE
+    RESTORE_FILE
 
-    TEST_DATA_EXCHANGER_FILE_CONTENT = <<~DATA_EXCHANGER_FILE
+    TEST_SWITCH_FILE_CONTENT = <<~SWITCH_FILE
       ---
-      tags: ["How to", "Network"]
+      tags: ["CLI", "git", "Branching and Merging", "legacy"]
       ---
-      ## 概要
-      - パソコン間でファイルの送受信をしたいときなど
+      ## `git switch`: ブランチの操作
 
-      ### 送り手側
-      1. ncで送信する
-      ``` sh
-      # -l でリスナーモードにする
-      # ポート番号は任意のものを使用する。一旦8888とする。
-      cat file.txt | nc -l 8888
+      ```bash
+      # ブランチの切り替え
+      git switch <branch>
 
-      # 画像などは多分こっちがいい
-      nc -l 8888 < file.jpeg
+      # 新規ブランチを作成して切り替え
+      git switch -c <branch>
+
+      # 特定のコミット・ブランチから新しいブランチを作成して、そのブランチに切り替える場合
+      git switch -c <branch> <commit>
       ```
+    SWITCH_FILE
 
-      2. 送信側IPアドレスを調べる
-      ``` sh
-      ifconfig | grep "inet "
-      ```
+    TEST_GITLAB_FILE_CONTENT = <<~GITLAB_FILE
+      ---
+      tags: ["SaaS"]
+      ---
+      ## gitlab: コード管理プラットフォーム
 
-      ### 受け手側
-      1. ncで受信する
-      ``` sh
-      nc [送り手川のIPアドレス] 8888 > received.txt
+      ### SSHキー問題
+      - SSHキーを手順通りに設定してもすぐdeniedとなってしまっていた
+          - SSHキーが複数あると~/.ssh/id_rsaかid_ed25519を読み取ってしまう
+          - そのため、次のドキュメントに従って適切なキーを設定すること
+              - https://docs.gitlab.com/user/ssh_troubleshooting/#error-permission-denied-publickey
+    GITLAB_FILE
+
+    TEST_DIRECTORY_FILE_CONTENT = <<~DIRECTORY_FILE
+      ---
+      tags: ["How to", "Directory"]
+      ---
+      ## directory: ディレクトリ構成図を書くときに使う記号
+
+      - 例
       ```
-    DATA_EXCHANGER_FILE
+      home/
+      ├─ foo/
+      │  ├── file1.txt
+      │  ├── file2.txt
+      │  └── file3.txt
+      ├─ bar/
+      ├─ bar/
+      └─ qux/
+      ```
+    DIRECTORY_FILE
 
     TEST_RANDOM_FILE_CONTENT = <<~RANDOM_FILE
       ---
@@ -2414,165 +2387,174 @@ module Memo
       },
       {
         target_dir: '/Users/hy/repo/memorandum/memo/',
-        absolute_path: '/Users/hy/repo/memorandum/memo/cli/tcpdump.md',
+        absolute_path: '/Users/hy/repo/memorandum/memo/cli/ssh.md',
         parent_directory: '/Users/hy/repo/memorandum/memo/cli/',
         relative_path: 'cli/',
-        filename: 'tcpdump',
-        file_content: TEST_TCPDUMP_FILE_CONTENT,
+        filename: 'ssh',
+        file_content: TEST_SSH_FILE_CONTENT,
         tags: %w[CLI Network]
       },
       {
         target_dir: '/Users/hy/repo/memorandum/memo/',
-        absolute_path: '/Users/hy/repo/memorandum/memo/cli/third-party/claude.md',
+        absolute_path: '/Users/hy/repo/memorandum/memo/cli/third-party/brew.md',
         parent_directory: '/Users/hy/repo/memorandum/memo/cli/third-party/',
         relative_path: 'cli/third-party/',
-        filename: 'claude',
-        file_content: TEST_CLAUDE_FILE_CONTENT,
-        tags: ['CLI', 'External Command', 'AI', 'CLI client']
+        filename: 'brew',
+        file_content: TEST_BREW_FILE_CONTENT,
+        tags: ['CLI', 'External Command', 'Package Manager', 'Mac']
       },
       {
         target_dir: '/Users/hy/repo/memorandum/memo/',
-        absolute_path: '/Users/hy/repo/memorandum/memo/cli/third-party/gh.md',
+        absolute_path: '/Users/hy/repo/memorandum/memo/cli/third-party/docker.md',
         parent_directory: '/Users/hy/repo/memorandum/memo/cli/third-party/',
         relative_path: 'cli/third-party/',
-        filename: 'gh',
-        file_content: TEST_GH_FILE_CONTENT,
-        tags: ['CLI', 'Third Party', 'git', 'CI/CD', 'CLI client']
+        filename: 'docker',
+        file_content: TEST_DOCKER_FILE_CONTENT,
+        tags: ['CLI', 'External Command', 'container', 'CLI client']
       },
       {
         target_dir: '/Users/hy/repo/memorandum/memo/',
-        absolute_path: '/Users/hy/repo/memorandum/memo/cli/third-party/mise.md',
+        absolute_path: '/Users/hy/repo/memorandum/memo/cli/third-party/jq.md',
         parent_directory: '/Users/hy/repo/memorandum/memo/cli/third-party/',
         relative_path: 'cli/third-party/',
-        filename: 'mise',
-        file_content: TEST_MISE_FILE_CONTENT,
-        tags: ['CLI', 'External Command', 'Package Manager', 'Runtime Version Manager']
+        filename: 'jq',
+        file_content: TEST_JQ_FILE_CONTENT,
+        tags: ['CLI', 'External Command', 'text', 'json', 'filter', 'pretty', '表示']
       },
       {
         target_dir: '/Users/hy/repo/memorandum/memo/',
-        absolute_path: '/Users/hy/repo/memorandum/memo/cli/third-party/nkf.md',
+        absolute_path: '/Users/hy/repo/memorandum/memo/cli/third-party/mysql.md',
         parent_directory: '/Users/hy/repo/memorandum/memo/cli/third-party/',
         relative_path: 'cli/third-party/',
-        filename: 'nkf',
-        file_content: TEST_NKF_FILE_CONTENT,
-        tags: ['CLI', 'External Command', 'text', '表示', '変換', 'Character Inspection', 'edit']
+        filename: 'mysql',
+        file_content: TEST_MYSQL_FILE_CONTENT,
+        tags: ['CLI', 'External Command', 'DB', 'CLI client']
       },
       {
         target_dir: '/Users/hy/repo/memorandum/memo/',
-        absolute_path: '/Users/hy/repo/memorandum/memo/cli/units.md',
-        parent_directory: '/Users/hy/repo/memorandum/memo/cli/',
-        relative_path: 'cli/',
-        filename: 'units',
-        file_content: TEST_UNITS_FILE_CONTENT,
-        tags: ['CLI']
+        absolute_path: '/Users/hy/repo/memorandum/memo/cli/third-party/zoxide.md',
+        parent_directory: '/Users/hy/repo/memorandum/memo/cli/third-party/',
+        relative_path: 'cli/third-party/',
+        filename: 'zoxide',
+        file_content: TEST_ZOXIDE_FILE_CONTENT,
+        tags: ['CLI', 'External Command', 'Modern CLI', 'Directory Navigation']
       },
       {
         target_dir: '/Users/hy/repo/memorandum/memo/',
-        absolute_path: '/Users/hy/repo/memorandum/memo/db/sqlite3/sqlite3.md',
-        parent_directory: '/Users/hy/repo/memorandum/memo/db/sqlite3/',
-        relative_path: 'db/sqlite3/',
-        filename: 'sqlite3',
-        file_content: TEST_SQLITE3_FILE_CONTENT,
+        absolute_path: '/Users/hy/repo/memorandum/memo/db/sql.md',
+        parent_directory: '/Users/hy/repo/memorandum/memo/db/',
+        relative_path: 'db/',
+        filename: 'sql',
+        file_content: TEST_SQL_FILE_CONTENT,
         tags: []
       },
       {
         target_dir: '/Users/hy/repo/memorandum/memo/',
-        absolute_path: '/Users/hy/repo/memorandum/memo/git/branch.md',
+        absolute_path: '/Users/hy/repo/memorandum/memo/git/apply.md',
         parent_directory: '/Users/hy/repo/memorandum/memo/git/',
         relative_path: 'git/',
-        filename: 'branch',
-        file_content: TEST_BRANCH_FILE_CONTENT,
-        tags: ['CLI', 'git', 'Branching and Merging']
+        filename: 'apply',
+        file_content: TEST_APPLY_FILE_CONTENT,
+        tags: %w[CLI git Email Patching]
       },
       {
         target_dir: '/Users/hy/repo/memorandum/memo/',
-        absolute_path: '/Users/hy/repo/memorandum/memo/git/config.md',
+        absolute_path: '/Users/hy/repo/memorandum/memo/git/commit.md',
         parent_directory: '/Users/hy/repo/memorandum/memo/git/',
         relative_path: 'git/',
-        filename: 'config',
-        file_content: TEST_CONFIG_FILE_CONTENT,
-        tags: %w[CLI git Setting]
-      },
-      {
-        target_dir: '/Users/hy/repo/memorandum/memo/',
-        absolute_path: '/Users/hy/repo/memorandum/memo/git/diff.md',
-        parent_directory: '/Users/hy/repo/memorandum/memo/git/',
-        relative_path: 'git/',
-        filename: 'diff',
-        file_content: TEST_DIFF_FILE_CONTENT,
-        tags: ['CLI', 'git', 'Basic Snapshotting', 'Comparison Version', 'Patching']
-      },
-      {
-        target_dir: '/Users/hy/repo/memorandum/memo/',
-        absolute_path: '/Users/hy/repo/memorandum/memo/git/git.md',
-        parent_directory: '/Users/hy/repo/memorandum/memo/git/',
-        relative_path: 'git/',
-        filename: 'git',
-        file_content: TEST_GIT_FILE_CONTENT,
-        tags: %w[CLI git documentation]
-      },
-      {
-        target_dir: '/Users/hy/repo/memorandum/memo/',
-        absolute_path: '/Users/hy/repo/memorandum/memo/git/log.md',
-        parent_directory: '/Users/hy/repo/memorandum/memo/git/',
-        relative_path: 'git/',
-        filename: 'log',
-        file_content: TEST_LOG_FILE_CONTENT,
-        tags: ['CLI', 'git', 'Branching and Merging', 'Inspection Version']
-      },
-      {
-        target_dir: '/Users/hy/repo/memorandum/memo/',
-        absolute_path: '/Users/hy/repo/memorandum/memo/git/old/checkout.md',
-        parent_directory: '/Users/hy/repo/memorandum/memo/git/old/',
-        relative_path: 'git/old/',
-        filename: 'checkout',
-        file_content: TEST_CHECKOUT_FILE_CONTENT,
-        tags: ['CLI', 'git', 'Branching and Merging', 'legacy']
-      },
-      {
-        target_dir: '/Users/hy/repo/memorandum/memo/',
-        absolute_path: '/Users/hy/repo/memorandum/memo/git/push.md',
-        parent_directory: '/Users/hy/repo/memorandum/memo/git/',
-        relative_path: 'git/',
-        filename: 'push',
-        file_content: TEST_PUSH_FILE_CONTENT,
-        tags: ['CLI', 'git', 'Sharing and Updating Projects']
-      },
-      {
-        target_dir: '/Users/hy/repo/memorandum/memo/',
-        absolute_path: '/Users/hy/repo/memorandum/memo/git/reset.md',
-        parent_directory: '/Users/hy/repo/memorandum/memo/git/',
-        relative_path: 'git/',
-        filename: 'reset',
-        file_content: TEST_RESET_FILE_CONTENT,
+        filename: 'commit',
+        file_content: TEST_COMMIT_FILE_CONTENT,
         tags: ['CLI', 'git', 'Basic Snapshotting']
       },
       {
         target_dir: '/Users/hy/repo/memorandum/memo/',
-        absolute_path: '/Users/hy/repo/memorandum/memo/git/rev-parse.md',
+        absolute_path: '/Users/hy/repo/memorandum/memo/git/conflict.md',
         parent_directory: '/Users/hy/repo/memorandum/memo/git/',
         relative_path: 'git/',
-        filename: 'rev-parse',
-        file_content: TEST_REV_PARSE_FILE_CONTENT,
-        tags: ['CLI', 'git', 'Plumbing Commands']
+        filename: 'conflict',
+        file_content: TEST_CONFLICT_FILE_CONTENT,
+        tags: %w[CLI git Conflict]
       },
       {
         target_dir: '/Users/hy/repo/memorandum/memo/',
-        absolute_path: '/Users/hy/repo/memorandum/memo/git/upstream.md',
+        absolute_path: '/Users/hy/repo/memorandum/memo/git/git-tag.md',
         parent_directory: '/Users/hy/repo/memorandum/memo/git/',
         relative_path: 'git/',
-        filename: 'upstream',
-        file_content: TEST_UPSTREAM_FILE_CONTENT,
-        tags: ['git', 'Sharing and Updating Projects', 'Branching and Merging', 'Option']
+        filename: 'git-tag',
+        file_content: TEST_GIT_TAG_FILE_CONTENT,
+        tags: %w[CLI tag]
       },
       {
         target_dir: '/Users/hy/repo/memorandum/memo/',
-        absolute_path: '/Users/hy/repo/memorandum/memo/how-to/data-exchanger.md',
+        absolute_path: '/Users/hy/repo/memorandum/memo/git/gitignore.md',
+        parent_directory: '/Users/hy/repo/memorandum/memo/git/',
+        relative_path: 'git/',
+        filename: 'gitignore',
+        file_content: TEST_GITIGNORE_FILE_CONTENT,
+        tags: ['git', 'Git Guides', 'Setting']
+      },
+      {
+        target_dir: '/Users/hy/repo/memorandum/memo/',
+        absolute_path: '/Users/hy/repo/memorandum/memo/git/merge.md',
+        parent_directory: '/Users/hy/repo/memorandum/memo/git/',
+        relative_path: 'git/',
+        filename: 'merge',
+        file_content: TEST_MERGE_FILE_CONTENT,
+        tags: ['CLI', 'git', 'Branching and Merging']
+      },
+      {
+        target_dir: '/Users/hy/repo/memorandum/memo/',
+        absolute_path: '/Users/hy/repo/memorandum/memo/git/pull.md',
+        parent_directory: '/Users/hy/repo/memorandum/memo/git/',
+        relative_path: 'git/',
+        filename: 'pull',
+        file_content: TEST_PULL_FILE_CONTENT,
+        tags: ['CLI', 'git', 'Sharing and Updating Projects']
+      },
+      {
+        target_dir: '/Users/hy/repo/memorandum/memo/',
+        absolute_path: '/Users/hy/repo/memorandum/memo/git/rebase.md',
+        parent_directory: '/Users/hy/repo/memorandum/memo/git/',
+        relative_path: 'git/',
+        filename: 'rebase',
+        file_content: TEST_REBASE_FILE_CONTENT,
+        tags: %w[CLI git Patching]
+      },
+      {
+        target_dir: '/Users/hy/repo/memorandum/memo/',
+        absolute_path: '/Users/hy/repo/memorandum/memo/git/restore.md',
+        parent_directory: '/Users/hy/repo/memorandum/memo/git/',
+        relative_path: 'git/',
+        filename: 'restore',
+        file_content: TEST_RESTORE_FILE_CONTENT,
+        tags: ['CLI', 'git', 'Basic Snapshotting']
+      },
+      {
+        target_dir: '/Users/hy/repo/memorandum/memo/',
+        absolute_path: '/Users/hy/repo/memorandum/memo/git/switch.md',
+        parent_directory: '/Users/hy/repo/memorandum/memo/git/',
+        relative_path: 'git/',
+        filename: 'switch',
+        file_content: TEST_SWITCH_FILE_CONTENT,
+        tags: ['CLI', 'git', 'Branching and Merging', 'legacy']
+      },
+      {
+        target_dir: '/Users/hy/repo/memorandum/memo/',
+        absolute_path: '/Users/hy/repo/memorandum/memo/gitlab.md',
+        parent_directory: '/Users/hy/repo/memorandum/memo/',
+        relative_path: './',
+        filename: 'gitlab',
+        file_content: TEST_GITLAB_FILE_CONTENT,
+        tags: ['SaaS']
+      },
+      {
+        target_dir: '/Users/hy/repo/memorandum/memo/',
+        absolute_path: '/Users/hy/repo/memorandum/memo/how-to/directory.md',
         parent_directory: '/Users/hy/repo/memorandum/memo/how-to/',
         relative_path: 'how-to/',
-        filename: 'data-exchanger',
-        file_content: TEST_DATA_EXCHANGER_FILE_CONTENT,
-        tags: ['How to', 'Network']
+        filename: 'directory',
+        file_content: TEST_DIRECTORY_FILE_CONTENT,
+        tags: ['How to', 'Directory']
       },
       {
         target_dir: '/Users/hy/repo/memorandum/memo/',
