@@ -8,6 +8,9 @@ module Memo
     NO_DIRECTORIES = <<~NO_DIRS
       dirというディレクトリはありませんでした。
     NO_DIRS
+    NO_FILES_IN_THE_DIR = <<~NO_F
+      dirというディレクトリの直下にファイルが存在しません。
+    NO_F
     NO_TAGS = <<~NO_T
       tagというタグはありませんでした。
       タグの一覧は次の通りです。

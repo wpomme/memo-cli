@@ -21,7 +21,7 @@ class TestViewTags < Minitest::Test
       end
     end
 
-    describe '#execute' do
+    describe '#default' do
       it '全てのタグ名とそのタグが付いたファイルの数に色を付けて出力すること' do
         actual = @vm.default.split("\n").filter do |line|
           /.+: \d+/.match(line)
@@ -62,7 +62,7 @@ class TestViewTags < Minitest::Test
       it 'タグ名とそのタグが付いたファイルの数を出力すること' do
         actual = @vm.count
 
-        expected = @file_loader.tags_sorted_by_file_size.map do |k, v|
+        expected = @file_loader.tags_array_sorted_by_file_size.map do |k, v|
           ["#{k}: #{v}"]
         end
 
@@ -71,13 +71,18 @@ class TestViewTags < Minitest::Test
     end
 
     describe '#empty' do
-      it 'タグの付いていないファイル名の一覧を出力する。全てのファイルにタグが付いていれば、ユーザーメッセージを表示する。' do
-        skip 'TODO'
-        # actual = out.size
-        #
-        # expected = Memo::FileLoader.new.tag_size
+      it 'タグの付いていないファイル名と、そのファイル名の情報を出力すること' do
+        target_filename = 'mock-empty-tags-file'
 
-        # _(actual).must_equal(expected)
+        actual = @vm.empty
+
+        expected = @file_loader.file_seeds.find do |seed|
+          seed[:filename] == target_filename
+        end
+
+        _(actual).must_include(expected[:target_dir])
+        _(actual).must_include(expected[:relative_path])
+        _(actual).must_include(expected[:filename])
       end
     end
   end

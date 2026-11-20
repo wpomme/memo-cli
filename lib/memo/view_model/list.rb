@@ -14,7 +14,7 @@ module Memo
       end
 
       def default
-        seeds_grouped_by_directory_to_view(@file_loader.seeds_grouped_by_directory)
+        grouped_seeds_to_view(@file_loader.grouped_seeds)
       end
 
       def directory(word)
@@ -29,6 +29,8 @@ module Memo
 
       def list_by_directory_to_view(found)
         filtered_seeds = filtered_seeds_by_directory(found)
+
+        return NO_FILES_IN_THE_DIR.gsub('dir', found) if filtered_seeds.empty?
 
         target_dir = dir_color_sub(filtered_seeds[0][:target_dir])
         relative_path = dir_color_main(filtered_seeds[0][:relative_path])

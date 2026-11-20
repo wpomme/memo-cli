@@ -4,8 +4,11 @@ module Memo
   module ViewModel
     SPACE = ' '
 
+    # green: "\e[32m STRING \e[0m"
     DIR_COLOR_MAIN = :green
+    # cyan: "\e[36m STRING \e[0m"
     DIR_COLOR_SUB = :cyan
+    # aqua: "\e[38;5;51m STRING \e[0m"
     TAG_COLOR = :aqua
 
     COLOR_METHODS = {
@@ -22,7 +25,7 @@ module Memo
 
     # 対象ディレクトリ=>親ディレクトリ=>ファイル名
     # というパターンの表示をユーザー向けに行うメソッド
-    def seeds_grouped_by_directory_to_view(grouped_seeds)
+    def grouped_seeds_to_view(grouped_seeds)
       grouped_seeds.map do |target_dir, seed_hash|
         lines = seed_hash.map do |dir, seeds|
           filenames = seeds.map { |s| s[:filename] }.join(SPACE)

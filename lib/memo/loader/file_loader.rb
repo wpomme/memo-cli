@@ -14,8 +14,8 @@ module Memo
     # 戻り値はタグとファイル名のセットを配列としたものをさらに配列で囲んだものを返す
     #
     # @return [Array<Array<String, Integer>>]
-    def tags_sorted_by_file_size
-      @tags_sorted_by_file_size ||= tag_files_size.to_a.sort do |a, b|
+    def tags_array_sorted_by_file_size
+      @tags_array_sorted_by_file_size ||= tag_files_size.to_a.sort do |a, b|
         b[1] <=> a[1]
       end
     end
@@ -62,7 +62,7 @@ module Memo
     end
 
     # 対象ディレクトリ => 親ディレクトリ => seedsのネストしたハッシュを返す
-    def seeds_grouped_by_directory(seeds: file_seeds)
+    def grouped_seeds(seeds: file_seeds)
       seeds_group_by_target_dir(seeds: seeds).transform_values do |seed|
         seed.group_by do |s|
           s[:relative_path]
@@ -72,8 +72,8 @@ module Memo
 
     # タグが空の場合の、対象ディレクトリ => 親ディレクトリ => seedsのネストしたハッシュを返す
     # memo tags --emptyで使用する
-    def empty_tags_seeds_grouped_by_directory
-      seeds_grouped_by_directory(seeds: empty_tags_seeds)
+    def empty_tag_hash
+      grouped_seeds(seeds: empty_tags_seeds)
     end
 
     private

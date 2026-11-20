@@ -46,7 +46,7 @@ module Memo
       end
 
       def to_view(word)
-        "#{path}:#{line_number}:#{line.sub(word, Rainbow(word).red)}"
+        "#{path}:#{line_number}:#{line.gsub(word, Rainbow(word).red)}"
       end
     end
   end

@@ -22,33 +22,38 @@ class TestViewList < Minitest::Test
       end
     end
 
-    describe '#execute' do
-      it '引数がtrueの場合、対象のディレクトリの配列が返ってきて、その中に色付けされたディレクトリの一覧があること' do
-        skip '先に#directoryの方を作成する。その際、ディレクトリの値とファイル名の値を個別にテストする。その応用として#executeのテストコードを作成する'
-        result = @vm.execute(true)
+    describe '#default' do
+      it '対象ディレクトリ、ファイルが入っている親ディレクトリ、そのディレクトリの中のファイル名一覧が表示されること' do
+        act_set = Set.new
 
-        result_set = Set.new(result)
+        @vm.default.split("\n").each do |line|
+          next if /\A\s*\Z/.match?(line)
 
-        colored_dir_set = Set.new
-
-        @file_loader.file_seeds.each do |file_seed|
-          pd = file_seed[:parent_directory]
-          rel_dir = @directory_loader.to_relative_dir[pd]
-          colored_dir_set.add(dir_color_sub(rel_dir))
+          # カラーコードの付いている文字列を抜き出す
+          if /\A\e\[3/.match?(line)
+            # Rainbow.uncolorでカラーコードを取り除ける
+            uncolored = Rainbow.uncolor(line)
+            act_set.add(uncolored)
+          else
+            line.split do |filename|
+              act_set.add(filename)
+            end
+          end
         end
 
-        colored_target_dir_set = Set.new
+        exp_set = Set.new
 
-        @test_target_dirs.each do |target_dir|
-          colored_target_dir_set.add(dir_color_main(target_dir))
+        @file_loader.grouped_seeds.each do |target_dir, hash_seed|
+          exp_set.add(target_dir)
+          hash_seed.each do |parent_dir, seeds|
+            exp_set.add(parent_dir)
+            seeds.map do |s|
+              exp_set.add(s[:filename])
+            end
+          end
         end
 
-        empty_set = Set.new
-
-        _(colored_dir_set - result_set).must_equal(empty_set)
-        _(colored_target_dir_set - result_set).must_equal(empty_set)
-
-        _(result).must_be_instance_of(Array)
+        _(act_set - exp_set).must_equal(Set.new)
       end
     end
 
@@ -72,13 +77,16 @@ class TestViewList < Minitest::Test
       # TODO: 入力値に関するテストコードを作成する
       # 有効値: 末尾のスラッシュの有無・ディレクトリの一覧を全て入力値として入れてみる
 
-      it '有効な引数を取る場合、対象のディレクトリの配列が返ってくるTODO' do
-        skip 'TODO'
-        dirname = 'git/'
+      it 'file_seedsの相対パスに含まれているディレクトリなら、ディレクトリ名などが返ってくる' do
+        dirnames = @file_loader.file_seeds.map do |seed|
+          seed[:relative_path]
+        end.uniq
 
-        actual = @vm.execute(dirname)
+        actual = dirnames.any? do |dirname|
+          @vm.directory(dirname).include?(Memo::Message::NO_FILES_IN_THE_DIR.gsub('dir', dirname))
+        end
 
-        _(actual).must_be_instance_of(Array)
+        _(actual).must_equal(false)
       end
 
       it '無効な引数を取る場合、そのようなディレクトリがないことを示す文字列を返すこと' do

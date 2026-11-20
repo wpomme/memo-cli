@@ -16,11 +16,11 @@ module Memo
       end
 
       def empty
-        seeds_grouped_by_directory_to_view(@file_loader.empty_tags_seeds_grouped_by_directory)
+        grouped_seeds_to_view(@file_loader.empty_tag_hash)
       end
 
       def count
-        tags_count_to_view(@file_loader.tags_sorted_by_file_size)
+        tags_count_to_view(@file_loader.tags_array_sorted_by_file_size)
       end
 
       def name

@@ -57,13 +57,12 @@
     - [x]: version
 - ViewModel
     - [x]: check
-    - [ ]: common
     - [x]: dirs
-    - [ ]: list
+    - [i]: list => あとは入力値の検査のみ
     - [x]: read
-    - [i]: search => あと一歩
+    - [x]: search
     - [x]: tag
-    - [i]: tags => あと一つ
+    - [x]: tags
 
 
 ## その他やりたいこと

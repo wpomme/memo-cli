@@ -30,7 +30,10 @@ class TestViewSearch < Minitest::Test
 
         actual = ret.all? do |line|
           # ./[任意の文字列].md:(数字):[任意の文字列]
-          %r{\A\./.+\.md:\d+:.+\Z}.match?(line)
+          %r{\A
+          \./.+\.md:\d+:         # ファイル名+行数の部分: ./etc/paren.md:28:
+            .*\e\[31ma\e\[0m.*   # 実際にヒットした行の対象文字列にカラーコードを付けたもの:  - angle brackets, chevrons => aにカラーコードが付いている
+          \Z}x.match?(line)
         end
 
         _(actual).must_equal(true)

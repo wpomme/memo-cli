@@ -40,6 +40,7 @@ module Memo
       result
     end
 
+    # :target_dir, :absolute_path, :relative_pathからなる構造体を返す
     def directory_seeds
       @directory_seeds ||= @target_dirs.flat_map do |target_dir|
         seeds = Dir.glob('**/*/', base: target_dir).map do |rel_path|
