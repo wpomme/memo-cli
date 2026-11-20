@@ -28,7 +28,7 @@ module Memo
       private
 
       def list_by_directory_to_view(found)
-        filtered_seeds = @file_loader.seeds_by_parent_directory(found)
+        filtered_seeds = filtered_seeds_by_directory(found)
 
         target_dir = dir_color_sub(filtered_seeds[0][:target_dir])
         relative_path = dir_color_main(filtered_seeds[0][:relative_path])
@@ -37,6 +37,13 @@ module Memo
         end.join(SPACE)
 
         "#{target_dir}\n#{relative_path}\n#{filenames}"
+      end
+
+      # ある特定のparent_directoryが親であるseedsを返す
+      def filtered_seeds_by_directory(word)
+        @file_loader.file_seeds.filter do |seeds|
+          seeds[:parent_directory] == word
+        end
       end
 
       # wordに該当するディレクトリが存在するかどうかをチェックする

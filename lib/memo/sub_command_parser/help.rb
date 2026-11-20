@@ -7,7 +7,9 @@ module Memo
       include Memo::SubCommandParser
 
       def execute(argv: nil)
-        # TODO: SubCommand::SubCommandDispatchを流用する
+        # TODO: 1. SubCommand::SubCommandDispatchを流用する
+        # 2. argv == nilの場合はGENERALを表示する
+        # 3. case second ~ elseの場合は、そのようなコマンドがないというメッセージを表示する
         second = argv&.first
 
         case second

@@ -117,7 +117,7 @@ class TestFileLoader < Minitest::Test
         end
       end
 
-      # TODO: duplicated_seeds, seeds_by_parent_directory, seeds_grouped_by_directory, empty_tags_seeds_grouped_by_directoryをグループ化してテストコードを作成する
+      # TODO: duplicated_seeds, seeds_grouped_by_directory, empty_tags_seeds_grouped_by_directoryをグループ化してテストコードを作成する
       it('seeds2') do
         describe('#duplicated_seeds') do
           it('ファイル名で集計すると、実際にファイル名が二つ以上あること。また、重複したファイル名が存在しなければ、空の配列を返すこと') do

@@ -61,13 +61,6 @@ module Memo
       end
     end
 
-    # ある特定のparent_directoryが親であるseedsを返す
-    def seeds_by_parent_directory(word)
-      file_seeds.filter do |seeds|
-        seeds[:parent_directory] == word
-      end
-    end
-
     # 対象ディレクトリ => 親ディレクトリ => seedsのネストしたハッシュを返す
     def seeds_grouped_by_directory(seeds: file_seeds)
       seeds_group_by_target_dir(seeds: seeds).transform_values do |seed|
