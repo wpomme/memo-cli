@@ -3,50 +3,65 @@
 require_relative '../../helper'
 
 class TestViewTags < Minitest::Test
-  include Memo::Message
-
   describe 'View::Tags' do
+    include MemoLifecycleHooks
+    include Memo::Message
+
     def setup
-      @view = Memo::View::Tags.new
+      super
+      @view = Memo::View::Tags.new(target_dirs: @test_target_dirs)
+      @vw = Memo::ViewModel::Tags.new(target_dirs: @test_target_dirs)
     end
 
-    describe '#tags' do
-      it 'ViewModelはexecuteメソッドを返す' do
-        actual = @view
-
-        _(actual).must_respond_to(:execute)
-      end
-
-      it 'trueを取る場合' do
-        out, = capture_io do
+    describe '#default' do
+      it '所定の値を標準出力に返すこと' do
+        actual, = capture_io do
+          # TODO: SubCommandParserの方でtrue => nilに修正する
           @view.execute(word: true)
         end
 
-        _(out).wont_be_empty
-      end
+        expected = @vw.default
 
-      it ':emptyを取る場合' do
-        out, = capture_io do
-          @view.execute(word: :empty)
+        _(actual).must_equal(expected << "\n")
+      end
+    end
+
+    describe '#count' do
+      it '所定の値を標準出力に返すこと' do
+        sym = :count
+        actual, = capture_io do
+          @view.execute(word: sym)
         end
 
-        _(out).wont_be_empty
-      end
+        expected = @vw.send(sym).join("\n")
 
-      it ':nameを取る場合' do
-        out, = capture_io do
-          @view.execute(word: :name)
+        _(actual).must_equal(expected << "\n")
+      end
+    end
+
+    describe '#name' do
+      it '所定の値を標準出力に返すこと' do
+        sym = :name
+        actual, = capture_io do
+          @view.execute(word: sym)
         end
 
-        _(out).wont_be_empty
-      end
+        expected = @vw.send(sym).join("\n")
 
-      it ':countを取る場合' do
-        out, = capture_io do
-          @view.execute(word: :count)
+        _(actual).must_equal(expected << "\n")
+      end
+    end
+
+    describe '#empty' do
+      it '所定の値を標準出力に返すこと' do
+        sym = :empty
+        actual, = capture_io do
+          @view.execute(word: sym)
         end
 
-        _(out).wont_be_empty
+        expected = @vw.send(sym)
+
+        _(actual).must_equal(expected << "\n")
       end
     end
   end

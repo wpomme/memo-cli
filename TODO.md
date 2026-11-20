@@ -31,38 +31,21 @@
     - rake e2eを堅牢にする
     - git push前のhooksを作成する
 
-### 残タスク・テストコードの進捗表
+### 残タスク・テストコードの進捗表(残り)
 - loader
     - [ ]: directory_loader
     - [ ]: file_loader
 - SubCommandParser
-    - [x]: check
-    - [ ]: common
-    - [x]: dirs
     - [ ]: help
     - [ ]: list
-    - [x]: read
-    - [x]: search
-    - [x]: tag
     - [ ]: tags
-    - [x]: version
 - View
     - [ ]: check
-    - [x]: dirs
     - [ ]: list
     - [i]: read => あと一つ
     - [ ]: search
-    - [x]: tag
-    - [ ]: tags
-    - [x]: version
 - ViewModel
-    - [x]: check
-    - [x]: dirs
     - [i]: list => あとは入力値の検査のみ
-    - [x]: read
-    - [x]: search
-    - [x]: tag
-    - [x]: tags
 
 
 ## その他やりたいこと
